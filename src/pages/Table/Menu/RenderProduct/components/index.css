@@ -1,0 +1,17 @@
+  
+  .bullet {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    margin-right: 20px;
+    animation: bulletAnimation 0.5s normal; /* Thêm animation */
+  }
+  
+  @keyframes bulletAnimation {
+    to {
+      top: -100%; /* Di chuyển viên đạn lên đến đỉnh của container */
+    }
+    from {
+      top: 100%; /* Đặt viên đạn ở phía dưới của container */
+    }
+  }

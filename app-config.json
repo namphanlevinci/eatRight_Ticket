@@ -1,0 +1,24 @@
+{
+  "app": {
+    "title": "FNB Waiter web",
+    "headerTitle": "FNB Waiter web",
+    "headerColor": "#1843EF",
+    "textColor": "white",
+    "statusBarColor": "#1843EF",
+    "leftButton": "back",
+    "statusBar": "normal",
+    "actionBarHidden": false,
+    "hideAndroidBottomNavigationBar": false,
+    "hideIOSSafeAreaBottom": false
+  },
+  "debug": false,
+  "listCSS": [
+    "379.818e6d40.chunk.css",
+    "925.ae98f390.chunk.css",
+    "main.cd8f5841.css"
+  ],
+  "listSyncJS": [],
+  "listAsyncJS": [
+    
+  ]
+}
