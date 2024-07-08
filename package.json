@@ -50,6 +50,7 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
+        "build:staging": "dotenv -e .env.staging react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
         "postinstall": "husky install"
@@ -75,6 +76,7 @@
     "devDependencies": {
         "@types/lodash": "^4.14.202",
         "@types/react-redux": "^7.1.33",
+        "dotenv-cli": "^7.4.2",
         "husky": "^8.0.3",
         "lint-staged": "^15.2.0",
         "webpack-cli": "^5.1.4"
