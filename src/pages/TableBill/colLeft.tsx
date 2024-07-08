@@ -48,7 +48,7 @@ export default function ColLeft({
                                 {formatNumberWithCommas(
                                     item.prices.price.value,
                                 )}{' '}
-                                VNĐ
+                                $
                             </Text18>
                         </Row>
                         {item.bundle_options?.map((bundle) => {

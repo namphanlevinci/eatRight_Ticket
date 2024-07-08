@@ -513,7 +513,7 @@ export default function CartItemList({
                             {formatNumberWithCommas(
                                 data?.prices?.grand_total?.value || 0,
                             )}{' '}
-                            {' VNĐ'}
+                            {' $'}
                         </Text>
                     </Row>
                     {data?.prices?.total_canceled?.value && (
@@ -531,7 +531,7 @@ export default function CartItemList({
                                         data?.prices?.total_canceled?.value ||
                                             0,
                                     )}{' '}
-                                    {' VNĐ'}
+                                    {' $'}
                                 </Text>
                             </Row>
                             <Row justify={'space-between'}>
@@ -548,7 +548,7 @@ export default function CartItemList({
                                             data?.prices?.total_canceled
                                                 ?.value || 0,
                                     )}{' '}
-                                    {' VNĐ'}
+                                    {' $'}
                                 </Text>
                             </Row>
                         </>

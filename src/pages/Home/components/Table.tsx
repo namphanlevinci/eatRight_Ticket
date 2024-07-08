@@ -110,7 +110,7 @@ const Table = ({ item, onClick }: ITable) => {
             }
             opacity={status == TableStatus.Disabled ? 0.3 : 1}
             onClick={onClick}
-            ismobile={ismobile}
+            mobileView={ismobile}
         >
             <StyledTableName textColor={getColorByStatus(item)}>
                 {item.name}

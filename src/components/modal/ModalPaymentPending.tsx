@@ -8,7 +8,7 @@ export default function ModalPaymentPending({
     showLoading,
     data,
     title = 'Payment Pending',
-    currentcy = 'VNĐ',
+    currentcy = '$',
     onSkip,
     onCash,
     onCard,

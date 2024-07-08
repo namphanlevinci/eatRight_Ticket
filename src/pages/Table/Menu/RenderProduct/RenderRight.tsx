@@ -116,7 +116,7 @@ function RenderRight({
                         <Text>{product?.name}</Text>
                         <Text>
                             {' '}
-                            {formatNumberWithCommas(productPrice || 0)} {' VNĐ'}
+                            {formatNumberWithCommas(productPrice || 0)} {' $'}
                         </Text>
                     </Row>
                     <Divider dashed style={{ borderColor: '#666666' }} />
@@ -201,7 +201,7 @@ function RenderRight({
                 <Text>Total</Text>
                 <Text>
                     {' '}
-                    {formatNumberWithCommas(total || 0)} {' VNĐ'}
+                    {formatNumberWithCommas(total || 0)} {' $'}
                 </Text>
             </Row>
             {update?.product ? (

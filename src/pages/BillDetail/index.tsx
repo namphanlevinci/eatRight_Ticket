@@ -26,6 +26,7 @@ import { usePrinter } from 'context/printerContext';
 import { PrinterContextType } from 'context/printerType';
 import ModalPaymentPending from 'components/modal/ModalPaymentPending';
 import { GET_RE_PAYMENT_URL } from 'graphql/orders/repayment';
+import LazyLoadedScripts from 'LazyLoadedScripts';
 export default function index() {
     const [getOrderDetail, { data, loading }] = useLazyQuery(GET_ORDER_DETAIL, {
         fetchPolicy: 'cache-and-network',
@@ -127,6 +128,7 @@ export default function index() {
             >
                 {loading && <Spin size="large" tip="Loading..." />}
             </div>
+            <LazyLoadedScripts />
             <ModalPaymentPending
                 showLoading={showPendingPayment}
                 data={data?.orderDetail}

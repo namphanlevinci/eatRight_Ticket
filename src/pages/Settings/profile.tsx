@@ -3,7 +3,6 @@ import AvatarUpdate from 'components/atom/Avartar';
 import { Text } from 'components/atom/Text';
 import { useSocket } from 'context/noticationContext';
 import { useSelector } from 'react-redux';
-import { io } from 'socket.io-client';
 import { RootState } from 'store';
 
 export default function ProfilePages() {

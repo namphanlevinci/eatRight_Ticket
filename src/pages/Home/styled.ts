@@ -8,7 +8,7 @@ interface StyledTableNameProps {
 interface StyledTableProps {
     background?: string;
     opacity?: number;
-    ismobile: boolean;
+    mobileView: boolean;
 }
 
 interface StyledLineProps {
@@ -55,10 +55,14 @@ export const StyledEmtyTable = styled.div`
     margin: 20px 2%;
 `;
 
-export const StyledTable = styled(StyledEmtyTable)<StyledTableProps>`
+const shouldForwardProp = (prop: string) => !['mobileView'].includes(prop);
+
+export const StyledTable = styled(StyledEmtyTable).withConfig({
+    shouldForwardProp,
+})<StyledTableProps>`
     background: ${(props) => props.background || '#333333'};
     opacity: ${(props) => props.opacity || 1};
-    width: ${(props) => (props.ismobile ? '45%' : '21%')};
+    width: ${(props) => (props.mobileView ? '45%' : '21%')};
     padding: 10px;
     padding-left: 15px;
     position: relative;
@@ -74,7 +78,11 @@ export const StyledLine = styled.div<StyledLineProps>`
     top: 10px;
 `;
 
-export const StyledTableName = styled.p<StyledTableNameProps>`
+const shouldForwardPropColor = (prop: string) => !['textColor'].includes(prop);
+
+export const StyledTableName = styled.p.withConfig({
+    shouldForwardProp: shouldForwardPropColor,
+})<StyledTableNameProps>`
     font-size: 18px;
     font-weight: 600;
     color: ${(props) => props.textColor || 'white'};

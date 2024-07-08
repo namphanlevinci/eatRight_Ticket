@@ -8,15 +8,12 @@ import { DarkInput } from 'components/atom/Input';
 import { Link } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import InputPassword from 'pages/Settings/components/inputPassword';
-import { io } from 'socket.io-client';
-import { useSocket } from 'context/noticationContext';
 
 export const LoginPage: React.FC = () => {
     const { handleLogin, loading } = useLogin();
     const onFinishFailed = (errorInfo: any) => {
         console.error('Failed:', errorInfo);
     };
-    const socket = useSocket();
     return (
         <div
             style={{

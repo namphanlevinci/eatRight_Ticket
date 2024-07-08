@@ -1,11 +1,5 @@
 /* eslint-disable no-undef */
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import React, { createContext, useContext, useRef, useState } from 'react';
 
 const PrinterContext = createContext(undefined);
 
@@ -24,7 +18,6 @@ export const PrinterProvider = ({ children }) => {
     const [connectionStatus, setConnectionStatus] = useState('');
     const ePosDevice = useRef();
     const printer = useRef();
-
     const STATUS_CONNECTED = 'Connected';
     const connect = () => {
         setConnectionStatus('Connecting ...');
@@ -123,9 +116,6 @@ export const PrinterProvider = ({ children }) => {
             },
         );
     };
-    useEffect(() => {
-        connect();
-    }, []);
     return (
         <PrinterContext.Provider
             value={{

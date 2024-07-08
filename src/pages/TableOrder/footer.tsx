@@ -66,7 +66,7 @@ export default function OrderFooter({
                     <Text style={{ fontSize: 20 }}>Billing Information</Text>
                     <RenderBillInfomationRow
                         title="Total"
-                        value={`${formatNumberWithCommas(total)} VNĐ`}
+                        value={`${formatNumberWithCommas(total)} $`}
                     />
                     {cart?.prices?.discounts && (
                         <RenderBillInfomationRow
@@ -75,7 +75,7 @@ export default function OrderFooter({
                                 parseInt(
                                     `${cart?.prices.discounts[0]?.amount?.value}`,
                                 ),
-                            )} VNĐ`}
+                            )} $`}
                         />
                     )}
                     {cart?.prices?.total_canceled?.value && (
@@ -85,7 +85,7 @@ export default function OrderFooter({
                                 parseInt(
                                     `${cart?.prices?.total_canceled?.value}`,
                                 ),
-                            )} VNĐ`}
+                            )} $`}
                         />
                     )}
                     {/* <RenderBillInfomationRow title="Taxes" value="$10.99" />
@@ -97,7 +97,7 @@ export default function OrderFooter({
                         value={`${formatNumberWithCommas(
                             (cart?.prices.grand_total.value || 0) -
                                 (cart?.prices?.total_canceled?.value || 0),
-                        )} VNĐ`}
+                        )} $`}
                         textRightStyle={{
                             fontSize: 24,
                             fontWeight: '600',

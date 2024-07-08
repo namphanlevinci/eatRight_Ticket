@@ -57,7 +57,7 @@ export default function ColRight({
                 <Text style={{ fontSize: 20 }}>Billing Information</Text>
                 <RenderBillInfomationRow
                     title="Total"
-                    value={`${formatNumberWithCommas(total)} VNĐ`}
+                    value={`${formatNumberWithCommas(total)} $`}
                 />
                 {cart?.prices?.discounts && (
                     <RenderBillInfomationRow
@@ -66,7 +66,7 @@ export default function ColRight({
                             parseInt(
                                 `${cart?.prices.discounts[0]?.amount?.value}`,
                             ),
-                        )} VNĐ`}
+                        )} $`}
                     />
                 )}
                 {cart?.prices?.total_canceled?.value && (
@@ -74,7 +74,7 @@ export default function ColRight({
                         title="Canceled Item"
                         value={`-${formatNumberWithCommas(
                             parseInt(`${cart?.prices?.total_canceled?.value}`),
-                        )} VNĐ`}
+                        )} $`}
                     />
                 )}
                 {/* <RenderBillInfomationRow title="Taxes" value="$10.99" />
@@ -86,7 +86,7 @@ export default function ColRight({
                     value={`${formatNumberWithCommas(
                         (cart?.prices.grand_total.value || 0) -
                             (cart?.prices?.total_canceled?.value || 0),
-                    )} VNĐ`}
+                    )} $`}
                     textRightStyle={{
                         fontSize: 24,
                         fontWeight: '600',
