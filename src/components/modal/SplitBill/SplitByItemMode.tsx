@@ -12,9 +12,11 @@ import { useSplitItem } from './useSplitItem';
 export default function SplitByItemMode({
     items,
     onSubmit,
+    listGuest,
 }: {
     items?: ItemType[];
-    onSubmit: (listItems: ItemType[]) => void;
+    onSubmit: (listItems: ItemType[], listGuest: string[]) => void;
+    listGuest: string[];
 }) {
     const {
         listData,
@@ -27,7 +29,7 @@ export default function SplitByItemMode({
         handleSelect,
         handleAddGuestIdToItem,
         itemFromGuest,
-    } = useSplitItem({ items });
+    } = useSplitItem({ items, listGuest });
     const RenderListItem = ({ guestId }: { guestId?: string }) => {
         if (!listData) {
             return <Text>No items</Text>;
@@ -120,12 +122,12 @@ export default function SplitByItemMode({
                 <ButtonGuest
                     isAdd={true}
                     onPress={() =>
-                        setGuests([...guests, `Guest ${guests.length}`])
+                        setGuests([...guests, `Guest ${guests.length + 1}`])
                     }
                 />
                 <ButtonPrimary
                     title="Continue"
-                    onClick={() => onSubmit(listData)}
+                    onClick={() => onSubmit(listData, guests)}
                 />
             </div>
         </Container>

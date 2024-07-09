@@ -47,7 +47,10 @@ export default function TableBill() {
             {cart && (
                 <SplitBillModal
                     visible={openModalSplitBill}
-                    onClose={() => setOpenModalSplitBill(false)}
+                    onClose={() => {
+                        setOpenModalSplitBill(false);
+                        setSplitBill(false);
+                    }}
                     items={cart?.items}
                     cart={cart}
                 />

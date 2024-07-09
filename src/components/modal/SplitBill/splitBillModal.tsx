@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import SplitEvenMode from './SplitEvenMode';
 import SplitByItemMode from './SplitByItemMode';
 import { CartItemType, ItemType } from 'context/cartType';
+import SplitBillConfirmMode from './SplitBillConfirmMode';
 
 enum SplitBillMode {
     EVEN = 0,
@@ -27,6 +28,7 @@ export default function SplitBillModal({
 }) {
     const [mode, setMode] = useState(SplitBillMode.EVEN);
     const [listItems, setListItems] = useState<ItemType[]>([]);
+    const [listGuest, setListGuest] = useState<string[]>([]);
     return (
         <>
             <ModalStyled
@@ -44,23 +46,31 @@ export default function SplitBillModal({
                 closeIcon={null}
             >
                 <div>
-                    <Row justify={'space-between'} style={{ width: '100%' }}>
-                        <Row style={{ gap: 40 }}>
-                            <RadioButton
-                                title="Split evenly"
-                                selected={mode === SplitBillMode.EVEN}
-                                onPress={() => setMode(SplitBillMode.EVEN)}
-                            />
-                            <RadioButton
-                                title="By item"
-                                selected={mode === SplitBillMode.ITEM}
-                                onPress={() => setMode(SplitBillMode.ITEM)}
-                            />
+                    {mode !== SplitBillMode.CONFIRM && (
+                        <Row
+                            justify={'space-between'}
+                            style={{ width: '100%' }}
+                        >
+                            <Row style={{ gap: 40 }}>
+                                <RadioButton
+                                    title="Split evenly"
+                                    selected={mode === SplitBillMode.EVEN}
+                                    onPress={() => setMode(SplitBillMode.EVEN)}
+                                />
+                                <RadioButton
+                                    title="By item"
+                                    selected={mode === SplitBillMode.ITEM}
+                                    onPress={() => setMode(SplitBillMode.ITEM)}
+                                />
+                            </Row>
+                            <div
+                                style={{ cursor: 'pointer' }}
+                                onClick={onClose}
+                            >
+                                <CloseIcon />
+                            </div>
                         </Row>
-                        <div style={{ cursor: 'pointer' }} onClick={onClose}>
-                            <CloseIcon />
-                        </div>
-                    </Row>
+                    )}
                     {mode === SplitBillMode.EVEN && (
                         <SplitEvenMode
                             total={cart.prices.grand_total.value}
@@ -72,11 +82,30 @@ export default function SplitBillModal({
                     )}
                     {mode === SplitBillMode.ITEM && (
                         <SplitByItemMode
-                            items={items}
-                            onSubmit={(items: ItemType[]) => {
+                            items={listItems.length > 0 ? listItems : items}
+                            listGuest={listGuest}
+                            onSubmit={(items: ItemType[], guest: string[]) => {
                                 setListItems(items);
                                 setMode(SplitBillMode.CONFIRM);
+                                setListGuest(guest);
                             }}
+                        />
+                    )}
+                    {mode === SplitBillMode.CONFIRM && (
+                        <SplitBillConfirmMode
+                            cart={cart}
+                            listItems={listItems}
+                            onClose={onClose}
+                            onSubmit={() => {
+                                console.log('123');
+                            }}
+                            onGoBack={() =>
+                                setMode(
+                                    listItems.length > 0
+                                        ? SplitBillMode.ITEM
+                                        : SplitBillMode.EVEN,
+                                )
+                            }
                         />
                     )}
                 </div>

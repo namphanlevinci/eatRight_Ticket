@@ -70,4 +70,5 @@ export type ItemType = {
         }[];
         note?: string;
     }[];
+    totalPrice?: number | string;
 };
