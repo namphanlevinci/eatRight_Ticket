@@ -5,20 +5,28 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 import SplitEvenMode from './SplitEvenMode';
+import SplitByItemMode from './SplitByItemMode';
+import { CartItemType, ItemType } from 'context/cartType';
 
 enum SplitBillMode {
     EVEN = 0,
     ITEM = 1,
+    CONFIRM = 2,
 }
 
 export default function SplitBillModal({
     visible,
     onClose,
+    items,
+    cart,
 }: {
     visible: boolean;
     onClose: () => void;
+    items?: ItemType[];
+    cart: CartItemType;
 }) {
     const [mode, setMode] = useState(SplitBillMode.EVEN);
+    const [listItems, setListItems] = useState<ItemType[]>([]);
     return (
         <>
             <ModalStyled
@@ -36,7 +44,7 @@ export default function SplitBillModal({
                 closeIcon={null}
             >
                 <div>
-                    <Row justify={'space-between'} style={{ width: 390 }}>
+                    <Row justify={'space-between'} style={{ width: '100%' }}>
                         <Row style={{ gap: 40 }}>
                             <RadioButton
                                 title="Split evenly"
@@ -55,11 +63,22 @@ export default function SplitBillModal({
                     </Row>
                     {mode === SplitBillMode.EVEN && (
                         <SplitEvenMode
-                            total={200}
-                            onSubmit={(number) => console.log(number)}
+                            total={cart.prices.grand_total.value}
+                            onSubmit={(number) => {
+                                console.log(number);
+                                setMode(SplitBillMode.CONFIRM);
+                            }}
                         />
                     )}
-                    {mode === SplitBillMode.ITEM && <></>}
+                    {mode === SplitBillMode.ITEM && (
+                        <SplitByItemMode
+                            items={items}
+                            onSubmit={(items: ItemType[]) => {
+                                setListItems(items);
+                                setMode(SplitBillMode.CONFIRM);
+                            }}
+                        />
+                    )}
                 </div>
             </ModalStyled>
         </>

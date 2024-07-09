@@ -12,6 +12,7 @@ import SplitBillModal from 'components/modal/SplitBill/splitBillModal';
 export default function TableBill() {
     const { cart, total, count } = useTableBill();
     const { Header } = Layout;
+    const [splitBill, setSplitBill] = useState(false);
     const [openModalSplitBill, setOpenModalSplitBill] = useState(false);
     const navigation = useNavigate();
     const RenderHeader = () => {
@@ -43,10 +44,14 @@ export default function TableBill() {
         <Layout
             style={{ minHeight: '100vh', width: '100vw', background: 'black' }}
         >
-            <SplitBillModal
-                visible={openModalSplitBill}
-                onClose={() => setOpenModalSplitBill(false)}
-            />
+            {cart && (
+                <SplitBillModal
+                    visible={openModalSplitBill}
+                    onClose={() => setOpenModalSplitBill(false)}
+                    items={cart?.items}
+                    cart={cart}
+                />
+            )}
             <RenderHeader />
             <div style={{ flex: 1, padding: 16 }}>
                 <Row justify={'space-between'} align={'middle'}>
@@ -58,10 +63,12 @@ export default function TableBill() {
                             Split bill
                         </Text>
                         <SwitchStyled
-                            value={openModalSplitBill}
-                            onChange={() => {
-                                console.log('change');
-                                setOpenModalSplitBill(!openModalSplitBill);
+                            value={splitBill}
+                            onChange={(value) => {
+                                setSplitBill(!splitBill);
+                                if (value) {
+                                    setOpenModalSplitBill(true);
+                                }
                             }}
                             style={{
                                 width: 96,

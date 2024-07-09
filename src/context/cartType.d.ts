@@ -48,6 +48,8 @@ export type ItemType = {
         sku: string;
     };
     quantity: number;
+    quantityText?: string;
+    guestId?: string;
     is_bundle?: boolean;
     is_configurable?: boolean;
     configurable_options?: {
