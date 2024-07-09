@@ -41,7 +41,7 @@ pipeline {
 
     stage('Build Staging') {
 		when {
-			branch 'dev'
+			branch 'staging'
 		}
 		steps {
 			sh '''echo "NODE_OPTIONS=--max-old-space-size=4096" >> ~/.bash_profile
