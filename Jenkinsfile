@@ -24,18 +24,57 @@ pipeline {
 		npm install'''
       }
     }
-
-    stage('Build') {
-      steps {
-        sh '''echo "NODE_OPTIONS=--max-old-space-size=4096" >> ~/.bash_profile
-				. ~/.bash_profile
-				CI=false npm run build:staging
-				cd build
-				tar -cvf ${program_filename}.tar .
-				mv ${program_filename}.tar ${WORKSPACE}'''
-      }
+	
+	stage('Build dev') {
+		when {
+			branch 'dev'
+		}
+		steps {
+			sh '''echo "NODE_OPTIONS=--max-old-space-size=4096" >> ~/.bash_profile
+			. ~/.bash_profile
+			CI=false npm run build
+			cd build
+			tar -cvf ${program_filename}.tar .
+			mv ${program_filename}.tar ${WORKSPACE}'''
+		}
     }
-    stage('Deploy to Staging Eatright Waiter') {
+
+    stage('Build Staging') {
+		when {
+			branch 'dev'
+		}
+		steps {
+			sh '''echo "NODE_OPTIONS=--max-old-space-size=4096" >> ~/.bash_profile
+			. ~/.bash_profile
+			CI=false npm run build:staging
+			cd build
+			tar -cvf ${program_filename}.tar .
+			mv ${program_filename}.tar ${WORKSPACE}'''
+		}
+    }
+	
+	stage('Deploy to Dev Eatright Waiter') {
+		when {
+			branch 'dev'
+		}
+		steps {
+			sshPublisher(publishers: [sshPublisherDesc(configName: 'eatright_dev', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''set -xe
+			source ~/.bash_profile
+			#Source file
+			origin_filename=${ER_dev_target}${ER_dev_filename}.tar
+			#Unzip file
+			tar -xvf ${origin_filename} -C ${ER_dev_waiter_webroot}
+			#After copying, delete the source file
+			if [ -f "${origin_filename}" ];then
+				rm -f ${origin_filename}
+				echo "${origin_filename} delete success"
+			fi
+			#Write the code for your startup program.
+			echo "completed"''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'eatright.tar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+		}
+	}
+	
+    stage('Deploy to Staging Eatright waiter') {
 			when {
 				branch 'staging'
 			}
