@@ -17,11 +17,9 @@ export const useSplitItem = ({
         if (itemFromGuest !== '' && guestId !== itemFromGuest) {
             setSelected([id]);
             setItemFromGuest(guestId || '');
-            console.log('not run here');
             return;
         }
         if (selected.includes(id)) {
-            console.log(3);
             setSelected(selected.filter((item) => item !== id));
         } else {
             setSelected([...selected, id]);
@@ -42,6 +40,7 @@ export const useSplitItem = ({
                     quantityText: newQuantityText,
                     id: `${data.id}-${i}`,
                     parentId: data.id,
+                    guestId: '',
                 });
             }
         }

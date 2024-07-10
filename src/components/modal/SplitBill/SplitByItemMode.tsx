@@ -36,7 +36,10 @@ export default function SplitByItemMode({
         }
         const validItems = guestId
             ? listData.filter((item: ItemType) => item?.guestId === guestId)
-            : listData.filter((item: ItemType) => item?.guestId === undefined);
+            : listData.filter(
+                  (item: ItemType) =>
+                      item?.guestId === undefined || item?.guestId === '',
+              );
         return (
             <>
                 {validItems?.map((item: ItemType) => {
@@ -70,6 +73,20 @@ export default function SplitByItemMode({
             )}
             <ItemsContainer>
                 <Text>Items</Text>
+                {itemFromGuest && selected.length > 0 && (
+                    <ButtonGuest
+                        onPress={() => {
+                            itemFromGuest &&
+                                selected.length > 0 &&
+                                handleAddGuestIdToItem('');
+                        }}
+                        title={`List Items`}
+                        isHighlight={
+                            (itemFromGuest && selected.length > 0) || true
+                        }
+                    />
+                )}
+
                 <RenderListItem key={'list-item'} />
             </ItemsContainer>
             <div style={{ flex: 1 }}>

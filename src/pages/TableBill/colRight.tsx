@@ -13,6 +13,7 @@ import LoadingModal from 'components/modal/loadingModal';
 import { ColStyled } from './styleds';
 import AccountIcon from 'assets/icons/accountIcon';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
+import { roundTo } from 'utils/number';
 
 export default function ColRight({
     cart,
@@ -120,13 +121,16 @@ export default function ColRight({
                           ))
                         : listItems?.map(({ guestId, items }) => {
                               const total = items.reduce((acc, item) => {
-                                  return acc + item.prices.price.value;
+                                  return (
+                                      acc +
+                                      item.prices.price.value * item.quantity
+                                  );
                               }, 0);
                               return (
                                   <RenderSplitBillGuest
                                       key={guestId}
                                       title={guestId}
-                                      total={total}
+                                      total={roundTo(total, 2)}
                                       onPress={openModalSplitBill}
                                   />
                               );

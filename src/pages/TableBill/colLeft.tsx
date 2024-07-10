@@ -5,6 +5,7 @@ import React from 'react';
 import { Colors } from 'themes/colors';
 import { formatNumberWithCommas } from 'utils/format';
 import { ColStyled } from './styleds';
+import { roundTo } from 'utils/number';
 
 export default function ColLeft({
     cart,
@@ -38,7 +39,7 @@ export default function ColLeft({
             {isSplitBill && listItems.length > 0
                 ? listItems?.map((data) => {
                       const total = data.items.reduce((acc, item) => {
-                          return acc + item.prices.price.value;
+                          return acc + item.prices.price.value * item.quantity;
                       }, 0);
                       return (
                           <div key={data.guestId}>
@@ -57,7 +58,7 @@ export default function ColLeft({
                                   <Text20 style={{ fontWeight: '600' }}>
                                       {data.guestId}
                                   </Text20>
-                                  <Text20>Total : {total} $</Text20>
+                                  <Text20>Total : {roundTo(total, 2)} $</Text20>
                               </Row>
 
                               {data.items?.length > 0 &&
@@ -87,7 +88,10 @@ const RenderItem = ({ item }: { item: ItemType }) => {
                     <Row>
                         <Col>
                             <Text18 style={{ marginRight: 8 }}>
-                                {item.quantity}X
+                                {item.quantityText
+                                    ? item.quantityText
+                                    : item.quantity}{' '}
+                                X
                             </Text18>
                         </Col>
                         <Col style={{ flex: 1 }}>
