@@ -6,19 +6,30 @@ import { Text } from 'components/atom/Text';
 import { CartItemType, ItemType } from 'context/cartType';
 import React, { useMemo } from 'react';
 import RenderGuestTotal from './components/RenderGuestTotal';
+import { SplitBillMode } from './splitBillModal';
 
 export default function SplitBillConfirmMode({
     cart,
     listItems,
+    numbers,
     onClose,
     onGoBack,
     onSubmit,
+    mode,
 }: {
     cart: CartItemType;
     listItems: ItemType[];
+    numbers?: number;
     onClose: () => void;
-    onSubmit: () => void;
+    onSubmit: (
+        listItems: {
+            guestId: string;
+            items: ItemType[];
+        }[],
+        numbers?: number,
+    ) => void;
     onGoBack: () => void;
+    mode: SplitBillMode;
 }) {
     const groupedData = useMemo(() => {
         const grouped = listItems.reduce(
@@ -56,7 +67,7 @@ export default function SplitBillConfirmMode({
             <Text style={{ color: 'rgba(245, 245, 245, 0.30)', marginTop: 16 }}>
                 Total bills splitted:
                 <span style={{ color: 'white', marginLeft: 10 }}>
-                    {groupedData.length}
+                    {mode === SplitBillMode.EVEN ? numbers : groupedData.length}
                 </span>
             </Text>
             <Text style={{ color: 'rgba(245, 245, 245, 0.30)', marginTop: 16 }}>
@@ -65,19 +76,36 @@ export default function SplitBillConfirmMode({
                     $ {cart.prices.grand_total.value}
                 </span>
             </Text>
-            {groupedData.map(({ guestId, items }) => {
-                const total = items.reduce((acc, item) => {
-                    return acc + item.prices.price.value;
-                }, 0);
-                return (
-                    <RenderGuestTotal
-                        title={guestId}
-                        value={total}
-                        key={guestId}
-                    />
-                );
-            })}
-            <ButtonPrimary title="Continue" onClick={() => onSubmit()} />
+            {mode === SplitBillMode.EVEN && numbers && numbers > 1
+                ? Array.from({ length: numbers }, (_, index) => (
+                      <RenderGuestTotal
+                          title={`Guest ${index + 1}`}
+                          value={cart.prices.grand_total.value / numbers}
+                          key={index}
+                      />
+                  ))
+                : groupedData.map(({ guestId, items }) => {
+                      const total = items.reduce((acc, item) => {
+                          return acc + item.prices.price.value;
+                      }, 0);
+                      return (
+                          <RenderGuestTotal
+                              title={guestId}
+                              value={total}
+                              key={guestId}
+                          />
+                      );
+                  })}
+            <ButtonPrimary
+                title="Continue"
+                onClick={() => {
+                    if (mode === SplitBillMode.ITEM) {
+                        onSubmit(groupedData, 1);
+                    } else {
+                        onSubmit([], numbers);
+                    }
+                }}
+            />
         </div>
     );
 }

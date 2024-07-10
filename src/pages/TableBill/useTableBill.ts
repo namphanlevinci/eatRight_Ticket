@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import { Modal } from 'antd';
 import { BASE_ROUTER } from 'constants/router';
 import { useCart } from 'context/cartContext';
-import { CartItemType } from 'context/cartType';
+import { CartItemType, ItemType } from 'context/cartType';
 import { PLACE_ORDER } from 'graphql/cart/placeOrder';
 import { GET_APPOTA_URL } from 'graphql/orders/getAppota';
 import React, { useEffect } from 'react';
@@ -16,6 +16,13 @@ export const useTableBill = () => {
     const [cart, setCart] = React.useState<CartItemType>();
     const [total, setTotal] = React.useState<number>(0);
     const [count, setCount] = React.useState<number>(0);
+    const [listItems, setListItems] = React.useState<
+        {
+            guestId: string;
+            items: ItemType[];
+        }[]
+    >([]);
+    const [numbersSplit, setNumbersSplit] = React.useState<number>(0);
     const [paymentMethod, setPaymentMethod] =
         React.useState<string>('cashondelivery');
     const [onGetAppotaUrl] = useMutation(GET_APPOTA_URL);
@@ -117,5 +124,9 @@ export const useTableBill = () => {
         contextHolder,
         paymentMethod,
         setPaymentMethod,
+        setListItems,
+        listItems,
+        numbersSplit,
+        setNumbersSplit,
     };
 };

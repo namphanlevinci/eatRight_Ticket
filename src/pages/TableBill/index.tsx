@@ -10,7 +10,15 @@ import { useState } from 'react';
 import { SwitchStyled } from './styleds';
 import SplitBillModal from 'components/modal/SplitBill/splitBillModal';
 export default function TableBill() {
-    const { cart, total, count } = useTableBill();
+    const {
+        cart,
+        total,
+        count,
+        setListItems,
+        setNumbersSplit,
+        listItems,
+        numbersSplit,
+    } = useTableBill();
     const { Header } = Layout;
     const [splitBill, setSplitBill] = useState(false);
     const [openModalSplitBill, setOpenModalSplitBill] = useState(false);
@@ -48,8 +56,16 @@ export default function TableBill() {
                 <SplitBillModal
                     visible={openModalSplitBill}
                     onClose={() => {
+                        if (listItems.length < 1 && numbersSplit === 1) {
+                            setSplitBill(false);
+                        }
                         setOpenModalSplitBill(false);
-                        setSplitBill(false);
+                    }}
+                    onSubmit={(list, numbers) => {
+                        setListItems(list);
+
+                        setNumbersSplit(numbers || 1);
+                        setOpenModalSplitBill(false);
                     }}
                     items={cart?.items}
                     cart={cart}
@@ -88,8 +104,21 @@ export default function TableBill() {
                     </Row>
                 </Row>
                 <Row style={{ marginTop: 16 }}>
-                    <ColLeft cart={cart} count={count} />
-                    <ColRight cart={cart} total={total} />
+                    <ColLeft
+                        cart={cart}
+                        count={count}
+                        listItems={listItems}
+                        isSplitBill={splitBill}
+                        openModalSplitBill={() => setOpenModalSplitBill(true)}
+                    />
+                    <ColRight
+                        cart={cart}
+                        total={total}
+                        listItems={listItems}
+                        numbersSplit={numbersSplit}
+                        isSplitBill={splitBill}
+                        openModalSplitBill={() => setOpenModalSplitBill(true)}
+                    />
                 </Row>
             </div>
         </Layout>

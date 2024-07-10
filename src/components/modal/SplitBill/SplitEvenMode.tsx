@@ -7,11 +7,13 @@ import styled from 'styled-components';
 export default function SplitEvenMode({
     total,
     onSubmit,
+    numbers = 1,
 }: {
     total: number;
     onSubmit: (input: number) => void;
+    numbers: number;
 }) {
-    const [input, setInput] = React.useState(1);
+    const [input, setInput] = React.useState(numbers);
     return (
         <div style={{ height: '100%', width: 390 }}>
             <Text style={{ marginBlock: 16 }}>Number to split</Text>

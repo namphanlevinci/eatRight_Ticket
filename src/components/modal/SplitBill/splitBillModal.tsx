@@ -9,10 +9,9 @@ import SplitByItemMode from './SplitByItemMode';
 import { CartItemType, ItemType } from 'context/cartType';
 import SplitBillConfirmMode from './SplitBillConfirmMode';
 
-enum SplitBillMode {
+export enum SplitBillMode {
     EVEN = 0,
     ITEM = 1,
-    CONFIRM = 2,
 }
 
 export default function SplitBillModal({
@@ -20,15 +19,25 @@ export default function SplitBillModal({
     onClose,
     items,
     cart,
+    onSubmit,
 }: {
     visible: boolean;
     onClose: () => void;
     items?: ItemType[];
     cart: CartItemType;
+    onSubmit: (
+        listItems: {
+            guestId: string;
+            items: ItemType[];
+        }[],
+        numbers?: number,
+    ) => void;
 }) {
     const [mode, setMode] = useState(SplitBillMode.EVEN);
+    const [confirmMode, setConfirmMode] = useState(false);
     const [listItems, setListItems] = useState<ItemType[]>([]);
     const [listGuest, setListGuest] = useState<string[]>([]);
+    const [numbers, setNumbers] = useState<number>(1);
     return (
         <>
             <ModalStyled
@@ -46,7 +55,7 @@ export default function SplitBillModal({
                 closeIcon={null}
             >
                 <div>
-                    {mode !== SplitBillMode.CONFIRM && (
+                    {!confirmMode && (
                         <Row
                             justify={'space-between'}
                             style={{ width: '100%' }}
@@ -71,41 +80,36 @@ export default function SplitBillModal({
                             </div>
                         </Row>
                     )}
-                    {mode === SplitBillMode.EVEN && (
+                    {!confirmMode && mode === SplitBillMode.EVEN && (
                         <SplitEvenMode
                             total={cart.prices.grand_total.value}
                             onSubmit={(number) => {
-                                console.log(number);
-                                setMode(SplitBillMode.CONFIRM);
+                                setNumbers(number);
+                                setConfirmMode(true);
                             }}
+                            numbers={numbers}
                         />
                     )}
-                    {mode === SplitBillMode.ITEM && (
+                    {!confirmMode && mode === SplitBillMode.ITEM && (
                         <SplitByItemMode
                             items={listItems.length > 0 ? listItems : items}
                             listGuest={listGuest}
                             onSubmit={(items: ItemType[], guest: string[]) => {
                                 setListItems(items);
-                                setMode(SplitBillMode.CONFIRM);
+                                setConfirmMode(true);
                                 setListGuest(guest);
                             }}
                         />
                     )}
-                    {mode === SplitBillMode.CONFIRM && (
+                    {confirmMode && (
                         <SplitBillConfirmMode
                             cart={cart}
+                            mode={mode}
                             listItems={listItems}
                             onClose={onClose}
-                            onSubmit={() => {
-                                console.log('123');
-                            }}
-                            onGoBack={() =>
-                                setMode(
-                                    listItems.length > 0
-                                        ? SplitBillMode.ITEM
-                                        : SplitBillMode.EVEN,
-                                )
-                            }
+                            onSubmit={onSubmit}
+                            onGoBack={() => setConfirmMode(false)}
+                            numbers={numbers}
                         />
                     )}
                 </div>

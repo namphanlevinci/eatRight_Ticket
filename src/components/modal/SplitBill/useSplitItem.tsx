@@ -14,20 +14,16 @@ export const useSplitItem = ({
     const [listData, setListData] = React.useState<ItemType[]>(items || []);
     const [itemFromGuest, setItemFromGuest] = React.useState<string>('');
     const handleSelect = (id: string, guestId?: string) => {
-        console.log(1);
         if (itemFromGuest !== '' && guestId !== itemFromGuest) {
             setSelected([id]);
             setItemFromGuest(guestId || '');
             console.log('not run here');
             return;
         }
-        console.log(2);
         if (selected.includes(id)) {
             console.log(3);
             setSelected(selected.filter((item) => item !== id));
         } else {
-            console.log(selected, id);
-            console.log(4);
             setSelected([...selected, id]);
         }
         setItemFromGuest(guestId || '');
