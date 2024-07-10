@@ -50,6 +50,7 @@ export default function SplitBillModal({
                     content: {
                         background: 'rgba(31, 36, 47, 1)',
                         border: `1px solid rgba(63, 63, 63, 1)`,
+                        overflow: 'auto',
                     },
                 }}
                 closeIcon={null}
