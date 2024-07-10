@@ -158,7 +158,30 @@ export default function ColRight({
             <div style={{ marginTop: 40 }}>
                 <ButtonSubmit
                     title="Proceed Payment"
-                    onClick={() => handleCheckOut()}
+                    onClick={() => {
+                        console.log('data Root', cart?.items);
+                        if (isSplitBill) {
+                            if (numbersSplit && numbersSplit > 1) {
+                                console.log(numbersSplit);
+                            } else {
+                                const newData = listItems?.map((item) => {
+                                    return {
+                                        guestId: item.guestId,
+                                        items: item.items.map((data) => {
+                                            return {
+                                                uid: data.uid,
+                                                quantity: data.quantity,
+                                                id: data.id,
+                                            };
+                                        }),
+                                    };
+                                });
+                                console.log(newData);
+                            }
+                        } else {
+                            handleCheckOut();
+                        }
+                    }}
                 />
             </div>
         </ColStyled>
