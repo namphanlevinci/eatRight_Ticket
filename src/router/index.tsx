@@ -149,6 +149,14 @@ export const BaseRouter = () => {
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path={BASE_ROUTER.RESTAURENT_MANAGER}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.RestaurentGeneral />
+                        </PrivateRoute>
+                    }
+                />
                 <Route path={'*'} element={<Page404 />} />
             </Routes>
         </Suspense>
