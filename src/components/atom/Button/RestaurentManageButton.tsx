@@ -30,12 +30,14 @@ export const RestaurentManageButton = ({
     isSelected,
     isWarning,
     onClick,
+    icon,
 }: {
     title: string;
     isSelected?: boolean;
     isWarning?: boolean;
     to?: any;
     onClick?: any;
+    icon?: any;
 }) => {
     return (
         <Link to={to}>
@@ -53,8 +55,27 @@ export const RestaurentManageButton = ({
                 }}
                 onClick={onClick}
             >
-                {title}
-
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div
+                        style={{
+                            width: 30,
+                            height: 30,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginRight: 10,
+                        }}
+                    >
+                        {icon}
+                    </div>
+                    {title}
+                </div>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="7"

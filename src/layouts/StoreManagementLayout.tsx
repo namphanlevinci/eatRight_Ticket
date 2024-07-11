@@ -1,12 +1,13 @@
 import { DarkLayout } from './DarkLayout';
 import { Col, Layout, Row } from 'antd';
 import { RestaurentManageButton } from 'components/atom/Button/RestaurentManageButton';
-import { Text } from 'components/atom/Text';
 import { BASE_ROUTER } from 'constants/router';
-import SearchTable from 'pages/Home/components/Search';
 import React from 'react';
 import { useLocation } from 'react-router';
-import { Colors } from 'themes/colors';
+import SearchSettings from './components/Search';
+import GeneralIcon from './icons/Restaurent/general_icon';
+import LocationIcon from './icons/Restaurent/locationIcon';
+import OpeningHoursIcon from './icons/Restaurent/openingHoursIcon';
 
 type Props = {
     children: React.ReactNode;
@@ -15,7 +16,41 @@ type Props = {
 export default function RestaurentManagementLayout(props: Props) {
     const { children } = props;
     const location = useLocation();
-
+    const paths = [
+        {
+            title: 'General',
+            path: BASE_ROUTER.RESTAURENT_MANAGER,
+            icon: (
+                <GeneralIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_MANAGER
+                    }
+                />
+            ),
+        },
+        {
+            title: 'Location',
+            path: BASE_ROUTER.RESTAURENT_Location,
+            icon: (
+                <LocationIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_Location
+                    }
+                />
+            ),
+        },
+        {
+            title: 'Opening Hours',
+            path: BASE_ROUTER.RESTAURENT_Opening,
+            icon: (
+                <OpeningHoursIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_Opening
+                    }
+                />
+            ),
+        },
+    ];
     return (
         <DarkLayout>
             {/* <Text>Restaurant management</Text> */}
@@ -37,34 +72,39 @@ export default function RestaurentManagementLayout(props: Props) {
                         boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.08)',
                     }}
                 >
-                    <Row style={{ marginTop: 36 }}>
-                        <Col style={{ width: 260 }}>
+                    <Row
+                        style={{
+                            marginTop: 36,
+                            height: '100%',
+                            paddingBottom: 20,
+                        }}
+                    >
+                        <Col
+                            style={{
+                                width: 260,
+                                borderRight: '2px solid #333',
+                                height: '100%',
+                            }}
+                        >
                             <div
                                 style={{
-                                    minHeight: 300,
+                                    height: '100%',
                                 }}
                             >
-                                <SearchTable />
-                                <RestaurentManageButton
-                                    title="Profile"
-                                    isSelected={
-                                        location.pathname ===
-                                        BASE_ROUTER.SETTINGS
-                                    }
-                                />
-                                <RestaurentManageButton
-                                    title="Password & PIN"
-                                    isSelected={
-                                        location.pathname ===
-                                        BASE_ROUTER.SETTINGS_PASSWORD
-                                    }
-                                    to={BASE_ROUTER.SETTINGS_PASSWORD}
-                                />
+                                <SearchSettings />
+                                <div style={{ marginTop: 20 }} />
+                                {paths.map((item, index) => (
+                                    <RestaurentManageButton
+                                        key={index}
+                                        title={item.title}
+                                        isSelected={
+                                            location.pathname === item.path
+                                        }
+                                        icon={item.icon}
+                                        to={item.path}
+                                    />
+                                ))}
                             </div>
-                            <Text>App settings</Text>
-                            {/* <SettingButton title="Status" />
-                        <SettingButton title="Printers" />
-                        <SettingButton title="Status" /> */}
                         </Col>
                         <Col style={{ paddingLeft: 30, flex: 1 }}>
                             {children}

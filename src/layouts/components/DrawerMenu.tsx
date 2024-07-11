@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Drawer, Modal, Row } from 'antd';
+import { Drawer, Modal } from 'antd';
 import BoardMenuIcon from 'assets/icons/boardMenu';
 
 import StoreIcon from 'layouts/icons/storeIcon';
