@@ -14,4 +14,10 @@ export const BASE_ROUTER = {
     ORDERS: '/orders',
     SETTINGS_PASSWORD: '/settings/password',
     SETTINGS_PRINTER: '/settings/printer',
+    RESTAURENT_MANAGER: '/restaurent/manager',
+    RESTAURENT_Location: '/restaurent/location',
+    RESTAURENT_Opening: '/restaurent/opening',
+    MENU_MANAGER: '/menu-manager',
+    PROMOTIONS: '/promotions',
+    CUSTOMERS_INFORMATION: '/customers-information',
 };
