@@ -89,7 +89,7 @@ export default function SplitByItemMode({
 
                 <RenderListItem key={'list-item'} />
             </ItemsContainer>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, overflow: 'auto' }}>
                 <BtnTitlte
                     style={
                         selected.length === 1 && itemFromGuest === ''
@@ -167,6 +167,7 @@ const ItemsContainer = styled.div`
     background: #121212;
     border-radius: 8px;
     padding: 10px;
+    overflow: auto;
 `;
 
 const BtnTitlte = styled.div`

@@ -7,6 +7,7 @@ import { CartItemType, ItemType } from 'context/cartType';
 import React, { useMemo } from 'react';
 import RenderGuestTotal from './components/RenderGuestTotal';
 import { SplitBillMode } from './splitBillModal';
+import { roundTo } from 'utils/number';
 
 export default function SplitBillConfirmMode({
     cart,
@@ -86,12 +87,12 @@ export default function SplitBillConfirmMode({
                   ))
                 : groupedData.map(({ guestId, items }) => {
                       const total = items.reduce((acc, item) => {
-                          return acc + item.prices.price.value;
+                          return acc + item.prices.price.value * item.quantity;
                       }, 0);
                       return (
                           <RenderGuestTotal
                               title={guestId}
-                              value={total}
+                              value={roundTo(total, 2)}
                               key={guestId}
                           />
                       );
