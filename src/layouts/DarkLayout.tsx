@@ -5,20 +5,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { Colors } from 'themes/colors';
 import Logo from 'assets/logos/logo.png';
-import BoardMenuIcon from 'assets/icons/boardMenu';
 // import HelpIcon from 'assets/icons/help';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import { useLazyQuery } from '@apollo/client';
 import { USER_INFO } from 'graphql/auth/login';
 import { useDispatch } from 'react-redux';
 import { updateCustomerInfo, updateFloor } from 'features/auth/authSlice';
-import TableSimpleIcon from 'assets/icons/tableSimple';
-import ReceiptBillIcon from 'assets/icons/receiptBill';
-import SettingIcon from 'assets/icons/setting';
-import TableSimpleDarkIcon from 'assets/icons/tableSimple-dark';
-import ReceiptBillDarkIcon from 'assets/icons/receiptBillDark';
-import SettingDarkIcon from 'assets/icons/setting-dark';
 import { GET_RESTAURANT } from 'graphql/auth/restaurent';
 import BellIcon from 'assets/icons/bell';
 import blackNoti from 'assets/icons/black-noti.png';
@@ -26,6 +19,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { format } from 'date-fns';
 import { GET_NOTIFICATION } from 'graphql/notification';
 import { NotiTitle, NotificationItem, AnnaBellStyle } from './styled';
+import DrawerMenu from './components/DrawerMenu';
 
 type Props = {
     children: React.ReactNode;
@@ -47,7 +41,6 @@ export const DarkLayout = (props: Props) => {
     const dispatch = useDispatch();
 
     const { Header, Footer } = Layout;
-    const [open, setOpen] = useState(false);
 
     const [listNotifications, setListNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -87,36 +80,11 @@ export const DarkLayout = (props: Props) => {
         });
     };
 
-    const handleOpenChange = (newOpen: boolean) => {
-        setOpen(newOpen);
-    };
-
     const handleOpenChangeNoti = (newOpen: boolean) => {
         setOpenNoti(newOpen);
         newOpen && notificationListFirstPage();
     };
 
-    const MenuData = [
-        {
-            title: 'Table',
-            icon: <TableSimpleIcon />,
-            iconSelect: <TableSimpleDarkIcon />,
-            to: BASE_ROUTER.HOME,
-        },
-        {
-            title: 'Receipts',
-            icon: <ReceiptBillIcon />,
-            iconSelect: <ReceiptBillDarkIcon />,
-            to: BASE_ROUTER.BILL,
-        },
-        {
-            title: 'Settings',
-            icon: <SettingIcon />,
-            iconSelect: <SettingDarkIcon />,
-            to: BASE_ROUTER.SETTINGS,
-        },
-    ];
-    const location = useLocation();
     const [isOnline, setIsOnline] = useState(window.navigator.onLine);
 
     useEffect(() => {
@@ -131,47 +99,6 @@ export const DarkLayout = (props: Props) => {
             window.removeEventListener('offline', handleOffline);
         };
     }, []);
-
-    const content = () => {
-        return (
-            <div style={{ width: 226 }}>
-                {MenuData.map((item, index) => {
-                    return (
-                        <Link to={item.to} key={index}>
-                            <Row
-                                style={{
-                                    height: 64,
-                                    gap: 16,
-                                    paddingInline: 10,
-                                    background:
-                                        location.pathname === item.to
-                                            ? Colors.primary
-                                            : 'transparent',
-                                    borderRadius: 16,
-                                }}
-                                align={'middle'}
-                            >
-                                {location.pathname === item.to
-                                    ? item.iconSelect
-                                    : item.icon}{' '}
-                                <Text
-                                    style={{
-                                        color:
-                                            location.pathname === item.to
-                                                ? Colors.black
-                                                : Colors.white,
-                                        fontWeight: '600',
-                                    }}
-                                >
-                                    {item.title}
-                                </Text>
-                            </Row>
-                        </Link>
-                    );
-                })}
-            </div>
-        );
-    };
 
     const getMoreNoties = (page: number) => {
         getNotification({
@@ -322,7 +249,7 @@ export const DarkLayout = (props: Props) => {
                                     <BellIcon />
                                 </div>
                             </Popover>
-                            <Popover
+                            {/* <Popover
                                 content={content}
                                 trigger="click"
                                 open={open}
@@ -338,7 +265,8 @@ export const DarkLayout = (props: Props) => {
                                 >
                                     <BoardMenuIcon />
                                 </div>
-                            </Popover>
+                            </Popover> */}
+                            <DrawerMenu />
                         </Row>
                     </Header>
                 </div>

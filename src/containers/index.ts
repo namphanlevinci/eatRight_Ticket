@@ -14,6 +14,9 @@ export const containers = {
     ForgotPassword: lazy(() => import('containers/ForgotPassword')),
     PrinterSetup: lazy(() => import('containers/Settings/printer')),
     TableOrder: lazy(() => import('containers/TableOrder')),
+    RestaurentGeneral: lazy(
+        () => import('containers/RestaurentManagement/General'),
+    ),
 };
 
 export default containers;

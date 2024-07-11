@@ -6,10 +6,22 @@ import ColRight from './colRight';
 import ColLeft from './colLeft';
 import { useTableBill } from './useTableBill';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { SwitchStyled } from './styleds';
+import SplitBillModal from 'components/modal/SplitBill/splitBillModal';
 export default function TableBill() {
-    const { cart, total, count } = useTableBill();
+    const {
+        cart,
+        total,
+        count,
+        setListItems,
+        setNumbersSplit,
+        listItems,
+        numbersSplit,
+    } = useTableBill();
     const { Header } = Layout;
-
+    const [splitBill, setSplitBill] = useState(false);
+    const [openModalSplitBill, setOpenModalSplitBill] = useState(false);
     const navigation = useNavigate();
     const RenderHeader = () => {
         return (
@@ -40,14 +52,73 @@ export default function TableBill() {
         <Layout
             style={{ minHeight: '100vh', width: '100vw', background: 'black' }}
         >
+            {cart && (
+                <SplitBillModal
+                    visible={openModalSplitBill}
+                    onClose={() => {
+                        if (listItems.length < 1 && numbersSplit === 1) {
+                            setSplitBill(false);
+                        }
+                        setOpenModalSplitBill(false);
+                    }}
+                    onSubmit={(list, numbers) => {
+                        setListItems(list);
+
+                        setNumbersSplit(numbers || 1);
+                        setOpenModalSplitBill(false);
+                    }}
+                    items={cart?.items}
+                    cart={cart}
+                />
+            )}
             <RenderHeader />
             <div style={{ flex: 1, padding: 16 }}>
-                <Text style={{ fontSize: 20, fontWeight: '400' }}>
-                    Order summary
-                </Text>
+                <Row justify={'space-between'} align={'middle'}>
+                    <Text style={{ fontSize: 20, fontWeight: '400' }}>
+                        Order summary
+                    </Text>
+                    <Row align={'middle'} style={{ gap: 20 }}>
+                        <Text style={{ fontSize: 20, fontWeight: '400' }}>
+                            Split bill
+                        </Text>
+                        <SwitchStyled
+                            value={splitBill}
+                            onChange={(value) => {
+                                setSplitBill(!splitBill);
+                                if (value) {
+                                    setOpenModalSplitBill(true);
+                                }
+                            }}
+                            style={{
+                                width: 96,
+                                height: 52,
+                                borderRadius: 4,
+                                background: openModalSplitBill
+                                    ? '#000'
+                                    : 'rgba(245, 245, 245, 0.3)',
+                                border: openModalSplitBill
+                                    ? '1px solid #FF9D00'
+                                    : '1px solid rgba(245, 245, 245, 0.3)',
+                            }}
+                        />
+                    </Row>
+                </Row>
                 <Row style={{ marginTop: 16 }}>
-                    <ColLeft cart={cart} count={count} />
-                    <ColRight cart={cart} total={total} />
+                    <ColLeft
+                        cart={cart}
+                        count={count}
+                        listItems={listItems}
+                        isSplitBill={splitBill}
+                        openModalSplitBill={() => setOpenModalSplitBill(true)}
+                    />
+                    <ColRight
+                        cart={cart}
+                        total={total}
+                        listItems={listItems}
+                        numbersSplit={numbersSplit}
+                        isSplitBill={splitBill}
+                        openModalSplitBill={() => setOpenModalSplitBill(true)}
+                    />
                 </Row>
             </div>
         </Layout>
