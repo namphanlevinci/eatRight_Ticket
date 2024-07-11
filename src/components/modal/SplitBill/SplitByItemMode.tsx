@@ -160,6 +160,7 @@ const Container = styled.div`
     gap: 24px;
     margin-top: 16px;
     position: relative;
+    overflow: auto;
 `;
 
 const ItemsContainer = styled.div`

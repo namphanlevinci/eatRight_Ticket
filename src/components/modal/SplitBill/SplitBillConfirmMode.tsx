@@ -8,6 +8,7 @@ import React, { useMemo } from 'react';
 import RenderGuestTotal from './components/RenderGuestTotal';
 import { SplitBillMode } from './splitBillModal';
 import { roundTo } from 'utils/number';
+import { useMediaQuery } from 'react-responsive';
 
 export default function SplitBillConfirmMode({
     cart,
@@ -51,9 +52,11 @@ export default function SplitBillConfirmMode({
             items,
         }));
     }, [listItems]);
-
+    const ismobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     return (
-        <div style={{ width: 450 }}>
+        <div style={ismobile ? { width: '100%' } : { width: 450 }}>
             <Row justify={'space-between'}>
                 <Row style={{ gap: 10 }}>
                     <div style={{ cursor: 'pointer' }} onClick={onGoBack}>

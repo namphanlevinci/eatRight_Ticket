@@ -2,6 +2,7 @@ import { Input } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { Text } from 'components/atom/Text';
 import React from 'react';
+import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 
 export default function SplitEvenMode({
@@ -14,8 +15,11 @@ export default function SplitEvenMode({
     numbers: number;
 }) {
     const [input, setInput] = React.useState(numbers);
+    const ismobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     return (
-        <div style={{ height: '100%', width: 390 }}>
+        <div style={{ height: '100%', width: ismobile ? '100%' : 390 }}>
             <Text style={{ marginBlock: 16 }}>Number to split</Text>
 
             <InputNumberStyled
