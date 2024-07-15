@@ -14,6 +14,8 @@ import { ColStyled } from './styleds';
 import AccountIcon from 'assets/icons/accountIcon';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { roundTo } from 'utils/number';
+import { useNavigate } from 'react-router';
+import { BASE_ROUTER } from 'constants/router';
 
 export default function ColRight({
     cart,
@@ -47,6 +49,7 @@ export default function ColRight({
     useEffect(() => {
         setCustomerName(cart?.firstname);
     }, [cart]);
+    const navigate = useNavigate();
     return (
         <ColStyled style={{ width: 257 }}>
             {contextHolder}
@@ -163,6 +166,7 @@ export default function ColRight({
                         if (isSplitBill) {
                             if (numbersSplit && numbersSplit > 1) {
                                 console.log(numbersSplit);
+                                navigate(BASE_ROUTER.TABLE_BILL_CHECKOUT);
                             } else {
                                 const newData = listItems?.map((item) => {
                                     return {
@@ -177,6 +181,7 @@ export default function ColRight({
                                     };
                                 });
                                 console.log(newData);
+                                navigate(BASE_ROUTER.TABLE_BILL_CHECKOUT);
                             }
                         } else {
                             handleCheckOut();

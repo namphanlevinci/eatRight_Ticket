@@ -22,7 +22,7 @@ export const useTableBill = () => {
             items: ItemType[];
         }[]
     >([]);
-    const [numbersSplit, setNumbersSplit] = React.useState<number>(0);
+    const [numbersSplit, setNumbersSplit] = React.useState<number>(1);
     const [paymentMethod, setPaymentMethod] =
         React.useState<string>('cashondelivery');
     const [onGetAppotaUrl] = useMutation(GET_APPOTA_URL);
