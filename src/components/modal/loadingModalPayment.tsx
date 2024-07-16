@@ -5,8 +5,10 @@ import styled from 'styled-components';
 
 export default function LoadingModalPayment({
     showLoading,
+    title = 'Payment processing...',
 }: {
     showLoading: boolean;
+    title?: string;
 }) {
     return showLoading ? (
         <CustomModal
@@ -27,7 +29,7 @@ export default function LoadingModalPayment({
                 }}
             >
                 <Spin />
-                <Text style={{ color: 'white' }}>Payment processing...</Text>
+                <Text style={{ color: 'white' }}>{title}</Text>
 
                 <Button> Cancel </Button>
             </div>

@@ -71,7 +71,10 @@ export default function index() {
         }
     };
     useEffect(() => {
-        if (data?.orderDetail?.status === 'payment_failed') {
+        if (
+            data?.orderDetail?.status === 'payment_failed' ||
+            data?.orderDetail?.status === 'pending_payment'
+        ) {
             setShowPendingPayment(true);
         }
     }, [data]);

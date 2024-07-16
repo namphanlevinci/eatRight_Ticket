@@ -14,6 +14,8 @@ import { ColStyled } from './styleds';
 import AccountIcon from 'assets/icons/accountIcon';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { roundTo } from 'utils/number';
+import ModalPosDevices from './components/ModalPosDevices';
+import LoadingModalPayment from 'components/modal/loadingModalPayment';
 
 export default function ColRight({
     cart,
@@ -42,6 +44,10 @@ export default function ColRight({
         contextHolder,
         paymentMethod,
         setPaymentMethod,
+        isVisibleModalPos,
+        setVisibleMoalPos,
+        handlePOSPayment,
+        pos_Loading,
     } = useTableBill();
 
     useEffect(() => {
@@ -49,8 +55,19 @@ export default function ColRight({
     }, [cart]);
     return (
         <ColStyled style={{ width: 257 }}>
+            <ModalPosDevices
+                isVisibleModalPos={isVisibleModalPos}
+                setVisibleMoalPos={setVisibleMoalPos}
+                onPressOK={(pos_id: number) => {
+                    handlePOSPayment(pos_id);
+                }}
+            />
             {contextHolder}
             <LoadingModal showLoading={loading} />
+            <LoadingModalPayment
+                showLoading={pos_Loading}
+                title="POS Payment Processing ..."
+            />
             <Text style={{ fontSize: 20 }}>Customer Information</Text>
 
             <InputInfoCart
@@ -152,6 +169,12 @@ export default function ColRight({
                         title="Online Banking"
                         isSelected={paymentMethod === 'lvc_appota'}
                         onClick={() => setPaymentMethod('lvc_appota')}
+                    />
+                    <div style={{ marginTop: 15 }} />
+                    <ButtonOptions
+                        title="POS"
+                        isSelected={paymentMethod === 'pos'}
+                        onClick={() => setPaymentMethod('pos')}
                     />
                 </div>
             )}
