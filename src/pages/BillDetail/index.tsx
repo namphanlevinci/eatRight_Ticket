@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import { App, Col, Row, Spin } from 'antd';
 import { Button } from 'components/atom/Button';
 import { TextDark } from 'components/atom/Text';
@@ -11,16 +12,14 @@ import {
     ButtonContainer,
     Container,
     DividedDashed,
-    DividedSolid,
     RowStyled,
     text24,
     BarCodeContainer,
     text16,
-    text16Bold,
     text16W,
+    BoldText,
 } from './styled';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { formatNumberWithCommas } from 'utils/format';
 import { BASE_ROUTER } from 'constants/router';
 import { usePrinter } from 'context/printerContext';
 import { PrinterContextType } from 'context/printerType';
@@ -203,7 +202,9 @@ const RenderBill = ({ data }: { data: any }) => {
             }}
         >
             <div id="billHeader">
-                <TextDark style={text24}>{data?.firstname}</TextDark>
+                <TextDark style={{ ...text24, fontWeight: '600' }}>
+                    {data?.firstname}
+                </TextDark>
                 <TextDark style={{ ...text16W, marginTop: 16 }}>
                     {data?.address}
                 </TextDark>
@@ -212,42 +213,56 @@ const RenderBill = ({ data }: { data: any }) => {
                 </TextDark>
 
                 <DividedDashed />
-                <RowStyled style={{ marginTop: 20 }}>
-                    <TextDark>Order ID</TextDark>
-                    <TextDark>{data?.order_number}</TextDark>
-                </RowStyled>
+                <TextDark
+                    style={{
+                        fontWeight: '600',
+                        textAlign: 'center',
+                    }}
+                >
+                    RECEIPT
+                </TextDark>
+
                 <RowStyled>
                     <TextDark>
+                        <BoldText>Date: </BoldText>
                         {data?.created_at && data?.created_at.split(' ')[0]}
                     </TextDark>
                     <TextDark>
+                        <BoldText>Time: </BoldText>
                         {data?.created_at && data?.created_at.split(' ')[1]}
                     </TextDark>
                 </RowStyled>
-                <DividedSolid />
-                <TextDark style={{ ...text16Bold, marginTop: 12 }}>
-                    Order summary
-                </TextDark>
+                <RowStyled>
+                    <TextDark>{data?.order_type}</TextDark>
+                    <TextDark>
+                        <BoldText>Bill: </BoldText>
+                        {data?.order_number}
+                    </TextDark>
+                </RowStyled>
+                <RowStyled>
+                    <TextDark>
+                        <BoldText>Table: </BoldText>
+                        {data?.table_name}
+                    </TextDark>
+                    <TextDark>
+                        <BoldText>Server: </BoldText>
+                        {data?.server_name}
+                    </TextDark>
+                </RowStyled>
+                <DividedDashed />
             </div>
             <div id="billContent">
                 {data?.items?.map((item: any, index: number) => {
                     return (
                         <>
                             <RowStyled key={index}>
-                                <Col span={16} style={{ textAlign: 'left' }}>
-                                    <TextDark style={text16}>
-                                        <span style={{ fontWeight: '600' }}>
-                                            {' '}
-                                            {item?.qty}x
-                                        </span>{' '}
-                                        {item?.name}
-                                    </TextDark>
+                                <Col style={{ textAlign: 'left', width: 30 }}>
+                                    <span>{item?.qty}</span>
                                 </Col>
-                                <Col span={8} style={{ textAlign: 'end' }}>
-                                    <TextDark>
-                                        {formatNumberWithCommas(item?.price)}
-                                        {CURRENTCY}
-                                    </TextDark>
+                                <Col style={{ flex: 1 }}> {item?.name}</Col>
+                                <Col style={{ textAlign: 'end', width: 50 }}>
+                                    {CURRENTCY}
+                                    {item?.price.toFixed(2)}
                                 </Col>
                             </RowStyled>
                             {item?.options?.map((option: any, idx: number) => {
@@ -267,23 +282,22 @@ const RenderBill = ({ data }: { data: any }) => {
                 })}
             </div>
             <div id="billFooter">
-                <DividedSolid />
-                <TextDark style={{ ...text16Bold, marginTop: 12 }}>
-                    Payment detail
-                </TextDark>
+                <DividedDashed />
+
                 <RowStyled>
-                    <TextDark style={text16}>Subtotal</TextDark>
+                    <TextDark style={text16}>Subtotal:</TextDark>
                     <TextDark>
-                        {formatNumberWithCommas(
-                            data?.grand_total + totalDiscount,
-                        )}{' '}
-                        {CURRENTCY}
+                        {CURRENTCY}{' '}
+                        {(data?.sub_total
+                            ? data?.sub_total
+                            : data?.grand_total + totalDiscount
+                        ).toFixed(2)}{' '}
                     </TextDark>
                 </RowStyled>
                 <RowStyled>
-                    <TextDark style={text16}>Discounted</TextDark>
+                    <TextDark style={text16}>Discount:</TextDark>
                     <TextDark>
-                        - {formatNumberWithCommas(totalDiscount)} {CURRENTCY}
+                        - {CURRENTCY} {totalDiscount.toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 {data?.discount?.length > 0 &&
@@ -292,26 +306,89 @@ const RenderBill = ({ data }: { data: any }) => {
                             <Row justify={'end'} key={`Discount-${index}`}>
                                 <TextDark style={{ fontSize: 14 }}>
                                     {discount?.label} -{' '}
-                                    {formatNumberWithCommas(
-                                        discount?.amount?.value,
-                                    )}
+                                    {discount?.amount?.value.toFixed(2)}
                                 </TextDark>
                             </Row>
                         );
                     })}
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>
+                        Tax {`(${data?.tax || 8}%):`}
+                    </TextDark>
+                    <TextDark>
+                        {CURRENTCY} {data?.tax_amount?.toFixed(2)}
+                    </TextDark>
+                </RowStyled>
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>
+                        Service Charge {`(${data?.service_charge || 10}%):`}
+                    </TextDark>
+                    <TextDark>
+                        {CURRENTCY} {data?.service_charge_amount?.toFixed(2)}
+                    </TextDark>
+                </RowStyled>
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Total:</TextDark>
+                    <TextDark>
+                        {CURRENTCY}{' '}
+                        {data?.total
+                            ? data?.total.toFixed(2)
+                            : data?.grand_total.toFixed(2)}
+                    </TextDark>
+                </RowStyled>
+                <DividedDashed />
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Tip:</TextDark>
+                    <TextDark>
+                        {CURRENTCY} {data?.tip}
+                    </TextDark>
+                </RowStyled>
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Total:</TextDark>
+                    <TextDark>
+                        {CURRENTCY} {data?.grand_total.toFixed(2)}
+                    </TextDark>
+                </RowStyled>
+                <DividedDashed />
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Payment Method:</TextDark>
+                    <TextDark>{data?.payment_method}</TextDark>
+                </RowStyled>
 
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Total paid</TextDark>
-                    <TextDark style={{ fontWeight: '600', fontSize: 18 }}>
-                        {formatNumberWithCommas(data?.grand_total)} {CURRENTCY}
+                {data?.cart_type && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>Cart Type:</TextDark>
+                        <TextDark>{data?.cart_type}</TextDark>
+                    </RowStyled>
+                )}
+                {data?.last_digits && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>Last 4 Digits:</TextDark>
+                        <TextDark>{data?.last_digits}</TextDark>
+                    </RowStyled>
+                )}
+                <DividedDashed />
+                <TextDark>
+                    <TextDark style={text16}>
+                        Signature:_________________________
                     </TextDark>
-                </RowStyled>
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Method</TextDark>
-                    <TextDark style={{ fontWeight: '600', fontSize: 18 }}>
-                        {data?.payment_method}
-                    </TextDark>
-                </RowStyled>
+                </TextDark>
+                <DividedDashed />
+                <TextDark
+                    style={{
+                        fontWeight: '600',
+                        textAlign: 'center',
+                    }}
+                >
+                    Customer Copy
+                </TextDark>
+                <TextDark style={{ marginTop: 10 }}>
+                    Thank you for dining with us!
+                </TextDark>
+                <TextDark style={{ marginTop: 10 }}>
+                    Feedback/Contact us: {data?.feedbackUrl}
+                </TextDark>
+
                 <BarCodeContainer>
                     <Barcode value={data?.order_number} />
                 </BarCodeContainer>
