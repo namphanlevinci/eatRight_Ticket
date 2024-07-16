@@ -27,6 +27,10 @@ import { PrinterContextType } from 'context/printerType';
 import ModalPaymentPending from 'components/modal/ModalPaymentPending';
 import { GET_RE_PAYMENT_URL } from 'graphql/orders/repayment';
 import LazyLoadedScripts from 'LazyLoadedScripts';
+import { useTableBill } from 'pages/TableBill/useTableBill';
+import ModalPosDevices from 'pages/TableBill/components/ModalPosDevices';
+import LoadingModalPayment from 'components/modal/loadingModalPayment';
+import { emitter } from 'graphql/client';
 export default function index() {
     const [getOrderDetail, { data, loading }] = useLazyQuery(GET_ORDER_DETAIL, {
         fetchPolicy: 'cache-and-network',
@@ -79,6 +83,13 @@ export default function index() {
         }
     }, [data]);
     const [handleRePayment] = useMutation(GET_RE_PAYMENT_URL);
+    const {
+        handlePOSPayment,
+        isVisibleModalPos,
+        setVisibleMoalPos,
+        pos_Loading,
+        contextHolder,
+    } = useTableBill(false);
     const modalConfirm = (paymentMethod = 'cashondelivery') => {
         modal.confirm({
             title: `Are you sure repayment with ${
@@ -86,7 +97,11 @@ export default function index() {
             } ?`,
             centered: true,
             onOk: () => {
-                handleCheckOut(paymentMethod);
+                if (paymentMethod === 'pos') {
+                    setVisibleMoalPos(true);
+                } else {
+                    handleCheckOut(paymentMethod);
+                }
             },
         });
     };
@@ -115,6 +130,11 @@ export default function index() {
                 console.log(err);
             });
     };
+    useEffect(() => {
+        emitter.on('REPAYMENT_SUCCESS', () => {
+            setShowPendingPayment(false);
+        });
+    }, []);
     return (
         <Container>
             <div
@@ -131,6 +151,21 @@ export default function index() {
             >
                 {loading && <Spin size="large" tip="Loading..." />}
             </div>
+            {contextHolder}
+            <ModalPosDevices
+                isVisibleModalPos={isVisibleModalPos}
+                setVisibleMoalPos={setVisibleMoalPos}
+                onPressOK={(pos_id: number) => {
+                    handlePOSPayment(pos_id, {
+                        order_number: data?.orderDetail?.order_number,
+                        order_id: orderId ? orderId : btoa(order_ID || ''),
+                    });
+                }}
+            />
+            <LoadingModalPayment
+                showLoading={pos_Loading}
+                title="POS Payment Processing ..."
+            />
             <LazyLoadedScripts />
             <ModalPaymentPending
                 showLoading={showPendingPayment}
@@ -138,6 +173,7 @@ export default function index() {
                 onSkip={() => setShowPendingPayment(false)}
                 onCard={() => modalConfirm('lvc_appota')}
                 onCash={() => modalConfirm('cashondelivery')}
+                onPOS={() => modalConfirm('pos')}
             />
             {!loading && (
                 <>
