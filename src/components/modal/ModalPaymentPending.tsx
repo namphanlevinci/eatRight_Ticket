@@ -12,6 +12,7 @@ export default function ModalPaymentPending({
     onSkip,
     onCash,
     onCard,
+    onPOS,
 }: {
     showLoading: boolean;
     data?: any;
@@ -20,6 +21,7 @@ export default function ModalPaymentPending({
     onSkip?: () => void;
     onCash?: () => void;
     onCard?: () => void;
+    onPOS?: () => void;
 }) {
     const totalDiscount =
         data?.discount?.length > 0
@@ -119,12 +121,17 @@ export default function ModalPaymentPending({
                         {formatNumberWithCommas(data?.grand_total)} {currentcy}
                     </Text>
                 </Row>
-
                 <Button
                     style={{ marginTop: 30, marginInline: 0 }}
+                    onClick={onPOS}
+                >
+                    POS Payment
+                </Button>
+                <Button
+                    style={{ marginTop: 10, marginInline: 0 }}
                     onClick={onCard}
                 >
-                    Continue with Payment Online
+                    Payment Online
                 </Button>
                 <Button
                     style={{ marginTop: 10, marginInline: 0 }}
