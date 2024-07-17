@@ -10,6 +10,8 @@ export default function ButtonPrimary({
     width = '100%',
     height,
     marginTop = '20px',
+    backgroundColor,
+    textColor,
 }: {
     title: string;
     onClick: any;
@@ -18,6 +20,8 @@ export default function ButtonPrimary({
     width?: string;
     height?: string;
     marginTop?: string;
+    backgroundColor?: string;
+    textColor?: string;
 }) {
     return (
         <div
@@ -32,7 +36,11 @@ export default function ButtonPrimary({
                       : size === 'medium'
                         ? 44
                         : 32,
-                background: isCancel ? Colors.black : Colors.primary,
+                background: backgroundColor
+                    ? backgroundColor
+                    : isCancel
+                      ? Colors.black
+                      : Colors.primary,
                 marginTop: marginTop,
                 borderRadius: 8,
                 cursor: 'pointer',
@@ -44,7 +52,11 @@ export default function ButtonPrimary({
                 style={{
                     fontSize: 18,
                     fontWeight: '600',
-                    color: isCancel ? Colors.primary : Colors.black,
+                    color: textColor
+                        ? textColor
+                        : isCancel
+                          ? Colors.primary
+                          : Colors.black,
                 }}
             >
                 {title}

@@ -8,6 +8,7 @@ import SearchSettings from './components/Search';
 import GeneralIcon from './icons/Restaurent/general_icon';
 import LocationIcon from './icons/Restaurent/locationIcon';
 import OpeningHoursIcon from './icons/Restaurent/openingHoursIcon';
+import TipIcon from './icons/tipIcon';
 
 type Props = {
     children: React.ReactNode;
@@ -50,6 +51,17 @@ export default function RestaurentManagementLayout(props: Props) {
                 />
             ),
         },
+        {
+            title: 'Tip',
+            path: BASE_ROUTER.RESTAURENT_Tip,
+            icon: (
+                <TipIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_Tip
+                    }
+                />
+            ),
+        },
     ];
     return (
         <DarkLayout>
@@ -66,7 +78,7 @@ export default function RestaurentManagementLayout(props: Props) {
                 <Layout
                     style={{
                         background: 'rgba(31, 36, 47, 1)',
-                        maxWidth: 673,
+                        maxWidth: 712,
                         minHeight: '80vh',
                         borderRadius: 8,
                         boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.08)',
@@ -82,7 +94,6 @@ export default function RestaurentManagementLayout(props: Props) {
                         <Col
                             style={{
                                 width: 260,
-                                borderRight: '2px solid #333',
                                 height: '100%',
                             }}
                         >
