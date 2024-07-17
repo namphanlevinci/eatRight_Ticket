@@ -9,7 +9,7 @@ export default function RenderBillInfomationRow({
     onRightClick,
 }: {
     title: string;
-    value: string;
+    value: any;
     marginBlock?: number;
     textRightStyle?: React.CSSProperties;
     onRightClick?: () => void;

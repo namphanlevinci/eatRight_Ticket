@@ -18,6 +18,7 @@ import ModalPosDevices from './components/ModalPosDevices';
 import LoadingModalPayment from 'components/modal/loadingModalPayment';
 import ModalInput from 'components/modal/ModalInput';
 import { useCouponCart } from 'pages/Table/Cart/useCouponCart';
+import ModalTip from 'components/modal/ModalTip';
 
 export default function ColRight({
     cart,
@@ -68,21 +69,21 @@ export default function ColRight({
                     setModalDiscount(false);
                 }}
                 onSubmit={(values: any) => {
-                    console.log('submit', values);
                     handleAddCoupon(cart?.id || '', values);
                     setModalDiscount(false);
                 }}
             />
-            <ModalInput
+            <ModalTip
                 title="Input your tip"
                 isModalOpen={modalTip}
                 onCancel={() => {
                     setModalTip(false);
                 }}
                 onSubmit={(values: any) => {
-                    console.log('submit', values);
                     setTip(values);
+                    setModalTip(false);
                 }}
+                total={cart?.prices?.grand_total?.value || 0}
             />
             <ModalPosDevices
                 isVisibleModalPos={isVisibleModalPos}
@@ -115,7 +116,7 @@ export default function ColRight({
             <div style={{ marginTop: 56 }}>
                 <Text style={{ fontSize: 20 }}>Billing Information</Text>
                 <RenderBillInfomationRow
-                    title="Total"
+                    title="Sub total"
                     value={`${formatNumberWithCommas(total)} $`}
                 />
                 {cart?.prices?.discounts && (
@@ -139,7 +140,18 @@ export default function ColRight({
                 {cart?.prices?.discounts && (
                     <RenderBillInfomationRow
                         title="Tip"
-                        value={tip > 0 ? `${tip}` : 'ADD TIP'}
+                        value={
+                            tip > 0 ? (
+                                <Row
+                                    align={'middle'}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    <Text>$ {tip}</Text> <ArrowRightIcon />
+                                </Row>
+                            ) : (
+                                'ADD TIP'
+                            )
+                        }
                         textRightStyle={{
                             color: tip > 0 ? 'white' : Colors.primary,
                         }}
@@ -162,7 +174,8 @@ export default function ColRight({
                     title="To be paid"
                     value={`${formatNumberWithCommas(
                         (cart?.prices.grand_total.value || 0) -
-                            (cart?.prices?.total_canceled?.value || 0),
+                            (cart?.prices?.total_canceled?.value || 0) +
+                            tip,
                     )} $`}
                     textRightStyle={{
                         fontSize: 24,
@@ -230,6 +243,10 @@ export default function ColRight({
                     title="Proceed Payment"
                     onClick={() => {
                         console.log('data Root', cart?.items);
+                        if (tip === 0) {
+                            setModalTip(true);
+                            return;
+                        }
                         if (isSplitBill) {
                             if (numbersSplit && numbersSplit > 1) {
                                 console.log(numbersSplit);
