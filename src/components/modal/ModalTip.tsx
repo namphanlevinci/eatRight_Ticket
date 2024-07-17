@@ -9,13 +9,11 @@ export default function ModalTip({
     isModalOpen,
     onCancel,
     onSubmit,
-    title,
     total,
 }: {
     isModalOpen: boolean;
     onCancel: any;
     onSubmit: any;
-    title: string;
     total: number;
 }) {
     const inputRef = useRef<any>(null);

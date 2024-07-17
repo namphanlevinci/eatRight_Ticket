@@ -74,7 +74,6 @@ export default function ColRight({
                 }}
             />
             <ModalTip
-                title="Input your tip"
                 isModalOpen={modalTip}
                 onCancel={() => {
                     setModalTip(false);
