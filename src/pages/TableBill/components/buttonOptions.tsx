@@ -23,6 +23,7 @@ export default function ButtonOptions({
                 border: 'none',
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'flex-start',
             }}
             onClick={onClick}
         >
