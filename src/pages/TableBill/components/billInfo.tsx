@@ -6,11 +6,13 @@ export default function RenderBillInfomationRow({
     value,
     marginBlock = 18,
     textRightStyle,
+    onRightClick,
 }: {
     title: string;
     value: string;
     marginBlock?: number;
     textRightStyle?: React.CSSProperties;
+    onRightClick?: () => void;
 }) {
     return (
         <Row
@@ -19,7 +21,9 @@ export default function RenderBillInfomationRow({
             style={{ marginBlock: marginBlock }}
         >
             <Text>{title}</Text>
-            <Text style={textRightStyle}>{value}</Text>
+            <Text style={textRightStyle} onClick={onRightClick}>
+                {value}
+            </Text>
         </Row>
     );
 }
