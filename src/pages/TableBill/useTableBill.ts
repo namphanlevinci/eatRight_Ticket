@@ -4,11 +4,12 @@ import { BASE_ROUTER } from 'constants/router';
 import { useCart } from 'context/cartContext';
 import { CartItemType, ItemType } from 'context/cartType';
 import { PLACE_ORDER } from 'graphql/cart/placeOrder';
-import { GET_APPOTA_URL } from 'graphql/orders/getAppota';
+import { emitter } from 'graphql/client';
+import { GET_APPOTA_URL, POS_PAYMENT } from 'graphql/orders/paymentMethod';
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-export const useTableBill = () => {
+export const useTableBill = (isGoBack = true) => {
     const [searchParams] = useSearchParams();
     const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
     const [modal, contextHolder] = Modal.useModal();
@@ -25,8 +26,18 @@ export const useTableBill = () => {
     const [numbersSplit, setNumbersSplit] = React.useState<number>(0);
     const [paymentMethod, setPaymentMethod] =
         React.useState<string>('cashondelivery');
+
+    const [isVisibleModalPos, setVisibleMoalPos] =
+        React.useState<boolean>(false);
+    const [orderInfo, setOrderInfo] = React.useState<{
+        order_number?: number;
+        order_id?: number;
+    }>();
+
     const [onGetAppotaUrl] = useMutation(GET_APPOTA_URL);
     const [placeOrder, { loading }] = useMutation(PLACE_ORDER);
+    const [onPosPayment, { loading: pos_Loading }] = useMutation(POS_PAYMENT);
+
     const navigation = useNavigate();
 
     const showConfirm = () => {
@@ -44,6 +55,7 @@ export const useTableBill = () => {
             centered: true,
             onOk: () => {
                 navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${order_id}`);
+                emitter.emit('REPAYMENT_SUCCESS');
             },
         });
     };
@@ -86,6 +98,9 @@ export const useTableBill = () => {
                     showModalSuccess(
                         res.data.createMerchantOrder.order.order_id,
                     );
+                } else if (paymentMethod === 'pos') {
+                    setVisibleMoalPos(true);
+                    setOrderInfo(res.data.createMerchantOrder.order);
                 } else {
                     showModalAlertPayment(
                         res.data.createMerchantOrder.order.order_id,
@@ -96,31 +111,58 @@ export const useTableBill = () => {
                 console.log(err);
             });
     };
+    const handlePOSPayment = (
+        posId: number,
+        orderDetail?: {
+            order_number: number;
+            order_id: any;
+        },
+    ) => {
+        onPosPayment({
+            variables: {
+                orderId: orderDetail?.order_number
+                    ? orderDetail?.order_number
+                    : orderInfo?.order_number,
+                posId: posId,
+            },
+        }).then((res) => {
+            if (res.data.posSaleForMarchant) {
+                showModalSuccess(
+                    `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                );
+            }
+        });
+    };
     useEffect(() => {
-        if (
-            cartItems[indexTable]?.carts &&
-            cartItems[indexTable]?.carts.length > 0
-        ) {
-            const tmp_cart = cartItems[indexTable].carts[cartIndex];
-            setCart(tmp_cart);
-            let tmp_total = 0;
-            let tmp_count = 0;
-            tmp_cart?.items.forEach((item) => {
-                tmp_total = tmp_total + item.prices.price.value * item.quantity;
-                tmp_count = tmp_count + item.quantity;
-            });
-            setTotal(tmp_total);
-            setCount(tmp_count);
-        } else {
-            navigation(BASE_ROUTER.HOME);
+        if (isGoBack) {
+            if (
+                cartItems[indexTable]?.carts &&
+                cartItems[indexTable]?.carts.length > 0
+            ) {
+                const tmp_cart = cartItems[indexTable].carts[cartIndex];
+                setCart(tmp_cart);
+                let tmp_total = 0;
+                let tmp_count = 0;
+                tmp_cart?.items.forEach((item) => {
+                    tmp_total =
+                        tmp_total + item.prices.price.value * item.quantity;
+                    tmp_count = tmp_count + item.quantity;
+                });
+                setTotal(tmp_total);
+                setCount(tmp_count);
+            } else {
+                navigation(BASE_ROUTER.HOME);
+            }
         }
-    }, [cartItems]);
+    }, [cartItems, isGoBack]);
+
     return {
         cart,
         total,
         count,
         handleCheckOut: showConfirm,
         loading,
+        pos_Loading,
         contextHolder,
         paymentMethod,
         setPaymentMethod,
@@ -128,5 +170,9 @@ export const useTableBill = () => {
         listItems,
         numbersSplit,
         setNumbersSplit,
+        setVisibleMoalPos,
+        isVisibleModalPos,
+        onPosPayment,
+        handlePOSPayment,
     };
 };
