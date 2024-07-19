@@ -31,6 +31,7 @@ export const text16W: React.CSSProperties = {
 export const text16: React.CSSProperties = {
     fontSize: 16,
     lineHeight: '20px',
+    fontWeight: '600',
 };
 export const text16Bold: React.CSSProperties = {
     fontSize: 16,
@@ -46,7 +47,7 @@ export const DividedDashed = () => {
                 border: 1,
                 borderStyle: 'dashed',
                 borderColor: Colors.grey8,
-                marginTop: 20,
+                marginBlock: 20,
             }}
         >
             {''}
@@ -92,4 +93,8 @@ export const Container = styled.div`
     @media (max-width: 767px) {
         justify-content: center;
     }
+`;
+
+export const BoldText = styled.span`
+    font-weight: 600;
 `;

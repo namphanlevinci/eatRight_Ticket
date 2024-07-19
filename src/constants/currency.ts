@@ -1,1 +1,1 @@
-export const CURRENTCY = 'đ';
+export const CURRENTCY = '$';
