@@ -29,9 +29,10 @@ const { Content } = Layout;
 enum TableStatus {
     Failed = 'Payment Failed',
     UnPaid = 'Pending Payment',
-    Paid = 'Processing',
+    Paid = 'Complete',
     Cancelled = 'Cancelled',
     Complete = 'Complete',
+    Processing = 'Processing',
 }
 
 const convertStatusText = (status: TableStatus) => {
@@ -46,6 +47,8 @@ const convertStatusText = (status: TableStatus) => {
             return 'Paid';
         case TableStatus.UnPaid:
             return 'Pending Payment';
+        case TableStatus.Processing:
+            return 'Processing';
         default:
             return 'Unknown';
     }
@@ -113,6 +116,19 @@ const convertStatus = (status: TableStatus) => {
                         opacity: 1,
                         fontWeight: 600,
                         color: '#FBBC05',
+                    }}
+                >
+                    {convertStatusText(status)}
+                </StyledColumn>
+            );
+        case TableStatus.Processing:
+            return (
+                <StyledColumn
+                    style={{
+                        width: '100%',
+                        opacity: 1,
+                        fontWeight: 600,
+                        color: '#056bfb',
                     }}
                 >
                     {convertStatusText(status)}

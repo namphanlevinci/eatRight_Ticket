@@ -122,6 +122,14 @@ export const BaseRouter = () => {
                     }
                 />
                 <Route
+                    path={BASE_ROUTER.TABLE_BILL_CHECKOUT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.TableSplitBill />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
                     path={BASE_ROUTER.TABLE_Order}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>

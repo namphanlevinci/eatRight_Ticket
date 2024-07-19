@@ -7,6 +7,7 @@ export const BASE_ROUTER = {
     REQUEST_ACCOUNT: '/request-account',
     TABLE_BILL: '/table/bill',
     TABLE_Order: '/table/order',
+    TABLE_BILL_CHECKOUT: '/table/bill/split',
     BILL_DETAIL: '/bills/detail',
     404: '/404',
     SETTINGS: '/settings',

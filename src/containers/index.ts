@@ -6,6 +6,7 @@ export const containers = {
     About: lazy(() => import('containers/About')),
     Login: lazy(() => import('containers/Login')),
     TableBill: lazy(() => import('containers/TableBill')),
+    TableSplitBill: lazy(() => import('containers/TableBill-Checkout')),
     Settings: lazy(() => import('containers/Settings/profile')),
     BillList: lazy(() => import('containers/BillList')),
     BillDetail: lazy(() => import('containers/BillDetail')),

@@ -34,3 +34,10 @@ export const TextDark = styled.p({
     fontSize: 16,
     fontWeight: '400',
 });
+
+export const TextBold = styled.p({
+    fontFamily: 'Montserrat',
+    color: Colors.white,
+    fontSize: 16,
+    fontWeight: '600',
+});
