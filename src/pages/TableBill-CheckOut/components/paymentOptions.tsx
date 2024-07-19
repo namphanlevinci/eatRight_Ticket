@@ -3,31 +3,36 @@ import React, { useEffect } from 'react';
 import ButtonOptions from './buttonOptions';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 
-export default function PaymentOptions() {
+export default function PaymentOptions({
+    onPayment,
+}: {
+    onPayment: (type: string) => void;
+}) {
     const [paymentMethods, setPaymentMethods] = React.useState<
         {
-            id: number;
+            id: string;
             title: string;
         }[]
     >([]);
     const [selectedPaymentMethod, setSelectedPaymentMethod] =
-        React.useState('1');
+        React.useState('cash');
+
     useEffect(() => {
         setPaymentMethods([
             {
-                id: 1,
+                id: 'cash',
                 title: 'Cash',
             },
             {
-                id: 2,
+                id: 'credit_card',
                 title: 'Credit Card',
             },
             {
-                id: 3,
+                id: 'debit_card',
                 title: 'Debit Card',
             },
             {
-                id: 4,
+                id: 'e_wallet',
                 title: 'E-Wallet',
             },
         ]);
@@ -42,7 +47,14 @@ export default function PaymentOptions() {
             >
                 Payment options
             </Text>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                    rowGap: 16,
+                }}
+            >
                 {paymentMethods.map((item) => (
                     <ButtonOptions
                         key={item.id}
@@ -54,7 +66,7 @@ export default function PaymentOptions() {
             </div>
             <ButtonPrimary
                 title="Proceed Payment"
-                onClick={() => console.log('123')}
+                onClick={() => onPayment(selectedPaymentMethod)}
             />
         </div>
     );

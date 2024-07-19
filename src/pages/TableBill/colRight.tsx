@@ -14,8 +14,6 @@ import { ColStyled } from './styleds';
 import AccountIcon from 'assets/icons/accountIcon';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { roundTo } from 'utils/number';
-import { useNavigate } from 'react-router';
-import { BASE_ROUTER } from 'constants/router';
 
 export default function ColRight({
     cart,
@@ -44,12 +42,13 @@ export default function ColRight({
         contextHolder,
         paymentMethod,
         setPaymentMethod,
+        handleSplitEven,
+        handleSplitByItem,
     } = useTableBill();
 
     useEffect(() => {
         setCustomerName(cart?.firstname);
     }, [cart]);
-    const navigate = useNavigate();
     return (
         <ColStyled style={{ width: 257 }}>
             {contextHolder}
@@ -162,26 +161,23 @@ export default function ColRight({
                 <ButtonSubmit
                     title="Proceed Payment"
                     onClick={() => {
-                        console.log('data Root', cart?.items);
                         if (isSplitBill) {
                             if (numbersSplit && numbersSplit > 1) {
-                                console.log(numbersSplit);
-                                navigate(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+                                handleSplitEven(numbersSplit);
                             } else {
                                 const newData = listItems?.map((item) => {
                                     return {
                                         guestId: item.guestId,
                                         items: item.items.map((data) => {
                                             return {
-                                                uid: data.uid,
                                                 quantity: data.quantity,
-                                                id: data.id,
+                                                sku: data.product.sku,
                                             };
                                         }),
                                     };
                                 });
-                                console.log(newData);
-                                navigate(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+
+                                handleSplitByItem(newData);
                             }
                         } else {
                             handleCheckOut();

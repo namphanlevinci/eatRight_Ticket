@@ -54,14 +54,14 @@ export const DividedDashed = () => {
     );
 };
 
-export const DividedSolid = () => {
+export const DividedSolid = ({ color }: { color?: string }) => {
     return (
         <div
             style={{
                 height: 2,
                 border: 2,
                 borderStyle: 'solid',
-                borderColor: Colors.grey9,
+                borderColor: color ? color : Colors.grey9,
                 marginTop: 16,
             }}
         >

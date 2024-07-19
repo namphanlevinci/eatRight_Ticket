@@ -26,6 +26,11 @@ export default function DrawerMenu() {
 
     const MenuData = [
         {
+            title: 'Go Merchant',
+            icon: <StoreIcon />,
+            to: `http://localhost:3000/home?token=${localStorage.getItem('token')}`,
+        },
+        {
             title: 'Restaurent Manager',
             icon: <StoreIcon />,
             to: BASE_ROUTER.RESTAURENT_MANAGER,
@@ -111,6 +116,10 @@ export default function DrawerMenu() {
                             icon={item.icon}
                             title={item.title}
                             onPress={() => {
+                                if (item.title === 'Go Merchant') {
+                                    window.location.href = item.to;
+                                    return;
+                                }
                                 navigation(item.to);
                             }}
                         />
