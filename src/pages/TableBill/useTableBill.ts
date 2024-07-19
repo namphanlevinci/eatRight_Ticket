@@ -4,6 +4,7 @@ import { BASE_ROUTER } from 'constants/router';
 import { useCart } from 'context/cartContext';
 import { CartItemType, ItemType } from 'context/cartType';
 import { PLACE_ORDER } from 'graphql/cart/placeOrder';
+import { SPLIT_BILL_BY_ITEM, SPLIT_BILL_EVENLY } from 'graphql/cart/splitBill';
 import { emitter } from 'graphql/client';
 import { GET_APPOTA_URL, POS_PAYMENT } from 'graphql/orders/paymentMethod';
 import React, { useEffect } from 'react';
@@ -23,7 +24,7 @@ export const useTableBill = (isGoBack = true) => {
             items: ItemType[];
         }[]
     >([]);
-    const [numbersSplit, setNumbersSplit] = React.useState<number>(0);
+    const [numbersSplit, setNumbersSplit] = React.useState<number>(1);
     const [paymentMethod, setPaymentMethod] =
         React.useState<string>('cashondelivery');
 
@@ -155,13 +156,55 @@ export const useTableBill = (isGoBack = true) => {
             }
         }
     }, [cartItems, isGoBack]);
-
+    const [onSplitBillEvenly, { loading: split_even_loading }] =
+        useMutation(SPLIT_BILL_EVENLY);
+    const [onSplitBillByItem, { loading: split_items_loading }] =
+        useMutation(SPLIT_BILL_BY_ITEM);
+    const navigate = useNavigate();
+    const handleSplitEven = (number: number) => {
+        onSplitBillEvenly({
+            variables: {
+                cartId: cartItems[indexTable].carts[cartIndex].id,
+                numbersOfCustomer: number,
+            },
+        })
+            .then((res) => {
+                localStorage.setItem(
+                    'split_bill_data',
+                    JSON.stringify(res.data.merchantCreateOrderWithSplitEvenly),
+                );
+                navigate(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+            })
+            .catch(() => {
+                console.log('eror');
+            });
+    };
+    const handleSplitByItem = (items: any) => {
+        onSplitBillByItem({
+            variables: {
+                cartId: cartItems[indexTable].carts[cartIndex].id,
+                SplitItems: items,
+            },
+        })
+            .then((res) => {
+                localStorage.setItem(
+                    'split_bill_data',
+                    JSON.stringify(res.data.merchantCreateOrderWithSplitItems),
+                );
+                navigate(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+            })
+            .catch(() => {
+                console.log('eror');
+            });
+    };
     return {
+        handleSplitEven,
+        handleSplitByItem,
         cart,
         total,
         count,
         handleCheckOut: showConfirm,
-        loading,
+        loading: loading || split_even_loading || split_items_loading,
         pos_Loading,
         contextHolder,
         paymentMethod,

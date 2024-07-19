@@ -44,6 +44,8 @@ export default function ColRight({
         contextHolder,
         paymentMethod,
         setPaymentMethod,
+        handleSplitEven,
+        handleSplitByItem,
         isVisibleModalPos,
         setVisibleMoalPos,
         handlePOSPayment,
@@ -182,24 +184,23 @@ export default function ColRight({
                 <ButtonSubmit
                     title="Proceed Payment"
                     onClick={() => {
-                        console.log('data Root', cart?.items);
                         if (isSplitBill) {
                             if (numbersSplit && numbersSplit > 1) {
-                                console.log(numbersSplit);
+                                handleSplitEven(numbersSplit);
                             } else {
                                 const newData = listItems?.map((item) => {
                                     return {
                                         guestId: item.guestId,
                                         items: item.items.map((data) => {
                                             return {
-                                                uid: data.uid,
                                                 quantity: data.quantity,
-                                                id: data.id,
+                                                sku: data.product.sku,
                                             };
                                         }),
                                     };
                                 });
-                                console.log(newData);
+
+                                handleSplitByItem(newData);
                             }
                         } else {
                             handleCheckOut();

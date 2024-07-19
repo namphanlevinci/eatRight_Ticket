@@ -80,7 +80,7 @@ export default function ColLeft({
     );
 }
 
-const RenderItem = ({ item }: { item: ItemType }) => {
+export const RenderItem = ({ item }: { item: ItemType }) => {
     return (
         <div>
             <Row justify={'space-between'} style={{ marginTop: 32 }}>
