@@ -28,7 +28,7 @@ export default function DrawerMenu() {
         {
             title: 'Go Merchant',
             icon: <StoreIcon />,
-            to: `http://localhost:3000/home?token=${localStorage.getItem('token')}`,
+            to: `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`,
         },
         {
             title: 'Restaurent Manager',
