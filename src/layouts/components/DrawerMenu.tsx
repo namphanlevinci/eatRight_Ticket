@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Drawer, Modal } from 'antd';
 import BoardMenuIcon from 'assets/icons/boardMenu';
 
@@ -15,6 +15,45 @@ import { useDispatch } from 'react-redux';
 import { updateStatusLogout } from 'features/auth/authSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
+const MenuMerchant = [
+    {
+        title: 'Go Merchant',
+        icon: <StoreIcon />,
+        to: `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`,
+    },
+    {
+        title: 'Restaurent Manager',
+        icon: <StoreIcon />,
+        to: BASE_ROUTER.RESTAURENT_MANAGER,
+    },
+    {
+        title: 'Menu Manager',
+        icon: <MenuManagerIcon />,
+        to: BASE_ROUTER.RESTAURENT_MANAGER,
+    },
+    {
+        title: 'Promotions',
+        icon: <PromotionsIcon />,
+        to: BASE_ROUTER.RESTAURENT_MANAGER,
+    },
+    {
+        title: 'Customers Information',
+        icon: <AccountIcon />,
+        to: BASE_ROUTER.RESTAURENT_MANAGER,
+    },
+];
+const MenuList = [
+    {
+        title: 'Receipt Bill',
+        icon: <ReceiptBillIcon />,
+        to: BASE_ROUTER.BILL,
+    },
+    {
+        title: 'Settings',
+        icon: <SettingIcon />,
+        to: BASE_ROUTER.SETTINGS,
+    },
+];
 export default function DrawerMenu() {
     const [open, setOpen] = useState(false);
     const { isMerchant } = useSelector((state: RootState) => state.auth);
@@ -26,44 +65,15 @@ export default function DrawerMenu() {
     const onClose = () => {
         setOpen(false);
     };
-
-    const MenuData = [
-        {
-            title: 'Go Merchant',
-            icon: <StoreIcon />,
-            to: `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`,
-        },
-        {
-            title: 'Restaurent Manager',
-            icon: <StoreIcon />,
-            to: BASE_ROUTER.RESTAURENT_MANAGER,
-        },
-        {
-            title: 'Menu Manager',
-            icon: <MenuManagerIcon />,
-            to: BASE_ROUTER.RESTAURENT_MANAGER,
-        },
-        {
-            title: 'Promotions',
-            icon: <PromotionsIcon />,
-            to: BASE_ROUTER.RESTAURENT_MANAGER,
-        },
-        {
-            title: 'Customers Information',
-            icon: <AccountIcon />,
-            to: BASE_ROUTER.RESTAURENT_MANAGER,
-        },
-        {
-            title: 'Receipt Bill',
-            icon: <ReceiptBillIcon />,
-            to: BASE_ROUTER.BILL,
-        },
-        {
-            title: 'Settings',
-            icon: <SettingIcon />,
-            to: BASE_ROUTER.SETTINGS,
-        },
-    ];
+    const [MenuData, setMenuData] = useState(MenuList);
+    useEffect(() => {
+        if (isMerchant) {
+            const newData = [...MenuMerchant, ...MenuList];
+            setMenuData(newData);
+        } else {
+            setMenuData(MenuList);
+        }
+    }, [isMerchant]);
     const [modal, contextHolder] = Modal.useModal();
     const dispatch = useDispatch();
     const onLogout = async () => {
@@ -113,23 +123,20 @@ export default function DrawerMenu() {
                             navigation(BASE_ROUTER.HOME);
                         }}
                     />
-                    {MenuData.map(
-                        (item, index) =>
-                            !(!isMerchant && item.title === 'Go Merchant') && (
-                                <RenderItem
-                                    key={index}
-                                    icon={item.icon}
-                                    title={item.title}
-                                    onPress={() => {
-                                        if (item.title === 'Go Merchant') {
-                                            window.location.href = item.to;
-                                            return;
-                                        }
-                                        navigation(item.to);
-                                    }}
-                                />
-                            ),
-                    )}
+                    {MenuData.map((item, index) => (
+                        <RenderItem
+                            key={index}
+                            icon={item.icon}
+                            title={item.title}
+                            onPress={() => {
+                                if (item.title === 'Go Merchant') {
+                                    window.location.href = item.to;
+                                    return;
+                                }
+                                navigation(item.to);
+                            }}
+                        />
+                    ))}
                 </div>
                 <RenderLogout onPress={onLogout} />
             </Drawer>
