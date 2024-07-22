@@ -15,7 +15,11 @@ import { Page404 } from 'pages/404';
 import { emitter } from 'graphql/client';
 import { App, Modal } from 'antd';
 import { useDispatch } from 'react-redux';
-import { updateStatusLogin, updateStatusLogout } from 'features/auth/authSlice';
+import {
+    updateStatusLogin,
+    updateStatusLoginForMerchant,
+    updateStatusLogout,
+} from 'features/auth/authSlice';
 import _ from 'lodash';
 export const BaseRouter = () => {
     const { notification } = App.useApp();
@@ -29,9 +33,15 @@ export const BaseRouter = () => {
     // get token on params
     useEffect(() => {
         const token = urlParams.get('token');
+        const from = urlParams.get('from');
         if (token) {
             localStorage.setItem('token', token);
-            dispatch(updateStatusLogin());
+            if (from === 'merchant') {
+                dispatch(updateStatusLoginForMerchant());
+            } else {
+                dispatch(updateStatusLogin());
+            }
+
             const { pathname } = location;
             navigate(pathname);
         }

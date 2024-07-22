@@ -12,6 +12,7 @@ export interface authStateType {
         name: string;
         status: string;
     }[];
+    isMerchant: boolean;
 }
 
 const initialState: authStateType = {
@@ -22,6 +23,7 @@ const initialState: authStateType = {
     restaurant_address: '',
     restaurant_id: '',
     floor: [],
+    isMerchant: false,
 };
 
 export const authSlice = createSlice({
@@ -30,6 +32,10 @@ export const authSlice = createSlice({
     reducers: {
         updateStatusLogin: (state) => {
             state.isLogged = true;
+        },
+        updateStatusLoginForMerchant: (state) => {
+            state.isLogged = true;
+            state.isMerchant = true;
         },
         updateCustomerInfo: (state, action) => {
             state.firstname = action.payload.firstname;
@@ -57,6 +63,7 @@ export const {
     updateStatusLogout,
     updateCustomerInfo,
     updateFloor,
+    updateStatusLoginForMerchant,
 } = authSlice.actions;
 
 export default authSlice.reducer;

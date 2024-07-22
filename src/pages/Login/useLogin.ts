@@ -3,7 +3,10 @@ import { notification } from 'antd';
 import { LOGIN } from 'graphql/auth/login';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateStatusLogin } from 'features/auth/authSlice';
+import {
+    updateStatusLogin,
+    updateStatusLoginForMerchant,
+} from 'features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 
@@ -31,7 +34,14 @@ export const useLogin = () => {
                     'token',
                     res.data.generateMerchantToken.token,
                 );
-                dispatch(updateStatusLogin());
+                if (
+                    res.data.generateMerchantToken.account_type === 'merchant'
+                ) {
+                    dispatch(updateStatusLoginForMerchant());
+                } else {
+                    dispatch(updateStatusLogin());
+                }
+
                 navigate(BASE_ROUTER.HOME);
             })
             .catch((err) => {
