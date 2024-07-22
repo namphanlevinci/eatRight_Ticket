@@ -49,6 +49,7 @@ export const authSlice = createSlice({
         },
         updateStatusLogout: (state) => {
             state.isLogged = false;
+            state.isMerchant = false;
             state = initialState;
             localStorage.removeItem('token');
             localStorage.removeItem('position');
