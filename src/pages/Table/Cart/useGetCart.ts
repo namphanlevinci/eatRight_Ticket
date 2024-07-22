@@ -117,7 +117,7 @@ export const useCartTable = (isRefreshParams = true) => {
                 cartItems[indexTable]?.carts,
                 filterCarts,
             ).forEach((item) => {
-                if (!isCartIdFromLocal(cartItems[indexTable].carts[item].id)) {
+                if (isCartIdFromLocal(cartItems[indexTable].carts[item].id)) {
                     removeCartIndex(item);
                 }
             });

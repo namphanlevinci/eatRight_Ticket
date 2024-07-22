@@ -219,10 +219,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         if (foundIndex !== -1 && foundIndex !== undefined) {
             newCartItems[index].items[foundIndex].quantity += item.quantity;
         } else {
-            newCartItems[index] = {
-                ...newCartItems[index],
-                items: [...newCartItems[index].items, item],
-            };
+            if (newCartItems[index]?.items) {
+                newCartItems[index] = {
+                    ...newCartItems[index],
+                    items: [...newCartItems[index].items, item],
+                };
+            }
         }
         total += item.prices.price.value * item.quantity;
         newCartItems[index].prices = {

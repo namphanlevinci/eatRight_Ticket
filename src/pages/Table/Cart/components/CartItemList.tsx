@@ -67,7 +67,7 @@ export default function CartItemList({
         } else {
             setIsNewItem(false);
         }
-    }, [data.items.length]);
+    }, [data?.items?.length]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
