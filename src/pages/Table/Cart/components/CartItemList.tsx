@@ -67,8 +67,7 @@ export default function CartItemList({
         } else {
             setIsNewItem(false);
         }
-    }, [data]);
-
+    }, [data.items.length]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -304,12 +303,12 @@ export default function CartItemList({
                                             )}
                                             <UpDownNumber
                                                 quantity={item.quantity}
-                                                setQuantity={(e: number) =>
+                                                setQuantity={(e: number) => {
                                                     updateQuantityItemFromCart(
                                                         index,
                                                         e,
-                                                    )
-                                                }
+                                                    );
+                                                }}
                                                 isSend={!item.isUnsend}
                                             />
                                         </Row>
