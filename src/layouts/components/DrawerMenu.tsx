@@ -13,8 +13,11 @@ import { useNavigate } from 'react-router';
 import { Header, RenderItem, RenderLogout } from './components';
 import { useDispatch } from 'react-redux';
 import { updateStatusLogout } from 'features/auth/authSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 export default function DrawerMenu() {
     const [open, setOpen] = useState(false);
+    const { isMerchant } = useSelector((state: RootState) => state.auth);
     const navigation = useNavigate();
     const showDrawer = () => {
         setOpen(true);
@@ -110,20 +113,23 @@ export default function DrawerMenu() {
                             navigation(BASE_ROUTER.HOME);
                         }}
                     />
-                    {MenuData.map((item, index) => (
-                        <RenderItem
-                            key={index}
-                            icon={item.icon}
-                            title={item.title}
-                            onPress={() => {
-                                if (item.title === 'Go Merchant') {
-                                    window.location.href = item.to;
-                                    return;
-                                }
-                                navigation(item.to);
-                            }}
-                        />
-                    ))}
+                    {MenuData.map(
+                        (item, index) =>
+                            !(!isMerchant && item.title === 'Go Merchant') && (
+                                <RenderItem
+                                    key={index}
+                                    icon={item.icon}
+                                    title={item.title}
+                                    onPress={() => {
+                                        if (item.title === 'Go Merchant') {
+                                            window.location.href = item.to;
+                                            return;
+                                        }
+                                        navigation(item.to);
+                                    }}
+                                />
+                            ),
+                    )}
                 </div>
                 <RenderLogout onPress={onLogout} />
             </Drawer>
