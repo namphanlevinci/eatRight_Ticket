@@ -286,6 +286,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     ...newCartItems[cartIndex].items[index],
                     isUnsend: true,
                     quantity: 1,
+                    status: 'new',
                 });
             } else {
                 newCartItems[cartIndex].items[index].quantity = quantity;

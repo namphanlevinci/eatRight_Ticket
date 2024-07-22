@@ -37,13 +37,15 @@ export default function CartInfo() {
         name?: string;
         number?: number;
     }) => {
-        onUpdateCustomerInfo({
-            variables: {
-                cart_id: cartItems[indexTable]?.carts[selectedCart].id,
-                firstname: name ? name : customerName,
-                numberOfCustomer: number ? number : numberOfCustomer,
-            },
-        });
+        if (cartItems[indexTable]?.carts[selectedCart].id !== '1') {
+            onUpdateCustomerInfo({
+                variables: {
+                    cart_id: cartItems[indexTable]?.carts[selectedCart].id,
+                    firstname: name ? name : customerName,
+                    numberOfCustomer: number ? number : numberOfCustomer,
+                },
+            });
+        }
     };
     return (
         <StyledCartBorder
