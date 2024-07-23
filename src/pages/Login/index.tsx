@@ -8,27 +8,30 @@ import { DarkInput } from 'components/atom/Input';
 import { Link } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import InputPassword from 'pages/Settings/components/inputPassword';
+import { useTheme } from 'context/themeContext';
 
 export const LoginPage: React.FC = () => {
     const { handleLogin, loading } = useLogin();
     const onFinishFailed = (errorInfo: any) => {
         console.error('Failed:', errorInfo);
     };
+    const { theme } = useTheme();
     return (
         <div
             style={{
                 height: 650,
                 width: 380,
-                background: Colors.grey3,
+                background: theme.nEUTRALBase,
                 borderRadius: 16,
                 padding: 16,
                 paddingBlock: 32,
                 alignSelf: 'center',
+                border: `1px solid ${theme.nEUTRALLine}`,
             }}
         >
             <span
                 style={{
-                    color: Colors.white,
+                    color: theme.pRIMARY6Primary,
                     alignItems: 'center',
                     display: 'flex',
                     fontSize: 34,
@@ -63,7 +66,7 @@ export const LoginPage: React.FC = () => {
                 >
                     <DarkInput
                         placeholder="Email / Phone number"
-                        style={{ background: 'dark' }}
+                        style={{ background: theme.fieldBackground }}
                     />
                 </FormItem>
                 <div style={{ position: 'relative' }}>
@@ -78,7 +81,7 @@ export const LoginPage: React.FC = () => {
                         <Text
                             style={{
                                 fontSize: 16,
-                                color: Colors.primary,
+                                color: theme.pRIMARY6Primary,
                                 fontWeight: '600',
                             }}
                         >
@@ -94,16 +97,17 @@ export const LoginPage: React.FC = () => {
                         style={{
                             width: '100%',
                             marginTop: 60,
-                            background: Colors.primary,
+                            background: theme.pRIMARY6Primary,
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
+                            height: 56,
                         }}
                         size="large"
                     >
                         <Text
                             style={{
-                                color: Colors.black,
+                                color: theme.nEUTRALPrimary,
                                 fontSize: 18,
                                 fontWeight: '600',
                             }}
@@ -123,7 +127,7 @@ export const LoginPage: React.FC = () => {
                         style={{
                             fontSize: 18,
                             fontWeight: '600',
-                            color: Colors.primary,
+                            color: theme.pRIMARY6Primary,
                         }}
                     >
                         Request here

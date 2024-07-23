@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 import { GET_NOTIFICATION } from 'graphql/notification';
 import { NotiTitle, NotificationItem, AnnaBellStyle } from './styled';
 import DrawerMenu from './components/DrawerMenu';
+import { useTheme } from 'context/themeContext';
 
 type Props = {
     children: React.ReactNode;
@@ -192,10 +193,12 @@ export const DarkLayout = (props: Props) => {
         </InfiniteScroll>
     );
 
+    const { theme } = useTheme();
+
     return (
         <Layout
             style={{
-                backgroundColor: Colors.black,
+                backgroundColor: theme.nEUTRALPrimary,
                 minHeight: '100vh',
                 paddingTop: isLogged ? 64 : 0,
                 paddingBottom: isLogged ? 100 : 0,
