@@ -30,7 +30,6 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	overscroll-behavior: contain;
-	background-color: black;
 }
 ol, ul {
 	list-style: none;

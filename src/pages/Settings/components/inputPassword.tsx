@@ -33,6 +33,7 @@ export default function InputPassword({
                           ]
                 }
                 required={false}
+                theme={theme}
             >
                 <DarkInput
                     placeholder={placeholder}

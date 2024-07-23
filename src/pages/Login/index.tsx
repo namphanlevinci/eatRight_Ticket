@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Form, Row } from 'antd';
 import { useLogin } from './useLogin';
-import { Colors } from 'themes/colors';
 import { FormItem } from 'components/atom/Form/Item';
 import { Text } from 'components/atom/Text';
 import { DarkInput } from 'components/atom/Input';
@@ -63,6 +62,7 @@ export const LoginPage: React.FC = () => {
                         },
                     ]}
                     required={false}
+                    theme={theme}
                 >
                     <DarkInput
                         placeholder="Email / Phone number"

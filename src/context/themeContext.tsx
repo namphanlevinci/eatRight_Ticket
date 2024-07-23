@@ -108,6 +108,8 @@ interface ThemeContextProps {
     toggleTheme?: () => void;
 }
 
+export const ThemeTypes = typeof themeMode.lightTheme;
+
 const ThemeContext = createContext<ThemeContextProps>({
     theme: themeMode.lightTheme,
 });
