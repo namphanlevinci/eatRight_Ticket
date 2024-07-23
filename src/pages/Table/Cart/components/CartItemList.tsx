@@ -97,6 +97,7 @@ export default function CartItemList({
                         ?.numberOfCustomer,
             });
         }
+        setIsNewItem(false);
     };
     const createCart = ({
         username,
