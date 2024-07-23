@@ -45,7 +45,7 @@ export default function ButtonPrimary({
                 style={{
                     fontSize: 18,
                     fontWeight: '600',
-                    color: isCancel ? theme.pRIMARY6Primary : theme.textTitle,
+                    color: isCancel ? theme.pRIMARY6Primary : theme.pRIMARY1,
                 }}
             >
                 {title}

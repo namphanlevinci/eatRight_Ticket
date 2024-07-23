@@ -1,4 +1,5 @@
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 import React from 'react';
 import { Colors } from 'themes/colors';
 
@@ -9,6 +10,7 @@ export default function ButtonSubmit({
     onClick: any;
     title: string;
 }) {
+    const { theme } = useTheme();
     return (
         <div
             style={{
@@ -16,7 +18,7 @@ export default function ButtonSubmit({
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: 56,
-                background: Colors.primary,
+                background: theme.pRIMARY6Primary,
                 marginTop: 20,
                 borderRadius: 8,
                 cursor: 'pointer',
@@ -27,7 +29,7 @@ export default function ButtonSubmit({
                 style={{
                     fontSize: 18,
                     fontWeight: '600',
-                    color: Colors.black,
+                    color: theme.pRIMARY1,
                 }}
             >
                 {title}

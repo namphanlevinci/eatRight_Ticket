@@ -16,6 +16,7 @@ import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { roundTo } from 'utils/number';
 import ModalPosDevices from './components/ModalPosDevices';
 import LoadingModalPayment from 'components/modal/loadingModalPayment';
+import { useTheme } from 'context/themeContext';
 
 export default function ColRight({
     cart,
@@ -55,6 +56,7 @@ export default function ColRight({
     useEffect(() => {
         setCustomerName(cart?.firstname);
     }, [cart]);
+    const { theme } = useTheme();
     return (
         <ColStyled style={{ width: 257 }}>
             <ModalPosDevices
@@ -111,7 +113,7 @@ export default function ColRight({
                 )}
                 {/* <RenderBillInfomationRow title="Taxes" value="$10.99" />
                 <RenderBillInfomationRow title="Service fee" value="$5.99" /> */}
-                <Divider style={{ borderColor: Colors.grey3 }} />
+                <Divider style={{ borderColor: theme.nEUTRALLine }} />
 
                 <RenderBillInfomationRow
                     title="To be paid"
@@ -122,7 +124,7 @@ export default function ColRight({
                     textRightStyle={{
                         fontSize: 24,
                         fontWeight: '600',
-                        color: Colors.primary,
+                        color: theme.pRIMARY6Primary,
                     }}
                 />
             </div>

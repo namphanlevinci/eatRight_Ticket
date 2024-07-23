@@ -1,14 +1,13 @@
-import { Layout, Row } from 'antd';
+import { Layout, Row, Switch } from 'antd';
 import ArrowLeftIcon from 'assets/icons/arrowLeft';
 import { Text } from 'components/atom/Text';
-import { Colors } from 'themes/colors';
 import ColRight from './colRight';
 import ColLeft from './colLeft';
 import { useTableBill } from './useTableBill';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { SwitchStyled } from './styleds';
 import SplitBillModal from 'components/modal/SplitBill/splitBillModal';
+import { useTheme } from 'context/themeContext';
 export default function TableBill() {
     const {
         cart,
@@ -23,11 +22,12 @@ export default function TableBill() {
     const [splitBill, setSplitBill] = useState(false);
     const [openModalSplitBill, setOpenModalSplitBill] = useState(false);
     const navigation = useNavigate();
+    const { theme } = useTheme();
     const RenderHeader = () => {
         return (
             <Header
                 style={{
-                    background: Colors.grey3,
+                    background: theme.nEUTRALPrimary,
                     height: '56',
                     display: 'flex ',
                     alignItems: 'center',
@@ -41,16 +41,27 @@ export default function TableBill() {
                     <ArrowLeftIcon />
                 </div>
                 <Text
-                    style={{ fontSize: 20, fontWeight: '600', marginLeft: 20 }}
+                    style={{
+                        fontSize: 20,
+                        fontWeight: '600',
+                        marginLeft: 20,
+                    }}
                 >
-                    Order Id / Bill Number
+                    <span style={{ color: theme.pRIMARY6Primary }}>
+                        Order Id
+                    </span>{' '}
+                    / Bill Number
                 </Text>
             </Header>
         );
     };
     return (
         <Layout
-            style={{ minHeight: '100vh', width: '100vw', background: 'black' }}
+            style={{
+                minHeight: '100vh',
+                width: '100vw',
+                background: theme.nEUTRALPrimary,
+            }}
         >
             {cart && (
                 <SplitBillModal
@@ -81,24 +92,13 @@ export default function TableBill() {
                         <Text style={{ fontSize: 20, fontWeight: '400' }}>
                             Split bill
                         </Text>
-                        <SwitchStyled
+                        <Switch
                             value={splitBill}
                             onChange={(value) => {
                                 setSplitBill(!splitBill);
                                 if (value) {
                                     setOpenModalSplitBill(true);
                                 }
-                            }}
-                            style={{
-                                width: 96,
-                                height: 52,
-                                borderRadius: 4,
-                                background: openModalSplitBill
-                                    ? '#000'
-                                    : 'rgba(245, 245, 245, 0.3)',
-                                border: openModalSplitBill
-                                    ? '1px solid #FF9D00'
-                                    : '1px solid rgba(245, 245, 245, 0.3)',
                             }}
                         />
                     </Row>

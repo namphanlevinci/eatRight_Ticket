@@ -1,4 +1,5 @@
 import { Row } from 'antd';
+import { useTheme } from 'context/themeContext';
 import styled from 'styled-components';
 import { Colors } from 'themes/colors';
 
@@ -56,13 +57,14 @@ export const DividedDashed = () => {
 };
 
 export const DividedSolid = ({ color }: { color?: string }) => {
+    const { theme } = useTheme();
     return (
         <div
             style={{
-                height: 2,
-                border: 2,
+                height: 1,
+                border: 1,
                 borderStyle: 'solid',
-                borderColor: color ? color : Colors.grey9,
+                borderColor: color ? color : theme.nEUTRALLine,
                 marginTop: 16,
             }}
         >

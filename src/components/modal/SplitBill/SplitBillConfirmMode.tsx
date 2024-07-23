@@ -9,6 +9,7 @@ import RenderGuestTotal from './components/RenderGuestTotal';
 import { SplitBillMode } from './splitBillModal';
 import { roundTo } from 'utils/number';
 import { useMediaQuery } from 'react-responsive';
+import { useTheme } from 'context/themeContext';
 
 export default function SplitBillConfirmMode({
     cart,
@@ -55,6 +56,7 @@ export default function SplitBillConfirmMode({
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
+    const { theme } = useTheme();
     return (
         <div style={ismobile ? { width: '100%' } : { width: 450 }}>
             <Row justify={'space-between'}>
@@ -68,15 +70,15 @@ export default function SplitBillConfirmMode({
                     <CloseIcon />
                 </div>
             </Row>
-            <Text style={{ color: 'rgba(245, 245, 245, 0.30)', marginTop: 16 }}>
+            <Text style={{ color: theme.tEXTDisabled, marginTop: 16 }}>
                 Total bills splitted:
-                <span style={{ color: 'white', marginLeft: 10 }}>
+                <span style={{ color: theme.tEXTPrimary, marginLeft: 10 }}>
                     {mode === SplitBillMode.EVEN ? numbers : groupedData.length}
                 </span>
             </Text>
-            <Text style={{ color: 'rgba(245, 245, 245, 0.30)', marginTop: 16 }}>
+            <Text style={{ color: theme.tEXTDisabled, marginTop: 16 }}>
                 Total amount to pay:
-                <span style={{ color: 'white', marginLeft: 10 }}>
+                <span style={{ color: theme.tEXTPrimary, marginLeft: 10 }}>
                     $ {cart.prices.grand_total.value}
                 </span>
             </Text>
