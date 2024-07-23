@@ -50,6 +50,7 @@ export const themeMode = {
         sECONDARY2Default: '#ff9d00',
         sECONDARY3Hover: '#e27500',
         sECONDARY4Pressed: '#983d08',
+        textTitle: '#121212',
     },
     darkTheme: {
         semanticPositive: '#146c43',
@@ -100,15 +101,15 @@ export const themeMode = {
         sECONDARY2Default: '#f29a0d',
         sECONDARY3Hover: '#f4922a',
         sECONDARY4Pressed: '#f09f70',
+        textTitle: '#fff',
     },
 };
+export type ColorsThemeType = typeof themeMode.lightTheme;
 
 interface ThemeContextProps {
     theme: typeof themeMode.lightTheme;
     toggleTheme?: () => void;
 }
-
-export const ThemeTypes = typeof themeMode.lightTheme;
 
 const ThemeContext = createContext<ThemeContextProps>({
     theme: themeMode.lightTheme,

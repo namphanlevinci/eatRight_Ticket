@@ -1,8 +1,8 @@
 import SearchIcon from 'assets/icons/search';
 import { DarkInput } from 'components/atom/Input';
 import React from 'react';
-import { Colors } from 'themes/colors';
 import { CloseOutlined } from '@ant-design/icons';
+import { useTheme } from 'context/themeContext';
 export default function SearchTable({
     onChangeText,
     height,
@@ -14,22 +14,22 @@ export default function SearchTable({
     allowClear?: boolean;
     data?: string;
 }) {
+    const { theme } = useTheme();
     return (
         <div
             style={{
                 height: height ? height : 64,
                 width: '100%',
-                paddingInline: 20,
+                paddingInline: 16,
                 position: 'relative',
             }}
         >
             <DarkInput
                 style={{
-                    background: Colors.grey3,
                     height: '100%',
-                    border: 0,
-                    color: 'white',
+                    border: `1px solid ${theme.nEUTRALLine}`,
                     paddingInline: 16,
+                    backgroundColor: theme.nEUTRALBase,
                 }}
                 placeholder="Search "
                 onChange={(e) => onChangeText && onChangeText(e.target.value)}

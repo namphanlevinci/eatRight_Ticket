@@ -276,7 +276,7 @@ export const DarkLayout = (props: Props) => {
                     <Footer
                         style={{
                             textAlign: 'center',
-                            background: Colors.black,
+                            background: theme.nEUTRALPrimary,
                             paddingInline: 16,
                             paddingBlock: 16,
                         }}
