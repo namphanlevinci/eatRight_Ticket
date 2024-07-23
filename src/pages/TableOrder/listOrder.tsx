@@ -10,6 +10,7 @@ import { formatNumberWithCommas } from 'utils/format';
 import { getTagStyled } from 'utils/tag';
 import { App } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+import { useTheme } from 'context/themeContext';
 export default function ListOrder({
     cart,
     count,
@@ -49,6 +50,7 @@ export default function ListOrder({
             centered: true,
         });
     };
+    const { theme } = useTheme();
     return (
         <ColStyled
             style={{
@@ -79,6 +81,7 @@ export default function ListOrder({
                                                 item.isUnsend
                                                     ? 'New'
                                                     : item?.status,
+                                                theme,
                                             )}
                                         />
                                     </Col>
@@ -149,6 +152,7 @@ export default function ListOrder({
                                                                 <CustomTag
                                                                     {...getTagStyled(
                                                                         product?.status,
+                                                                        theme,
                                                                     )}
                                                                 />
                                                             )}

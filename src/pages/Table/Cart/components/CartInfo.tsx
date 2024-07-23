@@ -9,6 +9,7 @@ import { useCouponCart } from '../useCouponCart';
 import LoadingModal from 'components/modal/loadingModal';
 import { useMutation } from '@apollo/client';
 import { UPDATE_CUSTOMER } from 'graphql/cart/updateCustomer';
+import { useTheme } from 'context/themeContext';
 
 export default function CartInfo() {
     const { setCustomerName, cartItems, indexTable } = useCart();
@@ -47,6 +48,7 @@ export default function CartInfo() {
             });
         }
     };
+    const { theme } = useTheme();
     return (
         <StyledCartBorder
             style={{
@@ -60,6 +62,8 @@ export default function CartInfo() {
                 borderTopLeftRadius: 0,
                 paddingBlock: 0,
                 overflowX: 'auto',
+                backgroundColor: theme.nEUTRALLine,
+                border: 0,
             }}
         >
             <LoadingModal showLoading={loading} />

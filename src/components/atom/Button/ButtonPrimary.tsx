@@ -1,6 +1,6 @@
 import React from 'react';
-import { Colors } from 'themes/colors';
 import { Text } from '../Text';
+import { useTheme } from 'context/themeContext';
 
 export default function ButtonPrimary({
     title,
@@ -19,6 +19,7 @@ export default function ButtonPrimary({
     height?: string;
     marginTop?: string;
 }) {
+    const { theme } = useTheme();
     return (
         <div
             style={{
@@ -32,7 +33,7 @@ export default function ButtonPrimary({
                       : size === 'medium'
                         ? 44
                         : 32,
-                background: isCancel ? Colors.black : Colors.primary,
+                background: isCancel ? theme.textTitle : theme.pRIMARY6Primary,
                 marginTop: marginTop,
                 borderRadius: 8,
                 cursor: 'pointer',
@@ -44,7 +45,7 @@ export default function ButtonPrimary({
                 style={{
                     fontSize: 18,
                     fontWeight: '600',
-                    color: isCancel ? Colors.primary : Colors.black,
+                    color: isCancel ? theme.pRIMARY6Primary : theme.textTitle,
                 }}
             >
                 {title}

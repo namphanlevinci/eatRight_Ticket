@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import './index.css';
 import { Text } from 'components/atom/Text';
-import { Colors } from 'themes/colors';
+import { useTheme } from 'context/themeContext';
 const ButtonAddToCart = ({ onClick }: { onClick: any }) => {
     const [bulletFired, setBulletFired] = useState(false);
 
@@ -17,7 +17,7 @@ const ButtonAddToCart = ({ onClick }: { onClick: any }) => {
             }, 500);
         }
     };
-
+    const { theme } = useTheme();
     return (
         <>
             {bulletFired && (
@@ -27,7 +27,7 @@ const ButtonAddToCart = ({ onClick }: { onClick: any }) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         height: 56,
-                        background: Colors.primary,
+                        background: theme.pRIMARY6Primary,
                         marginTop: 20,
                         borderRadius: 8,
                         cursor: 'pointer',
@@ -38,7 +38,7 @@ const ButtonAddToCart = ({ onClick }: { onClick: any }) => {
                         style={{
                             fontSize: 18,
                             fontWeight: '600',
-                            color: Colors.black,
+                            color: theme.pRIMARY1,
                         }}
                     >
                         Add to cart
@@ -51,7 +51,7 @@ const ButtonAddToCart = ({ onClick }: { onClick: any }) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     height: 56,
-                    background: Colors.primary,
+                    background: theme.pRIMARY6Primary,
                     marginTop: 20,
                     borderRadius: 8,
                     cursor: 'pointer',
@@ -65,7 +65,7 @@ const ButtonAddToCart = ({ onClick }: { onClick: any }) => {
                     style={{
                         fontSize: 18,
                         fontWeight: '600',
-                        color: Colors.black,
+                        color: theme.pRIMARY1,
                     }}
                 >
                     Add to cart

@@ -1,58 +1,60 @@
 import React from 'react';
 import { StyledMenuItem } from '../styled';
 import { Text } from 'components/atom/Text';
-import { Colors } from 'themes/colors';
+import { ColorsThemeType, useTheme } from 'context/themeContext';
 
 type Props = {
     selected?: boolean;
     isProduct?: boolean;
     isSubCategory?: boolean;
     isDisabled?: boolean;
+    theme: ColorsThemeType;
 };
 function getBackgroundColor({
     isProduct,
     selected,
     isSubCategory,
     isDisabled,
+    theme,
 }: Props) {
     if (isDisabled) {
         return '#191919';
     }
     if (isSubCategory) {
-        return '#6666664D';
+        return theme.wARNING1BG;
     }
     if (isProduct) {
-        return 'transparent';
+        return theme.pRIMARY1;
     }
-    return selected ? '#FF9D0033' : '#191919';
+    return selected ? theme.pRIMARY2 : theme.nEUTRALSecBG;
 }
 
-function getBorderColor({ isProduct, isSubCategory, isDisabled }: Props) {
+function getBorderColor({
+    isProduct,
+    isSubCategory,
+    isDisabled,
+    theme,
+}: Props) {
     if (isDisabled) {
         return '#6666664D';
     }
     if (isSubCategory) {
-        return 'black';
+        return theme.wARNING1BG;
     }
-    return isProduct ? '#cccccc' : '#191919';
+    return !isProduct ? theme.pRIMARY2 : theme.nEUTRALLine;
 }
 
-function getTextColor({
-    isProduct,
-    selected,
-    isSubCategory,
-    isDisabled,
-}: Props) {
+function getTextColor({ isProduct, isSubCategory, isDisabled, theme }: Props) {
     if (isDisabled) {
         return '#333333';
     }
     if (isSubCategory) {
-        return '#CC7E00';
+        return theme.pRIMARY6Primary;
     }
     if (isProduct) {
-        return 'white';
+        return theme.textTitle;
     }
-    return selected ? Colors.primary : 'white';
+    return theme.pRIMARY6Primary;
 }
 
 export default function MenuItem({
@@ -63,23 +65,31 @@ export default function MenuItem({
     isDisabled,
 }: {
     children: React.ReactNode;
-} & Props) {
+    selected?: boolean;
+    isProduct?: boolean;
+    isSubCategory?: boolean;
+    isDisabled?: boolean;
+}) {
+    const { theme } = useTheme();
     const backgroundColor = getBackgroundColor({
         isProduct,
         selected,
         isSubCategory,
         isDisabled,
+        theme,
     });
     const borderColor = getBorderColor({
         isProduct,
         isSubCategory,
         isDisabled,
+        theme,
     });
     const textColor = getTextColor({
         isProduct,
         selected,
         isSubCategory,
         isDisabled,
+        theme,
     });
     return (
         <StyledMenuItem
@@ -96,7 +106,7 @@ export default function MenuItem({
                         left: 0,
                         borderTopLeftRadius: 8,
                         borderBottomRightRadius: 8,
-                        background: '#995E00',
+                        background: theme.pRIMARY6Primary,
                         height: 16,
                         width: 16,
                     }}
