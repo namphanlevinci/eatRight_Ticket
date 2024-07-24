@@ -3,7 +3,6 @@ import { Text, Text20 } from 'components/atom/Text';
 import React, { useEffect } from 'react';
 import InputInfoCart from './components/inputInfo';
 import RenderBillInfomationRow from './components/billInfo';
-import { Colors } from 'themes/colors';
 import ButtonOptions from './components/buttonOptions';
 import ButtonSubmit from './components/buttonSubmit';
 import { CartItemType, ItemType } from 'context/cartType';

@@ -3,7 +3,6 @@ import CloseIcon from 'assets/icons/close';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import React, { useEffect, useState } from 'react';
-import { Colors } from 'themes/colors';
 
 export default function InputInfoCart({
     icon,

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import ButtonGuest from './components/ButtonGuest';
 import { ItemType } from 'context/cartType';
 import RenderItemSplit from './components/RenderItem';
-import { Colors } from 'themes/colors';
 import ModalSplitItem from './components/ModalSplitItem';
 import { useSplitItem } from './useSplitItem';
 import { useTheme } from 'context/themeContext';
