@@ -2,6 +2,7 @@ import { Input, Modal, Row } from 'antd';
 import CloseXIcon from 'assets/icons/closeIcon';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 import React, { useEffect, useRef } from 'react';
 export default function ModalInput({
     isModalOpen,
@@ -26,7 +27,7 @@ export default function ModalInput({
     const onFinish = () => {
         onSubmit(value);
     };
-
+    const { theme } = useTheme();
     return (
         <Modal
             title="Basic Modal"
@@ -39,10 +40,11 @@ export default function ModalInput({
                     display: 'none',
                 },
                 content: {
-                    backgroundColor: '#1F242F',
+                    backgroundColor: theme.nEUTRALPrimary,
                 },
             }}
             closeIcon={<></>}
+            closable={false}
             centered
         >
             <Row justify={'space-between'} align={'middle'}>
@@ -62,9 +64,9 @@ export default function ModalInput({
                     style={{
                         flex: 1,
                         height: 56,
-                        backgroundColor: '#161B26',
-                        color: '#fff',
-                        border: '1px solid rgba(245, 245, 245, 0.30)',
+                        backgroundColor: theme.nEUTRALBase,
+                        color: theme.tEXTPrimary,
+                        border: `1px solid ${theme.nEUTRALLine}`,
                     }}
                 />
                 <ButtonPrimary

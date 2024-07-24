@@ -19,6 +19,7 @@ import ModalInput from 'components/modal/ModalInput';
 import { useCouponCart } from 'pages/Table/Cart/useCouponCart';
 import ModalTip from 'components/modal/ModalTip';
 import { useTheme } from 'context/themeContext';
+import RenderDiscountRow from './components/renderDiscountRow';
 
 export default function ColRight({
     cart,
@@ -122,7 +123,7 @@ export default function ColRight({
                     value={`${formatNumberWithCommas(total)} $`}
                 />
                 {cart?.prices?.discounts && (
-                    <RenderBillInfomationRow
+                    <RenderDiscountRow
                         title="Discounted"
                         value={
                             cart?.prices?.discounts.length > 0
@@ -132,9 +133,12 @@ export default function ColRight({
                         textRightStyle={{
                             color:
                                 cart?.prices?.discounts.length > 0
-                                    ? 'white'
+                                    ? theme.sUCCESS2Default
                                     : theme.pRIMARY6Primary,
                         }}
+                        valueDiscount={
+                            cart?.prices?.discounts[0]?.amount?.value || 0
+                        }
                         onRightClick={() => setModalDiscount(true)}
                     />
                 )}
@@ -160,13 +164,15 @@ export default function ColRight({
                         onRightClick={() => setModalTip(true)}
                     />
                 )}
-                {cart?.prices?.total_canceled?.value && (
+                {cart?.prices?.total_canceled?.value ? (
                     <RenderBillInfomationRow
                         title="Canceled Item"
                         value={`-${formatNumberWithCommas(
                             parseInt(`${cart?.prices?.total_canceled?.value}`),
                         )} $`}
                     />
+                ) : (
+                    <></>
                 )}
                 {/* <RenderBillInfomationRow title="Taxes" value="$10.99" />
                 <RenderBillInfomationRow title="Service fee" value="$5.99" /> */}
