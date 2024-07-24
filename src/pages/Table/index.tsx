@@ -17,6 +17,7 @@ import {
     ChangeTableStatusToReserved,
 } from 'graphql/table/checkInTable';
 import LoadingModal from 'components/modal/loadingModal';
+import { useTheme } from 'context/themeContext';
 const { Content } = Layout;
 
 type TableType = {
@@ -77,9 +78,14 @@ export const TablePage: React.FC = () => {
             });
         }
     };
-
+    const { theme } = useTheme();
     return (
-        <Layout style={{ backgroundColor: Colors.black, minHeight: '100vh' }}>
+        <Layout
+            style={{
+                backgroundColor: theme.nEUTRALPrimary,
+                minHeight: '100vh',
+            }}
+        >
             <LoadingModal showLoading={loading || loading2} />
             <Content style={{ margin: '0 16px' }}>
                 <Row

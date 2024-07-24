@@ -11,6 +11,7 @@ import RenderBillInfomationRow from 'pages/TableBill/components/billInfo';
 import ButtonSubmit from 'pages/TableBill/components/buttonSubmit';
 import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
+import { useTheme } from 'context/themeContext';
 
 export default function OrderFooter({
     cart,
@@ -33,6 +34,7 @@ export default function OrderFooter({
     const goTableBill = () => {
         navigation(`${BASE_ROUTER.TABLE_BILL}${window.location.search}`);
     };
+    const { theme } = useTheme();
     return (
         <Row style={{ marginTop: 20 }}>
             {contextHolder}
@@ -101,7 +103,7 @@ export default function OrderFooter({
                         textRightStyle={{
                             fontSize: 24,
                             fontWeight: '600',
-                            color: Colors.primary,
+                            color: theme.pRIMARY6Primary,
                         }}
                     />
                 </div>

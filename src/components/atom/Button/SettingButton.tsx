@@ -1,4 +1,5 @@
 import { BASE_ROUTER } from 'constants/router';
+import { useTheme } from 'context/themeContext';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Colors } from 'themes/colors';
@@ -34,19 +35,19 @@ export const SettingButton = ({
     to?: any;
     onClick?: any;
 }) => {
+    const { theme } = useTheme();
     return (
         <Link to={to}>
             <Button
                 style={{
-                    background: isSelected
-                        ? Colors.primary_dark_20
-                        : Colors.grey3,
+                    background: isSelected ? theme.pRIMARY1 : theme.nEUTRALBase,
                     color: isWarning
                         ? Colors.red
                         : isSelected
-                          ? Colors.primary
-                          : Colors.white,
+                          ? theme.pRIMARY6Primary
+                          : theme.textTitle,
                     fontWeight: isSelected ? '600' : '400',
+                    border: `1px solid ${isSelected ? theme.pRIMARY2 : theme.nEUTRALLine}`,
                 }}
                 onClick={onClick}
             >
@@ -61,7 +62,9 @@ export const SettingButton = ({
                 >
                     <path
                         d="M1.66666 1L5.66666 5L1.66666 9"
-                        stroke={isSelected ? Colors.primary : Colors.white}
+                        stroke={
+                            isSelected ? theme.pRIMARY6Primary : theme.textTitle
+                        }
                         strokeWidth="1.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"

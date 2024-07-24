@@ -1,5 +1,6 @@
 import { Text } from 'components/atom/Text';
 import IconPaid from './iconPaid';
+import { useTheme } from 'context/themeContext';
 
 export const RenderGuest = ({
     title,
@@ -14,12 +15,13 @@ export const RenderGuest = ({
     isSelect?: boolean;
     onClick: () => void;
 }) => {
+    const { theme } = useTheme();
     return (
         <div
             style={{
                 width: '100%',
-                border: `1px solid ${isSelect ? '#CC7D00' : '#5F6368'} `,
-                background: isSelect ? 'rgba(255, 157, 0, 0.20)' : '#161B26',
+                border: `1px solid ${isSelect ? theme.pRIMARY2 : theme.nEUTRALLine} `,
+                background: isSelect ? theme.pRIMARY1 : theme.nEUTRALBase,
                 padding: 8,
                 borderRadius: 8,
                 marginBottom: 16,
@@ -27,11 +29,18 @@ export const RenderGuest = ({
             }}
             onClick={() => !isPaid && onClick()}
         >
-            <Text>Guest {title}</Text>
+            <Text
+                style={{
+                    color: isSelect ? theme.pRIMARY6Primary : theme.textTitle,
+                    fontWeight: '600',
+                }}
+            >
+                Guest {title}
+            </Text>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 {isPaid && <IconPaid />}
-                <Text style={{ color: isSelect ? 'white' : '#666' }}>
-                    $ {money.toFixed(2)}
+                <Text style={{ color: theme.tEXTSecondary }}>
+                    {isPaid ? 'Paid' : `$ ${money.toFixed(2)}`}
                 </Text>
             </div>
         </div>

@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 import { updateStatusLogout } from 'features/auth/authSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
+import { useTheme } from 'context/themeContext';
 const MenuMerchant = [
     {
         title: 'Go Merchant',
@@ -86,6 +87,7 @@ export default function DrawerMenu() {
             dispatch(updateStatusLogout());
         }
     };
+    const { theme } = useTheme();
     return (
         <>
             <div
@@ -108,7 +110,7 @@ export default function DrawerMenu() {
                         display: 'none',
                     },
                     body: {
-                        background: 'rgba(31, 36, 47, 1)',
+                        background: theme.nEUTRALPrimary,
                         padding: 16,
                         display: 'flex',
                         flexDirection: 'column',

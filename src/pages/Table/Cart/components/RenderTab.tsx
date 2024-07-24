@@ -1,7 +1,7 @@
 import PlusIcon from 'assets/icons/plusIcon';
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 import React from 'react';
-import { Colors } from 'themes/colors';
 
 export default function RenderTab({
     id,
@@ -12,15 +12,22 @@ export default function RenderTab({
     selected?: boolean;
     onClick?: () => void;
 }) {
+    const { theme } = useTheme();
     return (
         <div
             style={{
                 height: 38,
                 width: id ? 132 : 100,
-                background: selected ? Colors.grey3 : Colors.grey1,
+                background: !id
+                    ? theme.wARNING1BG
+                    : selected
+                      ? theme.nEUTRALLine
+                      : theme.nEUTRALSecBG,
                 borderTopLeftRadius: 8,
                 borderTopRightRadius: 8,
-                borderBottom: selected ? '2px solid #FF9D00' : 'none',
+                borderBottom: selected
+                    ? `2px solid ${theme.pRIMARY6Primary}`
+                    : 'none',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -35,7 +42,10 @@ export default function RenderTab({
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
-                        color: selected ? Colors.primary : Colors.darkPrimary,
+                        color: selected
+                            ? theme.pRIMARY6Primary
+                            : theme.textTitle,
+                        fontWeight: selected ? '600' : '400',
                     }}
                 >
                     #{id}
@@ -48,7 +58,8 @@ export default function RenderTab({
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
-                            color: Colors.primary,
+                            color: theme.pRIMARY6Primary,
+                            fontWeight: '600',
                         }}
                     >
                         New

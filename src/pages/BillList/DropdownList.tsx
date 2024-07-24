@@ -1,5 +1,6 @@
 import Select from 'react-select';
 import React, { useImperativeHandle } from 'react';
+import { useTheme } from 'context/themeContext';
 
 interface optionProps {
     value: string | null | undefined;
@@ -21,24 +22,27 @@ const ChildComponent = React.forwardRef<ChildComponentRef, ChildProps>(
         const [selectedOption, setSelectedOption] = React.useState<
             optionProps | null | undefined
         >();
+        const { theme } = useTheme();
         const customStyles = {
             container: (provided: any) => ({
                 ...provided,
                 width: 154,
                 marginRight: 16,
                 outline: 'none',
+                color: theme.tEXTPrimary,
             }),
             control: (base: any) => ({
                 ...base,
-                border: '1px solid #dddddd',
+                color: theme.tEXTPrimary,
+                border: `1px solid ${theme.nEUTRALLine}`,
                 boxShadow: 'none',
-                background: 'transparent',
+                background: theme.nEUTRALBase,
                 height: 56,
             }),
             menuList: (base: any) => ({
                 ...base,
                 padding: 0,
-                color: '#ffffff',
+                color: theme.tEXTPrimary,
                 fontSize: 18,
                 background: 'transparent',
             }),
@@ -51,7 +55,7 @@ const ChildComponent = React.forwardRef<ChildComponentRef, ChildProps>(
             }),
             singleValue: (provided: any) => ({
                 ...provided,
-                color: '#ffffff',
+                color: theme.tEXTPrimary,
                 fontSize: 18,
             }),
             option: (base: any, { isFocused }: any) => {
@@ -64,7 +68,7 @@ const ChildComponent = React.forwardRef<ChildComponentRef, ChildProps>(
             placeholder: (defaultStyles: any) => {
                 return {
                     ...defaultStyles,
-                    color: '#ffffff',
+                    color: theme.tEXTPrimary,
                     fontSize: 18,
                 };
             },

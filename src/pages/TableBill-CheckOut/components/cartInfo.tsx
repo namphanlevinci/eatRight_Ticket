@@ -1,4 +1,5 @@
 import { TextBold as Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
 
@@ -6,13 +7,14 @@ export default function CartInfo() {
     const isMobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
+    const { theme } = useTheme();
     return (
         <div
             style={{
-                background: '#161B26',
+                background: theme.nEUTRALBase,
 
                 borderRadius: 8,
-                border: '1px solid #3F3F3F',
+                border: `1px solid ${theme.nEUTRALLine}`,
                 display: 'flex',
                 padding: 8,
                 flexWrap: isMobile ? 'wrap' : 'initial',

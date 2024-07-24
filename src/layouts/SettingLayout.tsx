@@ -3,11 +3,11 @@ import { Col, Layout, Modal, Row } from 'antd';
 import { SettingButton } from 'components/atom/Button/SettingButton';
 import { Text } from 'components/atom/Text';
 import { BASE_ROUTER } from 'constants/router';
+import { useTheme } from 'context/themeContext';
 import { updateStatusLogout } from 'features/auth/authSlice';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
-import { Colors } from 'themes/colors';
 
 type Props = {
     children: React.ReactNode;
@@ -23,10 +23,11 @@ export default function SettingLayout(props: Props) {
     const location = useLocation();
     const [modal, contextHolder] = Modal.useModal();
     const dispatch = useDispatch();
+    const { theme } = useTheme();
     return (
         <DarkLayout>
             {contextHolder}
-            <Layout style={{ background: Colors.black, padding: 16 }}>
+            <Layout style={{ background: theme.nEUTRALPrimary, padding: 16 }}>
                 <Text style={{ fontSize: 24 }}>Settings</Text>
 
                 <Row style={{ marginTop: 36 }}>

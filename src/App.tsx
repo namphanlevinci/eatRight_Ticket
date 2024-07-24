@@ -10,6 +10,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { App as AppProvider } from 'antd';
 import { PrinterProvider } from 'context/printerContext';
 import { SocketProvider } from 'context/noticationContext';
+import { ThemeProvider } from 'context/themeContext';
 function App() {
     const client = setupGraphQlClient();
     return (
@@ -18,13 +19,15 @@ function App() {
                 <AppProvider>
                     <ApolloProvider client={client}>
                         <Router>
-                            <CartProvider>
-                                <SocketProvider>
-                                    <PrinterProvider>
-                                        <BaseRouter />
-                                    </PrinterProvider>
-                                </SocketProvider>
-                            </CartProvider>
+                            <ThemeProvider>
+                                <CartProvider>
+                                    <SocketProvider>
+                                        <PrinterProvider>
+                                            <BaseRouter />
+                                        </PrinterProvider>
+                                    </SocketProvider>
+                                </CartProvider>
+                            </ThemeProvider>
                         </Router>
                     </ApolloProvider>
                 </AppProvider>

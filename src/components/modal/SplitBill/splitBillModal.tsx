@@ -8,6 +8,7 @@ import SplitEvenMode from './SplitEvenMode';
 import SplitByItemMode from './SplitByItemMode';
 import { CartItemType, ItemType } from 'context/cartType';
 import SplitBillConfirmMode from './SplitBillConfirmMode';
+import { useTheme } from 'context/themeContext';
 
 export enum SplitBillMode {
     EVEN = 0,
@@ -38,6 +39,7 @@ export default function SplitBillModal({
     const [listItems, setListItems] = useState<ItemType[]>([]);
     const [listGuest, setListGuest] = useState<string[]>([]);
     const [numbers, setNumbers] = useState<number>(1);
+    const { theme } = useTheme();
     return (
         <>
             <ModalStyled
@@ -48,8 +50,8 @@ export default function SplitBillModal({
                     header: { display: 'none' },
                     footer: { display: 'none' },
                     content: {
-                        background: 'rgba(31, 36, 47, 1)',
-                        border: `1px solid rgba(63, 63, 63, 1)`,
+                        background: theme.nEUTRALPrimary,
+                        border: `1px solid ${theme.nEUTRALLine}`,
                         overflow: 'auto',
                     },
                 }}

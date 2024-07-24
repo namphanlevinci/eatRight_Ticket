@@ -1,20 +1,4 @@
-export const Colors = {
-    black: '#000000',
-    grey3: '#333333',
-    white: '#ffffff',
-    primary: '#FF9D00',
-    darkPrimary: '#995E00',
-    grey1: '#191919',
-    green: '#34A853',
-    grey5: '#808080',
-    brown5: '#804E00',
-    grey7: '#B2B2B2',
-    grey8: '#CCCCCC',
-    grey9: '#E5E5E5',
-    primary_dark_20: '#331F00',
-    red: '#EA4335',
-    blueInfo: '#4285F4',
-};
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 export const themeMode = {
     lightTheme: {
@@ -66,6 +50,7 @@ export const themeMode = {
         sECONDARY2Default: '#ff9d00',
         sECONDARY3Hover: '#e27500',
         sECONDARY4Pressed: '#983d08',
+        textTitle: '#121212',
     },
     darkTheme: {
         semanticPositive: '#146c43',
@@ -116,5 +101,36 @@ export const themeMode = {
         sECONDARY2Default: '#f29a0d',
         sECONDARY3Hover: '#f4922a',
         sECONDARY4Pressed: '#f09f70',
+        textTitle: '#fff',
     },
 };
+export type ColorsThemeType = typeof themeMode.lightTheme;
+
+interface ThemeContextProps {
+    theme: typeof themeMode.lightTheme;
+    toggleTheme?: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextProps>({
+    theme: themeMode.lightTheme,
+});
+
+export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+    const [theme, setTheme] = useState(themeMode.lightTheme);
+
+    const toggleTheme = () => {
+        setTheme((prevTheme) =>
+            prevTheme === themeMode.lightTheme
+                ? themeMode.darkTheme
+                : themeMode.lightTheme,
+        );
+    };
+
+    return (
+        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+            {children}
+        </ThemeContext.Provider>
+    );
+};
+
+export const useTheme = () => useContext(ThemeContext);

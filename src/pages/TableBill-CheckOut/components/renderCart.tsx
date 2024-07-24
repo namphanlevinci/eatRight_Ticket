@@ -2,14 +2,16 @@ import { Text } from 'components/atom/Text';
 import { InvoiceWithSplit } from '../IType';
 import { Col, Row } from 'antd';
 import { DividedSolid } from 'pages/BillDetail/styled';
+import { useTheme } from 'context/themeContext';
 
 export const RenderCart = ({ cart }: { cart: InvoiceWithSplit }) => {
+    const { theme } = useTheme();
     return (
         <div
             style={{
                 width: '100%',
-                border: `1px solid  #5F6368 `,
-                background: '#161B26',
+                border: `1px solid  ${theme.pRIMARY2}`,
+                background: theme.pRIMARY1,
                 padding: 8,
                 borderRadius: 8,
                 marginBottom: 16,
@@ -22,7 +24,7 @@ export const RenderCart = ({ cart }: { cart: InvoiceWithSplit }) => {
                 return <RenderItem key={index} item={item} />;
             })}
             <div style={{ flex: 1 }}>
-                <DividedSolid color="#5F6368" />
+                <DividedSolid color={theme.nEUTRALLine} />
                 <RenderText
                     title="Subtotal"
                     value={`$${cart.total.subtotal.value}`}
@@ -39,7 +41,7 @@ export const RenderCart = ({ cart }: { cart: InvoiceWithSplit }) => {
                     title="Total"
                     value={`$${cart.total.base_grand_total.value}`}
                 />
-                <DividedSolid color="#5F6368" />
+                <DividedSolid color={theme.nEUTRALLine} />
                 <RenderText title="Tip" value={``} />
                 <RenderText
                     title="Grand Total"

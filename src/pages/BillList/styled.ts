@@ -39,7 +39,6 @@ export const StyledColumnContainer = styled.div`
 
 export const StyledColumn = styled.div<StyledColumnProps>`
     min-width: 200px;
-    color: white;
     opacity: ${(props) => props.opacity || 1};
     font-weight: ${(props) => props.fontWeight || '400'};
     display: flex;
@@ -67,7 +66,7 @@ export const StyledSearch = styled.div`
     cursor: pointer;
     border-radius: 8px;
 
-    p{
+    p {
         font-family: Montserrat;
         font-size: 16px;
         font-weight: 600;
