@@ -80,7 +80,7 @@ export default function OrderFooter({
                             )} $`}
                         />
                     )}
-                    {cart?.prices?.total_canceled?.value && (
+                    {cart?.prices?.total_canceled?.value ? (
                         <RenderBillInfomationRow
                             title="Canceled Item"
                             value={`-${formatNumberWithCommas(
@@ -89,6 +89,8 @@ export default function OrderFooter({
                                 ),
                             )} $`}
                         />
+                    ) : (
+                        <></>
                     )}
                     {/* <RenderBillInfomationRow title="Taxes" value="$10.99" />
                 <RenderBillInfomationRow title="Service fee" value="$5.99" /> */}

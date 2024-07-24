@@ -2,8 +2,9 @@ import { TextBold as Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
-
-export default function CartInfo() {
+import { MerchantSplitOrderOutput } from '../IType';
+import dayjs from 'dayjs';
+export default function CartInfo({ data }: { data: MerchantSplitOrderOutput }) {
     const isMobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -25,13 +26,13 @@ export default function CartInfo() {
                     <span style={{ fontWeight: '400', fontSize: 14 }}>
                         Table
                     </span>{' '}
-                    A12
+                    {data.order.table}
                 </Text>
                 <Text>
                     <span style={{ fontWeight: '400', fontSize: 14 }}>
                         Guests{' '}
                     </span>{' '}
-                    4
+                    {data.order.guests}
                 </Text>
             </div>
             <div style={{ width: isMobile ? '70%' : '33%', overflow: 'auto' }}>
@@ -39,13 +40,14 @@ export default function CartInfo() {
                     <span style={{ fontWeight: '400', fontSize: 14 }}>
                         In / out{' '}
                     </span>
-                    6.30PM / 9.30PM
+                    {dayjs(data.order.created_at).format('hh:mm A')} /{' '}
+                    {dayjs(new Date()).format('hh:mm A')}
                 </Text>
                 <Text>
                     <span style={{ fontWeight: '400', fontSize: 14 }}>
                         Order ID
                     </span>{' '}
-                    4
+                    {data.order.order_number}
                 </Text>
             </div>
             <div style={{ width: isMobile ? '100%' : '43%', overflow: 'auto' }}>
@@ -53,13 +55,13 @@ export default function CartInfo() {
                     <span style={{ fontWeight: '400', fontSize: 14 }}>
                         Lead guest{' '}
                     </span>
-                    Lead guest A12
+                    {data.order.lead_guest}
                 </Text>
                 <Text>
                     <span style={{ fontWeight: '400', fontSize: 14 }}>
                         Total{' '}
                     </span>
-                    Guests 4
+                    {data.order.total.grand_total.value}
                 </Text>
             </div>
         </div>

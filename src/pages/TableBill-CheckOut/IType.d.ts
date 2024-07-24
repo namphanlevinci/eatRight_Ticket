@@ -50,6 +50,16 @@ export type InvoiceWithSplit = {
 type Order = {
     order_number: string;
     order_id: string;
+    table: string;
+    created_at: string;
+    lead_guest: string;
+    guests: number;
+    total: {
+        grand_total: {
+            value: number;
+            currency: string;
+        };
+    };
     __typename: 'Order';
 };
 

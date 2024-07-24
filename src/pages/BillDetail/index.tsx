@@ -32,24 +32,60 @@ import { emitter } from 'graphql/client';
 import { useTheme } from 'context/themeContext';
 import BreadCrum from 'components/atom/BreadCrum/BreadCrum';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
+import { GET_SPLIT_BILL } from 'graphql/cart/splitBill';
 export default function index() {
     const [getOrderDetail, { data, loading }] = useLazyQuery(GET_ORDER_DETAIL, {
         fetchPolicy: 'cache-and-network',
     });
+    const [onGetSplitBill, { data: dataSplitBill }] =
+        useLazyQuery(GET_SPLIT_BILL);
     const [searchParams] = useSearchParams();
     const [showPendingPayment, setShowPendingPayment] = React.useState(false);
     const orderId = searchParams.get('orderId');
     const order_ID = searchParams.get('order_id');
     useEffect(() => {
         if (orderId !== null && orderId !== 'undefined') {
-            getOrderDetail({ variables: { id: atob(orderId) } });
+            getOrderDetail({ variables: { id: atob(orderId) } }).then((res) => {
+                if (
+                    res.data?.orderDetail?.payment_method_code ===
+                        'splitbill' &&
+                    res.data?.orderDetail?.status !== 'complete'
+                ) {
+                    onGetSplitBill({
+                        variables: {
+                            OrderNumber: res.data?.orderDetail?.order_number,
+                        },
+                    });
+                }
+            });
         }
     }, [orderId]);
     useEffect(() => {
         if (order_ID !== null && order_ID !== 'undefined') {
-            getOrderDetail({ variables: { id: order_ID } });
+            getOrderDetail({ variables: { id: order_ID } }).then((res) => {
+                if (
+                    res.data?.orderDetail?.payment_method_code ===
+                        'splitbill' &&
+                    res.data?.orderDetail?.status !== 'complete'
+                ) {
+                    onGetSplitBill({
+                        variables: {
+                            OrderNumber: res.data?.orderDetail?.order_number,
+                        },
+                    });
+                }
+            });
         }
     }, [order_ID]);
+    useEffect(() => {
+        if (dataSplitBill) {
+            localStorage.setItem(
+                'split_bill_data',
+                JSON.stringify(dataSplitBill?.merchantGetOrderInvoices),
+            );
+            navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+        }
+    }, [dataSplitBill]);
     const navigation = useNavigate();
     const { modal } = App.useApp();
     const { print, connectionStatus }: PrinterContextType = usePrinter();

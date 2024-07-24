@@ -108,7 +108,7 @@ export default function TableSplitBillCheckOut() {
             }}
         >
             <RenderHeader />
-            <CartInfo />
+            <CartInfo data={data} />
             <div style={{ marginTop: 20 }} />
             <Container>
                 <ColumnGuestList>
