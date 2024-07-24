@@ -23,6 +23,7 @@ import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import LoadingModal from 'components/modal/loadingModal';
+import { useTheme } from 'context/themeContext';
 
 const { Content } = Layout;
 
@@ -157,9 +158,14 @@ const BillList: React.FC = () => {
         onChangeDropdownList,
         loading,
     } = useBillList();
-
+    const { theme } = useTheme();
     return (
-        <Layout style={{ backgroundColor: Colors.black, minHeight: '100vh' }}>
+        <Layout
+            style={{
+                backgroundColor: theme.nEUTRALPrimary,
+                minHeight: '100vh',
+            }}
+        >
             <LoadingModal showLoading={loading} />
             <Content style={{ margin: '0 16px' }}>
                 <Divider style={{ background: Colors.grey3 }} />
@@ -199,9 +205,12 @@ const BillList: React.FC = () => {
                             />
                         </div>
 
-                        <StyledSearch onClick={handleGetBillList}>
+                        <StyledSearch
+                            onClick={handleGetBillList}
+                            style={{ background: theme.pRIMARY6Primary }}
+                        >
                             <p>Filter</p>
-                            <SearchIcon />
+                            <SearchIcon color={theme.nEUTRALPrimary} />
                         </StyledSearch>
                     </div>
                     <div style={{ display: 'flex', marginTop: 50 }}>
@@ -220,11 +229,18 @@ const BillList: React.FC = () => {
                         />
                     </div>
                 </StyledTitle>
-                <ContainerPaginationText>
+                <ContainerPaginationText
+                    style={{ background: theme.nEUTRALPrimary }}
+                >
                     <div />
                 </ContainerPaginationText>
                 <div>
-                    <StyledColumnContainer>
+                    <StyledColumnContainer
+                        style={{
+                            background: theme.pRIMARY1,
+                            border: `1px solid ${theme.pRIMARY2}`,
+                        }}
+                    >
                         <StyledColumn style={{ width: '100%' }}>
                             Order
                         </StyledColumn>
@@ -249,7 +265,9 @@ const BillList: React.FC = () => {
                             key={dt.id}
                             style={{
                                 background:
-                                    index % 2 === 0 ? '#191919' : '#0D0D0D',
+                                    index % 2 === 0
+                                        ? theme.nEUTRALBase
+                                        : theme.nEUTRALLine,
                             }}
                             onClick={() =>
                                 navigation(
@@ -287,7 +305,9 @@ const BillList: React.FC = () => {
                         </StyledColumnContainer>
                     ))}
                 </div>
-                <ContainerPaginationText>
+                <ContainerPaginationText
+                    style={{ background: theme.nEUTRALPrimary }}
+                >
                     <div />
                     <StyledPagination
                         total={total_count}
@@ -301,6 +321,7 @@ const BillList: React.FC = () => {
                         }}
                         showSizeChanger
                         showTotal={(total) => `Total ${total} items`}
+                        theme={theme}
                     />
                 </ContainerPaginationText>
             </Content>
@@ -310,25 +331,30 @@ const BillList: React.FC = () => {
 
 export default BillList;
 
+const getPanigationtTotalTextColor = (props: { theme: any }) =>
+    props.theme.tEXTPrimary;
+const getPanigationtItemPagination = (props: { theme: any }) =>
+    props.theme.nEUTRALPrimary;
 export const StyledPagination = styled(Pagination)`
+    align-items: center;
     .ant-pagination-total-text {
-        color: ${Colors.white} !important;
+        color: ${getPanigationtTotalTextColor} !important;
         font-size: 18px;
     }
     .ant-pagination-item {
         height: 48px;
         width: 48px;
         padding-top: 8px;
-        background: ${Colors.black};
-        color: ${Colors.white};
+        background: ${getPanigationtItemPagination};
+        color: ${getPanigationtTotalTextColor};
     }
     .ant-pagination-item a {
-        color: ${Colors.white} !important;
+        color: ${getPanigationtTotalTextColor} !important;
     }
     .ant-pagination-item-link span {
-        color: ${Colors.white};
+        color: ${getPanigationtTotalTextColor};
     }
     .ant-pagination-item-active {
-        border-color: ${Colors.white} !important;
+        border-color: ${getPanigationtTotalTextColor} !important;
     }
 `;

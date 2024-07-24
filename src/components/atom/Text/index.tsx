@@ -45,7 +45,13 @@ export const TextBoldDefault = styled.p`
     font-weight: 600;
 `;
 
-export const Text = ({ children, style }: any) => {
+export const Text = ({
+    children,
+    style,
+}: {
+    children: React.ReactNode;
+    style?: React.CSSProperties;
+}) => {
     const { theme } = useTheme();
 
     return (
