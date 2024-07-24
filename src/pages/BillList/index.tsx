@@ -241,22 +241,34 @@ const BillList: React.FC = () => {
                             border: `1px solid ${theme.pRIMARY2}`,
                         }}
                     >
-                        <StyledColumn style={{ width: '100%' }}>
+                        <StyledColumn
+                            style={{ width: '100%', color: theme.tEXTPrimary }}
+                        >
                             Order
                         </StyledColumn>
-                        <StyledColumn style={{ width: '100%' }}>
+                        <StyledColumn
+                            style={{ width: '100%', color: theme.tEXTPrimary }}
+                        >
                             Status
                         </StyledColumn>
                         <StyledColumn
-                            style={{ width: '100%', justifyContent: 'center' }}
+                            style={{
+                                width: '100%',
+                                justifyContent: 'center',
+                                color: theme.tEXTPrimary,
+                            }}
                         >
                             Table
                         </StyledColumn>
-                        <StyledColumn style={{ width: '100%' }}>
+                        <StyledColumn
+                            style={{ width: '100%', color: theme.tEXTPrimary }}
+                        >
                             Total
                         </StyledColumn>
 
-                        <StyledColumn style={{ width: '100%' }}>
+                        <StyledColumn
+                            style={{ width: '100%', color: theme.tEXTPrimary }}
+                        >
                             Date
                         </StyledColumn>
                     </StyledColumnContainer>
@@ -276,15 +288,24 @@ const BillList: React.FC = () => {
                             }
                         >
                             <StyledColumn
-                                style={{ width: '100%' }}
+                                style={{
+                                    width: '100%',
+                                    color: theme.tEXTPrimary,
+                                }}
                             >{`# ${dt.order_number}`}</StyledColumn>
-                            <StyledColumn style={{ width: '100%' }}>
+                            <StyledColumn
+                                style={{
+                                    width: '100%',
+                                    color: theme.tEXTPrimary,
+                                }}
+                            >
                                 {convertStatus(dt.status)}
                             </StyledColumn>
                             <StyledColumn
                                 style={{
                                     width: '100%',
                                     justifyContent: 'center',
+                                    color: theme.tEXTPrimary,
                                 }}
                             >
                                 {dt.table}
@@ -294,12 +315,18 @@ const BillList: React.FC = () => {
                                     opacity: 1,
                                     fontWeight: 600,
                                     width: '100%',
+                                    color: theme.tEXTPrimary,
                                 }}
                             >
                                 {formatNumberWithCommas(dt.grand_total)}
                             </StyledColumn>
 
-                            <StyledColumn style={{ width: '100%' }}>
+                            <StyledColumn
+                                style={{
+                                    width: '100%',
+                                    color: theme.tEXTPrimary,
+                                }}
+                            >
                                 {dt.created_at}
                             </StyledColumn>
                         </StyledColumnContainer>
