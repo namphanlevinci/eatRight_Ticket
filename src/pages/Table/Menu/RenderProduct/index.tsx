@@ -5,6 +5,7 @@ import { useProductDetail } from 'pages/Table/Menu/RenderProduct/useProductDetai
 import RenderRight from './RenderRight';
 import RenderLeft from './RenderLeft';
 import RenderLeftVariants from './RenderLeft_Variants';
+import { useTheme } from 'context/themeContext';
 
 export default function RenderProduct({ product }: { product: ProductType }) {
     const {
@@ -23,8 +24,16 @@ export default function RenderProduct({ product }: { product: ProductType }) {
     } = useProductDetail({
         product: product,
     });
+    const { theme } = useTheme();
     return (
-        <StyledCartBorder style={{ padding: 16, marginBlock: 25 }}>
+        <StyledCartBorder
+            style={{
+                padding: 16,
+                marginBlock: 25,
+                background: theme.nEUTRALBase,
+                border: `1px solid ${theme.nEUTRALLine}`,
+            }}
+        >
             {loading ? (
                 <Spin size="large" />
             ) : listVariants.length > 0 ? (

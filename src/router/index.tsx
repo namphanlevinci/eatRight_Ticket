@@ -1,6 +1,12 @@
 import { BASE_ROUTER } from 'constants/router';
 import { Suspense, useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import {
+    Route,
+    Routes,
+    useNavigate,
+    useSearchParams,
+    useLocation,
+} from 'react-router-dom';
 import Container from 'containers/index';
 import { useSelector } from 'react-redux';
 import type { RootState } from 'store';
@@ -9,7 +15,11 @@ import { Page404 } from 'pages/404';
 import { emitter } from 'graphql/client';
 import { App, Modal } from 'antd';
 import { useDispatch } from 'react-redux';
-import { updateStatusLogout } from 'features/auth/authSlice';
+import {
+    updateStatusLogin,
+    updateStatusLoginForMerchant,
+    updateStatusLogout,
+} from 'features/auth/authSlice';
 import _ from 'lodash';
 export const BaseRouter = () => {
     const { notification } = App.useApp();
@@ -17,6 +27,26 @@ export const BaseRouter = () => {
     const { error } = Modal;
     const [needLogout, setNeedLogout] = useState(false);
     const { isLogged } = useSelector((state: RootState) => state.auth);
+    const [urlParams] = useSearchParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+    // get token on params
+    useEffect(() => {
+        const token = urlParams.get('token');
+        const from = urlParams.get('from');
+        if (token) {
+            localStorage.setItem('token', token);
+            if (from === 'merchant') {
+                dispatch(updateStatusLoginForMerchant());
+            } else {
+                dispatch(updateStatusLogin());
+            }
+
+            const { pathname } = location;
+            navigate(pathname);
+        }
+    }, []);
+
     useEffect(() => {
         const handleErrorMessages = _.debounce((error: any) => {
             notification.error({
@@ -98,6 +128,14 @@ export const BaseRouter = () => {
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
                             <Container.TableBill />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.TABLE_BILL_CHECKOUT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.TableSplitBill />
                         </PrivateRoute>
                     }
                 />

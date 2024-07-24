@@ -12,7 +12,11 @@ export const Header = ({
     onLogo: () => void;
 }) => {
     return (
-        <Row justify={'space-between'} align={'middle'}>
+        <Row
+            justify={'space-between'}
+            align={'middle'}
+            style={{ marginBottom: 16 }}
+        >
             <div onClick={onLogo}>
                 <img
                     src={logo}
@@ -57,7 +61,7 @@ export const RenderItem = ({
                 >
                     {icon}
                 </div>
-                <Text>{title}</Text>
+                <Text style={{ fontWeight: '600', fontSize: 18 }}>{title}</Text>
             </Row>
             <ArrowRightIcon />
         </Row>

@@ -1,8 +1,8 @@
 import { Row } from 'antd';
 import UpDownNumber from 'components/UpdownNumber';
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 import React, { useEffect, useState } from 'react';
-import { Colors } from 'themes/colors';
 
 export default function RenderLeftVariants({
     listVariants,
@@ -42,19 +42,20 @@ const RenderItem = ({ item, index, onChangeQuantity }: any) => {
         useEffect(() => {
             onChangeQuantity(index, quantity, price, sku, name);
         }, [quantity]);
+        const { theme } = useTheme();
         return (
             <Row
                 key={index}
                 style={{
                     height: 56,
-                    background: 'black',
+                    background: theme.pRIMARY1,
                     borderRadius: 8,
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     marginRight: 20,
                     marginBottom: 16,
                     border: '1px solid',
-                    borderColor: Colors.primary,
+                    borderColor: theme.pRIMARY2,
                 }}
             >
                 <Text style={{ marginLeft: 20 }}>

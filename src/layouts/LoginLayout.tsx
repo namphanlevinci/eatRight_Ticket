@@ -1,4 +1,5 @@
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 import React from 'react';
 import { Colors } from 'themes/colors';
 type Props = {
@@ -6,13 +7,14 @@ type Props = {
 };
 export default function LoginLayout(props: Props) {
     const { children } = props;
+    const { theme } = useTheme();
     return (
         <div
             style={{
                 display: 'flex',
                 minHeight: '100vh',
                 flexDirection: 'column',
-                background: Colors.black,
+                background: theme.nEUTRALPrimary,
             }}
         >
             <div style={{ flexGrow: 1 }} />
@@ -47,7 +49,7 @@ export default function LoginLayout(props: Props) {
                             <span
                                 style={{
                                     fontSize: 18,
-                                    color: Colors.primary,
+                                    color: theme.pRIMARY6Primary,
                                     fontWeight: '600',
                                 }}
                             >
@@ -63,7 +65,7 @@ export default function LoginLayout(props: Props) {
                                 style={{
                                     textAlign: 'center',
                                     fontSize: 14,
-                                    color: Colors.primary,
+                                    color: theme.pRIMARY6Primary,
                                     marginTop: 10,
                                 }}
                             >

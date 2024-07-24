@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Drawer, Modal } from 'antd';
 import BoardMenuIcon from 'assets/icons/boardMenu';
 
@@ -13,8 +13,51 @@ import { useNavigate } from 'react-router';
 import { Header, RenderItem, RenderLogout } from './components';
 import { useDispatch } from 'react-redux';
 import { updateStatusLogout } from 'features/auth/authSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
+import { useTheme } from 'context/themeContext';
+const MenuMerchant = [
+    {
+        title: 'Go Merchant',
+        icon: <StoreIcon />,
+        to: `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`,
+    },
+    {
+        title: 'Restaurent Manager',
+        icon: <StoreIcon />,
+        to: BASE_ROUTER.RESTAURENT_MANAGER,
+    },
+    {
+        title: 'Menu Manager',
+        icon: <MenuManagerIcon />,
+        to: BASE_ROUTER.RESTAURENT_MANAGER,
+    },
+    {
+        title: 'Promotions',
+        icon: <PromotionsIcon />,
+        to: BASE_ROUTER.RESTAURENT_MANAGER,
+    },
+    {
+        title: 'Customers Information',
+        icon: <AccountIcon />,
+        to: BASE_ROUTER.RESTAURENT_MANAGER,
+    },
+];
+const MenuList = [
+    {
+        title: 'Receipt Bill',
+        icon: <ReceiptBillIcon />,
+        to: BASE_ROUTER.BILL,
+    },
+    {
+        title: 'Settings',
+        icon: <SettingIcon />,
+        to: BASE_ROUTER.SETTINGS,
+    },
+];
 export default function DrawerMenu() {
     const [open, setOpen] = useState(false);
+    const { isMerchant } = useSelector((state: RootState) => state.auth);
     const navigation = useNavigate();
     const showDrawer = () => {
         setOpen(true);
@@ -23,39 +66,15 @@ export default function DrawerMenu() {
     const onClose = () => {
         setOpen(false);
     };
-
-    const MenuData = [
-        {
-            title: 'Restaurent Manager',
-            icon: <StoreIcon />,
-            to: BASE_ROUTER.RESTAURENT_MANAGER,
-        },
-        {
-            title: 'Menu Manager',
-            icon: <MenuManagerIcon />,
-            to: BASE_ROUTER.RESTAURENT_MANAGER,
-        },
-        {
-            title: 'Promotions',
-            icon: <PromotionsIcon />,
-            to: BASE_ROUTER.RESTAURENT_MANAGER,
-        },
-        {
-            title: 'Customers Information',
-            icon: <AccountIcon />,
-            to: BASE_ROUTER.RESTAURENT_MANAGER,
-        },
-        {
-            title: 'Receipt Bill',
-            icon: <ReceiptBillIcon />,
-            to: BASE_ROUTER.BILL,
-        },
-        {
-            title: 'Settings',
-            icon: <SettingIcon />,
-            to: BASE_ROUTER.SETTINGS,
-        },
-    ];
+    const [MenuData, setMenuData] = useState(MenuList);
+    useEffect(() => {
+        if (isMerchant) {
+            const newData = [...MenuMerchant, ...MenuList];
+            setMenuData(newData);
+        } else {
+            setMenuData(MenuList);
+        }
+    }, [isMerchant]);
     const [modal, contextHolder] = Modal.useModal();
     const dispatch = useDispatch();
     const onLogout = async () => {
@@ -68,6 +87,7 @@ export default function DrawerMenu() {
             dispatch(updateStatusLogout());
         }
     };
+    const { theme } = useTheme();
     return (
         <>
             <div
@@ -90,7 +110,7 @@ export default function DrawerMenu() {
                         display: 'none',
                     },
                     body: {
-                        background: 'rgba(31, 36, 47, 1)',
+                        background: theme.nEUTRALPrimary,
                         padding: 16,
                         display: 'flex',
                         flexDirection: 'column',
@@ -111,6 +131,10 @@ export default function DrawerMenu() {
                             icon={item.icon}
                             title={item.title}
                             onPress={() => {
+                                if (item.title === 'Go Merchant') {
+                                    window.location.href = item.to;
+                                    return;
+                                }
                                 navigation(item.to);
                             }}
                         />

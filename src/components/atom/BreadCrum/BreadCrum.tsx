@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyledBreadCrum } from '../../../pages/Table/Cart/styled';
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 
 export default function BreadCrum({
     isSelected,
@@ -9,16 +10,14 @@ export default function BreadCrum({
     isSelected?: boolean;
     children: React.ReactNode;
 }) {
+    const { theme } = useTheme();
     return (
-        <StyledBreadCrum
-            style={{
-                backgroundColor: isSelected ? '#FF9D0033' : 'transparent',
-                borderColor: isSelected ? 'black' : 'white',
-            }}
-        >
+        <StyledBreadCrum>
             <Text
                 style={{
-                    color: 'white',
+                    color: isSelected
+                        ? theme.tEXTPrimary
+                        : theme.pRIMARY6Primary,
                     fontSize: 16,
                     fontWeight: '400',
                     textAlign: 'center',

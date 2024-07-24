@@ -1,6 +1,8 @@
+import { useTheme } from 'context/themeContext';
 import React from 'react';
 
 export default function CloseXIcon() {
+    const { theme } = useTheme();
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -11,7 +13,7 @@ export default function CloseXIcon() {
         >
             <path
                 d="M30 10L10 30M10 10L30 30"
-                stroke="#F8F9FA"
+                stroke={theme.tEXTPrimary}
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"

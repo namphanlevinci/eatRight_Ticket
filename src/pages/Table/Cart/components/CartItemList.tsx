@@ -3,7 +3,6 @@ import { Col, Divider, Row } from 'antd';
 import { Text } from 'components/atom/Text';
 import UpDownNumber from 'components/UpdownNumber';
 import { Button } from 'components/atom/Button';
-import { Colors } from 'themes/colors';
 import { formatNumberWithCommas } from 'utils/format';
 import { useCart } from 'context/cartContext';
 import CartIcon from 'assets/icons/cartIcon';
@@ -21,6 +20,7 @@ import NoteIcon from 'assets/icons/noteIcon';
 import CustomTag from 'components/atom/Tag/CustomTag';
 import { getTagStyled } from 'utils/tag';
 import RenderNote from './RenderNote';
+import { useTheme } from 'context/themeContext';
 export default function CartItemList({
     data,
     cartInfo,
@@ -67,8 +67,7 @@ export default function CartItemList({
         } else {
             setIsNewItem(false);
         }
-    }, [data]);
-
+    }, [data?.items?.length]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -173,12 +172,14 @@ export default function CartItemList({
     };
     const { setUpdate, targetRef } = useMenuContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const { theme } = useTheme();
     return data ? (
         <StyledCartBorder
             style={{
                 minHeight: 280,
                 padding: 16,
+                backgroundColor: theme.nEUTRALBase,
+                border: `1px solid ${theme.nEUTRALLine}`,
             }}
         >
             <LoadingModal showLoading={loading} />
@@ -214,6 +215,7 @@ export default function CartItemList({
                                                     item.isUnsend
                                                         ? 'New'
                                                         : item?.status,
+                                                    theme,
                                                 )}
                                             />
                                         </div>
@@ -304,12 +306,12 @@ export default function CartItemList({
                                             )}
                                             <UpDownNumber
                                                 quantity={item.quantity}
-                                                setQuantity={(e: number) =>
+                                                setQuantity={(e: number) => {
                                                     updateQuantityItemFromCart(
                                                         index,
                                                         e,
-                                                    )
-                                                }
+                                                    );
+                                                }}
                                                 isSend={!item.isUnsend}
                                             />
                                         </Row>
@@ -476,7 +478,7 @@ export default function CartItemList({
                                             style={{
                                                 fontSize: 16,
                                                 marginBottom: 10,
-                                                color: Colors.green,
+                                                color: theme.sUCCESS2Default,
                                             }}
                                         >
                                             Discount :{item.label}
@@ -507,7 +509,7 @@ export default function CartItemList({
                             style={{
                                 fontSize: 20,
                                 fontWeight: '600',
-                                color: Colors.primary,
+                                color: theme.pRIMARY6Primary,
                             }}
                         >
                             {formatNumberWithCommas(
@@ -524,7 +526,7 @@ export default function CartItemList({
                                     style={{
                                         fontSize: 20,
                                         fontWeight: '600',
-                                        color: Colors.primary,
+                                        color: theme.pRIMARY6Primary,
                                     }}
                                 >
                                     {formatNumberWithCommas(
@@ -540,7 +542,7 @@ export default function CartItemList({
                                     style={{
                                         fontSize: 20,
                                         fontWeight: '600',
-                                        color: Colors.primary,
+                                        color: theme.pRIMARY6Primary,
                                     }}
                                 >
                                     {formatNumberWithCommas(
@@ -562,9 +564,13 @@ export default function CartItemList({
                                     width: 154,
                                     height: 44,
                                     gap: 10,
+                                    border: `0px solid ${theme.pRIMARY6Primary}`,
                                 }}
                                 onClick={() => isNewItem && SendCart()}
                                 isDisable={!isNewItem}
+                                disabled={!isNewItem}
+                                background={theme.pRIMARY6Primary}
+                                color={theme.nEUTRALBase}
                             >
                                 <CartIcon isDisabled={!isNewItem} />
                                 Send
@@ -577,16 +583,17 @@ export default function CartItemList({
                                         width: 154,
                                         height: 44,
                                         marginInline: 10,
-                                        background: 'black',
-                                        border: `2px solid ${Colors.primary}}`,
+                                        background: theme.nEUTRALBase,
                                         justifyContent: 'space-around',
                                         padding: 0,
+                                        border: `2px solid ${theme.pRIMARY6Primary}`,
                                     }}
                                     onClick={onClickChangeTable}
+                                    background={theme.nEUTRALBase}
                                 >
                                     <Text
                                         style={{
-                                            color: Colors.primary,
+                                            color: theme.pRIMARY6Primary,
                                         }}
                                     >
                                         Change table
@@ -598,11 +605,12 @@ export default function CartItemList({
                                         width: 154,
                                         height: 44,
                                         marginInline: 10,
-
                                         justifyContent: 'space-around',
                                         padding: 0,
                                     }}
+                                    disabled
                                     isDisable
+                                    background={theme.nEUTRALBase}
                                 >
                                     Change table
                                 </Button>
@@ -615,11 +623,14 @@ export default function CartItemList({
                                 style={{
                                     width: '100%',
                                     height: 44,
+                                    border: 0,
                                 }}
                                 onClick={goBill}
                                 isDisable={
                                     isNewItem || data?.items?.length === 0
                                 }
+                                background={theme.pRIMARY6Primary}
+                                color={theme.nEUTRALBase}
                             >
                                 Bill
                             </Button>
@@ -628,7 +639,7 @@ export default function CartItemList({
                                 style={{
                                     width: '100%',
                                     height: 44,
-                                    background: Colors.green,
+                                    background: theme.sUCCESS2Default,
                                     border: 0,
                                 }}
                                 onClick={goOrderList}

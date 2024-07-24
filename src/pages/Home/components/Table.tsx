@@ -7,6 +7,7 @@ import {
     StyledLine,
     CountAvaiable,
 } from '../styled';
+import { ColorsThemeType, useTheme } from 'context/themeContext';
 
 interface IItem {
     cartIds: {
@@ -53,21 +54,21 @@ const getStatusTableByCardIds = (item: IItem) => {
     return status;
 };
 
-const getColorByStatus = (item: IItem) => {
+const getColorByStatus = (item: IItem, theme: ColorsThemeType) => {
     const status = getStatusTableByCardIds(item);
     let color = '#ffffff';
     switch (status) {
         case TableStatus.Avaiable:
-            color = '#34A853';
+            color = theme.sUCCESS2Default;
             break;
         case TableStatus.Dining:
-            color = '#FFB133';
+            color = theme.pRIMARY6Primary;
             break;
         case TableStatus.Reserved:
-            color = '#4285F4';
+            color = theme.tERTIARY2Default;
             break;
         case TableStatus.Unavaiable:
-            color = '#EA4335';
+            color = theme.eRROR2Default;
             break;
         case TableStatus.Disabled:
             color = 'grey';
@@ -100,32 +101,40 @@ const Table = ({ item, onClick }: ITable) => {
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
+    const { theme } = useTheme();
     return (
         <StyledTable
             background={
                 status == TableStatus.Disabled ||
                 status == TableStatus.Unavaiable
-                    ? '#0d0d0d'
-                    : '#333333'
+                    ? theme.tEXTDisabled
+                    : theme.itemCardBackground
             }
-            opacity={status == TableStatus.Disabled ? 0.3 : 1}
+            opacity={status == TableStatus.Disabled ? 0.6 : 1}
             onClick={onClick}
             mobileView={ismobile}
         >
-            <StyledTableName textColor={getColorByStatus(item)}>
+            <StyledTableName textColor={getColorByStatus(item, theme)}>
                 {item.name}
             </StyledTableName>
-            <StyledTableSize>
+            <StyledTableSize style={{ color: theme.tEXTPrimary }}>
                 {`${item.numberOfCustomer || 0}/${item.size}`}
             </StyledTableSize>
-            <StyledTableStatus>{getStatusName(status)}</StyledTableStatus>
+            <StyledTableStatus style={{ color: theme.tEXTPrimary }}>
+                {getStatusName(status)}
+            </StyledTableStatus>
 
             {item.cartIds.length > 0 && (
-                <CountAvaiable>
+                <CountAvaiable
+                    style={{
+                        background: theme.pRIMARY6Primary,
+                        color: theme.pRIMARY2,
+                    }}
+                >
                     <div>{item.cartIds.length}</div>
                 </CountAvaiable>
             )}
-            <StyledLine background={getColorByStatus(item)} />
+            <StyledLine background={getColorByStatus(item, theme)} />
         </StyledTable>
     );
 };

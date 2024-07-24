@@ -3,6 +3,7 @@ import RadioIcon from 'assets/icons/radio';
 import RadioBtnSelectedLarge from 'assets/icons/radioBtnSelectedLarge';
 import React from 'react';
 import { Text } from '../Text';
+import { useTheme } from 'context/themeContext';
 
 export default function RadioButton({
     title,
@@ -13,6 +14,7 @@ export default function RadioButton({
     selected: boolean;
     onPress: () => void;
 }) {
+    const { theme } = useTheme();
     return (
         <Row
             style={{ alignItems: 'center', gap: 10, cursor: 'pointer' }}
@@ -22,7 +24,9 @@ export default function RadioButton({
                 {selected ? <RadioBtnSelectedLarge /> : <RadioIcon />}
             </div>
             <Text
-                style={{ color: selected ? 'white' : 'rgba(102, 102, 102, 1)' }}
+                style={{
+                    color: selected ? theme.tEXTPrimary : theme.tEXTDisabled,
+                }}
             >
                 {title}
             </Text>

@@ -58,7 +58,7 @@ function RenderLeft({
                 };
                 return (
                     <div key={`${item.sku}-${index}`}>
-                        <Text>{item.title}</Text>
+                        <Text style={{ fontWeight: '700' }}>{item.title}</Text>
                         <Row>
                             {item.options.map((option, idx) => {
                                 return (

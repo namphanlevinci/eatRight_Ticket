@@ -2,10 +2,11 @@ import { Col, Row } from 'antd';
 import { Text, Text18, Text20 } from 'components/atom/Text';
 import { CartItemType, ItemType } from 'context/cartType';
 import React from 'react';
-import { Colors } from 'themes/colors';
 import { formatNumberWithCommas } from 'utils/format';
 import { ColStyled } from './styleds';
 import { roundTo } from 'utils/number';
+import { useTheme } from 'context/themeContext';
+import { DividedSolid } from 'pages/BillDetail/styled';
 
 export default function ColLeft({
     cart,
@@ -23,19 +24,20 @@ export default function ColLeft({
     isSplitBill?: boolean;
     openModalSplitBill?: () => void;
 }) {
+    const { theme } = useTheme();
     return (
         <ColStyled
             style={{
                 flex: 1,
-                background: Colors.grey1,
-                border: `1px solid ${Colors.brown5}`,
+                background: theme.nEUTRALBase,
+                border: `1px solid ${theme.nEUTRALLine}`,
                 marginRight: 16,
                 borderRadius: 8,
                 padding: 16,
             }}
         >
-            <Text>Total {count} Items</Text>
-
+            <Text style={{ fontWeight: '600' }}>Total {count} Items</Text>
+            <DividedSolid />
             {isSplitBill && listItems.length > 0
                 ? listItems?.map((data) => {
                       const total = data.items.reduce((acc, item) => {
@@ -80,7 +82,7 @@ export default function ColLeft({
     );
 }
 
-const RenderItem = ({ item }: { item: ItemType }) => {
+export const RenderItem = ({ item }: { item: ItemType }) => {
     return (
         <div>
             <Row justify={'space-between'} style={{ marginTop: 32 }}>
