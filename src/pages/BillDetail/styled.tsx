@@ -76,7 +76,8 @@ export const DividedSolid = ({ color }: { color?: string }) => {
 export const ButtonContainer = styled.div<{
     isRight?: boolean;
 }>`
-    position: relative;
+    position: fixed;
+    right: 10px;
     @media (max-width: 767px) {
         position: fixed;
         bottom: 100px;
@@ -89,7 +90,7 @@ export const Container = styled.div`
     height: 'calc(100% - 100px)';
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     z-index: 100;
 
     @media (max-width: 767px) {

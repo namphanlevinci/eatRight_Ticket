@@ -12,6 +12,7 @@ import { useMutation } from '@apollo/client';
 import { PAY_SPLITBILL } from 'graphql/cart/paySplitbill';
 import { useNavigate } from 'react-router';
 import { BASE_ROUTER } from 'constants/router';
+import { useTheme } from 'context/themeContext';
 
 export default function TableSplitBillCheckOut() {
     const dataStorage = localStorage.getItem('split_bill_data');
@@ -20,7 +21,7 @@ export default function TableSplitBillCheckOut() {
         JSON.parse(dataStorage || '{}'),
     );
     const [selectGuest, setSelectGuest] = React.useState<InvoiceWithSplit>();
-
+    const { theme } = useTheme();
     useEffect(() => {
         const dataTmp = JSON.parse(dataStorage || '{}');
         if (dataTmp) {
@@ -100,9 +101,10 @@ export default function TableSplitBillCheckOut() {
             style={{
                 minHeight: '100vh',
                 width: '100vw',
-                background: 'black',
+                background: theme.nEUTRALPrimary,
                 padding: 16,
                 overflow: 'auto',
+                paddingTop: 0,
             }}
         >
             <RenderHeader />
