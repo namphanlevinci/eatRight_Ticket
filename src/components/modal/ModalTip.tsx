@@ -18,7 +18,7 @@ export default function ModalTip({
 }) {
     const inputRef = useRef<any>(null);
     const [value, setValue] = React.useState(total * 0.1);
-    const [tips, setTips] = React.useState([0.1, 0.15, 0.2]);
+    const [tips] = React.useState([0.1, 0.15, 0.2]);
     const [selectTip, setSelectTip] = React.useState(0.1);
     useEffect(() => {
         // Kiểm tra xem modal có mở không

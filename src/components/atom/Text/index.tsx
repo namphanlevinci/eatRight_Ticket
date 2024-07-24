@@ -48,14 +48,15 @@ export const TextBoldDefault = styled.p`
 export const Text = ({
     children,
     style,
+    ...props
 }: {
     children: React.ReactNode;
     style?: React.CSSProperties;
-}) => {
+} & any) => {
     const { theme } = useTheme();
 
     return (
-        <TextDefault theme={theme} style={style}>
+        <TextDefault theme={theme} style={style} {...props}>
             {children}
         </TextDefault>
     );
