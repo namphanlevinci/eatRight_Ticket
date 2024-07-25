@@ -28,7 +28,7 @@ interface CartContextType {
 
 // Tạo Context cho giỏ hàng
 const CartContext = createContext<CartContextType | undefined>(undefined);
-export const Tax = 0.08;
+export const Tax = 0.1;
 // Custom hook để sử dụng CartContext
 export const useCart = (): CartContextType => {
     const context = useContext(CartContext);
