@@ -28,7 +28,7 @@ interface CartContextType {
 
 // Tạo Context cho giỏ hàng
 const CartContext = createContext<CartContextType | undefined>(undefined);
-
+export const Tax = 0.08;
 // Custom hook để sử dụng CartContext
 export const useCart = (): CartContextType => {
     const context = useContext(CartContext);
@@ -66,15 +66,18 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     prices: {
                         ...currentCart.prices,
                         total_canceled: {
-                            value: itemsCanceled.reduce((total, item) => {
-                                return (
-                                    total +
-                                    (item.prices.price.value * item.quantity -
-                                        (item.prices?.total_item_discount
-                                            ?.value || 0) *
-                                            item.quantity)
-                                );
-                            }, 0),
+                            value:
+                                itemsCanceled.reduce((total, item) => {
+                                    return (
+                                        total +
+                                        (item.prices.price.value *
+                                            item.quantity -
+                                            (item.prices?.total_item_discount
+                                                ?.value || 0) *
+                                                item.quantity)
+                                    );
+                                }, 0) *
+                                (Tax + 1),
                         },
                     },
                 };
@@ -149,16 +152,19 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                                     }, 0),
                             },
                             total_canceled: {
-                                value: itemsCanceled.reduce((total, item) => {
-                                    return (
-                                        total +
-                                        (item.prices.price.value *
-                                            item.quantity -
-                                            (item.prices?.total_item_discount
-                                                ?.value || 0) *
-                                                item.quantity)
-                                    );
-                                }, 0),
+                                value:
+                                    itemsCanceled.reduce((total, item) => {
+                                        return (
+                                            total +
+                                            (item.prices.price.value *
+                                                item.quantity -
+                                                (item.prices
+                                                    ?.total_item_discount
+                                                    ?.value || 0) *
+                                                    item.quantity)
+                                        );
+                                    }, 0) *
+                                    (Tax + 1),
                             },
                         },
                     };
@@ -168,15 +174,18 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     prices: {
                         ...newCarts.prices,
                         total_canceled: {
-                            value: itemsCanceled.reduce((total, item) => {
-                                return (
-                                    total +
-                                    (item.prices.price.value * item.quantity -
-                                        (item.prices?.total_item_discount
-                                            ?.value || 0) *
-                                            item.quantity)
-                                );
-                            }, 0),
+                            value:
+                                itemsCanceled.reduce((total, item) => {
+                                    return (
+                                        total +
+                                        (item.prices.price.value *
+                                            item.quantity -
+                                            (item.prices?.total_item_discount
+                                                ?.value || 0) *
+                                                item.quantity)
+                                    );
+                                }, 0) *
+                                (Tax + 1),
                         },
                     },
                 };

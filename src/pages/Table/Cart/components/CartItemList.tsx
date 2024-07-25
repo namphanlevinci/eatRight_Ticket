@@ -566,39 +566,11 @@ export default function CartItemList({
                                     {' $'}
                                 </Text>
                             </Row>
-                            {data?.prices?.new_items_total?.value ? (
-                                <DividedDashed />
-                            ) : (
-                                <></>
-                            )}
                         </>
                     ) : (
                         <></>
                     )}
-                    {data?.prices?.new_items_total?.value ? (
-                        <>
-                            <Row justify={'space-between'}>
-                                <Text style={{ fontSize: 16 }}>
-                                    New Items Total
-                                </Text>
-                                <Text
-                                    style={{
-                                        fontSize: 20,
-                                        fontWeight: '600',
-                                        color: theme.pRIMARY6Primary,
-                                    }}
-                                >
-                                    {formatNumberWithCommas(
-                                        data?.prices?.new_items_total?.value ||
-                                            0,
-                                    )}{' '}
-                                    {' $'}
-                                </Text>
-                            </Row>
-                        </>
-                    ) : (
-                        <></>
-                    )}
+
                     {data?.prices?.total_canceled?.value ? (
                         <>
                             <Row justify={'space-between'}>
@@ -630,6 +602,35 @@ export default function CartItemList({
                                         data?.prices?.grand_total?.value -
                                             data?.prices?.total_canceled
                                                 ?.value || 0,
+                                    )}{' '}
+                                    {' $'}
+                                </Text>
+                            </Row>
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                    {data?.prices?.new_items_total?.value ? (
+                        <DividedDashed />
+                    ) : (
+                        <></>
+                    )}
+                    {data?.prices?.new_items_total?.value ? (
+                        <>
+                            <Row justify={'space-between'}>
+                                <Text style={{ fontSize: 16 }}>
+                                    New Items Total
+                                </Text>
+                                <Text
+                                    style={{
+                                        fontSize: 20,
+                                        fontWeight: '600',
+                                        color: theme.pRIMARY6Primary,
+                                    }}
+                                >
+                                    {formatNumberWithCommas(
+                                        data?.prices?.new_items_total?.value ||
+                                            0,
                                     )}{' '}
                                     {' $'}
                                 </Text>

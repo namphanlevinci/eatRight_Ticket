@@ -70,28 +70,37 @@ export default function OrderFooter({
                         title="Total"
                         value={`${formatNumberWithCommas(total)} $`}
                     />
-                    {cart?.prices?.discounts && (
+                    {cart?.prices?.discounts &&
+                        cart?.prices?.discounts[0]?.amount.value && (
+                            <RenderBillInfomationRow
+                                title="Discounted"
+                                value={`-${formatNumberWithCommas(
+                                    parseInt(
+                                        `${cart?.prices.discounts[0]?.amount?.value}`,
+                                    ),
+                                )} $`}
+                            />
+                        )}
+                    {cart?.prices?.applied_taxes &&
+                    cart?.prices?.applied_taxes[0]?.amount ? (
                         <RenderBillInfomationRow
-                            title="Discounted"
-                            value={`-${formatNumberWithCommas(
-                                parseInt(
-                                    `${cart?.prices.discounts[0]?.amount?.value}`,
-                                ),
-                            )} $`}
-                        />
-                    )}
-                    {cart?.prices?.total_canceled?.value ? (
-                        <RenderBillInfomationRow
-                            title="Canceled Item"
-                            value={`-${formatNumberWithCommas(
-                                parseInt(
-                                    `${cart?.prices?.total_canceled?.value}`,
-                                ),
-                            )} $`}
+                            title="Tax"
+                            value={`${cart?.prices?.applied_taxes[0]?.amount.value} $`}
                         />
                     ) : (
                         <></>
                     )}
+                    {cart?.prices?.total_canceled?.value ? (
+                        <RenderBillInfomationRow
+                            title="Canceled Item"
+                            value={`-
+                                    ${cart?.prices?.total_canceled?.value}
+                            $`}
+                        />
+                    ) : (
+                        <></>
+                    )}
+
                     {/* <RenderBillInfomationRow title="Taxes" value="$10.99" />
                 <RenderBillInfomationRow title="Service fee" value="$5.99" /> */}
                     <Divider style={{ borderColor: Colors.grey3 }} />

@@ -9,6 +9,7 @@ import SplitByItemMode from './SplitByItemMode';
 import { CartItemType, ItemType } from 'context/cartType';
 import SplitBillConfirmMode from './SplitBillConfirmMode';
 import { useTheme } from 'context/themeContext';
+import { Tax } from 'context/cartContext';
 
 export enum SplitBillMode {
     EVEN = 0,
@@ -85,7 +86,12 @@ export default function SplitBillModal({
                     )}
                     {!confirmMode && mode === SplitBillMode.EVEN && (
                         <SplitEvenMode
-                            total={cart.prices.grand_total.value}
+                            total={
+                                (cart?.prices.subtotal_excluding_tax?.value ||
+                                    0) -
+                                (cart?.prices?.total_canceled?.value || 0) /
+                                    (1 + Tax)
+                            }
                             onSubmit={(number) => {
                                 setNumbers(number);
                                 setConfirmMode(true);
