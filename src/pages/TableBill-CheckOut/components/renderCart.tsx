@@ -36,7 +36,10 @@ export const RenderCart = ({ cart }: { cart: InvoiceWithSplit }) => {
                         value={`- $${cart.total.discounts[0].amount.value}`}
                     />
                 )}
-                <RenderText title="Tax" value={`$${cart.total.taxes}`} />
+                <RenderText
+                    title="Tax"
+                    value={`$${cart.total.taxes[0].amount.value.toFixed(2)}`}
+                />
                 <RenderText
                     title="Total"
                     value={`$${cart.total.base_grand_total.value}`}
