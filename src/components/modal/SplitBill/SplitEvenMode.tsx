@@ -26,25 +26,42 @@ export default function SplitEvenMode({
 
             <InputNumberStyled
                 value={input}
-                onChange={(e) => setInput(Number(e.target.value))}
+                onChange={(e) => {
+                    if (Number(e.target.value) > 0) {
+                        if (Number(e.target.value) > 1000) {
+                            setInput(1000);
+                        } else {
+                            setInput(Number(e.target.value));
+                        }
+                    } else {
+                        setInput(0);
+                    }
+                }}
                 style={{
                     background: theme.nEUTRALBase,
                     border: '1px solid ' + theme.nEUTRALLine,
                     color: theme.tEXTPrimary,
                 }}
+                inputMode="numeric"
             />
             <Text style={{ marginBlock: 16, color: theme.tEXTSecondary }}>
                 Number to split:{' '}
-                <span style={{ color: theme.tEXTPrimary }}> {input}</span>
+                <span style={{ color: theme.tEXTPrimary }}>
+                    {' '}
+                    {input < 2 ? 2 : input}
+                </span>
             </Text>
             <Text style={{ marginBlock: 16, color: theme.tEXTSecondary }}>
                 Each guest will pay {`(No tax)`}:{' '}
                 <span style={{ color: theme.tEXTPrimary }}>
                     {' '}
-                    {total / input} $
+                    {(total / (input < 2 ? 2 : input)).toFixed(2)} $
                 </span>
             </Text>
-            <ButtonPrimary title="Continue" onClick={() => onSubmit(input)} />
+            <ButtonPrimary
+                title="Continue"
+                onClick={() => onSubmit(input < 2 ? 2 : input)}
+            />
         </div>
     );
 }
