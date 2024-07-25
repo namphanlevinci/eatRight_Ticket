@@ -80,7 +80,7 @@ export const useCartTable = (isRefreshParams = true) => {
                 );
                 if (cartItems[indexTable]?.carts?.length > 0) {
                     cartItems[indexTable]?.carts.forEach((item, index) => {
-                        if (!item.firstname.includes('Guest')) {
+                        if (!item?.firstname?.includes('Guest')) {
                             removeCartIndex(index);
                         }
                     });

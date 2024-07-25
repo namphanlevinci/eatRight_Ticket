@@ -41,9 +41,13 @@ export default function RenderDiscountRow({
                     }}
                     onClick={onRightClick}
                 >
-                    <div style={{ height: 24, width: 24 }}>
-                        <Icon />
-                    </div>
+                    {valueDiscount ? (
+                        <div style={{ height: 24, width: 24 }}>
+                            <Icon />
+                        </div>
+                    ) : (
+                        <></>
+                    )}
                     <Text
                         style={{
                             overflow: 'hidden',
@@ -55,7 +59,7 @@ export default function RenderDiscountRow({
                     </Text>
                 </div>
             </Row>
-            {valueDiscount && (
+            {valueDiscount ? (
                 <Row
                     justify={'space-between'}
                     align={'middle'}
@@ -64,6 +68,8 @@ export default function RenderDiscountRow({
                     <Text style={textRightStyle}>Applied</Text>
                     <Text style={textRightStyle}>- ${valueDiscount}</Text>
                 </Row>
+            ) : (
+                <></>
             )}
         </div>
     );
