@@ -10,6 +10,7 @@ import { SplitBillMode } from './splitBillModal';
 import { roundTo } from 'utils/number';
 import { useMediaQuery } from 'react-responsive';
 import { useTheme } from 'context/themeContext';
+import { Tax } from 'context/cartContext';
 
 export default function SplitBillConfirmMode({
     cart,
@@ -57,6 +58,9 @@ export default function SplitBillConfirmMode({
         query: '(max-width: 768px)',
     });
     const { theme } = useTheme();
+    const total =
+        (cart?.prices?.subtotal_excluding_tax?.value || 0) -
+        (cart?.prices?.total_canceled?.value || 0) / (1 + Tax);
     return (
         <div style={ismobile ? { width: '100%' } : { width: 450 }}>
             <Row justify={'space-between'}>
@@ -77,22 +81,27 @@ export default function SplitBillConfirmMode({
                 </span>
             </Text>
             <Text style={{ color: theme.tEXTDisabled, marginTop: 16 }}>
-                Total amount to pay:
+                Total amount to pay {`(No tax)`}:
                 <span style={{ color: theme.tEXTPrimary, marginLeft: 10 }}>
-                    $ {cart.prices.grand_total.value}
+                    $ {total}
                 </span>
             </Text>
             {mode === SplitBillMode.EVEN && numbers && numbers > 1
                 ? Array.from({ length: numbers }, (_, index) => (
                       <RenderGuestTotal
                           title={`Guest ${index + 1}`}
-                          value={cart.prices.grand_total.value / numbers}
+                          value={total / numbers}
                           key={index}
                       />
                   ))
                 : groupedData.map(({ guestId, items }) => {
                       const total = items.reduce((acc, item) => {
-                          return acc + item.prices.price.value * item.quantity;
+                          return (
+                              acc +
+                              (item.status === 'cancel'
+                                  ? 0
+                                  : item.prices.price.value * item.quantity)
+                          );
                       }, 0);
                       return (
                           <RenderGuestTotal

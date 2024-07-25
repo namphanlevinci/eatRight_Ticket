@@ -20,6 +20,7 @@ import { useCouponCart } from 'pages/Table/Cart/useCouponCart';
 import ModalTip from 'components/modal/ModalTip';
 import { useTheme } from 'context/themeContext';
 import RenderDiscountRow from './components/renderDiscountRow';
+import { Tax } from 'context/cartContext';
 
 export default function ColRight({
     cart,
@@ -64,6 +65,9 @@ export default function ColRight({
     const [modalTip, setModalTip] = useState(false);
     const { handleAddCoupon } = useCouponCart();
     const { theme } = useTheme();
+    const totalTmp =
+        (cart?.prices?.subtotal_excluding_tax?.value || 0) -
+        (cart?.prices?.total_canceled?.value || 0) / (1 + Tax);
     return (
         <ColStyled style={{ width: 257 }}>
             <ModalInput
@@ -174,6 +178,15 @@ export default function ColRight({
                 ) : (
                     <></>
                 )}
+                {cart?.prices?.applied_taxes &&
+                cart?.prices?.applied_taxes[0]?.amount ? (
+                    <RenderBillInfomationRow
+                        title="Tax"
+                        value={`${cart?.prices?.applied_taxes[0]?.amount.value} $`}
+                    />
+                ) : (
+                    <></>
+                )}
                 {/* <RenderBillInfomationRow title="Taxes" value="$10.99" />
                 <RenderBillInfomationRow title="Service fee" value="$5.99" /> */}
                 <Divider style={{ borderColor: theme.nEUTRALLine }} />
@@ -194,13 +207,15 @@ export default function ColRight({
             </div>
             {isSplitBill ? (
                 <div>
-                    Checks
+                    <Text style={{ fontSize: 20 }}>
+                        Checks {`(No included tax)`}
+                    </Text>
                     {listItems?.length === 0 && numbersSplit && numbersSplit > 1
                         ? Array.from({ length: numbersSplit }, (_, index) => (
                               <RenderSplitBillGuest
                                   key={index}
                                   title={`Guest ${index + 1}`}
-                                  total={total / numbersSplit}
+                                  total={totalTmp / numbersSplit}
                                   onPress={openModalSplitBill}
                               />
                           ))
@@ -208,7 +223,10 @@ export default function ColRight({
                               const total = items.reduce((acc, item) => {
                                   return (
                                       acc +
-                                      item.prices.price.value * item.quantity
+                                      (item.status === 'cancel'
+                                          ? 0
+                                          : item.prices.price.value *
+                                            item.quantity)
                                   );
                               }, 0);
                               return (
@@ -295,14 +313,14 @@ const RenderSplitBillGuest = ({
         <Row
             justify={'space-between'}
             align={'middle'}
-            style={{ marginBottom: 16, cursor: 'pointer' }}
+            style={{ marginTop: 12, cursor: 'pointer' }}
             onClick={onPress}
         >
-            <Text20 style={{ fontWeight: '400' }}>{title}</Text20>
+            <Text style={{ fontWeight: '400' }}>{title}</Text>
             <Row align={'middle'}>
-                <Text20 style={{ fontWeight: '400' }}>
+                <Text style={{ fontWeight: '400' }}>
                     ${formatNumberWithCommas(total)}
-                </Text20>
+                </Text>
                 <ArrowRightIcon />
             </Row>
         </Row>

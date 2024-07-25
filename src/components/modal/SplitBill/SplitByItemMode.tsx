@@ -44,19 +44,21 @@ export default function SplitByItemMode({
             <>
                 {validItems?.map((item: ItemType) => {
                     return (
-                        <RenderItemSplit
-                            key={item.id}
-                            title={item.product.name}
-                            quantity={
-                                item.quantityText
-                                    ? item.quantityText
-                                    : item.quantity
-                            }
-                            isSelected={selected.includes(item.id || '')}
-                            onPress={() =>
-                                handleSelect(item.id || '', guestId || '')
-                            }
-                        />
+                        item.status !== 'cancel' && (
+                            <RenderItemSplit
+                                key={item.id}
+                                title={item.product.name}
+                                quantity={
+                                    item.quantityText
+                                        ? item.quantityText
+                                        : item.quantity
+                                }
+                                isSelected={selected.includes(item.id || '')}
+                                onPress={() =>
+                                    handleSelect(item.id || '', guestId || '')
+                                }
+                            />
+                        )
                     );
                 })}
                 {guestId && <div style={{ height: 10 }} />}

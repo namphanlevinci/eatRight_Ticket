@@ -14,6 +14,12 @@ export type CartItemType = {
           }[]
         | null;
     prices: {
+        applied_taxes?: {
+            amount: {
+                value: number | string;
+            };
+            label: string;
+        }[];
         discounts?: {
             amount: {
                 value: number | string;

@@ -7,6 +7,8 @@ import { ColStyled } from './styleds';
 import { roundTo } from 'utils/number';
 import { useTheme } from 'context/themeContext';
 import { DividedSolid } from 'pages/BillDetail/styled';
+import CustomTag from 'components/atom/Tag/CustomTag';
+import { getTagStyled } from 'utils/tag';
 
 export default function ColLeft({
     cart,
@@ -41,7 +43,12 @@ export default function ColLeft({
             {isSplitBill && listItems.length > 0
                 ? listItems?.map((data) => {
                       const total = data.items.reduce((acc, item) => {
-                          return acc + item.prices.price.value * item.quantity;
+                          return (
+                              acc +
+                              (item.status === 'cancel'
+                                  ? 0
+                                  : item.prices.price.value * item.quantity)
+                          );
                       }, 0);
                       return (
                           <div key={data.guestId}>
@@ -83,6 +90,7 @@ export default function ColLeft({
 }
 
 export const RenderItem = ({ item }: { item: ItemType }) => {
+    const { theme } = useTheme();
     return (
         <div>
             <Row justify={'space-between'} style={{ marginTop: 32 }}>
@@ -99,6 +107,12 @@ export const RenderItem = ({ item }: { item: ItemType }) => {
                         <Col style={{ flex: 1 }}>
                             <Text18>{item.product.name}</Text18>
                         </Col>
+                        <CustomTag
+                            {...getTagStyled(
+                                item.isUnsend ? 'New' : item?.status,
+                                theme,
+                            )}
+                        />
                     </Row>
                 </Col>
                 <Text18>
