@@ -54,6 +54,7 @@ export default function ColRight({
         setVisibleMoalPos,
         handlePOSPayment,
         pos_Loading,
+        handleSetTip,
     } = useTableBill();
 
     useEffect(() => {
@@ -83,6 +84,7 @@ export default function ColRight({
                     setModalTip(false);
                 }}
                 onSubmit={(values: any) => {
+                    handleSetTip(values);
                     setTip(values);
                     setModalTip(false);
                 }}
