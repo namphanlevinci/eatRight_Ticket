@@ -208,7 +208,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                 newCartItems = [...cartItems[indexTable].carts];
             }
         }
-        let total = newCartItems[index]?.prices?.grand_total?.value || 0;
+        let total = newCartItems[index]?.prices?.new_items_total?.value || 0;
         const foundIndex = newCartItems[index]?.items?.findIndex(
             (i) =>
                 i.id == item.id &&
@@ -228,7 +228,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         }
         total += item.prices.price.value * item.quantity;
         newCartItems[index].prices = {
-            grand_total: {
+            ...newCartItems[index].prices,
+            new_items_total: {
                 value: total,
             },
         };
@@ -252,11 +253,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const index = newCartItems[cartIndex].items.findIndex(
             (e) => e.id === sku,
         );
-        let total = newCartItems[cartIndex].prices?.grand_total?.value || 0;
+        let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
         total -= newCartItems[cartIndex].items[index].prices.price.value;
         newCartItems[cartIndex].items.splice(index, 1);
         newCartItems[cartIndex].prices = {
-            grand_total: {
+            ...newCartItems[cartIndex].prices,
+            new_items_total: {
                 value: total,
             },
         };
@@ -267,7 +269,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const updateQuantityItemFromCart = (index: number, quantity: number) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems[indexTable].carts];
-        let total = newCartItems[cartIndex].prices?.grand_total?.value || 0;
+        let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
 
         if (quantity === 0) {
             if (confirm('Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?')) {
@@ -295,7 +297,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
             }
         }
         newCartItems[cartIndex].prices = {
-            grand_total: {
+            ...newCartItems[cartIndex].prices,
+            new_items_total: {
                 value: total,
             },
         };
@@ -407,6 +410,9 @@ export const getInitialCartState = (id: string) => {
                     },
                 ],
                 grand_total: {
+                    value: 0,
+                },
+                new_items_total: {
                     value: 0,
                 },
             },

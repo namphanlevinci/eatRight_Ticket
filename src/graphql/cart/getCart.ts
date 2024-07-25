@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_CART_BY_ID = gql`
-    query getCart($cartId: String!) {
-        cart(cart_id: $cartId) {
+    query merchantCart($cartId: String!) {
+        merchantCart(cart_id: $cartId) {
             id
             email
             firstname
@@ -110,6 +110,21 @@ export const GET_CART_BY_ID = gql`
                 }
                 grand_total {
                     value
+                }
+                subtotal_excluding_tax {
+                    value
+                }
+                subtotal_including_tax {
+                    value
+                }
+                subtotal_with_discount_excluding_tax {
+                    value
+                }
+                applied_taxes {
+                    amount {
+                        value
+                    }
+                    label
                 }
             }
         }

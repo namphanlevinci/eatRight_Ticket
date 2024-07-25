@@ -114,6 +114,21 @@ export const ADD_COUPON = gql`
                     grand_total {
                         value
                     }
+                    subtotal_excluding_tax {
+                        value
+                    }
+                    subtotal_including_tax {
+                        value
+                    }
+                    subtotal_with_discount_excluding_tax {
+                        value
+                    }
+                    applied_taxes {
+                        amount {
+                            value
+                        }
+                        label
+                    }
                 }
             }
         }
@@ -211,6 +226,21 @@ export const REMOVE_COUPON = gql`
                     }
                     grand_total {
                         value
+                    }
+                    subtotal_excluding_tax {
+                        value
+                    }
+                    subtotal_including_tax {
+                        value
+                    }
+                    subtotal_with_discount_excluding_tax {
+                        value
+                    }
+                    applied_taxes {
+                        amount {
+                            value
+                        }
+                        label
                     }
                 }
             }

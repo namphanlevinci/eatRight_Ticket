@@ -26,6 +26,18 @@ export type CartItemType = {
         total_canceled?: {
             value: number;
         };
+        subtotal_excluding_tax?: {
+            value: number;
+        };
+        subtotal_including_tax?: {
+            value: number;
+        };
+        subtotal_with_discount_excluding_tax?: {
+            value: number;
+        };
+        new_items_total?: {
+            value: number;
+        };
     };
 };
 export type ItemType = {

@@ -30,7 +30,9 @@ export const useCartTable = (isRefreshParams = true) => {
         if (indexTable !== -1) {
             if (cartItems[indexTable].carts.length > 0) {
                 setListCart(
-                    cartItems[indexTable].carts.map((item) => item.firstname),
+                    cartItems[indexTable].carts.map(
+                        (item) => item.firstname || item.id,
+                    ),
                 );
             } else {
                 setListCart([]);
@@ -61,7 +63,7 @@ export const useCartTable = (isRefreshParams = true) => {
                             cartId: item.cartId,
                         },
                         fetchPolicy: 'no-cache',
-                    }).then((res) => res.data.cart);
+                    }).then((res) => res.data.merchantCart);
                 });
                 Promise.all(promises)
                     .then((carts) => {
@@ -96,7 +98,7 @@ export const useCartTable = (isRefreshParams = true) => {
                 fetchPolicy: 'no-cache',
             })
                 .then((res) => {
-                    handleDataGetCart([res.data.cart], false);
+                    handleDataGetCart([res.data.merchantCart], false);
                 })
                 .catch((error) => {
                     console.error(error);

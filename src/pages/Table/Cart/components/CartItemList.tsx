@@ -21,6 +21,7 @@ import CustomTag from 'components/atom/Tag/CustomTag';
 import { getTagStyled } from 'utils/tag';
 import RenderNote from './RenderNote';
 import { useTheme } from 'context/themeContext';
+import { DividedDashed } from 'pages/BillDetail/styled';
 export default function CartItemList({
     data,
     cartInfo,
@@ -87,7 +88,7 @@ export default function CartItemList({
     const SendCart = () => {
         let CustomerName =
             cartItems[indexTable]?.carts[selectedCart]?.firstname;
-        if (CustomerName.includes('Guest')) {
+        if (CustomerName?.includes('Guest')) {
             setIsModalOpen(true);
         } else {
             createCart({
@@ -467,9 +468,50 @@ export default function CartItemList({
                         justifyContent: 'center',
                     }}
                 >
+                    {data?.prices?.subtotal_excluding_tax?.value && (
+                        <Row justify={'space-between'}>
+                            <Text style={{ fontSize: 16 }}>Total</Text>
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    fontWeight: '600',
+                                    color: theme.pRIMARY6Primary,
+                                }}
+                            >
+                                {formatNumberWithCommas(
+                                    data?.prices?.subtotal_excluding_tax
+                                        ?.value || 0,
+                                )}{' '}
+                                {' $'}
+                            </Text>
+                        </Row>
+                    )}
+                    {data?.prices?.applied_taxes?.length > 0 &&
+                    data?.prices?.applied_taxes[0]?.amount ? (
+                        <Row justify={'space-between'}>
+                            <Text style={{ fontSize: 16 }}>Tax</Text>
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    fontWeight: '600',
+                                    color: theme.pRIMARY6Primary,
+                                }}
+                            >
+                                {formatNumberWithCommas(
+                                    data?.prices?.applied_taxes?.length > 0
+                                        ? data?.prices?.applied_taxes[0]?.amount
+                                              ?.value || 0
+                                        : 0,
+                                )}{' '}
+                                {' $'}
+                            </Text>
+                        </Row>
+                    ) : (
+                        <></>
+                    )}
                     {data?.prices?.discounts?.map(
                         (item: any, index: number) => {
-                            return (
+                            return item.amount.value ? (
                                 <Row
                                     justify={'space-between'}
                                     key={`discount-${index}`}
@@ -500,26 +542,64 @@ export default function CartItemList({
                                         </Text>
                                     </Col>
                                 </Row>
+                            ) : (
+                                <></>
                             );
                         },
                     )}
-
-                    <Row justify={'space-between'}>
-                        <Text style={{ fontSize: 16 }}>Total</Text>
-                        <Text
-                            style={{
-                                fontSize: 20,
-                                fontWeight: '600',
-                                color: theme.pRIMARY6Primary,
-                            }}
-                        >
-                            {formatNumberWithCommas(
-                                data?.prices?.grand_total?.value || 0,
-                            )}{' '}
-                            {' $'}
-                        </Text>
-                    </Row>
-                    {data?.prices?.total_canceled?.value && (
+                    {data?.prices?.grand_total?.value ? (
+                        <>
+                            <Row justify={'space-between'}>
+                                <Text style={{ fontSize: 16 }}>
+                                    Grand Total
+                                </Text>
+                                <Text
+                                    style={{
+                                        fontSize: 20,
+                                        fontWeight: '600',
+                                        color: theme.pRIMARY6Primary,
+                                    }}
+                                >
+                                    {formatNumberWithCommas(
+                                        data?.prices?.grand_total?.value || 0,
+                                    )}{' '}
+                                    {' $'}
+                                </Text>
+                            </Row>
+                            {data?.prices?.new_items_total?.value ? (
+                                <DividedDashed />
+                            ) : (
+                                <></>
+                            )}
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                    {data?.prices?.new_items_total?.value ? (
+                        <>
+                            <Row justify={'space-between'}>
+                                <Text style={{ fontSize: 16 }}>
+                                    New Items Total
+                                </Text>
+                                <Text
+                                    style={{
+                                        fontSize: 20,
+                                        fontWeight: '600',
+                                        color: theme.pRIMARY6Primary,
+                                    }}
+                                >
+                                    {formatNumberWithCommas(
+                                        data?.prices?.new_items_total?.value ||
+                                            0,
+                                    )}{' '}
+                                    {' $'}
+                                </Text>
+                            </Row>
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                    {data?.prices?.total_canceled?.value ? (
                         <>
                             <Row justify={'space-between'}>
                                 <Text style={{ fontSize: 16 }}>Cancel</Text>
@@ -555,6 +635,8 @@ export default function CartItemList({
                                 </Text>
                             </Row>
                         </>
+                    ) : (
+                        <></>
                     )}
                 </Col>
                 <Col>
