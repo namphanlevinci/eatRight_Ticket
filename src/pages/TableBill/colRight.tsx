@@ -1,5 +1,5 @@
 import { Divider, Row } from 'antd';
-import { Text, Text20 } from 'components/atom/Text';
+import { Text } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
 import InputInfoCart from './components/inputInfo';
 import RenderBillInfomationRow from './components/billInfo';
