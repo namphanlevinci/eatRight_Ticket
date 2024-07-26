@@ -182,7 +182,7 @@ export default function ColRight({
                 cart?.prices?.applied_taxes[0]?.amount ? (
                     <RenderBillInfomationRow
                         title="Tax"
-                        value={`${cart?.prices?.applied_taxes[0]?.amount.value} $`}
+                        value={`${cart?.prices?.applied_taxes[0]?.amount?.value || 0} $`}
                     />
                 ) : (
                     <></>
