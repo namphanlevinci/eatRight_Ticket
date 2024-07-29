@@ -459,7 +459,9 @@ const RenderBill = ({ data }: { data: any }) => {
                         {CURRENTCY}{' '}
                         {data?.total
                             ? data?.total.toFixed(2)
-                            : data?.grand_total.toFixed(2)}
+                            : (
+                                  data?.grand_total - data?.tip_amount?.value
+                              ).toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
@@ -470,9 +472,9 @@ const RenderBill = ({ data }: { data: any }) => {
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Total:</TextDark>
+                    <TextDark style={text16}>Grand Total:</TextDark>
                     <TextDark>
-                        {CURRENTCY} {data?.grand_total.toFixed(2)}
+                        {CURRENTCY} {data?.grand_total?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
