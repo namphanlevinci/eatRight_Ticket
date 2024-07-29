@@ -362,7 +362,6 @@ export default function CartItemList({
                                                                         {formatNumberWithCommas(
                                                                             product.price,
                                                                         )}{' '}
-                                                                        {' đ'}{' '}
                                                                         {'  '}x
                                                                         {
                                                                             product.quantity
@@ -478,11 +477,11 @@ export default function CartItemList({
                                     color: theme.pRIMARY6Primary,
                                 }}
                             >
+                                {' $'}{' '}
                                 {formatNumberWithCommas(
                                     data?.prices?.subtotal_excluding_tax
                                         ?.value || 0,
                                 )}{' '}
-                                {' $'}
                             </Text>
                         </Row>
                     )}
@@ -497,13 +496,13 @@ export default function CartItemList({
                                     color: theme.pRIMARY6Primary,
                                 }}
                             >
+                                {' $'}{' '}
                                 {formatNumberWithCommas(
                                     data?.prices?.applied_taxes?.length > 0
                                         ? data?.prices?.applied_taxes[0]?.amount
                                               ?.value || 0
                                         : 0,
-                                )}{' '}
-                                {' $'}
+                                )}
                             </Text>
                         </Row>
                     ) : (
@@ -560,10 +559,10 @@ export default function CartItemList({
                                         color: theme.pRIMARY6Primary,
                                     }}
                                 >
+                                    {' $'}{' '}
                                     {formatNumberWithCommas(
                                         data?.prices?.grand_total?.value || 0,
                                     )}{' '}
-                                    {' $'}
                                 </Text>
                             </Row>
                         </>
@@ -582,11 +581,11 @@ export default function CartItemList({
                                         color: theme.pRIMARY6Primary,
                                     }}
                                 >
+                                    {' $'}{' '}
                                     {formatNumberWithCommas(
                                         data?.prices?.total_canceled?.value ||
                                             0,
                                     )}{' '}
-                                    {' $'}
                                 </Text>
                             </Row>
                             <Row justify={'space-between'}>
@@ -598,12 +597,12 @@ export default function CartItemList({
                                         color: theme.pRIMARY6Primary,
                                     }}
                                 >
+                                    {' $'}{' '}
                                     {formatNumberWithCommas(
                                         data?.prices?.grand_total?.value -
                                             data?.prices?.total_canceled
                                                 ?.value || 0,
                                     )}{' '}
-                                    {' $'}
                                 </Text>
                             </Row>
                         </>
@@ -628,11 +627,11 @@ export default function CartItemList({
                                         color: theme.pRIMARY6Primary,
                                     }}
                                 >
+                                    {' $'}{' '}
                                     {formatNumberWithCommas(
                                         data?.prices?.new_items_total?.value ||
                                             0,
                                     )}{' '}
-                                    {' $'}
                                 </Text>
                             </Row>
                         </>

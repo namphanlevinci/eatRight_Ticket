@@ -67,7 +67,9 @@ export default function ColLeft({
                                   <Text20 style={{ fontWeight: '600' }}>
                                       {data.guestId}
                                   </Text20>
-                                  <Text20>Total : {roundTo(total, 2)} $</Text20>
+                                  <Text20>
+                                      Total : $ {roundTo(total, 2)}{' '}
+                                  </Text20>
                               </Row>
 
                               {data.items?.length > 0 &&
@@ -116,7 +118,7 @@ export const RenderItem = ({ item }: { item: ItemType }) => {
                     </Row>
                 </Col>
                 <Text18>
-                    {formatNumberWithCommas(item.prices.price.value)} $
+                    $ {formatNumberWithCommas(item.prices.price.value)}
                 </Text18>
             </Row>
             {item.bundle_options?.map((bundle) => {

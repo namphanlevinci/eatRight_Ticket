@@ -88,16 +88,16 @@ export default function ModalPaymentPending({
                 <Row justify={'space-between'}>
                     <Text>Sub total</Text>
                     <Text>
+                        {currentcy}{' '}
                         {formatNumberWithCommas(
                             data?.grand_total + totalDiscount,
                         )}{' '}
-                        {currentcy}
                     </Text>
                 </Row>
                 <Row justify={'space-between'}>
                     <Text>Discounted</Text>
                     <Text>
-                        - {formatNumberWithCommas(totalDiscount)} {currentcy}
+                        - {currentcy} {formatNumberWithCommas(totalDiscount)}
                     </Text>
                 </Row>
                 <div
@@ -118,7 +118,7 @@ export default function ModalPaymentPending({
                             color: '#CC7D00',
                         }}
                     >
-                        {formatNumberWithCommas(data?.grand_total)} {currentcy}
+                        {currentcy} {formatNumberWithCommas(data?.grand_total)}
                     </Text>
                 </Row>
                 <Button

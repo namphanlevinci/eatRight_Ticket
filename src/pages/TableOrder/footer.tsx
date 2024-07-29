@@ -68,24 +68,24 @@ export default function OrderFooter({
                     <Text style={{ fontSize: 20 }}>Billing Information</Text>
                     <RenderBillInfomationRow
                         title="Total"
-                        value={`${formatNumberWithCommas(total)} $`}
+                        value={`$ ${formatNumberWithCommas(total)}`}
                     />
                     {cart?.prices?.discounts &&
                         cart?.prices?.discounts[0]?.amount.value && (
                             <RenderBillInfomationRow
                                 title="Discounted"
-                                value={`-${formatNumberWithCommas(
+                                value={`-$ ${formatNumberWithCommas(
                                     parseInt(
                                         `${cart?.prices.discounts[0]?.amount?.value}`,
                                     ),
-                                )} $`}
+                                )} `}
                             />
                         )}
                     {cart?.prices?.applied_taxes &&
                     cart?.prices?.applied_taxes[0]?.amount ? (
                         <RenderBillInfomationRow
                             title="Tax"
-                            value={`${cart?.prices?.applied_taxes[0]?.amount.value} $`}
+                            value={`$ ${cart?.prices?.applied_taxes[0]?.amount.value}`}
                         />
                     ) : (
                         <></>
@@ -94,8 +94,8 @@ export default function OrderFooter({
                         <RenderBillInfomationRow
                             title="Canceled Item"
                             value={`-
-                                    ${cart?.prices?.total_canceled?.value}
-                            $`}
+                                   $ ${cart?.prices?.total_canceled?.value}
+                            `}
                         />
                     ) : (
                         <></>
@@ -107,10 +107,10 @@ export default function OrderFooter({
 
                     <RenderBillInfomationRow
                         title="To be paid"
-                        value={`${formatNumberWithCommas(
+                        value={`$ ${formatNumberWithCommas(
                             (cart?.prices.grand_total.value || 0) -
                                 (cart?.prices?.total_canceled?.value || 0),
-                        )} $`}
+                        )} `}
                         textRightStyle={{
                             fontSize: 24,
                             fontWeight: '600',

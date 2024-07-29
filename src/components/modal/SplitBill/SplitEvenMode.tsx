@@ -55,7 +55,7 @@ export default function SplitEvenMode({
                 Each guest will pay {`(No tax)`}:{' '}
                 <span style={{ color: theme.tEXTPrimary }}>
                     {' '}
-                    {(total / (input < 2 ? 2 : input)).toFixed(2)} $
+                    $ {(total / (input < 2 ? 2 : input)).toFixed(2)}
                 </span>
             </Text>
             <ButtonPrimary
