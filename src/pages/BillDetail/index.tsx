@@ -431,22 +431,28 @@ const RenderBill = ({ data }: { data: any }) => {
                             </Row>
                         );
                     })}
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>
-                        Tax {`(${data?.tax || 8}%):`}
-                    </TextDark>
-                    <TextDark>
-                        {CURRENTCY} {data?.tax_amount?.toFixed(2)}
-                    </TextDark>
-                </RowStyled>
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>
-                        Service Charge {`(${data?.service_charge || 10}%):`}
-                    </TextDark>
-                    <TextDark>
-                        {CURRENTCY} {data?.service_charge_amount?.toFixed(2)}
-                    </TextDark>
-                </RowStyled>
+                {data?.tax_amount && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>
+                            Tax {`(${data?.tax || 8}%):`}
+                        </TextDark>
+                        <TextDark>
+                            {CURRENTCY} {data?.tax_amount?.toFixed(2)}
+                        </TextDark>
+                    </RowStyled>
+                )}
+
+                {data?.service_charge_amount && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>
+                            Service Charge {`(${data?.service_charge || 10}%):`}
+                        </TextDark>
+                        <TextDark>
+                            {CURRENTCY}{' '}
+                            {data?.service_charge_amount?.toFixed(2)}
+                        </TextDark>
+                    </RowStyled>
+                )}
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Total:</TextDark>
                     <TextDark>
@@ -460,7 +466,7 @@ const RenderBill = ({ data }: { data: any }) => {
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Tip:</TextDark>
                     <TextDark>
-                        {CURRENTCY} {data?.tip}
+                        {CURRENTCY} {data?.tip_amount?.value?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>

@@ -71,9 +71,9 @@ export const LoginPage: React.FC = () => {
                 </FormItem>
                 <div style={{ position: 'relative' }}>
                     <InputPassword
-                        label="New Password"
+                        label="Password"
                         name="password"
-                        placeholder="New Password"
+                        placeholder="Password"
                     />
                 </div>
                 <Row justify={'end'}>

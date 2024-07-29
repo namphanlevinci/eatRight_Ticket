@@ -41,6 +41,10 @@ export const GET_ORDER_DETAIL = gql`
             assign_from
             assign_reason
             shipping_amount
+            tip_amount {
+                value
+                currency
+            }
         }
     }
 `;
