@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import SplitBillModal from 'components/modal/SplitBill/splitBillModal';
 import { useTheme } from 'context/themeContext';
+import ModalOffSplitBill from 'components/modal/ModalOffSplitBill';
 export default function TableBill() {
     const {
         cart,
@@ -21,6 +22,7 @@ export default function TableBill() {
     const { Header } = Layout;
     const [splitBill, setSplitBill] = useState(false);
     const [openModalSplitBill, setOpenModalSplitBill] = useState(false);
+    const [openModalConfirmCloseSplitBill, setCloseSplitBill] = useState(false);
     const navigation = useNavigate();
     const { theme } = useTheme();
     const RenderHeader = () => {
@@ -82,6 +84,16 @@ export default function TableBill() {
                     cart={cart}
                 />
             )}
+            <ModalOffSplitBill
+                isModalOpen={openModalConfirmCloseSplitBill}
+                onCancel={() => {
+                    setCloseSplitBill(false);
+                    setSplitBill(false);
+                }}
+                onSubmit={() => {
+                    setCloseSplitBill(false);
+                }}
+            />
             <RenderHeader />
             <div style={{ flex: 1, padding: 16 }}>
                 <Row justify={'space-between'} align={'middle'}>
@@ -95,9 +107,11 @@ export default function TableBill() {
                         <Switch
                             value={splitBill}
                             onChange={(value) => {
-                                setSplitBill(!splitBill);
                                 if (value) {
+                                    setSplitBill(true);
                                     setOpenModalSplitBill(true);
+                                } else {
+                                    setCloseSplitBill(true);
                                 }
                             }}
                         />

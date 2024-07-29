@@ -52,7 +52,8 @@ export const Text = ({
 }: {
     children: React.ReactNode;
     style?: React.CSSProperties;
-} & any) => {
+    onClick?: any;
+}) => {
     const { theme } = useTheme();
 
     return (
