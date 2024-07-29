@@ -9,7 +9,7 @@ import styled from 'styled-components';
 export default function SplitEvenMode({
     total,
     onSubmit,
-    numbers = 1,
+    numbers = 2,
 }: {
     total: number;
     onSubmit: (input: number) => void;
@@ -46,21 +46,19 @@ export default function SplitEvenMode({
             />
             <Text style={{ marginBlock: 16, color: theme.tEXTSecondary }}>
                 Number to split:{' '}
-                <span style={{ color: theme.tEXTPrimary }}>
-                    {' '}
-                    {input < 2 ? 2 : input}
-                </span>
+                <span style={{ color: theme.tEXTPrimary }}> {input}</span>
             </Text>
             <Text style={{ marginBlock: 16, color: theme.tEXTSecondary }}>
                 Each guest will pay {`(No tax)`}:{' '}
                 <span style={{ color: theme.tEXTPrimary }}>
                     {' '}
-                    $ {(total / (input < 2 ? 2 : input)).toFixed(2)}
+                    $ {(total / input).toFixed(2)}
                 </span>
             </Text>
             <ButtonPrimary
                 title="Continue"
-                onClick={() => onSubmit(input < 2 ? 2 : input)}
+                onClick={() => input > 1 && onSubmit(input)}
+                isDisable={input < 2 ? true : false}
             />
         </div>
     );
