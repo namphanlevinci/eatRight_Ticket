@@ -1,7 +1,7 @@
 import { Modal, Row } from 'antd';
 import CloseIcon from 'assets/icons/close';
 import RadioButton from 'components/atom/Radio/RadioButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 import SplitEvenMode from './SplitEvenMode';
@@ -41,6 +41,11 @@ export default function SplitBillModal({
     const [listGuest, setListGuest] = useState<string[]>([]);
     const [numbers, setNumbers] = useState<number>(1);
     const { theme } = useTheme();
+    useEffect(() => {
+        if (cart) {
+            setNumbers(cart.numberOfCustomer);
+        }
+    }, [cart]);
     return (
         <>
             <ModalStyled
