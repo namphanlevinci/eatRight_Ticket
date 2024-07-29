@@ -1,9 +1,9 @@
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { Modal } from 'antd';
 import { BASE_ROUTER } from 'constants/router';
 import { useCart } from 'context/cartContext';
 import { CartItemType, ItemType } from 'context/cartType';
-import { PLACE_ORDER } from 'graphql/cart/placeOrder';
+import { PLACE_ORDER, SET_TIPS } from 'graphql/cart/placeOrder';
 import { SPLIT_BILL_BY_ITEM, SPLIT_BILL_EVENLY } from 'graphql/cart/splitBill';
 import { emitter } from 'graphql/client';
 import { GET_APPOTA_URL, POS_PAYMENT } from 'graphql/orders/paymentMethod';
@@ -38,7 +38,7 @@ export const useTableBill = (isGoBack = true) => {
     const [onGetAppotaUrl] = useMutation(GET_APPOTA_URL);
     const [placeOrder, { loading }] = useMutation(PLACE_ORDER);
     const [onPosPayment, { loading: pos_Loading }] = useMutation(POS_PAYMENT);
-
+    const [onSetTips, { loading: tips_Loading }] = useLazyQuery(SET_TIPS);
     const navigation = useNavigate();
 
     const showConfirm = () => {
@@ -197,6 +197,15 @@ export const useTableBill = (isGoBack = true) => {
                 console.log('eror');
             });
     };
+    const handleSetTip = (tip: number) => {
+        onSetTips({
+            variables: {
+                cartId: cartItems[indexTable].carts[cartIndex].id,
+                tipAmount: tip,
+            },
+            fetchPolicy: 'no-cache',
+        });
+    };
     return {
         handleSplitEven,
         handleSplitByItem,
@@ -204,7 +213,11 @@ export const useTableBill = (isGoBack = true) => {
         total,
         count,
         handleCheckOut: showConfirm,
-        loading: loading || split_even_loading || split_items_loading,
+        loading:
+            loading ||
+            split_even_loading ||
+            split_items_loading ||
+            tips_Loading,
         pos_Loading,
         contextHolder,
         paymentMethod,
@@ -217,5 +230,6 @@ export const useTableBill = (isGoBack = true) => {
         isVisibleModalPos,
         onPosPayment,
         handlePOSPayment,
+        handleSetTip,
     };
 };

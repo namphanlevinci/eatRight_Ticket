@@ -1,9 +1,11 @@
+import { useQuery } from '@apollo/client';
 import { Input, Modal, Row } from 'antd';
 import CloseXIcon from 'assets/icons/closeIcon';
 import { Button } from 'components/atom/Button';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
+import { GET_TIPS } from 'graphql/cart/placeOrder';
 import React, { useEffect, useRef } from 'react';
 import { roundTo } from 'utils/number';
 export default function ModalTip({
@@ -18,9 +20,21 @@ export default function ModalTip({
     total: number;
 }) {
     const inputRef = useRef<any>(null);
-    const [value, setValue] = React.useState(total * 0.1);
-    const [tips] = React.useState([0.1, 0.15, 0.2]);
+    const [value, setValue] = React.useState(0);
+    const [tips, setTips] = React.useState([0.1, 0.15, 0.2]);
     const [selectTip, setSelectTip] = React.useState(0.1);
+    const { data } = useQuery(GET_TIPS);
+    useEffect(() => {
+        if (data) {
+            const list = data?.storeConfig?.tip_amount;
+            if (list) {
+                const listTips = JSON.parse(list);
+                if (listTips.length > 0) {
+                    setTips(listTips);
+                }
+            }
+        }
+    }, [data]);
     useEffect(() => {
         // Kiểm tra xem modal có mở không
         if (isModalOpen && inputRef.current) {
@@ -28,6 +42,11 @@ export default function ModalTip({
             inputRef.current.focus();
         }
     }, [isModalOpen]);
+    useEffect(() => {
+        if (selectTip !== 0 && total !== 0) {
+            setValue(roundTo(total * selectTip, 3));
+        }
+    }, [selectTip, total]);
     const onFinish = () => {
         onSubmit(value);
     };
@@ -49,6 +68,7 @@ export default function ModalTip({
             }}
             closeIcon={<></>}
             centered
+            closable={false}
         >
             <Row justify={'space-between'} align={'middle'}>
                 <Text style={{ fontSize: 18, fontWeight: '600' }}>Tip</Text>
@@ -64,6 +84,7 @@ export default function ModalTip({
                 value={value}
                 onChange={(e) => {
                     setValue(parseFloat(e.target.value || '0'));
+                    setSelectTip(0);
                 }}
                 style={{
                     flex: 1,
@@ -92,7 +113,6 @@ export default function ModalTip({
                 {tips.map((tip) => (
                     <Button
                         onClick={() => {
-                            setValue(roundTo(total * tip, 3));
                             setSelectTip(tip);
                         }}
                         key={tip}
