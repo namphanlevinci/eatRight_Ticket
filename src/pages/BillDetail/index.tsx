@@ -2,7 +2,7 @@
 import { App, Col, Row, Spin } from 'antd';
 import { Button } from 'components/atom/Button';
 import { TextDark } from 'components/atom/Text';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Barcode from 'react-barcode';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_ORDER_DETAIL } from 'graphql/orders/orderDetail';
@@ -32,53 +32,56 @@ import { emitter } from 'graphql/client';
 import { useTheme } from 'context/themeContext';
 import BreadCrum from 'components/atom/BreadCrum/BreadCrum';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
-import { GET_SPLIT_BILL } from 'graphql/cart/splitBill';
+import { GET_INVOICES } from 'graphql/cart/splitBill';
+import ModalInput from 'components/modal/ModalInput';
+import {
+    SEND_RECEIPT_TO_EMAIL,
+    SEND_RECEIPT_TO_PHONENUMBER,
+} from 'graphql/orders/printBill';
+import LoadingModal from 'components/modal/loadingModal';
 export default function index() {
     const [getOrderDetail, { data, loading }] = useLazyQuery(GET_ORDER_DETAIL, {
         fetchPolicy: 'cache-and-network',
     });
-    const [onGetSplitBill, { data: dataSplitBill }] =
-        useLazyQuery(GET_SPLIT_BILL);
+    const [onGetInvoices, { data: dataSplitBill }] = useLazyQuery(GET_INVOICES);
     const [searchParams] = useSearchParams();
     const [showPendingPayment, setShowPendingPayment] = React.useState(false);
     const orderId = searchParams.get('orderId');
     const order_ID = searchParams.get('order_id');
+    const [onSendBillToEmail, { loading: sendLoading1 }] = useMutation(
+        SEND_RECEIPT_TO_EMAIL,
+    );
+    const [onSendBillToPhone, { loading: sendLoading2 }] = useMutation(
+        SEND_RECEIPT_TO_PHONENUMBER,
+    );
     useEffect(() => {
         if (orderId !== null && orderId !== 'undefined') {
             getOrderDetail({ variables: { id: atob(orderId) } }).then((res) => {
-                if (
-                    res.data?.orderDetail?.payment_method_code ===
-                        'splitbill' &&
-                    res.data?.orderDetail?.status !== 'complete'
-                ) {
-                    onGetSplitBill({
-                        variables: {
-                            OrderNumber: res.data?.orderDetail?.order_number,
-                        },
-                    });
-                }
+                onGetInvoices({
+                    variables: {
+                        OrderNumber: res.data?.orderDetail?.order_number,
+                    },
+                });
             });
         }
     }, [orderId]);
     useEffect(() => {
         if (order_ID !== null && order_ID !== 'undefined') {
             getOrderDetail({ variables: { id: order_ID } }).then((res) => {
-                if (
-                    res.data?.orderDetail?.payment_method_code ===
-                        'splitbill' &&
-                    res.data?.orderDetail?.status !== 'complete'
-                ) {
-                    onGetSplitBill({
-                        variables: {
-                            OrderNumber: res.data?.orderDetail?.order_number,
-                        },
-                    });
-                }
+                onGetInvoices({
+                    variables: {
+                        OrderNumber: res.data?.orderDetail?.order_number,
+                    },
+                });
             });
         }
     }, [order_ID]);
     useEffect(() => {
-        if (dataSplitBill) {
+        if (
+            dataSplitBill &&
+            data?.orderDetail?.payment_method_code === 'splitbill' &&
+            data?.orderDetail?.status !== 'complete'
+        ) {
             localStorage.setItem(
                 'split_bill_data',
                 JSON.stringify(dataSplitBill?.merchantGetOrderInvoices),
@@ -86,6 +89,48 @@ export default function index() {
             navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
         }
     }, [dataSplitBill]);
+    const handleSendBill = (
+        type: string,
+        value: string,
+        invoiceNumber: string,
+    ) => {
+        if (!invoiceNumber) {
+            return;
+        }
+        if (type === 'email') {
+            onSendBillToEmail({
+                variables: {
+                    invoiceNumber: invoiceNumber,
+                    email: value,
+                },
+            })
+                .then(() => {
+                    showSuccess({
+                        title: 'Success',
+                        content: `Send to ${value} success.`,
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        } else {
+            onSendBillToPhone({
+                variables: {
+                    invoiceNumber: `+84${invoiceNumber}`,
+                    phoneNumber: value,
+                },
+            })
+                .then(() => {
+                    showSuccess({
+                        title: 'Success',
+                        content: `Send to ${value} success.`,
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    };
     const navigation = useNavigate();
     const { modal } = App.useApp();
     const { print, connectionStatus }: PrinterContextType = usePrinter();
@@ -110,6 +155,19 @@ export default function index() {
                 },
             });
         }
+    };
+    const showSuccess = ({
+        title,
+        content,
+    }: {
+        title: string;
+        content: string;
+    }) => {
+        modal.success({
+            title: title,
+            content: content,
+            centered: true,
+        });
     };
     useEffect(() => {
         if (
@@ -173,9 +231,45 @@ export default function index() {
         });
     }, []);
     const { theme } = useTheme();
+    const [modalInputEmail, setModalInputEmail] = useState(false);
+    const [modalInputPhone, setModalInputPhone] = useState(false);
     return (
         <div>
             {' '}
+            <ModalInput
+                isModalOpen={modalInputEmail}
+                title="Input customer e-mail"
+                onSubmit={(value: string) => {
+                    handleSendBill(
+                        'email',
+                        value,
+                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                            ?.number,
+                    );
+                    setModalInputEmail(false);
+                }}
+                onCancel={() => {
+                    setModalInputEmail(false);
+                }}
+                type="email"
+            />
+            <ModalInput
+                isModalOpen={modalInputPhone}
+                title="Input customer PhoneNumber"
+                onSubmit={(value: string) => {
+                    handleSendBill(
+                        'tel',
+                        value,
+                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                            ?.number,
+                    );
+                    setModalInputPhone(false);
+                }}
+                onCancel={() => {
+                    setModalInputPhone(false);
+                }}
+                type="tel"
+            />
             <Row
                 style={{ marginBlock: 10, position: 'relative' }}
                 align={'middle'}
@@ -228,6 +322,7 @@ export default function index() {
                     showLoading={pos_Loading}
                     title="POS Payment Processing ..."
                 />
+                <LoadingModal showLoading={sendLoading1 || sendLoading2} />
                 <LazyLoadedScripts />
                 <ModalPaymentPending
                     showLoading={showPendingPayment}
@@ -242,8 +337,14 @@ export default function index() {
                         <RenderBill data={data?.orderDetail} />
                         <ButtonContainer>
                             <ButtonBill title="Print" onPress={PrintBill} />
-                            <ButtonBill title="Send mail" onPress={PrintBill} />
-                            <ButtonBill title="Sms" onPress={PrintBill} />
+                            <ButtonBill
+                                title="Send mail"
+                                onPress={() => setModalInputEmail(true)}
+                            />
+                            <ButtonBill
+                                title="Sms"
+                                onPress={() => setModalInputPhone(true)}
+                            />
                             <Button
                                 style={{
                                     height: 56,
