@@ -10,6 +10,7 @@ export default function ButtonPrimary({
     width = '100%',
     height,
     marginTop = '20px',
+    isDisable = false,
 }: {
     title: string;
     onClick: any;
@@ -18,6 +19,7 @@ export default function ButtonPrimary({
     width?: string;
     height?: string;
     marginTop?: string;
+    isDisable?: boolean;
 }) {
     const { theme } = useTheme();
     return (
@@ -33,7 +35,11 @@ export default function ButtonPrimary({
                       : size === 'medium'
                         ? 44
                         : 32,
-                background: isCancel ? theme.textTitle : theme.pRIMARY6Primary,
+                background: isDisable
+                    ? theme.nEUTRALBase
+                    : isCancel
+                      ? theme.textTitle
+                      : theme.pRIMARY6Primary,
                 marginTop: marginTop,
                 borderRadius: 8,
                 cursor: 'pointer',
@@ -45,7 +51,11 @@ export default function ButtonPrimary({
                 style={{
                     fontSize: 18,
                     fontWeight: '600',
-                    color: isCancel ? theme.pRIMARY6Primary : theme.pRIMARY1,
+                    color: isDisable
+                        ? theme.nEUTRALLine
+                        : isCancel
+                          ? theme.pRIMARY6Primary
+                          : theme.pRIMARY1,
                 }}
             >
                 {title}
