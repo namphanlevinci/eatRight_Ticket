@@ -173,9 +173,9 @@ export default function ColRight({
                 {cart?.prices?.total_canceled?.value ? (
                     <RenderBillInfomationRow
                         title="Canceled Item"
-                        value={`-${formatNumberWithCommas(
-                            parseInt(`${cart?.prices?.total_canceled?.value}`),
-                        )} $`}
+                        value={`-
+                            ${cart?.prices?.total_canceled?.value}
+                        $`}
                     />
                 ) : (
                     <></>
