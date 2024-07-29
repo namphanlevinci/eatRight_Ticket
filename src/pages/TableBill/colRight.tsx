@@ -126,7 +126,7 @@ export default function ColRight({
                 <Text style={{ fontSize: 20 }}>Billing Information</Text>
                 <RenderBillInfomationRow
                     title="Sub total"
-                    value={`${formatNumberWithCommas(total)} $`}
+                    value={`$ ${formatNumberWithCommas(total)}`}
                 />
                 {cart?.prices?.discounts && (
                     <RenderDiscountRow
@@ -173,9 +173,9 @@ export default function ColRight({
                 {cart?.prices?.total_canceled?.value ? (
                     <RenderBillInfomationRow
                         title="Canceled Item"
-                        value={`-
+                        value={`-$
                             ${cart?.prices?.total_canceled?.value}
-                        $`}
+                        `}
                     />
                 ) : (
                     <></>
@@ -184,7 +184,7 @@ export default function ColRight({
                 cart?.prices?.applied_taxes[0]?.amount ? (
                     <RenderBillInfomationRow
                         title="Tax"
-                        value={`${cart?.prices?.applied_taxes[0]?.amount?.value || 0} $`}
+                        value={`$ ${cart?.prices?.applied_taxes[0]?.amount?.value || 0} `}
                     />
                 ) : (
                     <></>
@@ -195,11 +195,11 @@ export default function ColRight({
 
                 <RenderBillInfomationRow
                     title="To be paid"
-                    value={`${formatNumberWithCommas(
+                    value={`$ ${formatNumberWithCommas(
                         (cart?.prices.grand_total.value || 0) -
                             (cart?.prices?.total_canceled?.value || 0) +
                             tip,
-                    )} $`}
+                    )} `}
                     textRightStyle={{
                         fontSize: 24,
                         fontWeight: '600',
