@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const GET_SPLIT_BILL = gql`
+export const GET_INVOICES = gql`
     query ($OrderNumber: String!) {
         merchantGetOrderInvoices(order_number: $OrderNumber) {
             order {
