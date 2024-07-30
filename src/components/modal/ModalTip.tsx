@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { Input, Modal, Row } from 'antd';
 import CloseXIcon from 'assets/icons/closeIcon';
 import { Button } from 'components/atom/Button';

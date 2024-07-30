@@ -1,6 +1,7 @@
 import { Layout } from 'antd';
-import ArrowLeftIcon from 'assets/icons/arrowLeft';
+import ReceiptBillIcon from 'assets/icons/receiptBill';
 import { Text } from 'components/atom/Text';
+import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
 
 export const RenderHeader = () => {
@@ -18,10 +19,10 @@ export const RenderHeader = () => {
             }}
         >
             <div
-                onClick={() => navigation(-1)}
+                onClick={() => navigation(BASE_ROUTER.BILL)}
                 style={{ display: 'flex ', alignItems: 'center' }}
             >
-                <ArrowLeftIcon />
+                <ReceiptBillIcon />
             </div>
             <Text style={{ fontSize: 20, fontWeight: '600', marginLeft: 20 }}>
                 Payment

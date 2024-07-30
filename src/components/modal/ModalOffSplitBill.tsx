@@ -54,7 +54,7 @@ export default function ModalOffSplitBill({
                         top: 10,
                         right: 20,
                     }}
-                    onClick={onCancel}
+                    onClick={onSubmit}
                 >
                     <CloseXIcon />
                 </div>
