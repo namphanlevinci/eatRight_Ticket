@@ -39,7 +39,7 @@ export default function SplitBillModal({
     const [confirmMode, setConfirmMode] = useState(false);
     const [listItems, setListItems] = useState<ItemType[]>([]);
     const [listGuest, setListGuest] = useState<string[]>([]);
-    const [numbers, setNumbers] = useState<number>(1);
+    const [numbers, setNumbers] = useState<number>(2);
     const { theme } = useTheme();
     useEffect(() => {
         if (cart) {

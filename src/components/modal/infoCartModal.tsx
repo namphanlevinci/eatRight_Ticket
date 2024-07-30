@@ -102,7 +102,7 @@ export default function InfoCartModal({
                 </Form.Item>
 
                 <Form.Item<FieldType>
-                    label="Nunber of customer"
+                    label="Number of customer"
                     name="numberOfCustomer"
                     rules={[
                         {

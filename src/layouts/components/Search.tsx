@@ -1,8 +1,8 @@
 import SearchIcon from 'assets/icons/search';
 import { DarkInput } from 'components/atom/Input';
 import React from 'react';
-import { Colors } from 'themes/colors';
 import { CloseOutlined } from '@ant-design/icons';
+import { useTheme } from 'context/themeContext';
 export default function SearchSettings({
     onChangeText,
     allowClear,
@@ -13,6 +13,7 @@ export default function SearchSettings({
     allowClear?: boolean;
     data?: string;
 }) {
+    const { theme } = useTheme();
     return (
         <div
             style={{
@@ -24,10 +25,10 @@ export default function SearchSettings({
         >
             <DarkInput
                 style={{
-                    background: Colors.grey3,
+                    background: theme.nEUTRALBase,
                     height: '100%',
-                    border: 0,
-                    color: 'white',
+                    border: `1px solid ${theme.nEUTRALLine}`,
+                    color: theme.textTitle,
                     paddingInline: 16,
                     paddingLeft: 46,
                 }}
@@ -54,7 +55,7 @@ export default function SearchSettings({
                     }}
                     onClick={() => onChangeText('')}
                 >
-                    <CloseOutlined style={{ color: 'white' }} />
+                    <CloseOutlined />
                 </div>
             )}
         </div>

@@ -23,7 +23,7 @@ const MenuMerchant = [
         to: `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`,
     },
     {
-        title: 'Restaurent Manager',
+        title: 'Restaurant Manager',
         icon: <StoreIcon />,
         to: BASE_ROUTER.RESTAURENT_MANAGER,
     },
