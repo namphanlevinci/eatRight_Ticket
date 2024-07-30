@@ -1,36 +1,114 @@
+import { useTheme } from 'context/themeContext';
 import styled from 'styled-components';
-import { Colors } from 'themes/colors';
 
-export const Text = styled.p({
-    fontFamily: 'Montserrat',
-    color: Colors.white,
-    fontSize: 16,
-    fontWeight: '400',
-});
+const getTextColor = (props: { theme: any }) => props.theme.fieldTextIcon;
 
-export const Text18 = styled.p({
-    fontFamily: 'Montserrat',
-    color: Colors.white,
-    fontSize: 18,
-    fontWeight: '600',
-});
+export const TextDefault = styled.p`
+    font-family: 'Montserrat';
+    color: ${getTextColor};
+    font-size: 16px;
+    font-weight: 400;
+`;
 
-export const Text20 = styled.p({
-    fontFamily: 'Montserrat',
-    color: Colors.white,
-    fontSize: 20,
-    fontWeight: '600',
-});
+export const Text18Default = styled.p`
+    font-family: 'Montserrat';
+    color: ${getTextColor};
+    font-size: 18px;
+    font-weight: 600;
+`;
 
-export const Text24 = styled.p({
-    fontFamily: 'Montserrat',
-    color: Colors.white,
-    fontSize: 24,
-    fontWeight: '600',
-});
-export const TextDark = styled.p({
-    fontFamily: 'Montserrat',
-    color: Colors.black,
-    fontSize: 16,
-    fontWeight: '400',
-});
+export const Text20Default = styled.p`
+    font-family: 'Montserrat';
+    color: ${getTextColor};
+    font-size: 20px;
+    font-weight: 600;
+`;
+
+export const Text24Default = styled.p`
+    font-family: 'Montserrat';
+    color: ${getTextColor};
+    font-size: 24px;
+    font-weight: 600;
+`;
+
+export const TextDarkDefault = styled.p`
+    font-family: 'Montserrat';
+    color: ${getTextColor};
+    font-size: 16px;
+    font-weight: 400;
+`;
+
+export const TextBoldDefault = styled.p`
+    font-family: 'Montserrat';
+    color: ${getTextColor};
+    font-size: 16px;
+    font-weight: 600;
+`;
+
+export const Text = ({
+    children,
+    style,
+    ...props
+}: {
+    children: React.ReactNode;
+    style?: React.CSSProperties;
+    onClick?: any;
+}) => {
+    const { theme } = useTheme();
+
+    return (
+        <TextDefault theme={theme} style={style} {...props}>
+            {children}
+        </TextDefault>
+    );
+};
+
+export const Text18 = ({ children, style }: any) => {
+    const { theme } = useTheme();
+
+    return (
+        <Text18Default theme={theme} style={style}>
+            {children}
+        </Text18Default>
+    );
+};
+
+export const Text20 = ({ children, style }: any) => {
+    const { theme } = useTheme();
+
+    return (
+        <Text20Default theme={theme} style={style}>
+            {children}
+        </Text20Default>
+    );
+};
+
+export const Text24 = ({ children, style }: any) => {
+    const { theme } = useTheme();
+
+    return (
+        <Text24Default theme={theme} style={style}>
+            {children}
+        </Text24Default>
+    );
+};
+
+export const TextDark = ({ children, style }: any) => {
+    const { theme } = useTheme();
+
+    return (
+        <TextDarkDefault theme={theme} style={style}>
+            {children}
+        </TextDarkDefault>
+    );
+};
+
+export const TextBold = ({ children, style }: any) => {
+    const { theme } = useTheme();
+
+    return (
+        <TextBoldDefault theme={theme} style={style}>
+            {children}
+        </TextBoldDefault>
+    );
+};

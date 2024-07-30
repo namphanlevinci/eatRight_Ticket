@@ -5,11 +5,11 @@ import { Text, Text18 } from 'components/atom/Text';
 import { CartItemType } from 'context/cartType';
 import { ColStyled } from 'pages/TableBill/styleds';
 import React from 'react';
-import { Colors } from 'themes/colors';
 import { formatNumberWithCommas } from 'utils/format';
 import { getTagStyled } from 'utils/tag';
 import { App } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+import { useTheme } from 'context/themeContext';
 export default function ListOrder({
     cart,
     count,
@@ -49,12 +49,13 @@ export default function ListOrder({
             centered: true,
         });
     };
+    const { theme } = useTheme();
     return (
         <ColStyled
             style={{
                 flex: 1,
-                background: Colors.grey1,
-                border: `1px solid ${Colors.brown5}`,
+                background: theme.nEUTRALBase,
+                border: `1px solid ${theme.nEUTRALLine}`,
                 marginRight: 16,
                 borderRadius: 8,
                 padding: 16,
@@ -79,6 +80,7 @@ export default function ListOrder({
                                                 item.isUnsend
                                                     ? 'New'
                                                     : item?.status,
+                                                theme,
                                             )}
                                         />
                                     </Col>
@@ -149,6 +151,7 @@ export default function ListOrder({
                                                                 <CustomTag
                                                                     {...getTagStyled(
                                                                         product?.status,
+                                                                        theme,
                                                                     )}
                                                                 />
                                                             )}

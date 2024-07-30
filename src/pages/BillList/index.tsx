@@ -23,15 +23,17 @@ import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import LoadingModal from 'components/modal/loadingModal';
+import { useTheme } from 'context/themeContext';
 
 const { Content } = Layout;
 
 enum TableStatus {
     Failed = 'Payment Failed',
     UnPaid = 'Pending Payment',
-    Paid = 'Processing',
+    Paid = 'Complete',
     Cancelled = 'Cancelled',
     Complete = 'Complete',
+    Processing = 'Processing',
 }
 
 const convertStatusText = (status: TableStatus) => {
@@ -46,6 +48,8 @@ const convertStatusText = (status: TableStatus) => {
             return 'Paid';
         case TableStatus.UnPaid:
             return 'Pending Payment';
+        case TableStatus.Processing:
+            return 'Processing';
         default:
             return 'Unknown';
     }
@@ -118,6 +122,19 @@ const convertStatus = (status: TableStatus) => {
                     {convertStatusText(status)}
                 </StyledColumn>
             );
+        case TableStatus.Processing:
+            return (
+                <StyledColumn
+                    style={{
+                        width: '100%',
+                        opacity: 1,
+                        fontWeight: 600,
+                        color: '#056bfb',
+                    }}
+                >
+                    {convertStatusText(status)}
+                </StyledColumn>
+            );
         default:
             return <></>;
     }
@@ -141,9 +158,14 @@ const BillList: React.FC = () => {
         onChangeDropdownList,
         loading,
     } = useBillList();
-
+    const { theme } = useTheme();
     return (
-        <Layout style={{ backgroundColor: Colors.black, minHeight: '100vh' }}>
+        <Layout
+            style={{
+                backgroundColor: theme.nEUTRALPrimary,
+                minHeight: '100vh',
+            }}
+        >
             <LoadingModal showLoading={loading} />
             <Content style={{ margin: '0 16px' }}>
                 <Divider style={{ background: Colors.grey3 }} />
@@ -183,9 +205,12 @@ const BillList: React.FC = () => {
                             />
                         </div>
 
-                        <StyledSearch onClick={handleGetBillList}>
+                        <StyledSearch
+                            onClick={handleGetBillList}
+                            style={{ background: theme.pRIMARY6Primary }}
+                        >
                             <p>Filter</p>
-                            <SearchIcon />
+                            <SearchIcon color={theme.nEUTRALPrimary} />
                         </StyledSearch>
                     </div>
                     <div style={{ display: 'flex', marginTop: 50 }}>
@@ -204,27 +229,46 @@ const BillList: React.FC = () => {
                         />
                     </div>
                 </StyledTitle>
-                <ContainerPaginationText>
+                <ContainerPaginationText
+                    style={{ background: theme.nEUTRALPrimary }}
+                >
                     <div />
                 </ContainerPaginationText>
                 <div>
-                    <StyledColumnContainer>
-                        <StyledColumn style={{ width: '100%' }}>
+                    <StyledColumnContainer
+                        style={{
+                            background: theme.pRIMARY1,
+                            border: `1px solid ${theme.pRIMARY2}`,
+                        }}
+                    >
+                        <StyledColumn
+                            style={{ width: '100%', color: theme.tEXTPrimary }}
+                        >
                             Order
                         </StyledColumn>
-                        <StyledColumn style={{ width: '100%' }}>
+                        <StyledColumn
+                            style={{ width: '100%', color: theme.tEXTPrimary }}
+                        >
                             Status
                         </StyledColumn>
                         <StyledColumn
-                            style={{ width: '100%', justifyContent: 'center' }}
+                            style={{
+                                width: '100%',
+                                justifyContent: 'center',
+                                color: theme.tEXTPrimary,
+                            }}
                         >
                             Table
                         </StyledColumn>
-                        <StyledColumn style={{ width: '100%' }}>
+                        <StyledColumn
+                            style={{ width: '100%', color: theme.tEXTPrimary }}
+                        >
                             Total
                         </StyledColumn>
 
-                        <StyledColumn style={{ width: '100%' }}>
+                        <StyledColumn
+                            style={{ width: '100%', color: theme.tEXTPrimary }}
+                        >
                             Date
                         </StyledColumn>
                     </StyledColumnContainer>
@@ -233,7 +277,9 @@ const BillList: React.FC = () => {
                             key={dt.id}
                             style={{
                                 background:
-                                    index % 2 === 0 ? '#191919' : '#0D0D0D',
+                                    index % 2 === 0
+                                        ? theme.nEUTRALBase
+                                        : theme.nEUTRALLine,
                             }}
                             onClick={() =>
                                 navigation(
@@ -242,15 +288,24 @@ const BillList: React.FC = () => {
                             }
                         >
                             <StyledColumn
-                                style={{ width: '100%' }}
+                                style={{
+                                    width: '100%',
+                                    color: theme.tEXTPrimary,
+                                }}
                             >{`# ${dt.order_number}`}</StyledColumn>
-                            <StyledColumn style={{ width: '100%' }}>
+                            <StyledColumn
+                                style={{
+                                    width: '100%',
+                                    color: theme.tEXTPrimary,
+                                }}
+                            >
                                 {convertStatus(dt.status)}
                             </StyledColumn>
                             <StyledColumn
                                 style={{
                                     width: '100%',
                                     justifyContent: 'center',
+                                    color: theme.tEXTPrimary,
                                 }}
                             >
                                 {dt.table}
@@ -260,18 +315,26 @@ const BillList: React.FC = () => {
                                     opacity: 1,
                                     fontWeight: 600,
                                     width: '100%',
+                                    color: theme.tEXTPrimary,
                                 }}
                             >
                                 {formatNumberWithCommas(dt.grand_total)}
                             </StyledColumn>
 
-                            <StyledColumn style={{ width: '100%' }}>
+                            <StyledColumn
+                                style={{
+                                    width: '100%',
+                                    color: theme.tEXTPrimary,
+                                }}
+                            >
                                 {dt.created_at}
                             </StyledColumn>
                         </StyledColumnContainer>
                     ))}
                 </div>
-                <ContainerPaginationText>
+                <ContainerPaginationText
+                    style={{ background: theme.nEUTRALPrimary }}
+                >
                     <div />
                     <StyledPagination
                         total={total_count}
@@ -285,6 +348,7 @@ const BillList: React.FC = () => {
                         }}
                         showSizeChanger
                         showTotal={(total) => `Total ${total} items`}
+                        theme={theme}
                     />
                 </ContainerPaginationText>
             </Content>
@@ -294,25 +358,30 @@ const BillList: React.FC = () => {
 
 export default BillList;
 
+const getPanigationtTotalTextColor = (props: { theme: any }) =>
+    props.theme.tEXTPrimary;
+const getPanigationtItemPagination = (props: { theme: any }) =>
+    props.theme.nEUTRALPrimary;
 export const StyledPagination = styled(Pagination)`
+    align-items: center;
     .ant-pagination-total-text {
-        color: ${Colors.white} !important;
+        color: ${getPanigationtTotalTextColor} !important;
         font-size: 18px;
     }
     .ant-pagination-item {
         height: 48px;
         width: 48px;
         padding-top: 8px;
-        background: ${Colors.black};
-        color: ${Colors.white};
+        background: ${getPanigationtItemPagination};
+        color: ${getPanigationtTotalTextColor};
     }
     .ant-pagination-item a {
-        color: ${Colors.white} !important;
+        color: ${getPanigationtTotalTextColor} !important;
     }
     .ant-pagination-item-link span {
-        color: ${Colors.white};
+        color: ${getPanigationtTotalTextColor};
     }
     .ant-pagination-item-active {
-        border-color: ${Colors.white} !important;
+        border-color: ${getPanigationtTotalTextColor} !important;
     }
 `;

@@ -92,6 +92,21 @@ export const ADD_MORE_ITEM_TO_CART = gql`
                     grand_total {
                         value
                     }
+                    subtotal_excluding_tax {
+                        value
+                    }
+                    subtotal_including_tax {
+                        value
+                    }
+                    subtotal_with_discount_excluding_tax {
+                        value
+                    }
+                    applied_taxes {
+                        amount {
+                            value
+                        }
+                        label
+                    }
                 }
             }
             user_errors {

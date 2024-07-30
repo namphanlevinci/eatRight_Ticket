@@ -1,6 +1,5 @@
 import React from 'react';
 import { App, Button, Form, Row } from 'antd';
-import { Colors } from 'themes/colors';
 import { FormItem } from 'components/atom/Form/Item';
 import { Text } from 'components/atom/Text';
 import { DarkInput } from 'components/atom/Input';
@@ -12,6 +11,7 @@ import { BASE_ROUTER } from 'constants/router';
 import { useMutation } from '@apollo/client';
 import { REQUEST_ACCOUNT } from 'graphql/auth/requestAccount';
 import LoadingModal from 'components/modal/loadingModal';
+import { useTheme } from 'context/themeContext';
 export const RequestAccountPage: React.FC = () => {
     const [requestAccount, { loading }] = useMutation(REQUEST_ACCOUNT);
     const onFinishFailed = (errorInfo: any) => {
@@ -38,22 +38,24 @@ export const RequestAccountPage: React.FC = () => {
             });
         });
     };
+    const { theme } = useTheme();
     return (
         <div
             style={{
                 height: 760,
                 width: 380,
-                background: Colors.grey3,
+                background: theme.nEUTRALBase,
                 borderRadius: 16,
                 padding: 16,
                 paddingBlock: 32,
                 alignSelf: 'center',
+                border: `1px solid ${theme.nEUTRALLine}`,
             }}
         >
             <LoadingModal showLoading={loading} />
             <span
                 style={{
-                    color: Colors.white,
+                    color: theme.pRIMARY6Primary,
                     alignItems: 'center',
                     display: 'flex',
                     fontSize: 34,
@@ -84,6 +86,7 @@ export const RequestAccountPage: React.FC = () => {
                         },
                     ]}
                     required={false}
+                    theme={theme}
                 >
                     <DarkInput
                         placeholder="First Name"
@@ -91,6 +94,7 @@ export const RequestAccountPage: React.FC = () => {
                     />
                 </FormItem>
                 <FormItem
+                    theme={theme}
                     label="Last name"
                     name="lastname"
                     rules={[
@@ -108,6 +112,7 @@ export const RequestAccountPage: React.FC = () => {
                 </FormItem>
                 <div style={{ position: 'relative' }}>
                     <FormItem
+                        theme={theme}
                         label="Email"
                         name="email"
                         rules={[
@@ -126,6 +131,7 @@ export const RequestAccountPage: React.FC = () => {
                     </FormItem>
                 </div>
                 <FormItem
+                    theme={theme}
                     label="Phone number"
                     name="phonenumber"
                     rules={[
@@ -136,7 +142,12 @@ export const RequestAccountPage: React.FC = () => {
                     ]}
                     required={false}
                 >
-                    <PhoneInputCustom country={'us'} value={''} enableSearch />
+                    <PhoneInputCustom
+                        country={'us'}
+                        value={''}
+                        enableSearch
+                        theme={theme}
+                    />
                 </FormItem>
 
                 <Form.Item>
@@ -146,7 +157,7 @@ export const RequestAccountPage: React.FC = () => {
                         style={{
                             width: '100%',
                             marginTop: 20,
-                            background: Colors.primary,
+                            background: theme.pRIMARY6Primary,
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
@@ -156,7 +167,7 @@ export const RequestAccountPage: React.FC = () => {
                     >
                         <Text
                             style={{
-                                color: Colors.black,
+                                color: 'white',
                                 fontSize: 18,
                                 fontWeight: '600',
                             }}
@@ -176,7 +187,7 @@ export const RequestAccountPage: React.FC = () => {
                         style={{
                             fontSize: 18,
                             fontWeight: '600',
-                            color: Colors.primary,
+                            color: theme.pRIMARY6Primary,
                         }}
                     >
                         Log in
@@ -187,14 +198,17 @@ export const RequestAccountPage: React.FC = () => {
     );
 };
 
+const getTextColor = (props: { theme: any }) => props.theme.fieldTextIcon;
+const getBackgroundColor = (props: { theme: any }) =>
+    props.theme.fieldBackground;
 const PhoneInputCustom = styled(PhoneInput)`
     display: flex;
     justify-content: space-between;
     .form-control {
         order: 1 !important;
         height: 50px !important;
-        background: #191919 !important;
-        color: #fff !important;
+        background: ${getBackgroundColor} !important;
+        color: ${getTextColor} !important;
         padding-left: 8px !important;
         border: none !important;
     }
@@ -204,17 +218,17 @@ const PhoneInputCustom = styled(PhoneInput)`
         order: 0 !important;
         height: 50px !important;
         width: 60px !important;
-        background-color: #191919 !important;
+        background-color: ${getBackgroundColor}!important;
         border: none !important;
         border-radius: 8px !important;
         padding-left: 8px !important;
     }
     .selected-flag:hover {
-        background-color: #191919 !important;
+        background-color: ${getBackgroundColor} !important;
     }
 
     .selected-flag .open {
-        background: #191919 !important;
+        background: ${getBackgroundColor} !important;
     }
     .country-list {
         border-radius: 8px !important;

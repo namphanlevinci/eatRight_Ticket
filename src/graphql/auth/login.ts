@@ -8,6 +8,7 @@ export const LOGIN = gql`
             lastname
             restaurant_name
             restaurant_address
+            account_type
         }
     }
 `;

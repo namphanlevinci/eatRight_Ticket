@@ -1,7 +1,5 @@
-import _ from 'lodash';
-
 export function formatNumberWithCommas(number: number) {
-    const formattedNumber = _.toNumber(number).toLocaleString('en-US');
+    const formattedNumber = number.toFixed(2);
     return formattedNumber;
 }
 

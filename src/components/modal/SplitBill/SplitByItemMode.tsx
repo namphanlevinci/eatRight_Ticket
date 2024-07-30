@@ -5,9 +5,9 @@ import styled from 'styled-components';
 import ButtonGuest from './components/ButtonGuest';
 import { ItemType } from 'context/cartType';
 import RenderItemSplit from './components/RenderItem';
-import { Colors } from 'themes/colors';
 import ModalSplitItem from './components/ModalSplitItem';
 import { useSplitItem } from './useSplitItem';
+import { useTheme } from 'context/themeContext';
 
 export default function SplitByItemMode({
     items,
@@ -44,25 +44,28 @@ export default function SplitByItemMode({
             <>
                 {validItems?.map((item: ItemType) => {
                     return (
-                        <RenderItemSplit
-                            key={item.id}
-                            title={item.product.name}
-                            quantity={
-                                item.quantityText
-                                    ? item.quantityText
-                                    : item.quantity
-                            }
-                            isSelected={selected.includes(item.id || '')}
-                            onPress={() =>
-                                handleSelect(item.id || '', guestId || '')
-                            }
-                        />
+                        item.status !== 'cancel' && (
+                            <RenderItemSplit
+                                key={item.id}
+                                title={item.product.name}
+                                quantity={
+                                    item.quantityText
+                                        ? item.quantityText
+                                        : item.quantity
+                                }
+                                isSelected={selected.includes(item.id || '')}
+                                onPress={() =>
+                                    handleSelect(item.id || '', guestId || '')
+                                }
+                            />
+                        )
                     );
                 })}
                 {guestId && <div style={{ height: 10 }} />}
             </>
         );
     };
+    const { theme } = useTheme();
     return (
         <Container>
             {modalSplitItem && (
@@ -71,8 +74,13 @@ export default function SplitByItemMode({
                     onSubmit={handleSplitSubmit}
                 />
             )}
-            <ItemsContainer>
-                <Text>Items</Text>
+            <ItemsContainer
+                style={{
+                    background: theme.nEUTRALBase,
+                    border: '1px solid ' + theme.nEUTRALLine,
+                }}
+            >
+                <Text style={{ fontWeight: '600' }}>Items</Text>
                 {itemFromGuest && selected.length > 0 && (
                     <ButtonGuest
                         onPress={() => {
@@ -94,11 +102,12 @@ export default function SplitByItemMode({
                     style={
                         selected.length === 1 && itemFromGuest === ''
                             ? {
-                                  background: 'rgba(255, 157, 0, 0.20)',
-                                  border: '1px solid #CC7D00',
+                                  background: theme.pRIMARY1,
                                   cursor: 'pointer',
                               }
-                            : {}
+                            : {
+                                  background: theme.nEUTRALBase,
+                              }
                     }
                     onClick={() =>
                         selected.length === 1 &&
@@ -106,13 +115,19 @@ export default function SplitByItemMode({
                         setModalSplitItem(true)
                     }
                 >
-                    <SplitIcon />
+                    <SplitIcon
+                        color={
+                            selected.length === 1
+                                ? theme.pRIMARY6Primary
+                                : theme.tEXTPrimary
+                        }
+                    />
                     <Text
                         style={{
                             color:
                                 selected.length === 1
-                                    ? Colors.primary
-                                    : 'white',
+                                    ? theme.pRIMARY6Primary
+                                    : theme.tEXTPrimary,
                         }}
                     >
                         Split by item

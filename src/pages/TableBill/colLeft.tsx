@@ -2,10 +2,13 @@ import { Col, Row } from 'antd';
 import { Text, Text18, Text20 } from 'components/atom/Text';
 import { CartItemType, ItemType } from 'context/cartType';
 import React from 'react';
-import { Colors } from 'themes/colors';
 import { formatNumberWithCommas } from 'utils/format';
 import { ColStyled } from './styleds';
 import { roundTo } from 'utils/number';
+import { useTheme } from 'context/themeContext';
+import { DividedSolid } from 'pages/BillDetail/styled';
+import CustomTag from 'components/atom/Tag/CustomTag';
+import { getTagStyled } from 'utils/tag';
 
 export default function ColLeft({
     cart,
@@ -23,23 +26,29 @@ export default function ColLeft({
     isSplitBill?: boolean;
     openModalSplitBill?: () => void;
 }) {
+    const { theme } = useTheme();
     return (
         <ColStyled
             style={{
                 flex: 1,
-                background: Colors.grey1,
-                border: `1px solid ${Colors.brown5}`,
+                background: theme.nEUTRALBase,
+                border: `1px solid ${theme.nEUTRALLine}`,
                 marginRight: 16,
                 borderRadius: 8,
                 padding: 16,
             }}
         >
-            <Text>Total {count} Items</Text>
-
+            <Text style={{ fontWeight: '600' }}>Total {count} Items</Text>
+            <DividedSolid />
             {isSplitBill && listItems.length > 0
                 ? listItems?.map((data) => {
                       const total = data.items.reduce((acc, item) => {
-                          return acc + item.prices.price.value * item.quantity;
+                          return (
+                              acc +
+                              (item.status === 'cancel'
+                                  ? 0
+                                  : item.prices.price.value * item.quantity)
+                          );
                       }, 0);
                       return (
                           <div key={data.guestId}>
@@ -58,7 +67,9 @@ export default function ColLeft({
                                   <Text20 style={{ fontWeight: '600' }}>
                                       {data.guestId}
                                   </Text20>
-                                  <Text20>Total : {roundTo(total, 2)} $</Text20>
+                                  <Text20>
+                                      Total : $ {roundTo(total, 2)}{' '}
+                                  </Text20>
                               </Row>
 
                               {data.items?.length > 0 &&
@@ -80,7 +91,8 @@ export default function ColLeft({
     );
 }
 
-const RenderItem = ({ item }: { item: ItemType }) => {
+export const RenderItem = ({ item }: { item: ItemType }) => {
+    const { theme } = useTheme();
     return (
         <div>
             <Row justify={'space-between'} style={{ marginTop: 32 }}>
@@ -97,10 +109,16 @@ const RenderItem = ({ item }: { item: ItemType }) => {
                         <Col style={{ flex: 1 }}>
                             <Text18>{item.product.name}</Text18>
                         </Col>
+                        <CustomTag
+                            {...getTagStyled(
+                                item.isUnsend ? 'New' : item?.status,
+                                theme,
+                            )}
+                        />
                     </Row>
                 </Col>
                 <Text18>
-                    {formatNumberWithCommas(item.prices.price.value)} $
+                    $ {formatNumberWithCommas(item.prices.price.value)}
                 </Text18>
             </Row>
             {item.bundle_options?.map((bundle) => {

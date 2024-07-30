@@ -1,4 +1,5 @@
 import { BASE_ROUTER } from 'constants/router';
+import { useTheme } from 'context/themeContext';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Colors } from 'themes/colors';
@@ -39,18 +40,17 @@ export const RestaurentManageButton = ({
     onClick?: any;
     icon?: any;
 }) => {
+    const { theme } = useTheme();
     return (
         <Link to={to}>
             <Button
                 style={{
-                    background: isSelected
-                        ? Colors.primary_dark_20
-                        : 'transparent',
+                    background: isSelected ? theme.pRIMARY2 : 'transparent',
                     color: isWarning
-                        ? Colors.red
+                        ? theme.eRROR2Default
                         : isSelected
-                          ? Colors.primary
-                          : Colors.white,
+                          ? theme.pRIMARY6Primary
+                          : theme.tEXTPrimary,
                     fontWeight: isSelected ? '600' : '400',
                 }}
                 onClick={onClick}
@@ -85,7 +85,11 @@ export const RestaurentManageButton = ({
                 >
                     <path
                         d="M1.66666 1L5.66666 5L1.66666 9"
-                        stroke={isSelected ? Colors.primary : Colors.white}
+                        stroke={
+                            isSelected
+                                ? theme.pRIMARY6Primary
+                                : theme.tEXTPrimary
+                        }
                         strokeWidth="1.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"

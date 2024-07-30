@@ -1,8 +1,8 @@
 import { Button } from 'antd';
 import CloseIcon from 'assets/icons/close';
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 import React, { useEffect, useState } from 'react';
-import { Colors } from 'themes/colors';
 
 export default function InputInfoCart({
     icon,
@@ -19,6 +19,7 @@ export default function InputInfoCart({
     useEffect(() => {
         setInput(value);
     }, [value]);
+    const { theme } = useTheme();
     return (
         <div
             style={{
@@ -26,10 +27,12 @@ export default function InputInfoCart({
                 display: 'flex',
                 alignItems: 'center',
                 marginBlock: 16,
-                borderBottom: `1px solid ${Colors.grey3}`,
+                borderBottom: `1px solid ${theme.nEUTRALLine}`,
+                background: theme.nEUTRALBase,
+                paddingLeft: 8,
             }}
         >
-            <div style={{ height: 30, width: 30 }}>{icon}</div>
+            <div style={{ height: 30, width: 30, marginRight: 10 }}>{icon}</div>
             <input
                 style={{
                     width: '100%',
@@ -38,7 +41,7 @@ export default function InputInfoCart({
                     outline: 'none',
                     background: 'transparent',
                     fontSize: 16,
-                    color: Colors.white,
+                    color: theme.tEXTPrimary,
                 }}
                 value={input}
                 placeholder={placeholder}
@@ -57,8 +60,8 @@ export default function InputInfoCart({
                     style={{
                         width: 60,
                         height: 36,
-                        background: '#FFCC0033',
-                        border: `1px solid ${Colors.primary}`,
+                        background: theme.pRIMARY1,
+                        border: `1px solid ${theme.pRIMARY6Primary}`,
                         justifyContent: 'center',
                         display: 'flex',
                         alignItems: 'center',
@@ -66,7 +69,14 @@ export default function InputInfoCart({
                     }}
                     onClick={() => setValue(input)}
                 >
-                    <Text style={{ color: Colors.primary }}>Save</Text>
+                    <Text
+                        style={{
+                            color: theme.pRIMARY6Primary,
+                            fontWeight: '600',
+                        }}
+                    >
+                        Save
+                    </Text>
                 </Button>
             </div>
         </div>

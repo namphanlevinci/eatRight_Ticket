@@ -1,4 +1,4 @@
-import { Col, Layout, Popover, Row, Spin } from 'antd';
+import { Button, Col, Layout, Popover, Row, Spin } from 'antd';
 import { Text } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -20,6 +20,7 @@ import { format } from 'date-fns';
 import { GET_NOTIFICATION } from 'graphql/notification';
 import { NotiTitle, NotificationItem, AnnaBellStyle } from './styled';
 import DrawerMenu from './components/DrawerMenu';
+import { useTheme } from 'context/themeContext';
 
 type Props = {
     children: React.ReactNode;
@@ -192,85 +193,76 @@ export const DarkLayout = (props: Props) => {
         </InfiniteScroll>
     );
 
+    const { theme, toggleTheme } = useTheme();
+
     return (
         <Layout
             style={{
-                backgroundColor: Colors.black,
+                backgroundColor: theme.nEUTRALPrimary,
                 minHeight: '100vh',
                 paddingTop: isLogged ? 64 : 0,
                 paddingBottom: isLogged ? 100 : 0,
             }}
         >
-            {isLogged && (
-                <div
+            <div
+                style={{
+                    position: 'fixed',
+                    top: 0,
+                    width: '100%',
+                    zIndex: 1000,
+                }}
+            >
+                <Header
                     style={{
-                        position: 'fixed',
-                        top: 0,
-                        width: '100%',
-                        zIndex: 1000,
+                        padding: 0,
+                        display: 'flex',
+                        paddingRight: 20,
+                        alignItems: 'center',
+                        height: 56,
+                        background: theme.nEUTRALPrimary,
+                        paddingInline: 16,
+                        justifyContent: 'space-between',
                     }}
                 >
-                    <Header
-                        style={{
-                            padding: 0,
-                            display: 'flex',
-                            paddingRight: 20,
-                            alignItems: 'center',
-                            height: 56,
-                            background: 'black',
-                            paddingInline: 16,
-                            justifyContent: 'space-between',
-                        }}
+                    <Link
+                        to={BASE_ROUTER.HOME}
+                        style={{ cursor: 'pointer', height: 36 }}
                     >
-                        <Link
-                            to={BASE_ROUTER.HOME}
-                            style={{ cursor: 'pointer', height: 36 }}
-                        >
-                            <img src={Logo} style={{ height: 36 }} />
-                        </Link>
-                        <Row style={{ gap: 10 }} align={'middle'}>
-                            {/* <BellIcon />
+                        <img src={Logo} style={{ height: 36 }} />
+                    </Link>
+                    <Row style={{ gap: 10 }} align={'middle'}>
+                        {/* <BellIcon />
                             <HelpIcon /> */}
-                            <Popover
-                                content={noti}
-                                title={notiTitle}
-                                trigger="click"
-                                open={isOpenNoti}
-                                onOpenChange={handleOpenChangeNoti}
-                                overlayInnerStyle={{ background: '#4B3718' }}
-                                placement="bottomRight"
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
+                        <Button onClick={toggleTheme} title="Change Theme" />
+                        {isLogged && (
+                            <>
+                                <Popover
+                                    content={noti}
+                                    title={notiTitle}
+                                    trigger="click"
+                                    open={isOpenNoti}
+                                    onOpenChange={handleOpenChangeNoti}
+                                    overlayInnerStyle={{
+                                        background: '#4B3718',
                                     }}
+                                    placement="bottomRight"
                                 >
-                                    <BellIcon />
-                                </div>
-                            </Popover>
-                            {/* <Popover
-                                content={content}
-                                trigger="click"
-                                open={open}
-                                onOpenChange={handleOpenChange}
-                                overlayInnerStyle={{ background: '#4B3718' }}
-                                placement="bottomRight"
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <BoardMenuIcon />
-                                </div>
-                            </Popover> */}
-                            <DrawerMenu />
-                        </Row>
-                    </Header>
-                </div>
-            )}
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <BellIcon />
+                                    </div>
+                                </Popover>
+                                <DrawerMenu />
+                            </>
+                        )}
+                    </Row>
+                </Header>
+            </div>
+
             <div style={{ width: '100%' }}>{children}</div>
             {isLogged && (
                 <div
@@ -284,7 +276,7 @@ export const DarkLayout = (props: Props) => {
                     <Footer
                         style={{
                             textAlign: 'center',
-                            background: Colors.black,
+                            background: theme.nEUTRALPrimary,
                             paddingInline: 16,
                             paddingBlock: 16,
                         }}

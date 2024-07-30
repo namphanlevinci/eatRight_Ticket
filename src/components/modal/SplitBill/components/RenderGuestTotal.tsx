@@ -1,5 +1,6 @@
 import { Input, Row } from 'antd';
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -8,12 +9,21 @@ export default function RenderGuestTotal({
     value,
 }: {
     title: string;
-    value: number | string;
+    value: number;
 }) {
+    const { theme } = useTheme();
     return (
         <Row align={'middle'} style={{ gap: 40, marginTop: 16 }}>
-            <Text>{title}</Text>
-            <InputNumberStyled value={value} disabled />
+            <Text style={{ fontWeight: 600 }}>{title}</Text>
+            <InputNumberStyled
+                value={value.toFixed(2)}
+                disabled
+                style={{
+                    background: theme.nEUTRALBase,
+                    border: '1px solid ' + theme.nEUTRALLine,
+                    color: theme.tEXTPrimary,
+                }}
+            />
         </Row>
     );
 }
@@ -22,10 +32,7 @@ const InputNumberStyled = styled(Input)({
     display: 'flex',
     flex: 1,
     height: 56,
-    background: '#161B26 !important',
-    border: '1px solid #161B26 !important',
     borderRadius: 8,
-    color: 'white !important',
     fontSize: 17,
     fontFamily: 'Montserrat',
 });

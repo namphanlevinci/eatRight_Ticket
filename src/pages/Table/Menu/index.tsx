@@ -11,6 +11,7 @@ import { formatNumberWithCommas } from 'utils/format';
 import SearchTable from 'pages/Home/components/Search';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useTheme } from 'context/themeContext';
 
 export default function Menu() {
     const {
@@ -45,6 +46,7 @@ export default function Menu() {
             setSearch(undefined);
         }
     }, [categoryIndex]);
+    const { theme } = useTheme();
     const onClickAddToCart = (item: any) => {
         if (item.__typename === 'SimpleProduct') {
             const Item: ItemType = {
@@ -159,12 +161,14 @@ export default function Menu() {
                                                           {item.name}
                                                           {item.__typename ===
                                                               'SimpleProduct' && (
-                                                              <p>
-                                                                  {formatNumberWithCommas(
-                                                                      item.price
-                                                                          .regularPrice
-                                                                          .amount
-                                                                          .value,
+                                                              <p
+                                                                  style={{
+                                                                      color: theme.pRIMARY6Primary,
+                                                                  }}
+                                                              >
+                                                                  ${' '}
+                                                                  {item.price.regularPrice.amount.value.toFixed(
+                                                                      2,
                                                                   )}
                                                               </p>
                                                           )}

@@ -3,6 +3,7 @@ import { DarkInput } from 'components/atom/Input';
 import React from 'react';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import { Rule } from 'antd/es/form';
+import { useTheme } from 'context/themeContext';
 export default function InputPassword({
     label,
     name,
@@ -15,6 +16,7 @@ export default function InputPassword({
     rule?: Rule[];
 }) {
     const [passwordVisible, setPasswordVisible] = React.useState(false);
+    const { theme } = useTheme();
     return (
         <div style={{ position: 'relative' }}>
             <FormItem
@@ -31,11 +33,15 @@ export default function InputPassword({
                           ]
                 }
                 required={false}
+                theme={theme}
             >
                 <DarkInput
                     placeholder={placeholder}
                     type={passwordVisible ? 'text' : 'password'}
-                    style={{ paddingRight: 50 }}
+                    style={{
+                        paddingRight: 50,
+                        background: theme.fieldBackground,
+                    }}
                 />
             </FormItem>
             <div
@@ -48,10 +54,12 @@ export default function InputPassword({
                 onClick={() => setPasswordVisible(!passwordVisible)}
             >
                 {passwordVisible ? (
-                    <EyeOutlined style={{ color: '#E5E5E5', fontSize: 20 }} />
+                    <EyeOutlined
+                        style={{ color: theme.fieldTextIcon, fontSize: 20 }}
+                    />
                 ) : (
                     <EyeInvisibleOutlined
-                        style={{ color: '#E5E5E5', fontSize: 20 }}
+                        style={{ color: theme.fieldTextIcon, fontSize: 20 }}
                     />
                 )}
             </div>

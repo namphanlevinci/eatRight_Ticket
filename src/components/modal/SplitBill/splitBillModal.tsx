@@ -1,13 +1,15 @@
 import { Modal, Row } from 'antd';
 import CloseIcon from 'assets/icons/close';
 import RadioButton from 'components/atom/Radio/RadioButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 import SplitEvenMode from './SplitEvenMode';
 import SplitByItemMode from './SplitByItemMode';
 import { CartItemType, ItemType } from 'context/cartType';
 import SplitBillConfirmMode from './SplitBillConfirmMode';
+import { useTheme } from 'context/themeContext';
+import { Tax } from 'context/cartContext';
 
 export enum SplitBillMode {
     EVEN = 0,
@@ -37,7 +39,13 @@ export default function SplitBillModal({
     const [confirmMode, setConfirmMode] = useState(false);
     const [listItems, setListItems] = useState<ItemType[]>([]);
     const [listGuest, setListGuest] = useState<string[]>([]);
-    const [numbers, setNumbers] = useState<number>(1);
+    const [numbers, setNumbers] = useState<number>(2);
+    const { theme } = useTheme();
+    useEffect(() => {
+        if (cart) {
+            setNumbers(cart.numberOfCustomer);
+        }
+    }, [cart]);
     return (
         <>
             <ModalStyled
@@ -48,8 +56,8 @@ export default function SplitBillModal({
                     header: { display: 'none' },
                     footer: { display: 'none' },
                     content: {
-                        background: 'rgba(31, 36, 47, 1)',
-                        border: `1px solid rgba(63, 63, 63, 1)`,
+                        background: theme.nEUTRALPrimary,
+                        border: `1px solid ${theme.nEUTRALLine}`,
                         overflow: 'auto',
                     },
                 }}
@@ -83,7 +91,12 @@ export default function SplitBillModal({
                     )}
                     {!confirmMode && mode === SplitBillMode.EVEN && (
                         <SplitEvenMode
-                            total={cart.prices.grand_total.value}
+                            total={
+                                (cart?.prices.subtotal_excluding_tax?.value ||
+                                    0) -
+                                (cart?.prices?.total_canceled?.value || 0) /
+                                    (1 + Tax)
+                            }
                             onSubmit={(number) => {
                                 setNumbers(number);
                                 setConfirmMode(true);

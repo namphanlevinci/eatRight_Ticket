@@ -3,6 +3,8 @@ import { Colors } from 'themes/colors';
 import { Button as ButtonAntd } from 'antd';
 interface Props {
     isDisable?: boolean;
+    background?: string;
+    color?: string;
 }
 export const Button = styled(ButtonAntd)<Props>`
     min-height: 40px;
@@ -10,7 +12,11 @@ export const Button = styled(ButtonAntd)<Props>`
     border-radius: 8px;
     padding: 15px 36px;
     color: ${(props) =>
-        !props.isDisable ? Colors.black : Colors.white} !important;
+        !props.isDisable
+            ? props.color
+                ? props.color
+                : Colors.black
+            : Colors.white} !important;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,5 +26,9 @@ export const Button = styled(ButtonAntd)<Props>`
     margin: 10px;
     border: ${(props) => (!props.isDisable ? '2px solid #ff9d00' : 'none')};
     background: ${(props) =>
-        !props.isDisable ? Colors.primary : Colors.grey7};
+        !props.isDisable
+            ? props.background
+                ? props.background
+                : Colors.primary
+            : Colors.grey7} !important;
 `;

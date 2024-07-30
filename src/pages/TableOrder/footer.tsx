@@ -11,6 +11,7 @@ import RenderBillInfomationRow from 'pages/TableBill/components/billInfo';
 import ButtonSubmit from 'pages/TableBill/components/buttonSubmit';
 import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
+import { useTheme } from 'context/themeContext';
 
 export default function OrderFooter({
     cart,
@@ -33,6 +34,7 @@ export default function OrderFooter({
     const goTableBill = () => {
         navigation(`${BASE_ROUTER.TABLE_BILL}${window.location.search}`);
     };
+    const { theme } = useTheme();
     return (
         <Row style={{ marginTop: 20 }}>
             {contextHolder}
@@ -66,42 +68,53 @@ export default function OrderFooter({
                     <Text style={{ fontSize: 20 }}>Billing Information</Text>
                     <RenderBillInfomationRow
                         title="Total"
-                        value={`${formatNumberWithCommas(total)} $`}
+                        value={`$ ${formatNumberWithCommas(total)}`}
                     />
-                    {cart?.prices?.discounts && (
+                    {cart?.prices?.discounts &&
+                        cart?.prices?.discounts[0]?.amount.value && (
+                            <RenderBillInfomationRow
+                                title="Discounted"
+                                value={`-$ ${formatNumberWithCommas(
+                                    parseInt(
+                                        `${cart?.prices.discounts[0]?.amount?.value}`,
+                                    ),
+                                )} `}
+                            />
+                        )}
+                    {cart?.prices?.applied_taxes &&
+                    cart?.prices?.applied_taxes[0]?.amount ? (
                         <RenderBillInfomationRow
-                            title="Discounted"
-                            value={`-${formatNumberWithCommas(
-                                parseInt(
-                                    `${cart?.prices.discounts[0]?.amount?.value}`,
-                                ),
-                            )} $`}
+                            title="Tax"
+                            value={`$ ${cart?.prices?.applied_taxes[0]?.amount.value}`}
                         />
+                    ) : (
+                        <></>
                     )}
-                    {cart?.prices?.total_canceled?.value && (
+                    {cart?.prices?.total_canceled?.value ? (
                         <RenderBillInfomationRow
                             title="Canceled Item"
-                            value={`-${formatNumberWithCommas(
-                                parseInt(
-                                    `${cart?.prices?.total_canceled?.value}`,
-                                ),
-                            )} $`}
+                            value={`-
+                                   $ ${cart?.prices?.total_canceled?.value}
+                            `}
                         />
+                    ) : (
+                        <></>
                     )}
+
                     {/* <RenderBillInfomationRow title="Taxes" value="$10.99" />
                 <RenderBillInfomationRow title="Service fee" value="$5.99" /> */}
                     <Divider style={{ borderColor: Colors.grey3 }} />
 
                     <RenderBillInfomationRow
                         title="To be paid"
-                        value={`${formatNumberWithCommas(
+                        value={`$ ${formatNumberWithCommas(
                             (cart?.prices.grand_total.value || 0) -
                                 (cart?.prices?.total_canceled?.value || 0),
-                        )} $`}
+                        )} `}
                         textRightStyle={{
                             fontSize: 24,
                             fontWeight: '600',
-                            color: Colors.primary,
+                            color: theme.pRIMARY6Primary,
                         }}
                     />
                 </div>

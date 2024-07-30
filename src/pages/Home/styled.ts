@@ -14,11 +14,16 @@ interface StyledTableProps {
 interface StyledLineProps {
     background?: string;
     opacity?: number;
+    height?: number;
 }
 
 interface StyledFloorProps {
     color?: string;
     opacity?: number;
+    fontweight?: string;
+}
+interface StyledBackgroundProps {
+    background?: string;
 }
 
 export const ContainerTable = styled.div`
@@ -72,7 +77,7 @@ export const StyledTable = styled(StyledEmtyTable).withConfig({
 export const StyledLine = styled.div<StyledLineProps>`
     position: absolute;
     left: 0px;
-    width: 3px;
+    width: 4px;
     background: ${(props) => props.background || '#34A853'};
     height: 75px;
     top: 10px;
@@ -117,12 +122,9 @@ export const CountAvaiable = styled.div`
     top: -20px;
     font-family: 'Montserrat';
     z-index: 10;
-    div {
-        color: #000000;
-    }
 `;
 
-export const CounterTakeAway = styled.div`
+export const CounterTakeAway = styled.div<StyledBackgroundProps>`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -152,10 +154,10 @@ export const CounterTakeAway = styled.div`
     div {
         position: absolute;
         top: 0px;
-        width: 120px;
+        width: 80px;
         height: 3px;
-        background: #ff9d00;
-        left: 15px;
+        background: ${(props) => props.background || '#34A853'};
+        left: 35px;
     }
 `;
 
@@ -164,20 +166,20 @@ export const StyledFloors = styled.div`
 `;
 
 export const StyledFloor = styled.div<StyledFloorProps>`
-    margin-right: 20px;
     color: ${(props) => props.color || '#ffffff'};
     opacity: ${(props) => props.opacity || 1};
     cursor: pointer;
     height: 24px;
     font-family: 'Montserrat';
     font-size: 18px;
+    font-weight: ${(props) => props.fontweight || '400'};
 `;
 
-export const StyledFloorLine = styled.div`
-    height: 3px;
-    background: #cccccc;
-    width: 30px;
-    opacity: 1;
+export const StyledFloorLine = styled.div<StyledLineProps>`
+    height: ${(props) => `${props.height ? props.height : '4px'}`};
+    background: ${(props) => props.background || '#ccc'};
+    width: 70px;
+    opacity: ${(props) => props.opacity};
     z-index: 10;
 `;
 

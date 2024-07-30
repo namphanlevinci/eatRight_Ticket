@@ -5,7 +5,6 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_CART_BY_ID } from 'graphql/cart/getCart';
 import { GET_CARTS_BY_TABLE } from 'graphql/table/table';
 import { findIndicesNotInArray } from 'utils/findIndicesNotInArray';
-import { isCartIdFromLocal } from 'utils/isNumericId';
 import { REMOVE_ITEM_ON_CART } from 'graphql/cart/removeItemOnCart';
 import { UPDATE_STATUS_ITEM } from 'graphql/cart/updateStatusItem';
 import { emitter } from 'graphql/client';
@@ -31,7 +30,9 @@ export const useCartTable = (isRefreshParams = true) => {
         if (indexTable !== -1) {
             if (cartItems[indexTable].carts.length > 0) {
                 setListCart(
-                    cartItems[indexTable].carts.map((item) => item.firstname),
+                    cartItems[indexTable].carts.map(
+                        (item) => item.firstname || item.id,
+                    ),
                 );
             } else {
                 setListCart([]);
@@ -62,7 +63,7 @@ export const useCartTable = (isRefreshParams = true) => {
                             cartId: item.cartId,
                         },
                         fetchPolicy: 'no-cache',
-                    }).then((res) => res.data.cart);
+                    }).then((res) => res.data.merchantCart);
                 });
                 Promise.all(promises)
                     .then((carts) => {
@@ -79,7 +80,7 @@ export const useCartTable = (isRefreshParams = true) => {
                 );
                 if (cartItems[indexTable]?.carts?.length > 0) {
                     cartItems[indexTable]?.carts.forEach((item, index) => {
-                        if (!isCartIdFromLocal(item.id)) {
+                        if (!item?.firstname?.includes('Guest')) {
                             removeCartIndex(index);
                         }
                     });
@@ -97,18 +98,21 @@ export const useCartTable = (isRefreshParams = true) => {
                 fetchPolicy: 'no-cache',
             })
                 .then((res) => {
-                    handleDataGetCart([res.data.cart]);
+                    handleDataGetCart([res.data.merchantCart], false);
                 })
                 .catch((error) => {
                     console.error(error);
                 });
         }
     };
-    const handleDataGetCart = (carts: any) => {
+    const handleDataGetCart = (carts: any, isRemove = true) => {
         // Lọc bỏ các cart trả về kết quả là null
         const filterCarts = carts.filter((item: any) => item !== null);
         addCart(filterCarts);
         // Xoá các cart không có trong listCartId
+        if (!isRemove) {
+            return;
+        }
         const indexTable = cartItems.findIndex(
             (item) => item.tableId == `${tableId}`,
         );
@@ -117,7 +121,11 @@ export const useCartTable = (isRefreshParams = true) => {
                 cartItems[indexTable]?.carts,
                 filterCarts,
             ).forEach((item) => {
-                if (!isCartIdFromLocal(cartItems[indexTable].carts[item].id)) {
+                if (
+                    !cartItems[indexTable].carts[item].firstname.includes(
+                        'Guest',
+                    )
+                ) {
                     removeCartIndex(item);
                 }
             });
@@ -142,7 +150,7 @@ export const useCartTable = (isRefreshParams = true) => {
         return () => {
             emitter.off('updateStatusCart');
         };
-    }, [location]);
+    }, []);
     const removeItemOnCartServer = ({
         cartId,
         cartItemId,

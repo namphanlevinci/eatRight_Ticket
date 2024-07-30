@@ -1,6 +1,6 @@
 import React from 'react';
-import { Colors } from 'themes/colors';
 import { Text } from '../Text';
+import { useTheme } from 'context/themeContext';
 
 export default function ButtonPrimary({
     title,
@@ -10,8 +10,7 @@ export default function ButtonPrimary({
     width = '100%',
     height,
     marginTop = '20px',
-    backgroundColor,
-    textColor,
+    isDisable = false,
 }: {
     title: string;
     onClick: any;
@@ -20,9 +19,9 @@ export default function ButtonPrimary({
     width?: string;
     height?: string;
     marginTop?: string;
-    backgroundColor?: string;
-    textColor?: string;
+    isDisable?: boolean;
 }) {
+    const { theme } = useTheme();
     return (
         <div
             style={{
@@ -36,11 +35,11 @@ export default function ButtonPrimary({
                       : size === 'medium'
                         ? 44
                         : 32,
-                background: backgroundColor
-                    ? backgroundColor
+                background: isDisable
+                    ? theme.nEUTRALBase
                     : isCancel
-                      ? Colors.black
-                      : Colors.primary,
+                      ? theme.textTitle
+                      : theme.pRIMARY6Primary,
                 marginTop: marginTop,
                 borderRadius: 8,
                 cursor: 'pointer',
@@ -52,11 +51,11 @@ export default function ButtonPrimary({
                 style={{
                     fontSize: 18,
                     fontWeight: '600',
-                    color: textColor
-                        ? textColor
+                    color: isDisable
+                        ? theme.nEUTRALLine
                         : isCancel
-                          ? Colors.primary
-                          : Colors.black,
+                          ? theme.pRIMARY6Primary
+                          : theme.pRIMARY1,
                 }}
             >
                 {title}

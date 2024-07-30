@@ -9,6 +9,7 @@ import GeneralIcon from './icons/Restaurent/general_icon';
 import LocationIcon from './icons/Restaurent/locationIcon';
 import OpeningHoursIcon from './icons/Restaurent/openingHoursIcon';
 import TipIcon from './icons/tipIcon';
+import { useTheme } from 'context/themeContext';
 
 type Props = {
     children: React.ReactNode;
@@ -63,6 +64,7 @@ export default function RestaurentManagementLayout(props: Props) {
             ),
         },
     ];
+    const { theme } = useTheme();
     return (
         <DarkLayout>
             {/* <Text>Restaurant management</Text> */}
@@ -77,11 +79,12 @@ export default function RestaurentManagementLayout(props: Props) {
             >
                 <Layout
                     style={{
-                        background: 'rgba(31, 36, 47, 1)',
-                        maxWidth: 712,
+                        background: theme.pRIMARY1,
+                        maxWidth: 673,
                         minHeight: '80vh',
                         borderRadius: 8,
                         boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.08)',
+                        border: `1px solid ${theme.pRIMARY2}`,
                     }}
                 >
                     <Row

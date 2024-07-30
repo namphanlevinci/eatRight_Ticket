@@ -28,7 +28,7 @@ interface CartContextType {
 
 // Tạo Context cho giỏ hàng
 const CartContext = createContext<CartContextType | undefined>(undefined);
-
+export const Tax = 0.1;
 // Custom hook để sử dụng CartContext
 export const useCart = (): CartContextType => {
     const context = useContext(CartContext);
@@ -66,15 +66,18 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     prices: {
                         ...currentCart.prices,
                         total_canceled: {
-                            value: itemsCanceled.reduce((total, item) => {
-                                return (
-                                    total +
-                                    (item.prices.price.value * item.quantity -
-                                        (item.prices?.total_item_discount
-                                            ?.value || 0) *
-                                            item.quantity)
-                                );
-                            }, 0),
+                            value:
+                                itemsCanceled.reduce((total, item) => {
+                                    return (
+                                        total +
+                                        (item.prices.price.value *
+                                            item.quantity -
+                                            (item.prices?.total_item_discount
+                                                ?.value || 0) *
+                                                item.quantity)
+                                    );
+                                }, 0) *
+                                (Tax + 1),
                         },
                     },
                 };
@@ -149,16 +152,19 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                                     }, 0),
                             },
                             total_canceled: {
-                                value: itemsCanceled.reduce((total, item) => {
-                                    return (
-                                        total +
-                                        (item.prices.price.value *
-                                            item.quantity -
-                                            (item.prices?.total_item_discount
-                                                ?.value || 0) *
-                                                item.quantity)
-                                    );
-                                }, 0),
+                                value:
+                                    itemsCanceled.reduce((total, item) => {
+                                        return (
+                                            total +
+                                            (item.prices.price.value *
+                                                item.quantity -
+                                                (item.prices
+                                                    ?.total_item_discount
+                                                    ?.value || 0) *
+                                                    item.quantity)
+                                        );
+                                    }, 0) *
+                                    (Tax + 1),
                             },
                         },
                     };
@@ -168,15 +174,18 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     prices: {
                         ...newCarts.prices,
                         total_canceled: {
-                            value: itemsCanceled.reduce((total, item) => {
-                                return (
-                                    total +
-                                    (item.prices.price.value * item.quantity -
-                                        (item.prices?.total_item_discount
-                                            ?.value || 0) *
-                                            item.quantity)
-                                );
-                            }, 0),
+                            value:
+                                itemsCanceled.reduce((total, item) => {
+                                    return (
+                                        total +
+                                        (item.prices.price.value *
+                                            item.quantity -
+                                            (item.prices?.total_item_discount
+                                                ?.value || 0) *
+                                                item.quantity)
+                                    );
+                                }, 0) *
+                                (Tax + 1),
                         },
                     },
                 };
@@ -208,7 +217,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                 newCartItems = [...cartItems[indexTable].carts];
             }
         }
-        let total = newCartItems[index]?.prices?.grand_total?.value || 0;
+        let total = newCartItems[index]?.prices?.new_items_total?.value || 0;
         const foundIndex = newCartItems[index]?.items?.findIndex(
             (i) =>
                 i.id == item.id &&
@@ -219,14 +228,17 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         if (foundIndex !== -1 && foundIndex !== undefined) {
             newCartItems[index].items[foundIndex].quantity += item.quantity;
         } else {
-            newCartItems[index] = {
-                ...newCartItems[index],
-                items: [...newCartItems[index].items, item],
-            };
+            if (newCartItems[index]?.items) {
+                newCartItems[index] = {
+                    ...newCartItems[index],
+                    items: [...newCartItems[index].items, item],
+                };
+            }
         }
         total += item.prices.price.value * item.quantity;
         newCartItems[index].prices = {
-            grand_total: {
+            ...newCartItems[index].prices,
+            new_items_total: {
                 value: total,
             },
         };
@@ -250,11 +262,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const index = newCartItems[cartIndex].items.findIndex(
             (e) => e.id === sku,
         );
-        let total = newCartItems[cartIndex].prices?.grand_total?.value || 0;
+        let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
         total -= newCartItems[cartIndex].items[index].prices.price.value;
         newCartItems[cartIndex].items.splice(index, 1);
         newCartItems[cartIndex].prices = {
-            grand_total: {
+            ...newCartItems[cartIndex].prices,
+            new_items_total: {
                 value: total,
             },
         };
@@ -265,7 +278,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const updateQuantityItemFromCart = (index: number, quantity: number) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems[indexTable].carts];
-        let total = newCartItems[cartIndex].prices?.grand_total?.value || 0;
+        let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
 
         if (quantity === 0) {
             if (confirm('Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?')) {
@@ -286,13 +299,15 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     ...newCartItems[cartIndex].items[index],
                     isUnsend: true,
                     quantity: 1,
+                    status: 'new',
                 });
             } else {
                 newCartItems[cartIndex].items[index].quantity = quantity;
             }
         }
         newCartItems[cartIndex].prices = {
-            grand_total: {
+            ...newCartItems[cartIndex].prices,
+            new_items_total: {
                 value: total,
             },
         };
@@ -404,6 +419,9 @@ export const getInitialCartState = (id: string) => {
                     },
                 ],
                 grand_total: {
+                    value: 0,
+                },
+                new_items_total: {
                     value: 0,
                 },
             },
