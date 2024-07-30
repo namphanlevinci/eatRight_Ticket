@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text } from '../Text';
 import { useTheme } from 'context/themeContext';
+import { Spin } from 'antd';
 
 export default function ButtonPrimary({
     title,
@@ -12,6 +13,7 @@ export default function ButtonPrimary({
     marginTop = '20px',
     isDisable = false,
     backgroundColor,
+    isLoading,
 }: {
     title: string;
     onClick: any;
@@ -22,6 +24,7 @@ export default function ButtonPrimary({
     marginTop?: string;
     isDisable?: boolean;
     backgroundColor?: string;
+    isLoading?: boolean;
 }) {
     const { theme } = useTheme();
     return (
@@ -51,19 +54,23 @@ export default function ButtonPrimary({
             }}
             onClick={onClick}
         >
-            <Text
-                style={{
-                    fontSize: 18,
-                    fontWeight: '600',
-                    color: isDisable
-                        ? theme.nEUTRALLine
-                        : isCancel
-                          ? theme.pRIMARY6Primary
-                          : theme.pRIMARY1,
-                }}
-            >
-                {title}
-            </Text>
+            {isLoading ? (
+                <Spin />
+            ) : (
+                <Text
+                    style={{
+                        fontSize: 18,
+                        fontWeight: '600',
+                        color: isDisable
+                            ? theme.nEUTRALLine
+                            : isCancel
+                              ? theme.pRIMARY6Primary
+                              : theme.pRIMARY1,
+                    }}
+                >
+                    {title}
+                </Text>
+            )}
         </div>
     );
 }

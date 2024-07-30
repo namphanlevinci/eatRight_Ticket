@@ -1,9 +1,9 @@
-import { useQuery } from '@apollo/client';
-import { Input, Select, Switch } from 'antd';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { App, Input, Select, Switch } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
-import { GET_TIPS } from 'graphql/tips/tips';
+import { GET_TIPS, SET_TIPS } from 'graphql/tips/tips';
 import { RowStyled } from 'pages/BillDetail/styled';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
@@ -21,16 +21,44 @@ export default function SetUpTipPage() {
     ];
     const [isTax, setIsTax] = React.useState(false);
     const [type, setType] = React.useState(TypeList[0]);
+    const { notification } = App.useApp();
+    const [onSetTips, { loading }] = useMutation(SET_TIPS);
     const handleChange = (value: { value: string; label: string }) => {
         setType(value);
     };
     const [inputValue, setInputValue] = React.useState({
-        value1: '15',
-        value2: '20',
-        value3: '25',
+        value1: 15,
+        value2: 20,
+        value3: 30,
     });
     const { theme } = useTheme();
-    const { data } = useQuery(GET_TIPS);
+    const [onGetTips, { data }] = useLazyQuery(GET_TIPS);
+    const handleSetTips = () => {
+        onSetTips({
+            variables: {
+                include_tax_in_tip: isTax,
+                amount_option: Object.values(inputValue),
+                type: type.value,
+            },
+        })
+            .then(() => {
+                notification.success({
+                    message: 'Success',
+                    description: 'Set up tips successfully',
+                });
+                onGetTips({
+                    fetchPolicy: 'no-cache',
+                });
+            })
+            .catch(() => {
+                console.log('error');
+            });
+    };
+    useEffect(() => {
+        onGetTips({
+            fetchPolicy: 'no-cache',
+        });
+    }, []);
     useEffect(() => {
         if (data?.tipRestaurant) {
             const tip_option = data?.tipRestaurant?.tip_option;
@@ -54,7 +82,7 @@ export default function SetUpTipPage() {
                             cur: number,
                             index: number,
                         ) => {
-                            acc[`value${index + 1}`] = cur.toString();
+                            acc[`value${index + 1}`] = cur;
                             return acc;
                         },
                         {} as { [key: string]: string },
@@ -90,7 +118,7 @@ export default function SetUpTipPage() {
                         label: '% percent',
                     },
                     {
-                        value: 'dollar',
+                        value: 'fixed',
                         label: '$ dollar note',
                     },
                 ]}
@@ -101,37 +129,41 @@ export default function SetUpTipPage() {
                     onChange={(e) =>
                         setInputValue({
                             ...inputValue,
-                            value1: e.target.value,
+                            value1: parseInt(e.target.value) || 0,
                         })
                     }
                     prefix={type.value === 'percent' ? '%' : '$'}
+                    inputMode="numeric"
                 />
                 <InputStyled
                     value={inputValue.value2}
                     onChange={(e) =>
                         setInputValue({
                             ...inputValue,
-                            value2: e.target.value,
+                            value2: parseInt(e.target.value) || 0,
                         })
                     }
                     prefix={type.value === 'percent' ? '%' : '$'}
+                    inputMode="numeric"
                 />
                 <InputStyled
                     value={inputValue.value3}
                     onChange={(e) =>
                         setInputValue({
                             ...inputValue,
-                            value3: e.target.value,
+                            value3: parseInt(e.target.value) || 0,
                         })
                     }
                     prefix={type.value === 'percent' ? '%' : '$'}
+                    inputMode="numeric"
                 />
             </RowStyled>
             <ButtonPrimary
                 title="Save"
                 onClick={() => {
-                    console.log('save');
+                    handleSetTips();
                 }}
+                isLoading={loading}
             />
         </Container>
     );
