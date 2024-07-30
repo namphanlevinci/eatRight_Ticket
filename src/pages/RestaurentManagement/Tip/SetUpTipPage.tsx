@@ -1,23 +1,25 @@
+import { useQuery } from '@apollo/client';
 import { Input, Select, Switch } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
+import { GET_TIPS } from 'graphql/tips/tips';
 import { RowStyled } from 'pages/BillDetail/styled';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Colors } from 'themes/colors';
 
 export default function SetUpTipPage() {
     const TypeList = [
         {
-            value: 'percentage',
+            value: 'percent',
             label: '% percentage',
         },
         {
-            value: 'dollar',
+            value: 'fixed',
             label: '$ dollar note',
         },
     ];
-    const [isTax, setIsTax] = React.useState(true);
+    const [isTax, setIsTax] = React.useState(false);
     const [type, setType] = React.useState(TypeList[0]);
     const handleChange = (value: { value: string; label: string }) => {
         setType(value);
@@ -27,6 +29,41 @@ export default function SetUpTipPage() {
         value2: '20',
         value3: '25',
     });
+    const { theme } = useTheme();
+    const { data } = useQuery(GET_TIPS);
+    useEffect(() => {
+        if (data?.tipRestaurant) {
+            const tip_option = data?.tipRestaurant?.tip_option;
+            const include_tax_in_tip = data?.tipRestaurant?.include_tax_in_tip;
+            setIsTax(include_tax_in_tip);
+            let inputList;
+            if (tip_option) {
+                if (type.value === 'percent') {
+                    inputList = tip_option.find((item: any) => {
+                        return item.type === 'percent';
+                    });
+                } else {
+                    inputList = tip_option.find((item: any) => {
+                        return item.type === 'fixed';
+                    });
+                }
+                if (inputList?.amount_option) {
+                    const object = inputList?.amount_option.reduce(
+                        (
+                            acc: { [x: string]: any },
+                            cur: number,
+                            index: number,
+                        ) => {
+                            acc[`value${index + 1}`] = cur.toString();
+                            return acc;
+                        },
+                        {} as { [key: string]: string },
+                    );
+                    setInputValue(object);
+                }
+            }
+        }
+    }, [data, type]);
     return (
         <Container>
             <RowStyled>
@@ -40,13 +77,17 @@ export default function SetUpTipPage() {
             <Select
                 labelInValue
                 defaultValue={type}
-                style={{ width: '100%', height: 56, color: Colors.white }}
+                style={{
+                    width: '100%',
+                    height: 56,
+                    color: theme.fieldTextIcon,
+                }}
                 size="large"
                 onChange={handleChange}
                 options={[
                     {
-                        value: 'percentage',
-                        label: '% percentage',
+                        value: 'percent',
+                        label: '% percent',
                     },
                     {
                         value: 'dollar',
@@ -63,7 +104,7 @@ export default function SetUpTipPage() {
                             value1: e.target.value,
                         })
                     }
-                    prefix={type.value === 'percentage' ? '%' : '$'}
+                    prefix={type.value === 'percent' ? '%' : '$'}
                 />
                 <InputStyled
                     value={inputValue.value2}
@@ -73,7 +114,7 @@ export default function SetUpTipPage() {
                             value2: e.target.value,
                         })
                     }
-                    prefix={type.value === 'percentage' ? '%' : '$'}
+                    prefix={type.value === 'percent' ? '%' : '$'}
                 />
                 <InputStyled
                     value={inputValue.value3}
@@ -83,7 +124,7 @@ export default function SetUpTipPage() {
                             value3: e.target.value,
                         })
                     }
-                    prefix={type.value === 'percentage' ? '%' : '$'}
+                    prefix={type.value === 'percent' ? '%' : '$'}
                 />
             </RowStyled>
             <ButtonPrimary
@@ -91,17 +132,19 @@ export default function SetUpTipPage() {
                 onClick={() => {
                     console.log('save');
                 }}
-                backgroundColor="#CC7D00"
             />
         </Container>
     );
 }
-
+const getTextColor = (props: { theme: any }) => props.theme.fieldTextIcon;
+const getBackgroundColor = (props: { theme: any }) =>
+    props.theme.fieldBackground;
+const getPrimaryColor = (props: { theme: any }) => props.theme.pRIMARY6Primary;
 const InputStyled = styled(Input)`
-    background: #161b26 !important;
+    background: ${getBackgroundColor} !important;
     flex: 1;
     height: 56px;
-    color: ${Colors.white} !important;
+    color: ${getTextColor} !important;
     text-align: center;
     .ant-input-prefix {
         width: 40%;
@@ -118,22 +161,22 @@ const InputStyled = styled(Input)`
 const Container = styled.div`
     padding-right: 36px;
     .ant-switch-checked {
-        background: ${Colors.primary} !important;
+        background: ${getPrimaryColor} !important;
     }
     .ant-switch.ant-switch-checked .ant-switch-handle {
         inset-inline-start: calc(100% - 20px);
     }
     && .ant-select-selector {
-        background: #161b26;
+        background: ${getBackgroundColor};
         border-radius: 8px;
         border: none;
-        color: ${Colors.white};
+        color: ${getTextColor};
         overflow: hidden;
     }
     .ant-select-arrow {
-        color: ${Colors.white};
+        color: ${getTextColor} !important;
     }
     .ant-select-selection-item {
-        color: ${Colors.white} !important;
+        color: ${getTextColor} !important;
     }
 `;
