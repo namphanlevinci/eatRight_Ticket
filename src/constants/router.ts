@@ -18,6 +18,7 @@ export const BASE_ROUTER = {
     RESTAURENT_MANAGER: '/restaurent/manager',
     RESTAURENT_Location: '/restaurent/location',
     RESTAURENT_Opening: '/restaurent/opening',
+    RESTAURENT_Tip: '/restaurent/tip',
     MENU_MANAGER: '/menu-manager',
     PROMOTIONS: '/promotions',
     CUSTOMERS_INFORMATION: '/customers-information',

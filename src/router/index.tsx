@@ -195,6 +195,14 @@ export const BaseRouter = () => {
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path={BASE_ROUTER.RESTAURENT_Tip}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.RestaurentTip />
+                        </PrivateRoute>
+                    }
+                />
                 <Route path={'*'} element={<Page404 />} />
             </Routes>
         </Suspense>

@@ -18,6 +18,7 @@ export const containers = {
     RestaurentGeneral: lazy(
         () => import('containers/RestaurentManagement/General'),
     ),
+    RestaurentTip: lazy(() => import('containers/RestaurentManagement/Tip')),
 };
 
 export default containers;

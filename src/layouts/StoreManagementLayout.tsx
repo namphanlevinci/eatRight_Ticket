@@ -8,6 +8,7 @@ import SearchSettings from './components/Search';
 import GeneralIcon from './icons/Restaurent/general_icon';
 import LocationIcon from './icons/Restaurent/locationIcon';
 import OpeningHoursIcon from './icons/Restaurent/openingHoursIcon';
+import TipIcon from './icons/tipIcon';
 import { useTheme } from 'context/themeContext';
 
 type Props = {
@@ -51,6 +52,17 @@ export default function RestaurentManagementLayout(props: Props) {
                 />
             ),
         },
+        {
+            title: 'Tip',
+            path: BASE_ROUTER.RESTAURENT_Tip,
+            icon: (
+                <TipIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_Tip
+                    }
+                />
+            ),
+        },
     ];
     const { theme } = useTheme();
     return (
@@ -85,7 +97,6 @@ export default function RestaurentManagementLayout(props: Props) {
                         <Col
                             style={{
                                 width: 260,
-                                borderRight: '2px solid #333',
                                 height: '100%',
                             }}
                         >

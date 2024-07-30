@@ -94,7 +94,7 @@ export default function OrderFooter({
                         <RenderBillInfomationRow
                             title="Canceled Item"
                             value={`-
-                                   $ ${cart?.prices?.total_canceled?.value}
+                                   $ ${cart?.prices?.total_canceled?.value?.toFixed(2)}
                             `}
                         />
                     ) : (

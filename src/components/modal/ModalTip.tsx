@@ -1,11 +1,11 @@
-import { useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { Input, Modal, Row } from 'antd';
 import CloseXIcon from 'assets/icons/closeIcon';
 import { Button } from 'components/atom/Button';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
-import { GET_TIPS } from 'graphql/cart/placeOrder';
+import { GET_TIPS } from 'graphql/tips/tips';
 import React, { useEffect, useRef } from 'react';
 import { roundTo } from 'utils/number';
 export default function ModalTip({
@@ -21,17 +21,22 @@ export default function ModalTip({
 }) {
     const inputRef = useRef<any>(null);
     const [value, setValue] = React.useState(0);
-    const [tips, setTips] = React.useState([0.1, 0.15, 0.2]);
-    const [selectTip, setSelectTip] = React.useState(0.1);
-    const { data } = useQuery(GET_TIPS);
+    const [tips, setTips] = React.useState([10, 15, 20]);
+    const [selectTip, setSelectTip] = React.useState(10);
+    const [onGetTips, { data }] = useLazyQuery(GET_TIPS);
+    useEffect(() => {
+        onGetTips({
+            fetchPolicy: 'no-cache',
+        });
+    }, []);
     useEffect(() => {
         if (data) {
-            const list = data?.storeConfig?.tip_amount;
-            if (list) {
-                const listTips = JSON.parse(list);
-                if (listTips.length > 0) {
-                    setTips(listTips);
-                }
+            const tip_option = data?.tipRestaurant?.tip_option;
+            const tip_percent = tip_option?.find(
+                (item: any) => item?.type === 'percent',
+            );
+            if (tip_percent?.amount_option?.length > 2) {
+                setTips(tip_percent?.amount_option);
             }
         }
     }, [data]);
@@ -44,7 +49,7 @@ export default function ModalTip({
     }, [isModalOpen]);
     useEffect(() => {
         if (selectTip !== 0 && total !== 0) {
-            setValue(roundTo(total * selectTip, 3));
+            setValue(roundTo((total * selectTip) / 100, 3));
         }
     }, [selectTip, total]);
     const onFinish = () => {
@@ -137,7 +142,7 @@ export default function ModalTip({
                                 fontWeight: '600',
                             }}
                         >
-                            {100 * tip}%
+                            {tip}%
                         </Text>
                     </Button>
                 ))}

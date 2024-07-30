@@ -92,7 +92,10 @@ export default function ColRight({
                     setTip(values);
                     setModalTip(false);
                 }}
-                total={cart?.prices?.grand_total?.value || 0}
+                total={
+                    (cart?.prices.grand_total.value || 0) -
+                    (cart?.prices?.total_canceled?.value || 0)
+                }
             />
             <ModalPosDevices
                 isVisibleModalPos={isVisibleModalPos}
@@ -174,7 +177,7 @@ export default function ColRight({
                     <RenderBillInfomationRow
                         title="Canceled Item"
                         value={`-$
-                            ${cart?.prices?.total_canceled?.value}
+                            ${cart?.prices?.total_canceled?.value?.toFixed(2)}
                         `}
                     />
                 ) : (
