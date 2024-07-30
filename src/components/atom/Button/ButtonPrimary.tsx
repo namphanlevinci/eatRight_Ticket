@@ -11,6 +11,7 @@ export default function ButtonPrimary({
     height,
     marginTop = '20px',
     isDisable = false,
+    backgroundColor,
 }: {
     title: string;
     onClick: any;
@@ -20,6 +21,7 @@ export default function ButtonPrimary({
     height?: string;
     marginTop?: string;
     isDisable?: boolean;
+    backgroundColor?: string;
 }) {
     const { theme } = useTheme();
     return (
@@ -35,11 +37,13 @@ export default function ButtonPrimary({
                       : size === 'medium'
                         ? 44
                         : 32,
-                background: isDisable
-                    ? theme.nEUTRALBase
-                    : isCancel
-                      ? theme.textTitle
-                      : theme.pRIMARY6Primary,
+                background: backgroundColor
+                    ? backgroundColor
+                    : isDisable
+                      ? theme.nEUTRALBase
+                      : isCancel
+                        ? theme.textTitle
+                        : theme.pRIMARY6Primary,
                 marginTop: marginTop,
                 borderRadius: 8,
                 cursor: 'pointer',
