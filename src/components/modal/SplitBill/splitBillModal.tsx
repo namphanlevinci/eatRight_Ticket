@@ -45,11 +45,10 @@ export default function SplitBillModal({
             setNumbers(cart.numberOfCustomer);
         }
     }, [cart]);
-    const Tax =
-        (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100 || 0.1;
+
     const total =
         (cart?.prices.grand_total?.value || 0) -
-        (cart?.prices?.total_canceled?.value || 0) / (1 + Tax);
+        (cart?.prices?.total_canceled?.value || 0);
     return (
         <>
             <ModalStyled
