@@ -24,6 +24,8 @@ export default function ModalInput({
         if (isModalOpen && inputRef.current) {
             // Nếu có, thì focus vào input
             inputRef.current.focus();
+        } else {
+            setValue('');
         }
     }, [isModalOpen]);
     const onFinish = () => {
