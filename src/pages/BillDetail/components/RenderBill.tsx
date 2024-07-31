@@ -110,7 +110,11 @@ export const RenderBill = ({
                 <DividedDashed />
             </div>
             <div id="billContent">
-                <RenderItem data={data} />
+                {selectDataShowbill ? (
+                    <RenderItem2 data={selectDataShowbill} />
+                ) : (
+                    <RenderItem data={data} />
+                )}
             </div>
             <div id="billFooter">
                 <DividedDashed />
@@ -210,10 +214,14 @@ export const RenderBill = ({
                     <TextDark>
                         {CURRENTCY}{' '}
                         {selectDataShowbill
-                            ? selectDataShowbill?.total?.grand_total?.value -
-                              (selectDataShowbill?.total?.subtotal?.value -
-                                  totalDiscount +
-                                  selectDataShowbill?.total?.total_tax?.value)
+                            ? (
+                                  selectDataShowbill?.total?.grand_total
+                                      ?.value -
+                                  (selectDataShowbill?.total?.subtotal?.value -
+                                      totalDiscount +
+                                      selectDataShowbill?.total?.total_tax
+                                          ?.value)
+                              ).toFixed(2)
                             : data?.tip_amount?.value?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
@@ -287,7 +295,6 @@ export const RenderBill = ({
 };
 
 const RenderItem = ({ data }: { data: any }) => {
-    console.log(data);
     return data?.items?.map((item: any, index: number) => {
         return (
             <>
@@ -311,6 +318,25 @@ const RenderItem = ({ data }: { data: any }) => {
                         </RowStyled>
                     );
                 })}
+            </>
+        );
+    });
+};
+
+const RenderItem2 = ({ data }: { data: any }) => {
+    return data?.items?.map((item: any, index: number) => {
+        return (
+            <>
+                <RowStyled key={index}>
+                    <Col style={{ textAlign: 'left', width: 30 }}>
+                        <span>{item?.quantity_invoiced}</span>
+                    </Col>
+                    <Col style={{ flex: 1 }}> {item?.product_name}</Col>
+                    <Col style={{ textAlign: 'end', width: 50 }}>
+                        {CURRENTCY}
+                        {item?.product_sale_price?.value?.toFixed(2)}
+                    </Col>
+                </RowStyled>
             </>
         );
     });
