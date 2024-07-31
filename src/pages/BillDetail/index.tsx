@@ -233,7 +233,6 @@ export default function index() {
                 setChildBill(dataBill?.invoice);
             }
         }
-        console.log(data, dataSplitBill);
     }, [dataSplitBill]);
     return (
         <div>
@@ -342,14 +341,18 @@ export default function index() {
                         />
                         <ButtonContainer>
                             <ButtonBill title="Print" onPress={PrintBill} />
-                            <ButtonBill
-                                title="Send mail"
-                                onPress={() => setModalInputEmail(true)}
-                            />
-                            <ButtonBill
-                                title="Sms"
-                                onPress={() => setModalInputPhone(true)}
-                            />
+                            {(childBill.length === 0 || selectDataShowbill) && (
+                                <>
+                                    <ButtonBill
+                                        title="Send mail"
+                                        onPress={() => setModalInputEmail(true)}
+                                    />
+                                    <ButtonBill
+                                        title="Sms"
+                                        onPress={() => setModalInputPhone(true)}
+                                    />
+                                </>
+                            )}
                             <Button
                                 style={{
                                     height: 56,
@@ -377,14 +380,17 @@ export default function index() {
                                     onPress={() =>
                                         setSelectDataShowbill(undefined)
                                     }
+                                    isSelected={!selectDataShowbill}
                                 />
                                 {childBill.map((item: any, index: number) => (
                                     <ButtonSelectBill
                                         key={index}
                                         title={`Guest ${index + 1}`}
-                                        onPress={() =>
-                                            setSelectDataShowbill(item)
-                                        }
+                                        onPress={() => {
+                                            setSelectDataShowbill(item);
+                                            console.log(item);
+                                        }}
+                                        isSelected={selectDataShowbill === item}
                                     />
                                 ))}
                             </ButtonLeftContainer>

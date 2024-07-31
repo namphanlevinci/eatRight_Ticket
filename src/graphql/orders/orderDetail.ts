@@ -41,10 +41,56 @@ export const GET_ORDER_DETAIL = gql`
             assign_from
             assign_reason
             shipping_amount
+            table
+            order_source
+            serve_name
+            total {
+                subtotal {
+                    value
+                    currency
+                }
+                discounts {
+                    amount {
+                        value
+                        currency
+                    }
+                    label
+                }
+                total_tax {
+                    value
+                    currency
+                }
+                taxes {
+                    amount {
+                        value
+                        currency
+                    }
+                    title
+                    rate
+                }
+                total_shipping {
+                    value
+                    currency
+                }
+                grand_total {
+                    value
+                    currency
+                }
+            }
+            feedback_url
+            payment_methods {
+                name
+                type
+                additional_data {
+                    name
+                    value
+                }
+            }
             tip_amount {
                 value
                 currency
             }
+            __typename
         }
     }
 `;
