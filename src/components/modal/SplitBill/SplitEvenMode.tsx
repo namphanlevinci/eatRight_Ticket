@@ -49,7 +49,7 @@ export default function SplitEvenMode({
                 <span style={{ color: theme.tEXTPrimary }}> {input}</span>
             </Text>
             <Text style={{ marginBlock: 16, color: theme.tEXTSecondary }}>
-                Each guest will pay {`(No tax)`}:{' '}
+                Each guest will pay :{' '}
                 <span style={{ color: theme.tEXTPrimary }}>
                     {' '}
                     $ {(total / input).toFixed(2)}

@@ -90,6 +90,7 @@ export const useCartTable = (isRefreshParams = true) => {
     };
     const getCartByIdTable = async () => {
         const cart = cartItems[indexTable]?.carts[selectedCart];
+        console.log(cart);
         if (cart) {
             onGetCart({
                 variables: {

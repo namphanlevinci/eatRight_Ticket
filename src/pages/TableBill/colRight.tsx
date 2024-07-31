@@ -20,7 +20,6 @@ import { useCouponCart } from 'pages/Table/Cart/useCouponCart';
 import ModalTip from 'components/modal/ModalTip';
 import { useTheme } from 'context/themeContext';
 import RenderDiscountRow from './components/renderDiscountRow';
-import { Tax } from 'context/cartContext';
 
 export default function ColRight({
     cart,
@@ -66,8 +65,10 @@ export default function ColRight({
     const [modalTip, setModalTip] = useState(false);
     const { handleAddCoupon } = useCouponCart();
     const { theme } = useTheme();
+    const Tax =
+        (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100 || 0.1;
     const totalTmp =
-        (cart?.prices?.subtotal_excluding_tax?.value || 0) -
+        (cart?.prices.grand_total?.value || 0) -
         (cart?.prices?.total_canceled?.value || 0) / (1 + Tax);
     return (
         <ColStyled style={{ width: 257 }}>
@@ -212,9 +213,7 @@ export default function ColRight({
             </div>
             {isSplitBill ? (
                 <div>
-                    <Text style={{ fontSize: 20 }}>
-                        Checks {`(No included tax)`}
-                    </Text>
+                    <Text style={{ fontSize: 20 }}>Checks</Text>
                     {listItems?.length === 0 && numbersSplit && numbersSplit > 1
                         ? Array.from({ length: numbersSplit }, (_, index) => (
                               <RenderSplitBillGuest
@@ -230,8 +229,12 @@ export default function ColRight({
                                       acc +
                                       (item.status === 'cancel'
                                           ? 0
-                                          : item.prices.price.value *
-                                            item.quantity)
+                                          : (item.prices.price.value -
+                                                (item.prices
+                                                    ?.total_item_discount
+                                                    ?.value || 0)) *
+                                            item.quantity *
+                                            (1 + Tax))
                                   );
                               }, 0);
                               return (

@@ -6,33 +6,10 @@ export const GET_CART_BY_ID = gql`
             id
             email
             firstname
+            lastname
             numberOfCustomer
-            selected_payment_method {
-                code
-                title
-            }
-            shipping_addresses {
-                available_shipping_methods {
-                    available
-                    carrier_code
-                    carrier_title
-                    method_code
-                    method_title
-                }
-                selected_shipping_method {
-                    carrier_code
-                    carrier_title
-                    method_code
-                    method_title
-                    amount {
-                        value
-                        currency
-                    }
-                }
-            }
             items {
                 uid
-                id
                 prices {
                     total_item_discount {
                         value
@@ -50,18 +27,16 @@ export const GET_CART_BY_ID = gql`
                 product {
                     name
                     sku
-                    small_image {
-                        url
-                        label
-                    }
                 }
-                note
+                discount_percent
+                id
                 quantity
                 status
                 created_at
                 cooking_at
                 ready_at
                 done_at
+                note
                 ... on BundleCartItem {
                     bundle_options {
                         id
@@ -72,8 +47,8 @@ export const GET_CART_BY_ID = gql`
                             label
                             price
                             quantity
-                            item_id
                             status
+                            item_id
                             created_at
                             cooking_at
                             ready_at
@@ -88,13 +63,12 @@ export const GET_CART_BY_ID = gql`
                         option_label
                         value_label
                         value_id
-                        item_id
                         status
+                        item_id
                         created_at
                         cooking_at
                         ready_at
                         done_at
-                        note
                     }
                 }
             }
@@ -102,6 +76,20 @@ export const GET_CART_BY_ID = gql`
                 code
             }
             prices {
+                subtotal_including_tax {
+                    value
+                    currency
+                }
+                subtotal_excluding_tax {
+                    value
+                    currency
+                }
+                discount {
+                    amount {
+                        value
+                    }
+                    label
+                }
                 discounts {
                     amount {
                         value
@@ -110,19 +98,13 @@ export const GET_CART_BY_ID = gql`
                 }
                 grand_total {
                     value
-                }
-                subtotal_excluding_tax {
-                    value
-                }
-                subtotal_including_tax {
-                    value
-                }
-                subtotal_with_discount_excluding_tax {
-                    value
+                    currency
                 }
                 applied_taxes {
+                    tax_percent
                     amount {
                         value
+                        currency
                     }
                     label
                 }
