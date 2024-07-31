@@ -13,14 +13,28 @@ import {
     text16W,
     BoldText,
 } from '../styled';
-export const RenderBill = ({ data }: { data: any }) => {
-    const totalDiscount =
-        data?.discount?.length > 0
-            ? data?.discount?.reduce((total: number, discount: any) => {
+export const RenderBill = ({
+    data,
+    selectDataShowbill,
+}: {
+    data: any;
+    selectDataShowbill: any;
+}) => {
+    console.log(selectDataShowbill);
+    const totalDiscount = selectDataShowbill
+        ? selectDataShowbill?.total?.discounts.reduce(
+              (total: number, discount: any) => {
                   total += discount.amount.value;
                   return total;
-              }, 0)
-            : 0;
+              },
+              0,
+          )
+        : data?.discount?.length > 0
+          ? data?.discount?.reduce((total: number, discount: any) => {
+                total += discount.amount.value;
+                return total;
+            }, 0)
+          : 0;
     return (
         <div
             style={{
@@ -83,34 +97,7 @@ export const RenderBill = ({ data }: { data: any }) => {
                 <DividedDashed />
             </div>
             <div id="billContent">
-                {data?.items?.map((item: any, index: number) => {
-                    return (
-                        <>
-                            <RowStyled key={index}>
-                                <Col style={{ textAlign: 'left', width: 30 }}>
-                                    <span>{item?.qty}</span>
-                                </Col>
-                                <Col style={{ flex: 1 }}> {item?.name}</Col>
-                                <Col style={{ textAlign: 'end', width: 50 }}>
-                                    {CURRENTCY}
-                                    {item?.price.toFixed(2)}
-                                </Col>
-                            </RowStyled>
-                            {item?.options?.map((option: any, idx: number) => {
-                                return (
-                                    <RowStyled
-                                        key={`${index}-${idx}`}
-                                        style={{ paddingLeft: 20 }}
-                                    >
-                                        <TextDark style={text16}>
-                                            • {option?.name}
-                                        </TextDark>
-                                    </RowStyled>
-                                );
-                            })}
-                        </>
-                    );
-                })}
+                <RenderItem data={data} />
             </div>
             <div id="billFooter">
                 <DividedDashed />
@@ -234,4 +221,34 @@ export const RenderBill = ({ data }: { data: any }) => {
             </div>
         </div>
     );
+};
+
+const RenderItem = ({ data }: { data: any }) => {
+    console.log(data);
+    return data?.items?.map((item: any, index: number) => {
+        return (
+            <>
+                <RowStyled key={index}>
+                    <Col style={{ textAlign: 'left', width: 30 }}>
+                        <span>{item?.qty}</span>
+                    </Col>
+                    <Col style={{ flex: 1 }}> {item?.name}</Col>
+                    <Col style={{ textAlign: 'end', width: 50 }}>
+                        {CURRENTCY}
+                        {item?.price.toFixed(2)}
+                    </Col>
+                </RowStyled>
+                {item?.options?.map((option: any, idx: number) => {
+                    return (
+                        <RowStyled
+                            key={`${index}-${idx}`}
+                            style={{ paddingLeft: 20 }}
+                        >
+                            <TextDark style={text16}>• {option?.name}</TextDark>
+                        </RowStyled>
+                    );
+                })}
+            </>
+        );
+    });
 };

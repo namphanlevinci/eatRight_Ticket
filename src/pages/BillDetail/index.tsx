@@ -5,7 +5,7 @@ import { TextDark } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_ORDER_DETAIL } from 'graphql/orders/orderDetail';
-import { ButtonContainer, Container } from './styled';
+import { ButtonContainer, ButtonLeftContainer, Container } from './styled';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import { usePrinter } from 'context/printerContext';
@@ -29,6 +29,7 @@ import {
 import LoadingModal from 'components/modal/loadingModal';
 import { RenderBill } from './components/RenderBill';
 import { ButtonBill } from './components/ButtonBill';
+import { ButtonSelectBill } from './components/ButtonSelectBill';
 export default function index() {
     const [getOrderDetail, { data, loading }] = useLazyQuery(GET_ORDER_DETAIL, {
         fetchPolicy: 'cache-and-network',
@@ -223,6 +224,17 @@ export default function index() {
     const { theme } = useTheme();
     const [modalInputEmail, setModalInputEmail] = useState(false);
     const [modalInputPhone, setModalInputPhone] = useState(false);
+    const [childBill, setChildBill] = useState([]);
+    const [selectDataShowbill, setSelectDataShowbill] = useState();
+    useEffect(() => {
+        if (dataSplitBill?.merchantGetOrderInvoices) {
+            const dataBill = dataSplitBill?.merchantGetOrderInvoices;
+            if (dataBill?.invoice?.length > 1) {
+                setChildBill(dataBill?.invoice);
+            }
+        }
+        console.log(data, dataSplitBill);
+    }, [dataSplitBill]);
     return (
         <div>
             {' '}
@@ -324,7 +336,10 @@ export default function index() {
                 />
                 {!loading && (
                     <>
-                        <RenderBill data={data?.orderDetail} />
+                        <RenderBill
+                            data={data?.orderDetail}
+                            selectDataShowbill={selectDataShowbill}
+                        />
                         <ButtonContainer>
                             <ButtonBill title="Print" onPress={PrintBill} />
                             <ButtonBill
@@ -355,6 +370,25 @@ export default function index() {
                                 </TextDark>
                             </Button>
                         </ButtonContainer>
+                        {childBill.length > 1 && (
+                            <ButtonLeftContainer>
+                                <ButtonSelectBill
+                                    title="Full Bill"
+                                    onPress={() =>
+                                        setSelectDataShowbill(undefined)
+                                    }
+                                />
+                                {childBill.map((item: any, index: number) => (
+                                    <ButtonSelectBill
+                                        key={index}
+                                        title={`Guest ${index + 1}`}
+                                        onPress={() =>
+                                            setSelectDataShowbill(item)
+                                        }
+                                    />
+                                ))}
+                            </ButtonLeftContainer>
+                        )}
                     </>
                 )}
             </Container>

@@ -85,7 +85,18 @@ export const ButtonContainer = styled.div<{
         z-index: 50;
     }
 `;
-
+export const ButtonLeftContainer = styled.div<{
+    isRight?: boolean;
+}>`
+    position: fixed;
+    left: 10px;
+    @media (max-width: 767px) {
+        position: fixed;
+        bottom: 100px;
+        left: ${(props) => (!props.isRight ? 0 : 'calc(100% - 140px)')};
+        z-index: 50;
+    }
+`;
 export const Container = styled.div`
     height: 'calc(100% - 100px)';
     width: 100%;
