@@ -225,7 +225,7 @@ export default function index() {
     const [modalInputEmail, setModalInputEmail] = useState(false);
     const [modalInputPhone, setModalInputPhone] = useState(false);
     const [childBill, setChildBill] = useState([]);
-    const [selectDataShowbill, setSelectDataShowbill] = useState();
+    const [selectDataShowbill, setSelectDataShowbill] = useState<any>();
     useEffect(() => {
         if (dataSplitBill?.merchantGetOrderInvoices) {
             const dataBill = dataSplitBill?.merchantGetOrderInvoices;
@@ -244,8 +244,10 @@ export default function index() {
                     handleSendBill(
                         'email',
                         value,
-                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
-                            ?.number,
+                        selectDataShowbill
+                            ? selectDataShowbill?.number
+                            : dataSplitBill?.merchantGetOrderInvoices
+                                  ?.invoice[0]?.number,
                     );
                     setModalInputEmail(false);
                 }}
@@ -261,8 +263,10 @@ export default function index() {
                     handleSendBill(
                         'tel',
                         value,
-                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
-                            ?.number,
+                        selectDataShowbill
+                            ? selectDataShowbill?.number
+                            : dataSplitBill?.merchantGetOrderInvoices
+                                  ?.invoice[0]?.number,
                     );
                     setModalInputPhone(false);
                 }}
@@ -388,7 +392,6 @@ export default function index() {
                                         title={`Guest ${index + 1}`}
                                         onPress={() => {
                                             setSelectDataShowbill(item);
-                                            console.log(item);
                                         }}
                                         isSelected={selectDataShowbill === item}
                                     />
