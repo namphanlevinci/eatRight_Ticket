@@ -19,6 +19,7 @@ export type CartItemType = {
                 value: number | string;
             };
             label: string;
+            tax_percent: number;
         }[];
         discounts?: {
             amount: {

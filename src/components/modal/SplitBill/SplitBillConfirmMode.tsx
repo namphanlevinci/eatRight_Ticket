@@ -10,7 +10,6 @@ import { SplitBillMode } from './splitBillModal';
 import { roundTo } from 'utils/number';
 import { useMediaQuery } from 'react-responsive';
 import { useTheme } from 'context/themeContext';
-import { Tax } from 'context/cartContext';
 
 export default function SplitBillConfirmMode({
     cart,
@@ -58,8 +57,10 @@ export default function SplitBillConfirmMode({
         query: '(max-width: 768px)',
     });
     const { theme } = useTheme();
+    const Tax =
+        (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100 || 0.1;
     const total =
-        (cart?.prices?.subtotal_excluding_tax?.value || 0) -
+        (cart?.prices.grand_total?.value || 0) -
         (cart?.prices?.total_canceled?.value || 0) / (1 + Tax);
     return (
         <div style={ismobile ? { width: '100%' } : { width: 450 }}>
@@ -81,7 +82,7 @@ export default function SplitBillConfirmMode({
                 </span>
             </Text>
             <Text style={{ color: theme.tEXTDisabled, marginTop: 16 }}>
-                Total amount to pay {`(No tax)`}:
+                Total amount to pay :
                 <span style={{ color: theme.tEXTPrimary, marginLeft: 10 }}>
                     $ {total}
                 </span>
@@ -100,7 +101,11 @@ export default function SplitBillConfirmMode({
                               acc +
                               (item.status === 'cancel'
                                   ? 0
-                                  : item.prices.price.value * item.quantity)
+                                  : (item.prices.price.value -
+                                        (item.prices?.total_item_discount
+                                            ?.value || 0)) *
+                                    item.quantity *
+                                    (1 + Tax))
                           );
                       }, 0);
                       return (

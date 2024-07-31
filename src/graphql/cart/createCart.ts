@@ -20,10 +20,10 @@ export const CREATE_CART = gql`
                 id
                 email
                 firstname
+                lastname
                 numberOfCustomer
                 items {
                     uid
-                    id
                     prices {
                         total_item_discount {
                             value
@@ -38,16 +38,19 @@ export const CREATE_CART = gql`
                             }
                         }
                     }
-                    note
                     product {
                         name
                         sku
-                        small_image {
-                            url
-                            label
-                        }
                     }
+                    discount_percent
+                    id
                     quantity
+                    status
+                    created_at
+                    cooking_at
+                    ready_at
+                    done_at
+                    note
                     ... on BundleCartItem {
                         bundle_options {
                             id
@@ -58,6 +61,12 @@ export const CREATE_CART = gql`
                                 label
                                 price
                                 quantity
+                                status
+                                item_id
+                                created_at
+                                cooking_at
+                                ready_at
+                                done_at
                                 note
                             }
                         }
@@ -68,7 +77,12 @@ export const CREATE_CART = gql`
                             option_label
                             value_label
                             value_id
-                            note
+                            status
+                            item_id
+                            created_at
+                            cooking_at
+                            ready_at
+                            done_at
                         }
                     }
                 }
@@ -76,6 +90,20 @@ export const CREATE_CART = gql`
                     code
                 }
                 prices {
+                    subtotal_including_tax {
+                        value
+                        currency
+                    }
+                    subtotal_excluding_tax {
+                        value
+                        currency
+                    }
+                    discount {
+                        amount {
+                            value
+                        }
+                        label
+                    }
                     discounts {
                         amount {
                             value
@@ -84,27 +112,17 @@ export const CREATE_CART = gql`
                     }
                     grand_total {
                         value
-                    }
-                    subtotal_excluding_tax {
-                        value
-                    }
-                    subtotal_including_tax {
-                        value
-                    }
-                    subtotal_with_discount_excluding_tax {
-                        value
+                        currency
                     }
                     applied_taxes {
+                        tax_percent
                         amount {
                             value
+                            currency
                         }
                         label
                     }
                 }
-            }
-            user_errors {
-                code
-                message
             }
         }
     }

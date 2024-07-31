@@ -6,36 +6,13 @@ export const ADD_COUPON = gql`
             input: { cart_id: $cartId, coupon_code: $code }
         ) {
             cart {
-                firstname
                 id
                 email
+                firstname
+                lastname
                 numberOfCustomer
-                selected_payment_method {
-                    code
-                    title
-                }
-                shipping_addresses {
-                    available_shipping_methods {
-                        available
-                        carrier_code
-                        carrier_title
-                        method_code
-                        method_title
-                    }
-                    selected_shipping_method {
-                        carrier_code
-                        carrier_title
-                        method_code
-                        method_title
-                        amount {
-                            value
-                            currency
-                        }
-                    }
-                }
                 items {
                     uid
-                    id
                     prices {
                         total_item_discount {
                             value
@@ -53,11 +30,9 @@ export const ADD_COUPON = gql`
                     product {
                         name
                         sku
-                        small_image {
-                            url
-                            label
-                        }
                     }
+                    discount_percent
+                    id
                     quantity
                     status
                     created_at
@@ -76,11 +51,11 @@ export const ADD_COUPON = gql`
                                 price
                                 quantity
                                 status
+                                item_id
                                 created_at
                                 cooking_at
                                 ready_at
                                 done_at
-                                item_id
                                 note
                             }
                         }
@@ -92,12 +67,11 @@ export const ADD_COUPON = gql`
                             value_label
                             value_id
                             status
+                            item_id
                             created_at
                             cooking_at
                             ready_at
                             done_at
-                            item_id
-                            note
                         }
                     }
                 }
@@ -105,6 +79,20 @@ export const ADD_COUPON = gql`
                     code
                 }
                 prices {
+                    subtotal_including_tax {
+                        value
+                        currency
+                    }
+                    subtotal_excluding_tax {
+                        value
+                        currency
+                    }
+                    discount {
+                        amount {
+                            value
+                        }
+                        label
+                    }
                     discounts {
                         amount {
                             value
@@ -113,19 +101,13 @@ export const ADD_COUPON = gql`
                     }
                     grand_total {
                         value
-                    }
-                    subtotal_excluding_tax {
-                        value
-                    }
-                    subtotal_including_tax {
-                        value
-                    }
-                    subtotal_with_discount_excluding_tax {
-                        value
+                        currency
                     }
                     applied_taxes {
+                        tax_percent
                         amount {
                             value
+                            currency
                         }
                         label
                     }
@@ -139,36 +121,13 @@ export const REMOVE_COUPON = gql`
     mutation removeCouponFromCart($cartId: String!) {
         removeCouponFromCart(input: { cart_id: $cartId }) {
             cart {
-                firstname
                 id
                 email
+                firstname
+                lastname
                 numberOfCustomer
-                selected_payment_method {
-                    code
-                    title
-                }
-                shipping_addresses {
-                    available_shipping_methods {
-                        available
-                        carrier_code
-                        carrier_title
-                        method_code
-                        method_title
-                    }
-                    selected_shipping_method {
-                        carrier_code
-                        carrier_title
-                        method_code
-                        method_title
-                        amount {
-                            value
-                            currency
-                        }
-                    }
-                }
                 items {
                     uid
-                    id
                     prices {
                         total_item_discount {
                             value
@@ -186,12 +145,16 @@ export const REMOVE_COUPON = gql`
                     product {
                         name
                         sku
-                        small_image {
-                            url
-                            label
-                        }
                     }
+                    discount_percent
+                    id
                     quantity
+                    status
+                    created_at
+                    cooking_at
+                    ready_at
+                    done_at
+                    note
                     ... on BundleCartItem {
                         bundle_options {
                             id
@@ -202,6 +165,13 @@ export const REMOVE_COUPON = gql`
                                 label
                                 price
                                 quantity
+                                status
+                                item_id
+                                created_at
+                                cooking_at
+                                ready_at
+                                done_at
+                                note
                             }
                         }
                     }
@@ -211,6 +181,12 @@ export const REMOVE_COUPON = gql`
                             option_label
                             value_label
                             value_id
+                            status
+                            item_id
+                            created_at
+                            cooking_at
+                            ready_at
+                            done_at
                         }
                     }
                 }
@@ -218,6 +194,20 @@ export const REMOVE_COUPON = gql`
                     code
                 }
                 prices {
+                    subtotal_including_tax {
+                        value
+                        currency
+                    }
+                    subtotal_excluding_tax {
+                        value
+                        currency
+                    }
+                    discount {
+                        amount {
+                            value
+                        }
+                        label
+                    }
                     discounts {
                         amount {
                             value
@@ -226,19 +216,13 @@ export const REMOVE_COUPON = gql`
                     }
                     grand_total {
                         value
-                    }
-                    subtotal_excluding_tax {
-                        value
-                    }
-                    subtotal_including_tax {
-                        value
-                    }
-                    subtotal_with_discount_excluding_tax {
-                        value
+                        currency
                     }
                     applied_taxes {
+                        tax_percent
                         amount {
                             value
+                            currency
                         }
                         label
                     }
