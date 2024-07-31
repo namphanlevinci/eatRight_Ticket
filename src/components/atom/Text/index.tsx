@@ -93,7 +93,13 @@ export const Text24 = ({ children, style }: any) => {
     );
 };
 
-export const TextDark = ({ children, style }: any) => {
+export const TextDark = ({
+    children,
+    style,
+}: {
+    children: any;
+    style?: React.CSSProperties;
+}) => {
     const { theme } = useTheme();
 
     return (
