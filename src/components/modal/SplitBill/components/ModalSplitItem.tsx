@@ -13,7 +13,7 @@ export default function ModalSplitItem({
     onClose: () => void;
     onSubmit: (input: number) => void;
 }) {
-    const [input, setInput] = React.useState(1);
+    const [input, setInput] = React.useState<any>(1);
     const { theme } = useTheme();
     return (
         <div
@@ -41,14 +41,29 @@ export default function ModalSplitItem({
             </Row>
             <InputNumberStyled
                 value={input}
-                onChange={(e) => setInput(Number(e.target.value))}
+                onChange={(e) => {
+                    if (Number(e.target.value) > 0) {
+                        if (Number(e.target.value) > 1000) {
+                            setInput(1000);
+                        } else {
+                            setInput(Number(e.target.value));
+                        }
+                    } else {
+                        setInput('');
+                    }
+                }}
                 style={{
                     backgroundColor: theme.nEUTRALBase,
                     border: `1px solid ${theme.nEUTRALLine}`,
                     color: theme.tEXTPrimary,
                 }}
+                inputMode="numeric"
             />
-            <ButtonPrimary title="Continue" onClick={() => onSubmit(input)} />
+            <ButtonPrimary
+                title="Continue"
+                onClick={() => input >= 1 && onSubmit(input)}
+                isDisable={input < 2}
+            />
         </div>
     );
 }

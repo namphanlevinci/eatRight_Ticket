@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { ItemType } from 'context/cartType';
+import Fraction from 'fraction.js';
 
 export const useSplitItem = ({
     items,
@@ -28,11 +29,12 @@ export const useSplitItem = ({
     };
     const [modalSplitItem, setModalSplitItem] = useState(false);
     const handleSplitSubmit = (result: number) => {
-        const data = items?.find((item) => item.id === selected[0]);
+        const data = listData?.find((item) => item.id === selected[0]);
         let list = [];
         if (data && result > 1) {
             const newQuantity = data.quantity / result;
-            const newQuantityText = `${data.quantity} / ${result}`;
+            const fraction = new Fraction(newQuantity);
+            const newQuantityText = fraction.toFraction();
             for (let i = 0; i < result; i++) {
                 list.push({
                     ...data,

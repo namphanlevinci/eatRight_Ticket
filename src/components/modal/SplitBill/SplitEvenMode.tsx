@@ -15,7 +15,7 @@ export default function SplitEvenMode({
     onSubmit: (input: number) => void;
     numbers: number;
 }) {
-    const [input, setInput] = React.useState(numbers);
+    const [input, setInput] = React.useState<any>(numbers);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -34,7 +34,7 @@ export default function SplitEvenMode({
                             setInput(Number(e.target.value));
                         }
                     } else {
-                        setInput(0);
+                        setInput('');
                     }
                 }}
                 style={{
