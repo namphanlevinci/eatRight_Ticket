@@ -88,6 +88,10 @@ export const ADD_MORE_ITEM_TO_CART = gql`
                         value
                         currency
                     }
+                    subtotal_with_discount_excluding_tax {
+                        value
+                        currency
+                    }
                     discount {
                         amount {
                             value

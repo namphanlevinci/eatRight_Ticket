@@ -94,6 +94,10 @@ export const CREATE_CART = gql`
                         value
                         currency
                     }
+                    subtotal_with_discount_excluding_tax {
+                        value
+                        currency
+                    }
                     subtotal_excluding_tax {
                         value
                         currency

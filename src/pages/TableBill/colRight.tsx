@@ -61,6 +61,7 @@ export default function ColRight({
         setCustomerName(cart?.firstname);
     }, [cart]);
     const [tip, setTip] = useState(0);
+    const [tipPercent, setTipPercent] = useState(0);
     const [modalDiscount, setModalDiscount] = useState(false);
     const [modalTip, setModalTip] = useState(false);
     const { handleAddCoupon } = useCouponCart();
@@ -91,11 +92,20 @@ export default function ColRight({
                 onSubmit={(values: any) => {
                     handleSetTip(values);
                     setTip(values);
+                    setTipPercent(
+                        values /
+                            ((cart?.prices.grand_total.value || 0) -
+                                (cart?.prices?.total_canceled?.value || 0)),
+                    );
                     setModalTip(false);
                 }}
                 total={
                     (cart?.prices.grand_total.value || 0) -
                     (cart?.prices?.total_canceled?.value || 0)
+                }
+                totalWithoutTax={
+                    cart?.prices.subtotal_with_discount_excluding_tax?.value ||
+                    0
                 }
             />
             <ModalPosDevices
@@ -219,22 +229,26 @@ export default function ColRight({
                               <RenderSplitBillGuest
                                   key={index}
                                   title={`Guest ${index + 1}`}
-                                  total={totalTmp / numbersSplit}
+                                  total={
+                                      totalTmp / numbersSplit +
+                                      tip / numbersSplit
+                                  }
                                   onPress={openModalSplitBill}
                               />
                           ))
                         : listItems?.map(({ guestId, items }) => {
                               const total = items.reduce((acc, item) => {
+                                  const price =
+                                      (item.prices.price.value -
+                                          (item.prices?.total_item_discount
+                                              ?.value || 0)) *
+                                      item.quantity *
+                                      (1 + Tax);
                                   return (
                                       acc +
                                       (item.status === 'cancel'
                                           ? 0
-                                          : (item.prices.price.value -
-                                                (item.prices
-                                                    ?.total_item_discount
-                                                    ?.value || 0)) *
-                                            item.quantity *
-                                            (1 + Tax))
+                                          : price + tipPercent * price)
                                   );
                               }, 0);
                               return (

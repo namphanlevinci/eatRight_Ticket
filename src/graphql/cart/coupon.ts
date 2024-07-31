@@ -83,6 +83,10 @@ export const ADD_COUPON = gql`
                         value
                         currency
                     }
+                    subtotal_with_discount_excluding_tax {
+                        value
+                        currency
+                    }
                     subtotal_excluding_tax {
                         value
                         currency
@@ -199,6 +203,10 @@ export const REMOVE_COUPON = gql`
                         currency
                     }
                     subtotal_excluding_tax {
+                        value
+                        currency
+                    }
+                    subtotal_with_discount_excluding_tax {
                         value
                         currency
                     }

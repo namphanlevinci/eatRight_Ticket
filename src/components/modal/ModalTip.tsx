@@ -13,11 +13,13 @@ export default function ModalTip({
     onCancel,
     onSubmit,
     total,
+    totalWithoutTax,
 }: {
     isModalOpen: boolean;
     onCancel: any;
     onSubmit: any;
     total: number;
+    totalWithoutTax: number;
 }) {
     const inputRef = useRef<any>(null);
     const [value, setValue] = React.useState(0);
@@ -31,6 +33,7 @@ export default function ModalTip({
     }, []);
     useEffect(() => {
         if (data) {
+            console.log(data);
             const tip_option = data?.tipRestaurant?.tip_option;
             const tip_percent = tip_option?.find(
                 (item: any) => item?.type === 'percent',
@@ -49,7 +52,11 @@ export default function ModalTip({
     }, [isModalOpen]);
     useEffect(() => {
         if (selectTip !== 0 && total !== 0) {
-            setValue(roundTo((total * selectTip) / 100, 3));
+            if (data?.tipRestaurant?.include_tax_in_tip) {
+                setValue(roundTo((total * selectTip) / 100, 3));
+            } else {
+                setValue(roundTo((totalWithoutTax * selectTip) / 100, 3));
+            }
         }
     }, [selectTip, total]);
     const onFinish = () => {
@@ -82,7 +89,10 @@ export default function ModalTip({
                 </div>
             </Row>
             <Text style={{ marginBlock: 16 }}>
-                Total bill $ {total.toFixed(2)}
+                Sub total : $ {totalWithoutTax.toFixed(2)}
+            </Text>
+            <Text style={{ marginBlock: 16 }}>
+                Total bill {`(Include Tax)`}: $ {total.toFixed(2)}
             </Text>
             <Input
                 ref={inputRef}

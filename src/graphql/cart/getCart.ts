@@ -84,6 +84,10 @@ export const GET_CART_BY_ID = gql`
                     value
                     currency
                 }
+                subtotal_with_discount_excluding_tax {
+                    value
+                    currency
+                }
                 discount {
                     amount {
                         value
