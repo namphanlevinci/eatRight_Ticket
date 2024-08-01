@@ -109,11 +109,13 @@ export default function SplitBillConfirmMode({
                           );
                       }, 0);
                       return (
-                          <RenderGuestTotal
-                              title={guestId}
-                              value={roundTo(total, 2)}
-                              key={guestId}
-                          />
+                          total > 0 && (
+                              <RenderGuestTotal
+                                  title={guestId}
+                                  value={roundTo(total, 2)}
+                                  key={guestId}
+                              />
+                          )
                       );
                   })}
             <ButtonPrimary

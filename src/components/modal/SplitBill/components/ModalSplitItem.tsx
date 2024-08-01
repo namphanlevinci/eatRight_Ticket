@@ -61,7 +61,7 @@ export default function ModalSplitItem({
             />
             <ButtonPrimary
                 title="Continue"
-                onClick={() => input >= 1 && onSubmit(input)}
+                onClick={() => input > 1 && onSubmit(input)}
                 isDisable={input < 2}
             />
         </div>

@@ -4,7 +4,6 @@ import { CartItemType, ItemType } from 'context/cartType';
 import React from 'react';
 import { formatNumberWithCommas } from 'utils/format';
 import { ColStyled } from './styleds';
-import { roundTo } from 'utils/number';
 import { useTheme } from 'context/themeContext';
 import { DividedSolid } from 'pages/BillDetail/styled';
 import CustomTag from 'components/atom/Tag/CustomTag';
@@ -42,14 +41,6 @@ export default function ColLeft({
             <DividedSolid />
             {isSplitBill && listItems.length > 0
                 ? listItems?.map((data) => {
-                      const total = data.items.reduce((acc, item) => {
-                          return (
-                              acc +
-                              (item.status === 'cancel'
-                                  ? 0
-                                  : item.prices.price.value * item.quantity)
-                          );
-                      }, 0);
                       return (
                           <div key={data.guestId}>
                               <Row
@@ -66,9 +57,6 @@ export default function ColLeft({
                               >
                                   <Text20 style={{ fontWeight: '600' }}>
                                       {data.guestId}
-                                  </Text20>
-                                  <Text20>
-                                      Total : $ {roundTo(total, 2)}{' '}
                                   </Text20>
                               </Row>
 
