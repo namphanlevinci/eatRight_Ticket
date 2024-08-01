@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { Modal } from 'antd';
 import { BASE_ROUTER } from 'constants/router';
 import { useCart } from 'context/cartContext';
@@ -38,7 +38,7 @@ export const useTableBill = (isGoBack = true) => {
     const [onGetAppotaUrl] = useMutation(GET_APPOTA_URL);
     const [placeOrder, { loading }] = useMutation(PLACE_ORDER);
     const [onPosPayment, { loading: pos_Loading }] = useMutation(POS_PAYMENT);
-    const [onSetTips, { loading: tips_Loading }] = useLazyQuery(SET_TIPS);
+    const [onSetTips, { loading: tips_Loading }] = useMutation(SET_TIPS);
     const navigation = useNavigate();
 
     const showConfirm = () => {

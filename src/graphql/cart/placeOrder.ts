@@ -14,7 +14,7 @@ export const PLACE_ORDER = gql`
 `;
 
 export const SET_TIPS = gql`
-    query setTipToCart($cartId: String!, $tipAmount: Float!) {
+    mutation setTipToCart($cartId: String!, $tipAmount: Float!) {
         setTipToCart(cart_id: $cartId, tip_amount: $tipAmount) {
             success
             message
