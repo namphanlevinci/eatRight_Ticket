@@ -252,12 +252,14 @@ export default function ColRight({
                                   );
                               }, 0);
                               return (
-                                  <RenderSplitBillGuest
-                                      key={guestId}
-                                      title={guestId}
-                                      total={roundTo(total, 2)}
-                                      onPress={openModalSplitBill}
-                                  />
+                                  total > 0 && (
+                                      <RenderSplitBillGuest
+                                          key={guestId}
+                                          title={guestId}
+                                          total={roundTo(total, 2)}
+                                          onPress={openModalSplitBill}
+                                      />
+                                  )
                               );
                           })}
                 </div>

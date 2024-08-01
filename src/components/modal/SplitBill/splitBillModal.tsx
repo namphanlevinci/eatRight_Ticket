@@ -45,7 +45,15 @@ export default function SplitBillModal({
             setNumbers(cart.numberOfCustomer);
         }
     }, [cart]);
-
+    useEffect(() => {
+        if (!visible) {
+            setConfirmMode(false);
+            setMode(SplitBillMode.EVEN);
+            setListItems([]);
+            setListGuest([]);
+            setNumbers(2);
+        }
+    }, [visible]);
     const total =
         (cart?.prices.grand_total?.value || 0) -
         (cart?.prices?.total_canceled?.value || 0);
