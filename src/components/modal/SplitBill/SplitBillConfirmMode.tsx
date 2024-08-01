@@ -61,7 +61,7 @@ export default function SplitBillConfirmMode({
         (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100 || 0.1;
     const total =
         (cart?.prices.grand_total?.value || 0) -
-        (cart?.prices?.total_canceled?.value || 0) / (1 + Tax);
+        (cart?.prices?.total_canceled?.value || 0);
     return (
         <div style={ismobile ? { width: '100%' } : { width: 450 }}>
             <Row justify={'space-between'}>
@@ -78,7 +78,11 @@ export default function SplitBillConfirmMode({
             <Text style={{ color: theme.tEXTDisabled, marginTop: 16 }}>
                 Total bills splitted:
                 <span style={{ color: theme.tEXTPrimary, marginLeft: 10 }}>
-                    {mode === SplitBillMode.EVEN ? numbers : groupedData.length}
+                    {mode === SplitBillMode.EVEN
+                        ? numbers
+                        : cart?.prices?.total_canceled?.value
+                          ? groupedData.length - 1
+                          : groupedData.length}
                 </span>
             </Text>
             <Text style={{ color: theme.tEXTDisabled, marginTop: 16 }}>

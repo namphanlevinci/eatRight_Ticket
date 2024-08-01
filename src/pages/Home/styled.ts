@@ -45,6 +45,7 @@ export const ContainerTableHeader = styled.div`
     @media (max-width: 768px) {
         padding: 0;
     }
+    flex-wrap: wrap;
 `;
 
 export const ContainerTableBody = styled.div`

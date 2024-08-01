@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import InputPassword from 'pages/Settings/components/inputPassword';
 import { useTheme } from 'context/themeContext';
+import { useMediaQuery } from 'react-responsive';
 
 export const LoginPage: React.FC = () => {
     const { handleLogin, loading } = useLogin();
@@ -15,10 +16,13 @@ export const LoginPage: React.FC = () => {
         console.error('Failed:', errorInfo);
     };
     const { theme } = useTheme();
+    const ismobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     return (
         <div
             style={{
-                height: 650,
+                height: ismobile ? 600 : 650,
                 width: 380,
                 background: theme.nEUTRALBase,
                 borderRadius: 16,

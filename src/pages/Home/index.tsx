@@ -22,6 +22,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { useTheme } from 'context/themeContext';
 import HomeIcon from 'assets/icons/homeIcon';
+import { useMediaQuery } from 'react-responsive';
 const { Content } = Layout;
 
 const HomePage: React.FC = () => {
@@ -34,6 +35,9 @@ const HomePage: React.FC = () => {
 
     const memoizedTables = useMemo(() => data, [data]);
     const { theme } = useTheme();
+    const ismobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     const renderContent = ({ data }: { data: any }) => {
         return (
             <ContainerTable style={{ background: theme.pRIMARY1 }}>
@@ -99,23 +103,53 @@ const HomePage: React.FC = () => {
                                 style={{
                                     background: theme.pRIMARY6Primary,
                                     color: theme.pRIMARY2,
+                                    top: ismobile ? 0 : -20,
                                 }}
                             >
                                 <div>{counterTable?.cartIds?.length || 0}</div>
                             </CountAvaiable>
-                            <CounterTakeAway
-                                style={{ background: theme.pRIMARY3 }}
-                                background={theme.pRIMARY6Primary}
-                            >
-                                <h3 style={{ color: theme.tEXTPrimary }}>
-                                    Counter
-                                </h3>
-                                <h2 style={{ color: theme.pRIMARY6Primary }}>
-                                    TAKE AWAY
-                                </h2>
-                                <div />
-                            </CounterTakeAway>
+                            {!ismobile && (
+                                <CounterTakeAway
+                                    style={{ background: theme.pRIMARY3 }}
+                                    background={theme.pRIMARY6Primary}
+                                >
+                                    <h3 style={{ color: theme.tEXTPrimary }}>
+                                        Counter
+                                    </h3>
+                                    <h2
+                                        style={{ color: theme.pRIMARY6Primary }}
+                                    >
+                                        TAKE AWAY
+                                    </h2>
+                                    <div />
+                                </CounterTakeAway>
+                            )}
                         </div>
+                        {ismobile && (
+                            <div
+                                style={{
+                                    marginTop: 16,
+                                    width: 'calc(100vw - 64px)',
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
+                                }}
+                            >
+                                <CounterTakeAway
+                                    style={{ background: theme.pRIMARY3 }}
+                                    background={theme.pRIMARY6Primary}
+                                >
+                                    <h3 style={{ color: theme.tEXTPrimary }}>
+                                        Counter
+                                    </h3>
+                                    <h2
+                                        style={{ color: theme.pRIMARY6Primary }}
+                                    >
+                                        TAKE AWAY
+                                    </h2>
+                                    <div />
+                                </CounterTakeAway>
+                            </div>
+                        )}
                     </Link>
                 </ContainerTableHeader>
                 <SearchTable onChangeText={(e: string) => setSearchText(e)} />

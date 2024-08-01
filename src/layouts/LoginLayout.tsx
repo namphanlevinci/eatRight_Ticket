@@ -1,6 +1,7 @@
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import React from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { Colors } from 'themes/colors';
 type Props = {
     children: React.ReactNode;
@@ -8,6 +9,9 @@ type Props = {
 export default function LoginLayout(props: Props) {
     const { children } = props;
     const { theme } = useTheme();
+    const ismobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     return (
         <div
             style={{
@@ -41,11 +45,11 @@ export default function LoginLayout(props: Props) {
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             height: '100%',
-                            padding: 24,
+                            padding: ismobile ? 0 : 24,
                         }}
                     >
-                        <Text>
-                            Having troubles?{' '}
+                        <Text style={{ textAlign: 'center' }}>
+                            Having troubles? {ismobile && <br />}
                             <span
                                 style={{
                                     fontSize: 18,
@@ -57,7 +61,13 @@ export default function LoginLayout(props: Props) {
                             </span>
                         </Text>
                         <div>
-                            <Text style={{ textAlign: 'center', fontSize: 14 }}>
+                            <Text
+                                style={{
+                                    textAlign: 'center',
+                                    fontSize: 14,
+                                    marginTop: 10,
+                                }}
+                            >
                                 By continuing, you confirm that you agreed with
                                 our{' '}
                             </Text>
@@ -66,7 +76,8 @@ export default function LoginLayout(props: Props) {
                                     textAlign: 'center',
                                     fontSize: 14,
                                     color: theme.pRIMARY6Primary,
-                                    marginTop: 10,
+
+                                    fontWeight: 600,
                                 }}
                             >
                                 Terms and Conditions.
