@@ -18,6 +18,7 @@ type InvoiceTotal = {
     grand_total: Money;
     base_grand_total: Money;
     total_shipping: Money | null;
+    tip_amount: Money | null;
     __typename: 'InvoiceTotal';
 };
 

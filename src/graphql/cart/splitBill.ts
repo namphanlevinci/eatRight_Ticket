@@ -15,6 +15,10 @@ export const GET_INVOICES = gql`
                         value
                         currency
                     }
+                    tip_amount {
+                        value
+                        currency
+                    }
                 }
             }
             invoice {
@@ -22,6 +26,10 @@ export const GET_INVOICES = gql`
                 number
                 state
                 total {
+                    tip_amount {
+                        value
+                        currency
+                    }
                     subtotal {
                         value
                         currency
@@ -95,6 +103,10 @@ export const SPLIT_BILL_BY_ITEM = gql`
                         value
                         currency
                     }
+                    tip_amount {
+                        value
+                        currency
+                    }
                 }
             }
             invoice {
@@ -103,6 +115,10 @@ export const SPLIT_BILL_BY_ITEM = gql`
                 state
                 total {
                     subtotal {
+                        value
+                        currency
+                    }
+                    tip_amount {
                         value
                         currency
                     }
@@ -175,6 +191,10 @@ export const SPLIT_BILL_EVENLY = gql`
                         value
                         currency
                     }
+                    tip_amount {
+                        value
+                        currency
+                    }
                 }
             }
             invoice {
@@ -183,6 +203,10 @@ export const SPLIT_BILL_EVENLY = gql`
                 state
                 total {
                     subtotal {
+                        value
+                        currency
+                    }
+                    tip_amount {
                         value
                         currency
                     }
