@@ -70,7 +70,13 @@ export default function ColRight({
         (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100 || 0.1;
     const totalTmp =
         (cart?.prices.grand_total?.value || 0) -
-        (cart?.prices?.total_canceled?.value || 0) / (1 + Tax);
+        (cart?.prices?.total_canceled?.value || 0) -
+        (cart?.tip_amount || 0);
+    useEffect(() => {
+        if (cart?.tip_amount) {
+            setTip(cart?.tip_amount);
+        }
+    }, [cart?.tip_amount]);
     return (
         <ColStyled style={{ width: 257 }}>
             <ModalInput
@@ -99,10 +105,7 @@ export default function ColRight({
                     );
                     setModalTip(false);
                 }}
-                total={
-                    (cart?.prices.grand_total.value || 0) -
-                    (cart?.prices?.total_canceled?.value || 0)
-                }
+                total={totalTmp}
                 totalWithoutTax={
                     cart?.prices.subtotal_with_discount_excluding_tax?.value ||
                     0
@@ -210,9 +213,7 @@ export default function ColRight({
                 <RenderBillInfomationRow
                     title="To be paid"
                     value={`$ ${formatNumberWithCommas(
-                        (cart?.prices.grand_total.value || 0) -
-                            (cart?.prices?.total_canceled?.value || 0) +
-                            (tip || 0),
+                        totalTmp + (tip || 0),
                     )} `}
                     textRightStyle={{
                         fontSize: 24,
@@ -231,7 +232,7 @@ export default function ColRight({
                                   title={`Guest ${index + 1}`}
                                   total={
                                       totalTmp / numbersSplit +
-                                      tip / numbersSplit
+                                      (tip / numbersSplit || 0)
                                   }
                                   onPress={openModalSplitBill}
                               />

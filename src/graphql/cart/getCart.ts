@@ -75,6 +75,7 @@ export const GET_CART_BY_ID = gql`
             applied_coupons {
                 code
             }
+            tip_amount
             prices {
                 subtotal_including_tax {
                     value

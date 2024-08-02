@@ -78,6 +78,7 @@ export const ADD_COUPON = gql`
                 applied_coupons {
                     code
                 }
+                tip_amount
                 prices {
                     subtotal_including_tax {
                         value
@@ -107,6 +108,7 @@ export const ADD_COUPON = gql`
                         value
                         currency
                     }
+
                     applied_taxes {
                         tax_percent
                         amount {
@@ -197,6 +199,7 @@ export const REMOVE_COUPON = gql`
                 applied_coupons {
                     code
                 }
+                tip_amount
                 prices {
                     subtotal_including_tax {
                         value

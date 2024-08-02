@@ -90,6 +90,14 @@ export default function OrderFooter({
                     ) : (
                         <></>
                     )}
+                    {cart?.tip_amount && cart?.tip_amount ? (
+                        <RenderBillInfomationRow
+                            title="Tax"
+                            value={`$ ${cart?.tip_amount}`}
+                        />
+                    ) : (
+                        <></>
+                    )}
                     {cart?.prices?.total_canceled?.value ? (
                         <RenderBillInfomationRow
                             title="Canceled Item"
