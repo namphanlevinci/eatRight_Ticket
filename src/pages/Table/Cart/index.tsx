@@ -49,7 +49,7 @@ export default function OrderCart({ table }: { table: any }) {
                     }}
                 />
             </Row>
-            <CartInfo />
+            <CartInfo table={table} />
             {indexTable !== -1 && (
                 <CartItemList
                     data={

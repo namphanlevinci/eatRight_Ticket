@@ -46,13 +46,13 @@ export default function SplitEvenMode({
             />
             <Text style={{ marginBlock: 16, color: theme.tEXTSecondary }}>
                 Number to split:{' '}
-                <span style={{ color: theme.tEXTPrimary }}> {input}</span>
+                <span style={{ color: theme.tEXTPrimary }}> {input || 1}</span>
             </Text>
             <Text style={{ marginBlock: 16, color: theme.tEXTSecondary }}>
                 Each guest will pay :{' '}
                 <span style={{ color: theme.tEXTPrimary }}>
                     {' '}
-                    $ {(total / input).toFixed(2)}
+                    $ {(total / (input || 1)).toFixed(2)}
                 </span>
             </Text>
             <ButtonPrimary

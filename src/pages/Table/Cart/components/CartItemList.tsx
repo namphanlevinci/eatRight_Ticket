@@ -92,6 +92,7 @@ export default function CartItemList({
         if (CustomerName?.includes('Guest')) {
             setIsModalOpen(true);
         } else {
+            setCustomerName(CustomerName, selectedCart, indexTable);
             createCart({
                 username: CustomerName,
                 numberOfCustomer:
@@ -109,7 +110,6 @@ export default function CartItemList({
         numberOfCustomer?: number;
     }) => {
         if (username) {
-            setCustomerName(username);
             setIsModalOpen(false);
         }
 

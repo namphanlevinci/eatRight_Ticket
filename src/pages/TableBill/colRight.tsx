@@ -99,6 +99,35 @@ export default function ColRight({
                 }}
                 onSubmit={(values: any) => {
                     handleSetTip(values);
+
+                    if (values < tip) {
+                        setCart({
+                            ...cart,
+                            tip_amount: values,
+                            prices: {
+                                ...cart?.prices,
+                                grand_total: {
+                                    value:
+                                        (cart?.prices?.grand_total?.value ||
+                                            0) -
+                                        (tip - values),
+                                },
+                            },
+                        });
+                    } else {
+                        setCart({
+                            ...cart,
+                            tip_amount: values,
+                            prices: {
+                                ...cart?.prices,
+                                grand_total: {
+                                    value:
+                                        cart?.prices.grand_total.value + values,
+                                },
+                            },
+                        });
+                    }
+
                     setTip(values);
                     setTipPercent(
                         values /
@@ -106,16 +135,6 @@ export default function ColRight({
                                 (cart?.prices?.total_canceled?.value || 0)),
                     );
                     setModalTip(false);
-                    setCart({
-                        ...cart,
-                        tip_amount: values,
-                        prices: {
-                            ...cart?.prices,
-                            grand_total: {
-                                value: cart?.prices.grand_total.value + values,
-                            },
-                        },
-                    });
                 }}
                 total={totalTmp}
                 totalWithoutTax={
