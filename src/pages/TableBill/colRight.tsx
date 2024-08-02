@@ -28,8 +28,10 @@ export default function ColRight({
     numbersSplit,
     isSplitBill,
     openModalSplitBill,
+    setCart,
 }: {
     cart?: CartItemType;
+    setCart?: any;
     total: number;
     listItems?: {
         guestId: string;
@@ -104,6 +106,16 @@ export default function ColRight({
                                 (cart?.prices?.total_canceled?.value || 0)),
                     );
                     setModalTip(false);
+                    setCart({
+                        ...cart,
+                        tip_amount: values,
+                        prices: {
+                            ...cart?.prices,
+                            grand_total: {
+                                value: cart?.prices.grand_total.value + values,
+                            },
+                        },
+                    });
                 }}
                 total={totalTmp}
                 totalWithoutTax={

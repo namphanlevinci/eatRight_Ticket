@@ -18,6 +18,7 @@ export default function TableBill() {
         setNumbersSplit,
         listItems,
         numbersSplit,
+        setCart,
     } = useTableBill();
     const { Header } = Layout;
     const [splitBill, setSplitBill] = useState(false);
@@ -132,6 +133,7 @@ export default function TableBill() {
                         numbersSplit={numbersSplit}
                         isSplitBill={splitBill}
                         openModalSplitBill={() => setOpenModalSplitBill(true)}
+                        setCart={setCart}
                     />
                 </Row>
             </div>
