@@ -38,6 +38,7 @@ export default function CartItemList({
         cartItems,
         indexTable,
         setCustomerName,
+
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
     } = useCart();
@@ -746,7 +747,15 @@ export default function CartItemList({
                                     background: theme.sUCCESS2Default,
                                     border: 0,
                                 }}
-                                onClick={goOrderList}
+                                onClick={() =>
+                                    !cartItems[indexTable]?.carts[
+                                        selectedCart
+                                    ].firstname.includes('Guest') &&
+                                    goOrderList()
+                                }
+                                isDisable={cartItems[indexTable]?.carts[
+                                    selectedCart
+                                ].firstname.includes('Guest')}
                             >
                                 Order List
                             </Button>

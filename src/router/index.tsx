@@ -26,6 +26,7 @@ export const BaseRouter = () => {
     const dispatch = useDispatch();
     const { error } = Modal;
     const [needLogout, setNeedLogout] = useState(false);
+    const [noStore, setNoStore] = useState(false);
     const { isLogged } = useSelector((state: RootState) => state.auth);
     const [urlParams] = useSearchParams();
     const navigate = useNavigate();
@@ -62,8 +63,24 @@ export const BaseRouter = () => {
             console.log('logout,123');
             setNeedLogout(true);
         });
+        emitter.on('Store_not_existed', () => {
+            setNoStore(true);
+        });
     }, []);
-
+    useEffect(() => {
+        if (noStore) {
+            error({
+                title: 'Error',
+                content: 'Your account not from any store !',
+                onOk: () => {
+                    setNeedLogout(false);
+                    dispatch(updateStatusLogout());
+                    Modal.destroyAll();
+                },
+                centered: true,
+            });
+        }
+    }, [noStore]);
     useEffect(() => {
         if (needLogout) {
             console.log('needLogout', needLogout);

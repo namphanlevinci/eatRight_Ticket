@@ -46,7 +46,17 @@ const errorLink = onError((error) => {
             emitter.emit('logout');
             return;
         }
-
+        if (
+            e.message.includes('Store not existed' || 'This store is not exist')
+        ) {
+            emitter.emit('Store_not_existed');
+            return;
+        }
+        if (
+            e.message.includes('got invalid value (empty string); Int cannot')
+        ) {
+            return;
+        }
         emitter.emit('error', e.message);
     });
     if (error.networkError) {

@@ -56,6 +56,15 @@ export const authSlice = createSlice({
             localStorage.removeItem('tableData');
             sessionStorage.removeItem('isTokenValidated');
         },
+        clearStoreData: (state) => {
+            state.firstname = '';
+            state.lastname = '';
+            state.restaurant_name = '';
+            state.restaurant_address = '';
+            state.restaurant_id = '';
+            state.floor = [];
+            state.isMerchant = false;
+        },
     },
 });
 
@@ -65,6 +74,7 @@ export const {
     updateCustomerInfo,
     updateFloor,
     updateStatusLoginForMerchant,
+    clearStoreData,
 } = authSlice.actions;
 
 export default authSlice.reducer;

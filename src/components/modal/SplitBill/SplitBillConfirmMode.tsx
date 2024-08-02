@@ -114,7 +114,6 @@ export default function SplitBillConfirmMode({
                           );
                       }, 0);
                       const tip = cart?.tip_amount || 0;
-                      console.log('totalTmp', (tip * totalTmp) / (total - tip));
                       return (
                           totalTmp > 0 && (
                               <RenderGuestTotal
