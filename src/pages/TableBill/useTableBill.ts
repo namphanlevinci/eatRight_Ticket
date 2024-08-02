@@ -231,5 +231,6 @@ export const useTableBill = (isGoBack = true) => {
         onPosPayment,
         handlePOSPayment,
         handleSetTip,
+        setCart,
     };
 };
