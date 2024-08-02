@@ -88,7 +88,7 @@ export default function SplitBillConfirmMode({
             <Text style={{ color: theme.tEXTDisabled, marginTop: 16 }}>
                 Total amount to pay :
                 <span style={{ color: theme.tEXTPrimary, marginLeft: 10 }}>
-                    $ {total}
+                    $ {total.toFixed(2)}
                 </span>
             </Text>
             {mode === SplitBillMode.EVEN && numbers && numbers > 1
