@@ -14,7 +14,11 @@ interface CartContextType {
     // clearCart: () => void;
     setSelectedCart: any;
     selectedCart: number;
-    setCustomerName: (name: string) => void;
+    setCustomerName: (
+        name: string,
+        cartIndex: number,
+        indexTable: number,
+    ) => void;
     updateCartIndex: (cart: CartItemType) => void;
     removeCartIndex: (index?: number) => void;
     removeItemFromCart: (sku: string) => void;
@@ -343,7 +347,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         newCartTable[indexTable].carts = newCartItems;
         setCartItems(newCartTable);
     };
-    const setCustomerName = (name: string) => {
+    const setCustomerName = (
+        name: string,
+        selectedCart: number,
+        indexTable: number,
+    ) => {
         const newCartItems = [...cartItems[indexTable].carts];
         newCartItems[selectedCart].firstname = name;
         const newCartTable = [...cartItems];

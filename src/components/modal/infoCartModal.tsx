@@ -10,11 +10,16 @@ export default function InfoCartModal({
     onCancel,
     onSubmit,
     table,
+    value,
 }: {
     isModalOpen: boolean;
     onCancel: any;
     onSubmit: any;
     table: any;
+    value?: {
+        name: string;
+        number: number;
+    };
 }) {
     const inputRef = useRef<any>(null);
 
@@ -61,8 +66,8 @@ export default function InfoCartModal({
                 wrapperCol={{ span: 16 }}
                 style={{ maxWidth: 600 }}
                 initialValues={{
-                    username: 'Guest', // Giá trị mặc định cho trường username
-                    numberOfCustomer: 1,
+                    username: value?.name, // Giá trị mặc định cho trường username
+                    numberOfCustomer: value?.number,
                     remember: true,
                 }}
                 onFinish={onFinish}

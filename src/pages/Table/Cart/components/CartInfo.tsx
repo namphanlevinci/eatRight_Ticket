@@ -3,28 +3,23 @@ import { Col, Row } from 'antd';
 import { Text } from 'components/atom/Text';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { useCart } from 'context/cartContext';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useCouponCart } from '../useCouponCart';
-import LoadingModal from 'components/modal/loadingModal';
 import { useMutation } from '@apollo/client';
 import { UPDATE_CUSTOMER } from 'graphql/cart/updateCustomer';
 import { useTheme } from 'context/themeContext';
+import InfoCartModal from 'components/modal/infoCartModal';
+import { isCartIdFromLocal } from 'utils/isNumericId';
 
-export default function CartInfo() {
+export default function CartInfo({ table }: { table?: any }) {
     const { setCustomerName, cartItems, indexTable } = useCart();
-    const [promo, setPromo] = React.useState<any>();
     const [customerName, setName] = React.useState<any>();
     const [numberOfCustomer, setNoC] = React.useState<number>(1);
     const [searchParams] = useSearchParams();
     const selectedCart = parseInt(searchParams.get('cartIndex') || '0');
     const [onUpdateCustomerInfo] = useMutation(UPDATE_CUSTOMER);
-    const { handleAddCoupon, loading } = useCouponCart();
     useEffect(() => {
         if (cartItems.length > 0) {
-            setPromo(
-                cartItems[indexTable]?.carts[selectedCart]?.applied_coupons,
-            );
             setName(cartItems[indexTable]?.carts[selectedCart]?.firstname);
             setNoC(
                 cartItems[indexTable]?.carts[selectedCart]?.numberOfCustomer,
@@ -38,17 +33,18 @@ export default function CartInfo() {
         name?: string;
         number?: number;
     }) => {
-        if (cartItems[indexTable]?.carts[selectedCart].id !== '1') {
+        if (!isCartIdFromLocal(cartItems[indexTable]?.carts[selectedCart].id)) {
             onUpdateCustomerInfo({
                 variables: {
                     cart_id: cartItems[indexTable]?.carts[selectedCart].id,
                     firstname: name ? name : customerName,
                     numberOfCustomer: number ? number : numberOfCustomer,
                 },
-            });
+            }).catch((e) => console.log(e));
         }
     };
     const { theme } = useTheme();
+    const [showModal, setShowModal] = useState(false);
     return (
         <StyledCartBorder
             style={{
@@ -66,7 +62,28 @@ export default function CartInfo() {
                 border: 0,
             }}
         >
-            <LoadingModal showLoading={loading} />
+            <InfoCartModal
+                isModalOpen={showModal}
+                onCancel={() => setShowModal(false)}
+                onSubmit={(e: {
+                    username: string;
+                    numberOfCustomer: number;
+                }) => {
+                    setName(e.username);
+                    setNoC(e.numberOfCustomer);
+                    setCustomerName(e.username, selectedCart, indexTable);
+                    setShowModal(false);
+                    updateCustomerInfo({
+                        name: e.username,
+                        number: e.numberOfCustomer,
+                    });
+                }}
+                table={table}
+                value={{
+                    name: customerName,
+                    number: numberOfCustomer,
+                }}
+            />
             <Col
                 style={{
                     minWidth: 200,
@@ -74,11 +91,7 @@ export default function CartInfo() {
             >
                 <Row
                     onClick={() => {
-                        let text = prompt('Input customer name', customerName);
-                        if (text && text !== customerName) {
-                            setCustomerName(`${text}`);
-                            updateCustomerInfo({ name: text });
-                        }
+                        setShowModal(true);
                     }}
                     justify={'space-between'}
                     style={{ borderBottom: '1px solid #666', padding: 5 }}
@@ -97,15 +110,7 @@ export default function CartInfo() {
             >
                 <Row
                     onClick={() => {
-                        let text = prompt(
-                            'Number of Customer',
-                            `${numberOfCustomer}`,
-                        );
-
-                        if (text && parseInt(text) !== numberOfCustomer) {
-                            setNoC(parseInt(text));
-                            updateCustomerInfo({ number: parseInt(text) });
-                        }
+                        setShowModal(true);
                     }}
                     justify={'space-between'}
                     style={{ borderBottom: '1px solid #666', padding: 5 }}
@@ -113,32 +118,6 @@ export default function CartInfo() {
                     <Text>Customers </Text>
                     <Row align={'middle'}>
                         <Text>{numberOfCustomer}</Text>
-                        <ArrowRightIcon />
-                    </Row>
-                </Row>
-            </Col>
-            <Col
-                style={{
-                    minWidth: 200,
-                }}
-            >
-                <Row
-                    onClick={async () => {
-                        let text = prompt('Input promotion code');
-                        // setPromo(text || '');
-                        if (text) {
-                            handleAddCoupon(
-                                cartItems[indexTable]?.carts[selectedCart].id,
-                                text,
-                            );
-                        }
-                    }}
-                    justify={'space-between'}
-                    style={{ borderBottom: '1px solid #666', padding: 5 }}
-                >
-                    <Text>Promo</Text>
-                    <Row align={'middle'}>
-                        <Text>{promo ? promo[0].code : ''}</Text>
                         <ArrowRightIcon />
                     </Row>
                 </Row>
