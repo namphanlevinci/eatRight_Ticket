@@ -230,7 +230,9 @@ export const RenderBill = ({
                     <TextDark>
                         {CURRENTCY}{' '}
                         {selectDataShowbill
-                            ? selectDataShowbill?.total?.grand_total?.value
+                            ? selectDataShowbill?.total?.grand_total?.value?.toFixed(
+                                  2,
+                              )
                             : data?.grand_total?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
@@ -329,7 +331,7 @@ const RenderItem2 = ({ data }: { data: any }) => {
             <>
                 <RowStyled key={index}>
                     <Col style={{ textAlign: 'left', width: 30 }}>
-                        <span>{item?.quantity_invoiced}</span>
+                        <span>{item?.quantity_invoiced?.toFixed(2)}</span>
                     </Col>
                     <Col style={{ flex: 1 }}> {item?.product_name}</Col>
                     <Col style={{ textAlign: 'end', width: 50 }}>
