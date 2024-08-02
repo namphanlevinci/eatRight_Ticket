@@ -62,6 +62,7 @@ export default function SplitBillConfirmMode({
     const total =
         (cart?.prices.grand_total?.value || 0) -
         (cart?.prices?.total_canceled?.value || 0);
+
     return (
         <div style={ismobile ? { width: '100%' } : { width: 450 }}>
             <Row justify={'space-between'}>
@@ -100,7 +101,7 @@ export default function SplitBillConfirmMode({
                       />
                   ))
                 : groupedData.map(({ guestId, items }) => {
-                      const total = items.reduce((acc, item) => {
+                      const totalTmp = items.reduce((acc, item) => {
                           return (
                               acc +
                               (item.status === 'cancel'
@@ -112,11 +113,17 @@ export default function SplitBillConfirmMode({
                                     (1 + Tax))
                           );
                       }, 0);
+                      const tip = cart?.tip_amount || 0;
+                      console.log('totalTmp', (tip * totalTmp) / (total - tip));
                       return (
-                          total > 0 && (
+                          totalTmp > 0 && (
                               <RenderGuestTotal
                                   title={guestId}
-                                  value={roundTo(total, 2)}
+                                  value={roundTo(
+                                      totalTmp +
+                                          (tip * totalTmp) / (total - tip),
+                                      2,
+                                  )}
                                   key={guestId}
                               />
                           )
