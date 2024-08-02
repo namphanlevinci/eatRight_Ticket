@@ -60,7 +60,7 @@ export default function ColRight({
     useEffect(() => {
         setCustomerName(cart?.firstname);
     }, [cart]);
-    const [tip, setTip] = useState(0);
+    const [tip, setTip] = useState<any>(undefined);
     const [tipPercent, setTipPercent] = useState(0);
     const [modalDiscount, setModalDiscount] = useState(false);
     const [modalTip, setModalTip] = useState(false);
@@ -167,7 +167,7 @@ export default function ColRight({
                     <RenderBillInfomationRow
                         title="Tip"
                         value={
-                            tip > 0 ? (
+                            tip !== undefined ? (
                                 <Row
                                     align={'middle'}
                                     style={{ cursor: 'pointer' }}
@@ -212,7 +212,7 @@ export default function ColRight({
                     value={`$ ${formatNumberWithCommas(
                         (cart?.prices.grand_total.value || 0) -
                             (cart?.prices?.total_canceled?.value || 0) +
-                            tip,
+                            (tip || 0),
                     )} `}
                     textRightStyle={{
                         fontSize: 24,
@@ -292,7 +292,7 @@ export default function ColRight({
                 <ButtonSubmit
                     title="Proceed Payment"
                     onClick={() => {
-                        if (tip === 0) {
+                        if (tip === undefined) {
                             setModalTip(true);
                             return;
                         }
