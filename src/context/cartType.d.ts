@@ -13,6 +13,7 @@ export type CartItemType = {
               code: string;
           }[]
         | null;
+    tip_amount?: number | null;
     prices: {
         applied_taxes?: {
             amount: {

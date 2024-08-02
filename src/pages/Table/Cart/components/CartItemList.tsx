@@ -508,6 +508,27 @@ export default function CartItemList({
                     ) : (
                         <></>
                     )}
+                    {data?.tip_amount > 0 && data?.tip_amount ? (
+                        <Row justify={'space-between'}>
+                            <Text style={{ fontSize: 16 }}>Tip</Text>
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    fontWeight: '600',
+                                    color: theme.pRIMARY6Primary,
+                                }}
+                            >
+                                {' $'}{' '}
+                                {formatNumberWithCommas(
+                                    data?.tip_amount > 0
+                                        ? data?.tip_amount || 0
+                                        : 0,
+                                )}
+                            </Text>
+                        </Row>
+                    ) : (
+                        <></>
+                    )}
                     {data?.prices?.discounts?.map(
                         (item: any, index: number) => {
                             return item.amount.value ? (

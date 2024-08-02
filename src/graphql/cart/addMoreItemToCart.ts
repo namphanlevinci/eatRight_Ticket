@@ -79,6 +79,7 @@ export const ADD_MORE_ITEM_TO_CART = gql`
                 applied_coupons {
                     code
                 }
+                tip_amount
                 prices {
                     subtotal_including_tax {
                         value
