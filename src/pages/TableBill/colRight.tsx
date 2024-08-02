@@ -243,8 +243,15 @@ export default function ColRight({
                                   key={index}
                                   title={`Guest ${index + 1}`}
                                   total={
-                                      totalTmp / numbersSplit +
-                                      (tip / numbersSplit || 0)
+                                      index + 1 === numbersSplit
+                                          ? totalTmp -
+                                            (totalTmp / numbersSplit) *
+                                                (numbersSplit - 1) +
+                                            ((tip || 0) -
+                                                (tip / numbersSplit || 0) *
+                                                    (numbersSplit - 1))
+                                          : totalTmp / numbersSplit +
+                                            (tip / numbersSplit || 0)
                                   }
                                   onPress={openModalSplitBill}
                               />
