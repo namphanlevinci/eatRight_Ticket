@@ -10,6 +10,7 @@ import { UPDATE_CUSTOMER } from 'graphql/cart/updateCustomer';
 import { useTheme } from 'context/themeContext';
 import InfoCartModal from 'components/modal/infoCartModal';
 import { isCartIdFromLocal } from 'utils/isNumericId';
+import { useMediaQuery } from 'react-responsive';
 
 export default function CartInfo({ table }: { table?: any }) {
     const { setCustomerName, cartItems, indexTable } = useCart();
@@ -45,10 +46,13 @@ export default function CartInfo({ table }: { table?: any }) {
     };
     const { theme } = useTheme();
     const [showModal, setShowModal] = useState(false);
+    const isMobile = useMediaQuery({
+        query: '(max-width: 767px)',
+    });
     return (
         <StyledCartBorder
             style={{
-                height: 56,
+                height: isMobile ? 'auto' : 56,
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -56,10 +60,11 @@ export default function CartInfo({ table }: { table?: any }) {
                 padding: 16,
                 marginBottom: 16,
                 borderTopLeftRadius: 0,
-                paddingBlock: 0,
+                paddingBlock: isMobile ? 16 : 0,
                 overflowX: 'auto',
                 backgroundColor: theme.nEUTRALLine,
                 border: 0,
+                flexWrap: 'wrap',
             }}
         >
             <InfoCartModal
@@ -86,7 +91,7 @@ export default function CartInfo({ table }: { table?: any }) {
             />
             <Col
                 style={{
-                    minWidth: 200,
+                    minWidth: isMobile ? '100%' : 200,
                 }}
             >
                 <Row
@@ -94,10 +99,18 @@ export default function CartInfo({ table }: { table?: any }) {
                         setShowModal(true);
                     }}
                     justify={'space-between'}
-                    style={{ borderBottom: '1px solid #666', padding: 5 }}
+                    align={'middle'}
                 >
                     <Text>Name</Text>
-                    <Row align={'middle'}>
+                    <Row
+                        align={'middle'}
+                        style={{
+                            borderBottom: `1px solid #${theme.nEUTRALLine}`,
+                            padding: 5,
+                            width: '70%',
+                        }}
+                        justify={'end'}
+                    >
                         <Text>{customerName}</Text>
                         <ArrowRightIcon />
                     </Row>
@@ -105,7 +118,7 @@ export default function CartInfo({ table }: { table?: any }) {
             </Col>
             <Col
                 style={{
-                    minWidth: 200,
+                    minWidth: isMobile ? '100%' : 200,
                 }}
             >
                 <Row
@@ -113,10 +126,18 @@ export default function CartInfo({ table }: { table?: any }) {
                         setShowModal(true);
                     }}
                     justify={'space-between'}
-                    style={{ borderBottom: '1px solid #666', padding: 5 }}
+                    align={'middle'}
                 >
                     <Text>Customers </Text>
-                    <Row align={'middle'}>
+                    <Row
+                        align={'middle'}
+                        style={{
+                            borderBottom: `1px solid #${theme.nEUTRALLine}`,
+                            padding: 5,
+                            width: '70%',
+                        }}
+                        justify={'end'}
+                    >
                         <Text>{numberOfCustomer}</Text>
                         <ArrowRightIcon />
                     </Row>

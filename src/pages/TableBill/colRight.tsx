@@ -20,6 +20,7 @@ import { useCouponCart } from 'pages/Table/Cart/useCouponCart';
 import ModalTip from 'components/modal/ModalTip';
 import { useTheme } from 'context/themeContext';
 import RenderDiscountRow from './components/renderDiscountRow';
+import { useMediaQuery } from 'react-responsive';
 
 export default function ColRight({
     cart,
@@ -29,6 +30,7 @@ export default function ColRight({
     isSplitBill,
     openModalSplitBill,
     setCart,
+    SplitBillButton,
 }: {
     cart?: CartItemType;
     setCart?: any;
@@ -40,6 +42,7 @@ export default function ColRight({
     numbersSplit?: number;
     isSplitBill?: boolean;
     openModalSplitBill?: () => void;
+    SplitBillButton?: any;
 }) {
     const [customerName, setCustomerName] = React.useState<any>(
         cart?.firstname,
@@ -79,6 +82,9 @@ export default function ColRight({
             setTip(cart?.tip_amount);
         }
     }, [cart?.tip_amount]);
+    const isMobile = useMediaQuery({
+        query: '(max-width: 767px)',
+    });
     return (
         <ColStyled style={{ width: 257 }}>
             <ModalInput
@@ -155,7 +161,15 @@ export default function ColRight({
                 showLoading={pos_Loading}
                 title="POS Payment Processing ..."
             />
-            <Text style={{ fontSize: 20 }}>Customer Information</Text>
+            {isMobile && (
+                <Row justify={'end'} style={{ marginTop: 20 }}>
+                    <SplitBillButton />
+                </Row>
+            )}
+
+            {!isMobile && (
+                <Text style={{ fontSize: 20 }}>Customer Information</Text>
+            )}
 
             <InputInfoCart
                 icon={<AccountIcon />}
@@ -170,7 +184,7 @@ export default function ColRight({
                 placeholder="Customer Number"
             /> */}
 
-            <div style={{ marginTop: 56 }}>
+            <div style={{ marginTop: isMobile ? 20 : 56 }}>
                 <Text style={{ fontSize: 20 }}>Billing Information</Text>
                 <RenderBillInfomationRow
                     title="Sub total"

@@ -9,6 +9,7 @@ import { useState } from 'react';
 import SplitBillModal from 'components/modal/SplitBill/splitBillModal';
 import { useTheme } from 'context/themeContext';
 import ModalOffSplitBill from 'components/modal/ModalOffSplitBill';
+import { useMediaQuery } from 'react-responsive';
 export default function TableBill() {
     const {
         cart,
@@ -26,6 +27,9 @@ export default function TableBill() {
     const [openModalConfirmCloseSplitBill, setCloseSplitBill] = useState(false);
     const navigation = useNavigate();
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({
+        query: '(max-width: 767px)',
+    });
     const RenderHeader = () => {
         return (
             <Header
@@ -56,6 +60,26 @@ export default function TableBill() {
                     / Bill Number
                 </Text>
             </Header>
+        );
+    };
+    const SplitBillButton = () => {
+        return (
+            <Row align={'middle'} style={{ gap: 20 }}>
+                <Text style={{ fontSize: 20, fontWeight: '400' }}>
+                    Split bill
+                </Text>
+                <Switch
+                    value={splitBill}
+                    onChange={(value) => {
+                        if (value) {
+                            setSplitBill(true);
+                            setOpenModalSplitBill(true);
+                        } else {
+                            setCloseSplitBill(true);
+                        }
+                    }}
+                />
+            </Row>
         );
     };
     return (
@@ -101,22 +125,7 @@ export default function TableBill() {
                     <Text style={{ fontSize: 20, fontWeight: '400' }}>
                         Order summary
                     </Text>
-                    <Row align={'middle'} style={{ gap: 20 }}>
-                        <Text style={{ fontSize: 20, fontWeight: '400' }}>
-                            Split bill
-                        </Text>
-                        <Switch
-                            value={splitBill}
-                            onChange={(value) => {
-                                if (value) {
-                                    setSplitBill(true);
-                                    setOpenModalSplitBill(true);
-                                } else {
-                                    setCloseSplitBill(true);
-                                }
-                            }}
-                        />
-                    </Row>
+                    {!isMobile && <SplitBillButton />}
                 </Row>
                 <Row style={{ marginTop: 16 }}>
                     <ColLeft
@@ -134,6 +143,7 @@ export default function TableBill() {
                         isSplitBill={splitBill}
                         openModalSplitBill={() => setOpenModalSplitBill(true)}
                         setCart={setCart}
+                        SplitBillButton={SplitBillButton}
                     />
                 </Row>
             </div>
