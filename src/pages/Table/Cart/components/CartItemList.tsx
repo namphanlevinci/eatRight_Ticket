@@ -167,7 +167,7 @@ export default function CartItemList({
                 carts,
                 username || '',
                 numberOfCustomer,
-                table?.name?.toLowerCase().includes('counter') ? true : false,
+                table?.name?.toLowerCase()?.includes('counter') ? true : false,
             );
         } else {
             addMoreCart(data.id, carts);
@@ -750,12 +750,12 @@ export default function CartItemList({
                                 onClick={() =>
                                     !cartItems[indexTable]?.carts[
                                         selectedCart
-                                    ].firstname.includes('Guest') &&
+                                    ].firstname?.includes('Guest') &&
                                     goOrderList()
                                 }
                                 isDisable={cartItems[indexTable]?.carts[
                                     selectedCart
-                                ].firstname.includes('Guest')}
+                                ].firstname?.includes('Guest')}
                             >
                                 Order List
                             </Button>
