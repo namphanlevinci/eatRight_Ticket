@@ -8,6 +8,7 @@ import { useTheme } from 'context/themeContext';
 import { DividedSolid } from 'pages/BillDetail/styled';
 import CustomTag from 'components/atom/Tag/CustomTag';
 import { getTagStyled } from 'utils/tag';
+import { useMediaQuery } from 'react-responsive';
 
 export default function ColLeft({
     cart,
@@ -26,13 +27,14 @@ export default function ColLeft({
     openModalSplitBill?: () => void;
 }) {
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <ColStyled
             style={{
                 flex: 1,
                 background: theme.nEUTRALBase,
                 border: `1px solid ${theme.nEUTRALLine}`,
-                marginRight: 16,
+                marginRight: isMobile ? 0 : 16,
                 borderRadius: 8,
                 padding: 16,
             }}
