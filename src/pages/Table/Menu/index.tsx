@@ -101,6 +101,10 @@ export default function Menu() {
                                                   xs={{ span: 24 }}
                                                   md={{ span: 8 }}
                                                   key={index}
+                                                  style={{
+                                                      display: 'flex',
+                                                      justifyContent: 'end',
+                                                  }}
                                               >
                                                   <div
                                                       onClick={() =>
@@ -142,6 +146,10 @@ export default function Menu() {
                                                   xs={{ span: 24 }}
                                                   md={{ span: 8 }}
                                                   key={index}
+                                                  style={{
+                                                      display: 'flex',
+                                                      justifyContent: 'end',
+                                                  }}
                                               >
                                                   <div
                                                       onClick={() =>
