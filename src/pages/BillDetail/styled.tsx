@@ -81,8 +81,14 @@ export const ButtonContainer = styled.div<{
     @media (max-width: 767px) {
         position: fixed;
         bottom: 100px;
-        left: ${(props) => (!props.isRight ? 0 : 'calc(100% - 140px)')};
+        left: 10px;
         z-index: 50;
+        display: flex;
+        background: white;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.12);
+        border-radius: 8px;
     }
 `;
 export const ButtonLeftContainer = styled.div<{
@@ -92,7 +98,7 @@ export const ButtonLeftContainer = styled.div<{
     left: 10px;
     @media (max-width: 767px) {
         position: fixed;
-        bottom: 100px;
+        top: 100px;
         left: ${(props) => (!props.isRight ? 0 : 'calc(100% - 140px)')};
         z-index: 50;
     }

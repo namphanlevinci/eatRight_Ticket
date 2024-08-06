@@ -1,36 +1,60 @@
 import { useTheme } from 'context/themeContext';
 import { Button } from 'components/atom/Button';
 import { TextDark } from 'components/atom/Text';
+import { useMediaQuery } from 'react-responsive';
 export const ButtonSelectBill = ({
-    title,
+    title = 'Full Bill',
     onPress,
     isSelected,
 }: {
-    title: string;
+    title?: string;
     onPress: () => void;
     isSelected?: boolean;
 }) => {
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <Button
             style={{
                 height: 56,
-                width: 160,
+                width: isMobile ? 56 : 160,
                 display: 'flex',
                 border: `2px solid ${isSelected ? theme.pRIMARY6Primary : theme.nEUTRALLine}`,
-                paddingInline: 16,
+                paddingInline: isMobile ? 0 : 16,
+                minWidth: 'auto',
+                gap: isMobile ? 0 : 8,
             }}
             onClick={onPress}
-            background={theme.nEUTRALBase}
+            background={
+                isMobile
+                    ? isSelected
+                        ? theme.pRIMARY6Primary
+                        : theme.pRIMARY2
+                    : theme.nEUTRALBase
+            }
         >
-            {isSelected ? <RadioBtnSelected /> : <RadioIcon />}
+            {isMobile ? (
+                <></>
+            ) : isSelected ? (
+                <RadioBtnSelected />
+            ) : (
+                <RadioIcon />
+            )}
             <TextDark
                 style={{
-                    color: theme.tEXTPrimary,
+                    color: isMobile
+                        ? isSelected
+                            ? theme.pRIMARY1
+                            : theme.pRIMARY6Primary
+                        : theme.tEXTPrimary,
                     fontWeight: '600',
                 }}
             >
-                {title}
+                {isMobile
+                    ? title === 'Full Bill'
+                        ? 'Full'
+                        : `${title}`
+                    : `Guest ${title}`}
             </TextDark>
         </Button>
     );
