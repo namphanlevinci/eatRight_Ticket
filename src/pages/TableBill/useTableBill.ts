@@ -1,8 +1,9 @@
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { Modal } from 'antd';
 import { BASE_ROUTER } from 'constants/router';
 import { useCart } from 'context/cartContext';
 import { CartItemType, ItemType } from 'context/cartType';
+import { GET_CART_BY_ID } from 'graphql/cart/getCart';
 import { PLACE_ORDER, SET_TIPS } from 'graphql/cart/placeOrder';
 import { SPLIT_BILL_BY_ITEM, SPLIT_BILL_EVENLY } from 'graphql/cart/splitBill';
 import { emitter } from 'graphql/client';
@@ -14,7 +15,9 @@ export const useTableBill = (isGoBack = true) => {
     const [searchParams] = useSearchParams();
     const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
     const [modal, contextHolder] = Modal.useModal();
-    const { cartItems, indexTable } = useCart();
+    const { cartItems, indexTable, updateCartIndex } = useCart();
+    const [onGetCart, { loading: loadingGetCart }] =
+        useLazyQuery(GET_CART_BY_ID);
     const [cart, setCart] = React.useState<CartItemType>();
     const [total, setTotal] = React.useState<number>(0);
     const [count, setCount] = React.useState<number>(0);
@@ -204,6 +207,21 @@ export const useTableBill = (isGoBack = true) => {
                 tipAmount: tip,
             },
             fetchPolicy: 'no-cache',
+        }).then(() => {
+            if (cart) {
+                onGetCart({
+                    variables: {
+                        cartId: cartItems[indexTable].carts[cartIndex].id,
+                    },
+                    fetchPolicy: 'no-cache',
+                })
+                    .then((res) => {
+                        updateCartIndex(res.data.merchantCart);
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
         });
     };
     return {
@@ -217,7 +235,8 @@ export const useTableBill = (isGoBack = true) => {
             loading ||
             split_even_loading ||
             split_items_loading ||
-            tips_Loading,
+            tips_Loading ||
+            loadingGetCart,
         pos_Loading,
         contextHolder,
         paymentMethod,

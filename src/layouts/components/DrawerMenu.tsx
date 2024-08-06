@@ -6,8 +6,6 @@ import StoreIcon from 'layouts/icons/storeIcon';
 import MenuManagerIcon from 'layouts/icons/menuManagerIcon';
 import PromotionsIcon from 'layouts/icons/promotions';
 import AccountIcon from 'layouts/icons/accountIcon';
-import ReceiptBillIcon from 'assets/icons/receiptBill';
-import SettingIcon from 'assets/icons/setting';
 import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
 import { Header, RenderItem, RenderLogout } from './components';
@@ -16,6 +14,9 @@ import { updateStatusLogout } from 'features/auth/authSlice';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { useTheme } from 'context/themeContext';
+import CustomerIcon from 'assets/icons/customerIcon';
+import SettingV2Icon from 'assets/icons/settingV2';
+import ReceiptBillV2Icon from 'assets/icons/receiptV2Bill';
 const MenuMerchant = [
     {
         title: 'Go Merchant',
@@ -45,13 +46,18 @@ const MenuMerchant = [
 ];
 const MenuList = [
     {
+        title: 'Customers Information',
+        icon: <CustomerIcon />,
+        to: BASE_ROUTER.BILL,
+    },
+    {
         title: 'Receipt Bill',
-        icon: <ReceiptBillIcon />,
+        icon: <ReceiptBillV2Icon />,
         to: BASE_ROUTER.BILL,
     },
     {
         title: 'Settings',
-        icon: <SettingIcon />,
+        icon: <SettingV2Icon />,
         to: BASE_ROUTER.SETTINGS,
     },
 ];

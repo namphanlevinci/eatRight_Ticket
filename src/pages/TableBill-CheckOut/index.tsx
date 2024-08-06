@@ -116,8 +116,10 @@ export default function TableSplitBillCheckOut() {
                 <ColumnGuestList style={isMobile ? { width: '100%' } : {}}>
                     {data.invoice.map((item, index) => {
                         return (
-                            selectGuest?.index !== undefined &&
-                            index <= selectGuest?.index && (
+                            (isMobile
+                                ? selectGuest?.index !== undefined &&
+                                  index <= selectGuest?.index
+                                : true) && (
                                 <RenderGuest
                                     key={index}
                                     title={`${index + 1}`}
