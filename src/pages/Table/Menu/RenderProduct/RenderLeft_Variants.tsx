@@ -3,6 +3,7 @@ import UpDownNumber from 'components/UpdownNumber';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import React, { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 export default function RenderLeftVariants({
     listVariants,
@@ -43,6 +44,7 @@ const RenderItem = ({ item, index, onChangeQuantity }: any) => {
             onChangeQuantity(index, quantity, price, sku, name);
         }, [quantity]);
         const { theme } = useTheme();
+        const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
         return (
             <Row
                 key={index}
@@ -52,7 +54,7 @@ const RenderItem = ({ item, index, onChangeQuantity }: any) => {
                     borderRadius: 8,
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginRight: 20,
+                    marginRight: isMobile ? 0 : 20,
                     marginBottom: 16,
                     border: '1px solid',
                     borderColor: theme.pRIMARY2,

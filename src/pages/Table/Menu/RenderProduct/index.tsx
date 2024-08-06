@@ -6,6 +6,7 @@ import RenderRight from './RenderRight';
 import RenderLeft from './RenderLeft';
 import RenderLeftVariants from './RenderLeft_Variants';
 import { useTheme } from 'context/themeContext';
+import { useMediaQuery } from 'react-responsive';
 
 export default function RenderProduct({ product }: { product: ProductType }) {
     const {
@@ -25,6 +26,7 @@ export default function RenderProduct({ product }: { product: ProductType }) {
         product: product,
     });
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <StyledCartBorder
             style={{
@@ -50,10 +52,11 @@ export default function RenderProduct({ product }: { product: ProductType }) {
                         md={{ span: 8 }}
                         style={{
                             minHeight: 300,
-                            borderLeftWidth: 1,
+
+                            borderLeftWidth: isMobile ? 0 : 1,
                             borderLeftColor: '#666666',
                             borderLeftStyle: 'dashed',
-                            paddingLeft: 20,
+                            paddingLeft: isMobile ? 0 : 20,
                         }}
                     >
                         <RenderRight
@@ -84,10 +87,10 @@ export default function RenderProduct({ product }: { product: ProductType }) {
                         xs={{ span: 24 }}
                         style={{
                             minHeight: 300,
-                            borderLeftWidth: 1,
+                            borderLeftWidth: isMobile ? 0 : 1,
                             borderLeftColor: '#666666',
                             borderLeftStyle: 'dashed',
-                            paddingLeft: 20,
+                            paddingLeft: isMobile ? 0 : 20,
                         }}
                     >
                         <RenderRight

@@ -45,6 +45,7 @@ export type InvoiceWithSplit = {
     state: string;
     total: InvoiceTotal;
     items: InvoiceItem[];
+    index?: number;
     __typename: 'InvoiceWithSplit';
 };
 

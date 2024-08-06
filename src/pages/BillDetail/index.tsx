@@ -30,6 +30,7 @@ import LoadingModal from 'components/modal/loadingModal';
 import { RenderBill } from './components/RenderBill';
 import { ButtonBill } from './components/ButtonBill';
 import { ButtonSelectBill } from './components/ButtonSelectBill';
+import { useMediaQuery } from 'react-responsive';
 export default function index() {
     const [getOrderDetail, { data, loading }] = useLazyQuery(GET_ORDER_DETAIL, {
         fetchPolicy: 'cache-and-network',
@@ -234,6 +235,9 @@ export default function index() {
             }
         }
     }, [dataSplitBill]);
+    const isMobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     return (
         <div>
             {' '}
@@ -343,12 +347,13 @@ export default function index() {
                             data={data?.orderDetail}
                             selectDataShowbill={selectDataShowbill}
                         />
+
                         <ButtonContainer>
                             <ButtonBill title="Print" onPress={PrintBill} />
                             {(childBill.length === 0 || selectDataShowbill) && (
                                 <>
                                     <ButtonBill
-                                        title="Send mail"
+                                        title="Email"
                                         onPress={() => setModalInputEmail(true)}
                                     />
                                     <ButtonBill
@@ -377,10 +382,10 @@ export default function index() {
                                 </TextDark>
                             </Button>
                         </ButtonContainer>
+
                         {childBill.length > 1 && (
                             <ButtonLeftContainer>
                                 <ButtonSelectBill
-                                    title="Full Bill"
                                     onPress={() =>
                                         setSelectDataShowbill(undefined)
                                     }
@@ -389,7 +394,7 @@ export default function index() {
                                 {childBill.map((item: any, index: number) => (
                                     <ButtonSelectBill
                                         key={index}
-                                        title={`Guest ${index + 1}`}
+                                        title={`${index + 1}`}
                                         onPress={() => {
                                             setSelectDataShowbill(item);
                                         }}

@@ -1,10 +1,10 @@
 import { Button, Form, Layout } from 'antd';
 import { Text } from 'components/atom/Text';
-import { Colors } from 'themes/colors';
 
 import { usePrinter } from 'context/printerContext';
 import { PrinterContextType } from 'context/printerType';
 import Input from './components/input';
+import { useTheme } from 'context/themeContext';
 export default function PrinterSetUpPage() {
     const {
         connectionStatus,
@@ -22,6 +22,7 @@ export default function PrinterSetUpPage() {
         setPrinterPort(values.port);
         connect(values.printerIPAddress, values.port);
     };
+    const { theme } = useTheme();
     return (
         <Layout
             style={{
@@ -64,16 +65,17 @@ export default function PrinterSetUpPage() {
                         style={{
                             width: '100%',
                             marginTop: 60,
-                            background: Colors.primary,
+                            background: theme.pRIMARY6Primary,
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
+                            height: 60,
                         }}
                         size="large"
                     >
                         <Text
                             style={{
-                                color: Colors.black,
+                                color: theme.nEUTRALPrimary,
                                 fontSize: 18,
                                 fontWeight: '600',
                             }}

@@ -200,14 +200,7 @@ export default function CartItemList({
                         <div key={index}>
                             <Row align={'middle'} justify={'space-between'}>
                                 <Col md={{ span: 14 }} xs={{ span: 24 }}>
-                                    <Row
-                                        align={'middle'}
-                                        style={{
-                                            flexDirection: ismobile
-                                                ? 'column'
-                                                : 'row',
-                                        }}
-                                    >
+                                    <Row align={'middle'}>
                                         <div
                                             style={{
                                                 marginBlock: ismobile ? 10 : 0,
@@ -343,9 +336,6 @@ export default function CartItemList({
                                                                     md={{
                                                                         span: 14,
                                                                     }}
-                                                                    xs={{
-                                                                        span: 24,
-                                                                    }}
                                                                     style={{
                                                                         paddingLeft:
                                                                             ismobile
@@ -372,9 +362,6 @@ export default function CartItemList({
                                                                 <Col
                                                                     md={{
                                                                         span: 10,
-                                                                    }}
-                                                                    xs={{
-                                                                        span: 24,
                                                                     }}
                                                                     style={{
                                                                         paddingRight:
@@ -661,8 +648,8 @@ export default function CartItemList({
                         <></>
                     )}
                 </Col>
-                <Col>
-                    <Row>
+                <Col style={ismobile ? { width: '100%' } : {}}>
+                    <Row justify={'space-between'}>
                         <Col>
                             <Button
                                 style={{
