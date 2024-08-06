@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Layout, Pagination } from 'antd';
+import { DatePicker, Divider, Layout, Pagination } from 'antd';
 import { Colors } from 'themes/colors';
 import {
     StyledTitle,
@@ -9,13 +9,6 @@ import {
     StyledSearch,
 } from './styled';
 import DropdownList from './DropdownList';
-import {
-    getYears,
-    getMonths,
-    getDays,
-    // getFloors,
-    // getArea,
-} from './mocks';
 import { useBillList } from './useBillList';
 import { formatNumberWithCommas } from 'utils/format';
 import SearchIcon from 'assets/icons/search';
@@ -24,10 +17,12 @@ import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import LoadingModal from 'components/modal/loadingModal';
 import { useTheme } from 'context/themeContext';
+import { useMediaQuery } from 'react-responsive';
+import ListBillForMobile from './listForMobile';
 
 const { Content } = Layout;
 
-enum TableStatus {
+export enum TableStatus {
     Failed = 'Payment Failed',
     UnPaid = 'Pending Payment',
     Paid = 'Complete',
@@ -36,7 +31,7 @@ enum TableStatus {
     Processing = 'Processing',
 }
 
-const convertStatusText = (status: TableStatus) => {
+export const ConvertStatusText = (status: TableStatus) => {
     switch (status) {
         case TableStatus.Failed:
             return 'Payment Failed';
@@ -67,7 +62,7 @@ const convertStatus = (status: TableStatus) => {
                         color: '#EA4335',
                     }}
                 >
-                    {convertStatusText(status)}
+                    {ConvertStatusText(status)}
                 </StyledColumn>
             );
         case TableStatus.Cancelled:
@@ -80,7 +75,7 @@ const convertStatus = (status: TableStatus) => {
                         color: '#EA4335',
                     }}
                 >
-                    {convertStatusText(status)}
+                    {ConvertStatusText(status)}
                 </StyledColumn>
             );
         case TableStatus.Paid:
@@ -93,7 +88,7 @@ const convertStatus = (status: TableStatus) => {
                         color: '#00fc43',
                     }}
                 >
-                    {convertStatusText(status)}
+                    {ConvertStatusText(status)}
                 </StyledColumn>
             );
         case TableStatus.Complete:
@@ -106,7 +101,7 @@ const convertStatus = (status: TableStatus) => {
                         color: '#00fc43',
                     }}
                 >
-                    {convertStatusText(status)}
+                    {ConvertStatusText(status)}
                 </StyledColumn>
             );
         case TableStatus.UnPaid:
@@ -119,7 +114,7 @@ const convertStatus = (status: TableStatus) => {
                         color: '#FBBC05',
                     }}
                 >
-                    {convertStatusText(status)}
+                    {ConvertStatusText(status)}
                 </StyledColumn>
             );
         case TableStatus.Processing:
@@ -132,7 +127,7 @@ const convertStatus = (status: TableStatus) => {
                         color: '#056bfb',
                     }}
                 >
-                    {convertStatusText(status)}
+                    {ConvertStatusText(status)}
                 </StyledColumn>
             );
         default:
@@ -151,14 +146,16 @@ const BillList: React.FC = () => {
         total_count,
         dataTable,
         handleGetBillList,
-        refYear,
-        refMonth,
-        refDay,
         refTable,
         onChangeDropdownList,
         loading,
+        setDate,
     } = useBillList();
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({
+        query: '(max-width: 767px)',
+    });
+    const { RangePicker } = DatePicker;
     return (
         <Layout
             style={{
@@ -176,35 +173,20 @@ const BillList: React.FC = () => {
                             display: 'flex',
                             justifyContent: 'space-between',
                             marginTop: 20,
+                            gap: 20,
                         }}
                     >
-                        <div style={{ display: 'flex' }}>
-                            <DropdownList
-                                ref={refYear}
-                                options={getYears()}
-                                placeholder="Year"
-                                onChangeOptions={(item: any) =>
-                                    onChangeDropdownList(item, 'year')
-                                }
-                            />
-                            <DropdownList
-                                options={getMonths()}
-                                placeholder="Month"
-                                ref={refMonth}
-                                onChangeOptions={(item: any) =>
-                                    onChangeDropdownList(item, 'month')
-                                }
-                            />
-                            <DropdownList
-                                ref={refDay}
-                                options={getDays()}
-                                placeholder="Date"
-                                onChangeOptions={(item: any) =>
-                                    onChangeDropdownList(item, 'date')
-                                }
-                            />
-                        </div>
-
+                        <RangePicker
+                            onChange={(value, dateString) => {
+                                const from = `${dateString[0]} 00:00:00`;
+                                const to = `${dateString[1]} 23:59:59`;
+                                setDate({
+                                    from,
+                                    to,
+                                });
+                            }}
+                            style={{ width: isMobile ? 'auto' : 600 }}
+                        />
                         <StyledSearch
                             onClick={handleGetBillList}
                             style={{ background: theme.pRIMARY6Primary }}
@@ -214,11 +196,6 @@ const BillList: React.FC = () => {
                         </StyledSearch>
                     </div>
                     <div style={{ display: 'flex', marginTop: 50 }}>
-                        {/* <DropdownList
-                            options={getFloors()}
-                            placeholder="Floor"
-                        />
-                        <DropdownList options={getArea()} placeholder="Area" /> */}
                         <DropdownList
                             options={dataTable}
                             placeholder="Table"
@@ -234,72 +211,31 @@ const BillList: React.FC = () => {
                 >
                     <div />
                 </ContainerPaginationText>
-                <div>
-                    <StyledColumnContainer
-                        style={{
-                            background: theme.pRIMARY1,
-                            border: `1px solid ${theme.pRIMARY2}`,
-                        }}
-                    >
-                        <StyledColumn
-                            style={{ width: '100%', color: theme.tEXTPrimary }}
-                        >
-                            Order
-                        </StyledColumn>
-                        <StyledColumn
-                            style={{ width: '100%', color: theme.tEXTPrimary }}
-                        >
-                            Status
-                        </StyledColumn>
-                        <StyledColumn
-                            style={{
-                                width: '100%',
-                                justifyContent: 'center',
-                                color: theme.tEXTPrimary,
-                            }}
-                        >
-                            Table
-                        </StyledColumn>
-                        <StyledColumn
-                            style={{ width: '100%', color: theme.tEXTPrimary }}
-                        >
-                            Total
-                        </StyledColumn>
-
-                        <StyledColumn
-                            style={{ width: '100%', color: theme.tEXTPrimary }}
-                        >
-                            Date
-                        </StyledColumn>
-                    </StyledColumnContainer>
-                    {listOrders?.map((dt: any, index: number) => (
+                {isMobile ? (
+                    <ListBillForMobile listOrders={listOrders} />
+                ) : (
+                    <div>
                         <StyledColumnContainer
-                            key={dt.id}
                             style={{
-                                background:
-                                    index % 2 === 0
-                                        ? theme.nEUTRALBase
-                                        : theme.nEUTRALLine,
+                                background: theme.pRIMARY1,
+                                border: `1px solid ${theme.pRIMARY2}`,
                             }}
-                            onClick={() =>
-                                navigation(
-                                    `${BASE_ROUTER.BILL_DETAIL}?orderId=${dt.id}`,
-                                )
-                            }
                         >
-                            <StyledColumn
-                                style={{
-                                    width: '100%',
-                                    color: theme.tEXTPrimary,
-                                }}
-                            >{`# ${dt.order_number}`}</StyledColumn>
                             <StyledColumn
                                 style={{
                                     width: '100%',
                                     color: theme.tEXTPrimary,
                                 }}
                             >
-                                {convertStatus(dt.status)}
+                                Order
+                            </StyledColumn>
+                            <StyledColumn
+                                style={{
+                                    width: '100%',
+                                    color: theme.tEXTPrimary,
+                                }}
+                            >
+                                Status
                             </StyledColumn>
                             <StyledColumn
                                 style={{
@@ -308,17 +244,15 @@ const BillList: React.FC = () => {
                                     color: theme.tEXTPrimary,
                                 }}
                             >
-                                {dt.table}
+                                Table
                             </StyledColumn>
                             <StyledColumn
                                 style={{
-                                    opacity: 1,
-                                    fontWeight: 600,
                                     width: '100%',
                                     color: theme.tEXTPrimary,
                                 }}
                             >
-                                {formatNumberWithCommas(dt.grand_total)}
+                                Total
                             </StyledColumn>
 
                             <StyledColumn
@@ -327,15 +261,73 @@ const BillList: React.FC = () => {
                                     color: theme.tEXTPrimary,
                                 }}
                             >
-                                {dt.created_at}
+                                Date
                             </StyledColumn>
                         </StyledColumnContainer>
-                    ))}
-                </div>
+                        {listOrders?.map((dt: any, index: number) => (
+                            <StyledColumnContainer
+                                key={dt.id}
+                                style={{
+                                    background:
+                                        index % 2 === 0
+                                            ? theme.nEUTRALBase
+                                            : theme.nEUTRALLine,
+                                }}
+                                onClick={() =>
+                                    navigation(
+                                        `${BASE_ROUTER.BILL_DETAIL}?orderId=${dt.id}`,
+                                    )
+                                }
+                            >
+                                <StyledColumn
+                                    style={{
+                                        width: '100%',
+                                        color: theme.tEXTPrimary,
+                                    }}
+                                >{`# ${dt.order_number}`}</StyledColumn>
+                                <StyledColumn
+                                    style={{
+                                        width: '100%',
+                                        color: theme.tEXTPrimary,
+                                    }}
+                                >
+                                    {convertStatus(dt.status)}
+                                </StyledColumn>
+                                <StyledColumn
+                                    style={{
+                                        width: '100%',
+                                        justifyContent: 'center',
+                                        color: theme.tEXTPrimary,
+                                    }}
+                                >
+                                    {dt.table}
+                                </StyledColumn>
+                                <StyledColumn
+                                    style={{
+                                        opacity: 1,
+                                        fontWeight: 600,
+                                        width: '100%',
+                                        color: theme.tEXTPrimary,
+                                    }}
+                                >
+                                    {formatNumberWithCommas(dt.grand_total)}
+                                </StyledColumn>
+
+                                <StyledColumn
+                                    style={{
+                                        width: '100%',
+                                        color: theme.tEXTPrimary,
+                                    }}
+                                >
+                                    {dt.created_at}
+                                </StyledColumn>
+                            </StyledColumnContainer>
+                        ))}
+                    </div>
+                )}
                 <ContainerPaginationText
                     style={{ background: theme.nEUTRALPrimary }}
                 >
-                    <div />
                     <StyledPagination
                         total={total_count}
                         pageSize={pageSize}
@@ -347,8 +339,10 @@ const BillList: React.FC = () => {
                             setPageSize(size);
                         }}
                         showSizeChanger
-                        showTotal={(total) => `Total ${total} items`}
                         theme={theme}
+                        style={{
+                            width: '100%',
+                        }}
                     />
                 </ContainerPaginationText>
             </Content>
