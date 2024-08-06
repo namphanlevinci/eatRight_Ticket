@@ -365,9 +365,10 @@ export default function index() {
                             <Button
                                 style={{
                                     height: 56,
-                                    width: 160,
+                                    width: isMobile ? 'auto' : 160,
                                     display: 'flex',
                                     border: `2px solid ${theme.pRIMARY6Primary}`,
+                                    padding: '0 16px',
                                 }}
                                 onClick={() => navigation(-1)}
                                 background={theme.nEUTRALPrimary}

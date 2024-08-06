@@ -45,7 +45,7 @@ export default function ButtonPrimary({
                     : isDisable
                       ? theme.nEUTRALBase
                       : isCancel
-                        ? theme.textTitle
+                        ? theme.nEUTRALPrimary
                         : theme.pRIMARY6Primary,
                 marginTop: marginTop,
                 borderRadius: 8,

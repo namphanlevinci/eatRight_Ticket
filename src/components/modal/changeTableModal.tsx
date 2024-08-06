@@ -13,6 +13,7 @@ import { Colors } from 'themes/colors';
 import LoadingModal from './loadingModal';
 import { BASE_ROUTER } from 'constants/router';
 import { DarkInput } from 'components/atom/Input';
+import { useTheme } from 'context/themeContext';
 
 export default function ChangeTableModal({
     modalChangeTable,
@@ -40,9 +41,8 @@ export default function ChangeTableModal({
     };
     const showConfirm = () => {
         const oldTable = tables?.find((item: any) => item.id == tableId);
-        const selectTable = tables?.filter(
-            (table: any) =>
-                table?.name?.toLowerCase().includes(searchText.toLowerCase()),
+        const selectTable = tables?.filter((table: any) =>
+            table?.name?.toLowerCase().includes(searchText.toLowerCase()),
         )[indexSelected];
         confirm({
             title: `Confirm`,
@@ -70,6 +70,7 @@ export default function ChangeTableModal({
             centered: true,
         });
     };
+    const { theme } = useTheme();
     return (
         <>
             <LoadingModal showLoading={loading} />
@@ -82,8 +83,8 @@ export default function ChangeTableModal({
                     header: { display: 'none' },
                     footer: { display: 'none' },
                     content: {
-                        background: 'black',
-                        border: `2px solid ${Colors.primary}`,
+                        background: theme.nEUTRALBase,
+                        border: `2px solid ${theme.nEUTRALLine}`,
                     },
                 }}
             >
@@ -98,17 +99,19 @@ export default function ChangeTableModal({
                 </Row>
                 <div style={{ height: 300, overflow: 'scroll' }}>
                     {tables
-                        ?.filter(
-                            (table: any) =>
-                                table?.name
-                                    ?.toLowerCase()
-                                    .includes(searchText.toLowerCase()),
+                        ?.filter((table: any) =>
+                            table?.name
+                                ?.toLowerCase()
+                                .includes(searchText.toLowerCase()),
                         )
                         .map((item: any, index: number) => {
                             return (
                                 <Button
                                     key={index}
                                     onClick={() => setIndex(index)}
+                                    style={{
+                                        background: theme.pRIMARY2,
+                                    }}
                                 >
                                     <Row>
                                         {item.cartIds.length > 0 ? (
