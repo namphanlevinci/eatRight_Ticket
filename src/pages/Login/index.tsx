@@ -22,7 +22,7 @@ export const LoginPage: React.FC = () => {
     return (
         <div
             style={{
-                height: ismobile ? 600 : 650,
+                height: ismobile ? 620 : 650,
                 width: 380,
                 background: theme.nEUTRALBase,
                 borderRadius: 16,
