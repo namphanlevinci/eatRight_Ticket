@@ -10,6 +10,7 @@ import { getTagStyled } from 'utils/tag';
 import { App } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { useTheme } from 'context/themeContext';
+import { useMediaQuery } from 'react-responsive';
 export default function ListOrder({
     cart,
     count,
@@ -50,13 +51,14 @@ export default function ListOrder({
         });
     };
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <ColStyled
             style={{
                 flex: 1,
                 background: theme.nEUTRALBase,
                 border: `1px solid ${theme.nEUTRALLine}`,
-                marginRight: 16,
+                marginRight: isMobile ? 0 : 16,
                 borderRadius: 8,
                 padding: 16,
             }}
@@ -72,40 +74,48 @@ export default function ListOrder({
                             justify={'space-between'}
                             style={{ marginTop: 32 }}
                         >
-                            <Col style={{ flex: 1 }}>
-                                <Row>
-                                    <Col>
-                                        <CustomTag
-                                            {...getTagStyled(
-                                                item.isUnsend
-                                                    ? 'New'
-                                                    : item?.status,
-                                                theme,
-                                            )}
-                                        />
-                                    </Col>
-                                    <Col>
-                                        <Text18 style={{ marginRight: 8 }}>
-                                            {item.quantity}X
-                                        </Text18>
-                                    </Col>
-                                    <Col style={{ flex: 1 }}>
-                                        <Text18>{item.product.name}</Text18>
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Text18>
-                                {formatNumberWithCommas(
-                                    item.prices.price.value,
-                                )}{' '}
-                            </Text18>
+                            <Row
+                                style={{
+                                    flexDirection: isMobile ? 'column' : 'row',
+                                    flex: 1,
+                                }}
+                            >
+                                <Col style={{ flex: 1 }}>
+                                    <Row>
+                                        <Col>
+                                            <CustomTag
+                                                {...getTagStyled(
+                                                    item.isUnsend
+                                                        ? 'New'
+                                                        : item?.status,
+                                                    theme,
+                                                )}
+                                            />
+                                        </Col>
+                                        <Col>
+                                            <Text18 style={{ marginRight: 8 }}>
+                                                {item.quantity}X
+                                            </Text18>
+                                        </Col>
+                                        <Col style={{ flex: 1 }}>
+                                            <Text18>{item.product.name}</Text18>
+                                        </Col>
+                                    </Row>
+                                </Col>
+
+                                <Text18 style={{ textAlign: 'right' }}>
+                                    {formatNumberWithCommas(
+                                        item.prices.price.value,
+                                    )}{' '}
+                                </Text18>
+                            </Row>
                             <Col
                                 style={{
                                     width: 100,
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     display: 'flex',
-                                    marginLeft: 20,
+                                    marginLeft: isMobile ? 0 : 20,
                                 }}
                             >
                                 {!tag && item.status === 'sent' && (
@@ -130,6 +140,7 @@ export default function ListOrder({
                                 )}
                             </Col>
                         </Row>
+
                         {item.bundle_options?.map((bundle) => {
                             return (
                                 <div key={bundle.id}>

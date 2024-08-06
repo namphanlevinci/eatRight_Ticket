@@ -45,7 +45,7 @@ export default function LoginLayout(props: Props) {
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             height: '100%',
-                            padding: ismobile ? 0 : 24,
+                            padding: 24,
                         }}
                     >
                         <Text style={{ textAlign: 'center' }}>
