@@ -200,8 +200,8 @@ export const DarkLayout = (props: Props) => {
             style={{
                 backgroundColor: theme.nEUTRALPrimary,
                 minHeight: '100vh',
-                paddingTop: isLogged ? 64 : 0,
-                paddingBottom: isLogged ? 100 : 0,
+                paddingTop: 64,
+                paddingBottom: 100,
             }}
         >
             <div
