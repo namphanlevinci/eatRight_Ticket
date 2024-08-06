@@ -1,12 +1,12 @@
 import { App, Button, Form, Layout } from 'antd';
 import { Text } from 'components/atom/Text';
-import { Colors } from 'themes/colors';
 import InputPassword from './components/inputPassword';
 import { useMutation } from '@apollo/client';
 import { CHANGE_PASSWORD } from 'graphql/auth/changePassword';
 import LoadingModal from 'components/modal/loadingModal';
 import { useDispatch } from 'react-redux';
 import { updateStatusLogout } from 'features/auth/authSlice';
+import { useTheme } from 'context/themeContext';
 export default function SettingPasswordPage() {
     const [changePassword, { loading }] = useMutation(CHANGE_PASSWORD);
     const { modal } = App.useApp();
@@ -32,6 +32,7 @@ export default function SettingPasswordPage() {
             });
         });
     };
+    const { theme } = useTheme();
     return (
         <Layout
             style={{
@@ -96,16 +97,17 @@ export default function SettingPasswordPage() {
                         style={{
                             width: '100%',
                             marginTop: 60,
-                            background: Colors.primary,
+                            background: theme.pRIMARY6Primary,
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
+                            height: 60,
                         }}
                         size="large"
                     >
                         <Text
                             style={{
-                                color: Colors.black,
+                                color: theme.nEUTRALPrimary,
                                 fontSize: 18,
                                 fontWeight: '600',
                             }}

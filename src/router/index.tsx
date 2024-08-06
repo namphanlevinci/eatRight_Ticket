@@ -181,6 +181,14 @@ export const BaseRouter = () => {
                     }
                 />
                 <Route
+                    path={BASE_ROUTER.SETTINGS_PROFILE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.SettingsProfile />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
                     path={BASE_ROUTER.BILL}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
