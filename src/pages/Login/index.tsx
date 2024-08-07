@@ -6,9 +6,9 @@ import { Text } from 'components/atom/Text';
 import { DarkInput } from 'components/atom/Input';
 import { Link } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
-import InputPassword from 'pages/Settings/components/inputPassword';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
+import InputPassword from 'components/atom/Form/inputPassword';
 
 export const LoginPage: React.FC = () => {
     const { handleLogin, loading } = useLogin();

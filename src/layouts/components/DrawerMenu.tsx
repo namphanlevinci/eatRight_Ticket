@@ -39,16 +39,16 @@ const MenuMerchant = [
         to: BASE_ROUTER.RESTAURENT_MANAGER,
     },
     {
-        title: 'Customers Information',
+        title: 'Customer Information',
         icon: <AccountIcon />,
-        to: BASE_ROUTER.RESTAURENT_MANAGER,
+        to: BASE_ROUTER.CUSTOMER_LIST,
     },
 ];
 const MenuList = [
     {
-        title: 'Customers Information',
+        title: 'Customer Information',
         icon: <CustomerIcon />,
-        to: BASE_ROUTER.BILL,
+        to: BASE_ROUTER.CUSTOMER_LIST,
     },
     {
         title: 'Receipt Bill',

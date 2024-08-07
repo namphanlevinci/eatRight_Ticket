@@ -6,5 +6,14 @@ export const FormItem = styled(Form.Item)`
         color: ${getTextColor} !important;
         font-size: 16px !important;
     }
+    .ant-form-item-required {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        margin-inline-end: 0px;
+    }
+    label.ant-form-item-required::after {
+        margin-inline-end: 0px;
+    }
     margin-bottom: 12px;
 `;

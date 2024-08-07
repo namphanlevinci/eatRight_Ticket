@@ -121,7 +121,7 @@ export default function SettingLayout(props: Props) {
     );
 }
 
-const ArrawLeftIcon = () => {
+export const ArrawLeftIcon = () => {
     return (
         <svg
             width="23"
