@@ -8,12 +8,14 @@ export default function DatePickerForm({
     name,
     rule,
     required = true,
+    disabled,
 }: {
     label: string;
     name: string;
     placeholder: string;
     rule?: Rule[];
     required?: boolean;
+    disabled?: boolean;
 }) {
     const { theme } = useTheme();
     return (
@@ -39,6 +41,7 @@ export default function DatePickerForm({
                         background: theme.nEUTRALBase,
                         border: 0,
                     }}
+                    disabled={disabled}
                 />
             </FormItem>
         </div>

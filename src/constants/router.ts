@@ -25,4 +25,5 @@ export const BASE_ROUTER = {
     CUSTOMERS_INFORMATION: '/customers-information',
     CUSTOMER_NEW: '/customer/new',
     CUSTOMER_LIST: '/customer/list',
+    CUSTOMER_Detail: '/customer/detail',
 };

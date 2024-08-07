@@ -12,6 +12,7 @@ interface PhoneNumberInputProps {
     value?: PhoneNumberValue;
     onChange?: (value: PhoneNumberValue) => void;
     placeholder?: string;
+    disabled?: boolean;
 }
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = (props) => {
@@ -38,7 +39,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = (props) => {
         }
         triggerChange({ phoneNumber: newPhoneNumber });
     };
-
+    console.log;
     return (
         <span id={id}>
             <DarkInput
@@ -48,6 +49,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = (props) => {
                 style={{ width: '100%', height: '56px' }}
                 maxLength={12}
                 placeholder={props.placeholder}
+                disabled={props.disabled}
             />
         </span>
     );

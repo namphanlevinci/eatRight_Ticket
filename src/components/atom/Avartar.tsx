@@ -51,9 +51,9 @@ const AvatarUpdate: React.FC = () => {
     return (
         <div
             style={{
-                height: 100,
-                width: 100,
-                borderRadius: 100,
+                height: 64,
+                width: 64,
+                borderRadius: 64,
                 overflow: 'hidden',
             }}
         >

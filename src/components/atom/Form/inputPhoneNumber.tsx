@@ -8,12 +8,14 @@ export default function InputPhoneNumberForm({
     rule,
     placeholder,
     required = true,
+    disabled = false,
 }: {
     label: string;
     name: string;
     placeholder: string;
     rule?: Rule[];
     required?: boolean;
+    disabled?: boolean;
 }) {
     return (
         <div style={{ position: 'relative' }}>
@@ -31,7 +33,10 @@ export default function InputPhoneNumberForm({
                 }
                 required={required}
             >
-                <PhoneNumberInput placeholder={placeholder} />
+                <PhoneNumberInput
+                    placeholder={placeholder}
+                    disabled={disabled}
+                />
             </FormItem>
         </div>
     );
