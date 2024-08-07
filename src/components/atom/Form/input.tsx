@@ -7,13 +7,14 @@ export default function InputForm({
     placeholder,
     rule,
     required = true,
+    ...props
 }: {
     label: string;
     name: string;
     placeholder: string;
     rule?: Rule[];
     required?: boolean;
-}) {
+} & InputProps) {
     return (
         <div style={{ position: 'relative' }}>
             <FormItem
@@ -31,6 +32,7 @@ export default function InputForm({
                 required={required}
             >
                 <DarkInput
+                    {...props}
                     placeholder={placeholder}
                     style={{ paddingRight: 50 }}
                 />
