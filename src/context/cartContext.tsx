@@ -32,7 +32,6 @@ interface CartContextType {
 
 // Tạo Context cho giỏ hàng
 const CartContext = createContext<CartContextType | undefined>(undefined);
-export const Tax = 0.1;
 // Custom hook để sử dụng CartContext
 export const useCart = (): CartContextType => {
     const context = useContext(CartContext);
@@ -60,8 +59,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const indexTable = cartItems.findIndex(
             (item) => item.tableId == tableId,
         );
+
         if (indexTable == -1) {
             const newCart = item.map((currentCart) => {
+                const Tax =
+                    (currentCart.prices?.applied_taxes?.[0]?.tax_percent ||
+                        10) / 100;
                 const itemsCanceled = currentCart.items.filter((item) => {
                     return item.status === 'cancel';
                 });
@@ -137,6 +140,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
             const itemsCanceled = currentCart.items.filter((item) => {
                 return item.status === 'cancel';
             });
+            const Tax =
+                (currentCart.prices?.applied_taxes?.[0]?.tax_percent || 10) /
+                100;
             if (newCarts) {
                 if (newCarts?.items && newCarts?.items.length > 0) {
                     return {

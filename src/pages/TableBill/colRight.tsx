@@ -29,7 +29,6 @@ export default function ColRight({
     numbersSplit,
     isSplitBill,
     openModalSplitBill,
-    setCart,
     SplitBillButton,
 }: {
     cart?: CartItemType;
@@ -105,35 +104,6 @@ export default function ColRight({
                 }}
                 onSubmit={(values: any) => {
                     handleSetTip(values);
-
-                    if (values < tip) {
-                        setCart({
-                            ...cart,
-                            tip_amount: values,
-                            prices: {
-                                ...cart?.prices,
-                                grand_total: {
-                                    value:
-                                        (cart?.prices?.grand_total?.value ||
-                                            0) -
-                                        (tip - values),
-                                },
-                            },
-                        });
-                    } else {
-                        setCart({
-                            ...cart,
-                            tip_amount: values,
-                            prices: {
-                                ...cart?.prices,
-                                grand_total: {
-                                    value:
-                                        cart?.prices.grand_total.value + values,
-                                },
-                            },
-                        });
-                    }
-
                     setTip(values);
                     setTipPercent(
                         values /

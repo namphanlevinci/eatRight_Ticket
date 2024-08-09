@@ -216,7 +216,38 @@ export const useTableBill = (isGoBack = true) => {
                     fetchPolicy: 'no-cache',
                 })
                     .then((res) => {
-                        updateCartIndex(res.data.merchantCart);
+                        const itemsCanceled =
+                            res.data.merchantCart.items.filter((item: any) => {
+                                return item.status === 'cancel';
+                            });
+                        const Tax =
+                            (res.data.merchantCart.prices?.applied_taxes?.[0]
+                                ?.tax_percent || 10) / 100;
+                        const newCart = {
+                            ...res.data.merchantCart,
+                            prices: {
+                                ...res.data.merchantCart.prices,
+                                total_canceled: {
+                                    value:
+                                        itemsCanceled.reduce(
+                                            (total: any, item: any) => {
+                                                return (
+                                                    total +
+                                                    (item.prices.price.value *
+                                                        item.quantity -
+                                                        (item.prices
+                                                            ?.total_item_discount
+                                                            ?.value || 0) *
+                                                            item.quantity)
+                                                );
+                                            },
+                                            0,
+                                        ) *
+                                        (Tax + 1),
+                                },
+                            },
+                        };
+                        updateCartIndex(newCart);
                     })
                     .catch((error) => {
                         console.error(error);
