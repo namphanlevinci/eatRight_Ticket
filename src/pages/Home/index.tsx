@@ -154,20 +154,19 @@ const HomePage: React.FC = () => {
                 </ContainerTableHeader>
                 <SearchTable onChangeText={(e: string) => setSearchText(e)} />
                 <ContainerTableBody>
-                    {data.map((dt: any) =>
-                        dt ? (
-                            <Table
-                                onClick={() =>
-                                    navigation(
-                                        `${BASE_ROUTER.TABLE}?tableId=${dt?.id}`,
-                                    )
-                                }
-                                item={dt}
-                                key={`table ${dt?.id}`}
-                            />
-                        ) : (
-                            <EmptyTable key={Math.random()} />
-                        ),
+                    {data.map(
+                        (dt: any) =>
+                            dt && (
+                                <Table
+                                    onClick={() =>
+                                        navigation(
+                                            `${BASE_ROUTER.TABLE}?tableId=${dt?.id}`,
+                                        )
+                                    }
+                                    item={dt}
+                                    key={`table ${dt?.id}`}
+                                />
+                            ),
                     )}
                 </ContainerTableBody>
             </ContainerTable>
