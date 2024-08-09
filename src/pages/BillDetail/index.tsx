@@ -70,15 +70,17 @@ export default function index() {
     }, [order_ID]);
     useEffect(() => {
         if (
-            dataSplitBill &&
+            dataSplitBill?.merchantGetOrderInvoices &&
             data?.orderDetail?.payment_method_code === 'splitbill' &&
             data?.orderDetail?.status !== 'complete'
         ) {
-            localStorage.setItem(
-                'split_bill_data',
-                JSON.stringify(dataSplitBill?.merchantGetOrderInvoices),
-            );
-            navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+            if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length > 0) {
+                localStorage.setItem(
+                    'split_bill_data',
+                    JSON.stringify(dataSplitBill?.merchantGetOrderInvoices),
+                );
+                navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+            }
         }
     }, [dataSplitBill]);
     const handleSendBill = (
