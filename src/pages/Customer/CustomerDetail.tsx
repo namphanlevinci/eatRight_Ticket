@@ -62,8 +62,8 @@ export default function CustomerDetail() {
                     />
                     <ButtonSelect
                         title="Orders & Reservations"
-                        isSelected={selected === 'Orders & Reservations'}
-                        onClick={() => setSelected('Orders & Reservations')}
+                        // isSelected={selected === 'Orders & Reservations'}
+                        // onClick={() => setSelected('Orders & Reservations')}
                     />
                 </Col>
                 <Col style={{ flex: 1, paddingLeft: 20 }}>

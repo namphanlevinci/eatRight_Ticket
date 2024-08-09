@@ -18,19 +18,8 @@ import { useNavigate } from 'react-router';
 export default function AddNewCustomer() {
     const { theme } = useTheme();
     const [onCreateCustomer, { loading }] = useMutation(CREATE_CUSTOMER);
+    const navigation = useNavigate();
     const handleSubmit = (values: any) => {
-        console.log(values);
-        console.log({
-            firstname: values.firstname,
-            lastname: values.lastname,
-            email: values.email,
-            calling_code: '+84',
-            gender: values.gender,
-            date_of_birth: dayjs(values.dob).format('YYYY-MM-DD'),
-            phone_number: values.phoneNumber.phoneNumber.replace(/\s/g, ''),
-            status: values.status,
-            group_id: values.group_id,
-        });
         onCreateCustomer({
             variables: {
                 firstname: values.firstname,
@@ -46,6 +35,9 @@ export default function AddNewCustomer() {
         })
             .then((res) => {
                 console.log(res);
+                navigation(
+                    `${BASE_ROUTER.CUSTOMER_Detail}?customerId=${res.data.merchantCreateCustomer.customer.id}`,
+                );
             })
             .catch((err) => {
                 console.log(err);
@@ -62,7 +54,7 @@ export default function AddNewCustomer() {
             {children}
         </Col>
     );
-    const navigation = useNavigate();
+
     const [isCancel, setIsCancel] = React.useState(false);
     return (
         <Layout

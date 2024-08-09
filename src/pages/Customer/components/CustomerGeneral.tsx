@@ -1,3 +1,4 @@
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { Button, Form, Row } from 'antd';
 import DatePickerForm from 'components/atom/Form/date';
 import InputForm from 'components/atom/Form/input';
@@ -6,20 +7,70 @@ import SelectForm from 'components/atom/Form/select';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import dayjs from 'dayjs';
-import React from 'react';
+import {
+    GET_CUSTOMER_DETAIL,
+    UPDATE_CUSTOMER_INFOMATION,
+} from 'graphql/customer';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import { RootState } from 'store';
 
 export default function CustomerGeneral() {
     const { theme } = useTheme();
+    const [form] = Form.useForm();
+    const [onUpdateCustomerInfomation] = useMutation(
+        UPDATE_CUSTOMER_INFOMATION,
+    );
+    const [searchParams] = useSearchParams();
+    const customerId = searchParams.get('customerId');
     const handleSubmit = (values: any) => {
-        console.log(values);
+        onUpdateCustomerInfomation({
+            variables: {
+                id: customerId,
+                email: values.email,
+                gender: values.gender,
+                date_of_birth: values.dob,
+            },
+        })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
     // const [isCancel, setIsCancel] = React.useState(false);
     const [isEdit, setIsEdit] = React.useState(false);
     const { isMerchant } = useSelector((state: RootState) => state.auth);
+    const [onGetCustomerDetail, { data }] = useLazyQuery(GET_CUSTOMER_DETAIL);
+
+    // Get value from params
+
+    useEffect(() => {
+        if (customerId) {
+            onGetCustomerDetail({ variables: { id: customerId } })
+                .then((res) => {
+                    form.setFieldsValue({
+                        phoneNumber: {
+                            phoneNumber:
+                                res.data?.merchantGetCustomer?.phone_number,
+                        },
+                        email: res.data?.merchantGetCustomer?.email,
+                        dob: dayjs(
+                            res.data?.merchantGetCustomer?.date_of_birth,
+                        ),
+                        gender: res.data?.merchantGetCustomer?.gender,
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    }, [customerId]);
     return (
         <Form
+            form={form}
             name="basic"
             initialValues={{
                 phoneNumber: {
@@ -123,7 +174,7 @@ export default function CustomerGeneral() {
                 label="Phone number"
                 name="phoneNumber"
                 placeholder="000 000 000"
-                disabled={!isEdit}
+                disabled
             />
 
             <InputForm
@@ -152,20 +203,21 @@ export default function CustomerGeneral() {
                 options={[
                     {
                         label: 'Male',
-                        value: 'male',
+                        value: 1,
                     },
                     {
                         label: 'Female',
-                        value: 'female',
-                    },
-                    {
-                        label: 'Other',
-                        value: 'other',
+                        value: 2,
                     },
                 ]}
             />
 
-            <Text>Customer since {new Date().toLocaleDateString()}</Text>
+            <Text>
+                Customer since{' '}
+                {new Date(
+                    data?.merchantGetCustomer?.created_at,
+                ).toLocaleDateString()}
+            </Text>
         </Form>
     );
 }
