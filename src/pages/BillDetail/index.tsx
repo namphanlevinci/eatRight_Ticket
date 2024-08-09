@@ -108,8 +108,9 @@ export default function index() {
         } else {
             onSendBillToPhone({
                 variables: {
-                    invoiceNumber: `+84${invoiceNumber}`,
+                    invoiceNumber: `${invoiceNumber}`,
                     phoneNumber: value,
+                    region_code: '+84',
                 },
             })
                 .then(() => {
