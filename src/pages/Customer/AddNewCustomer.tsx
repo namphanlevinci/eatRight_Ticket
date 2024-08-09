@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import { Button, Col, Form, Layout, Row } from 'antd';
 import DatePickerForm from 'components/atom/Form/date';
 import InputForm from 'components/atom/Form/input';
@@ -5,16 +6,50 @@ import InputPhoneNumberForm from 'components/atom/Form/inputPhoneNumber';
 import SelectForm from 'components/atom/Form/select';
 import Header from 'components/atom/Header/header';
 import { Text } from 'components/atom/Text';
+import LoadingModal from 'components/modal/loadingModal';
 import ModalCancelConfirm from 'components/modal/ModalCancelConfirm';
 import { BASE_ROUTER } from 'constants/router';
 import { useTheme } from 'context/themeContext';
+import dayjs from 'dayjs';
+import { CREATE_CUSTOMER } from 'graphql/customer';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
 export default function AddNewCustomer() {
     const { theme } = useTheme();
+    const [onCreateCustomer, { loading }] = useMutation(CREATE_CUSTOMER);
     const handleSubmit = (values: any) => {
         console.log(values);
+        console.log({
+            firstname: values.firstname,
+            lastname: values.lastname,
+            email: values.email,
+            calling_code: '+84',
+            gender: values.gender,
+            date_of_birth: dayjs(values.dob).format('YYYY-MM-DD'),
+            phone_number: values.phoneNumber.phoneNumber.replace(/\s/g, ''),
+            status: values.status,
+            group_id: values.group_id,
+        });
+        onCreateCustomer({
+            variables: {
+                firstname: values.firstname,
+                lastname: values.lastname,
+                email: values.email,
+                calling_code: '+84',
+                gender: values.gender,
+                date_of_birth: dayjs(values.dob).format('YYYY-MM-DD'),
+                phone_number: values.phoneNumber.phoneNumber.replace(/\s/g, ''),
+                status: values.status,
+                group_id: values.group_id,
+            },
+        })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
     const ColContainer = ({ children }: any) => (
         <Col
@@ -40,6 +75,7 @@ export default function AddNewCustomer() {
                 padding: 20,
             }}
         >
+            <LoadingModal showLoading={loading} />
             <ModalCancelConfirm
                 title="Cancel creating new customer?"
                 onCancel={() => setIsCancel(false)}
@@ -88,12 +124,12 @@ export default function AddNewCustomer() {
                     <ColContainer>
                         <SelectForm
                             label="Customer group"
-                            name="customergroup"
+                            name="group_id"
                             placeholder="First Name"
                             options={[
                                 {
                                     label: 'General',
-                                    value: 'general',
+                                    value: 2,
                                 },
                             ]}
                         />
@@ -106,15 +142,15 @@ export default function AddNewCustomer() {
                             options={[
                                 {
                                     label: 'Active',
-                                    value: 'active',
+                                    value: 1,
                                 },
                                 {
                                     label: 'Inactive',
-                                    value: 'inactive',
+                                    value: 0,
                                 },
                                 {
                                     label: 'Black listed',
-                                    value: 'blacklisted',
+                                    value: 2,
                                 },
                             ]}
                         />
@@ -161,15 +197,11 @@ export default function AddNewCustomer() {
                             options={[
                                 {
                                     label: 'Male',
-                                    value: 'male',
+                                    value: 1,
                                 },
                                 {
                                     label: 'Female',
-                                    value: 'female',
-                                },
-                                {
-                                    label: 'Other',
-                                    value: 'other',
+                                    value: 2,
                                 },
                             ]}
                         />
