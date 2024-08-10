@@ -15,6 +15,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { RootState } from 'store';
+import { formatPhoneNumber } from 'utils/number';
 
 export default function CustomerGeneral() {
     const { theme } = useTheme();
@@ -53,8 +54,12 @@ export default function CustomerGeneral() {
                 .then((res) => {
                     form.setFieldsValue({
                         phoneNumber: {
-                            phoneNumber:
-                                res.data?.merchantGetCustomer?.phone_number,
+                            phoneNumber: isMerchant
+                                ? res.data?.merchantGetCustomer?.phone_number
+                                : formatPhoneNumber(
+                                      res.data?.merchantGetCustomer
+                                          ?.phone_number,
+                                  ),
                         },
                         email: res.data?.merchantGetCustomer?.email,
                         dob: dayjs(
@@ -72,14 +77,6 @@ export default function CustomerGeneral() {
         <Form
             form={form}
             name="basic"
-            initialValues={{
-                phoneNumber: {
-                    phoneNumber: '079 799 1707',
-                },
-                email: 'handez1008@gmail.com',
-                dob: dayjs('2021-08-01'),
-                gender: 'Male',
-            }}
             onFinish={handleSubmit}
             // onFinishFailed={onFinishFailed}
             autoComplete="off"

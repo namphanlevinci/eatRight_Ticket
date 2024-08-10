@@ -1,5 +1,36 @@
 import { gql } from '@apollo/client';
 
+export const GET_CUSTOMER_LIST = gql`
+    query (
+        $pageSize: Int!
+        $currentPage: Int!
+        $phone_number: String
+        $name: String
+    ) {
+        merchantGetCustomers(
+            pageSize: $pageSize
+            currentPage: $currentPage
+            filter: { phone_number: $phone_number, name: $name }
+        ) {
+            items {
+                id
+                firstname
+                lastname
+                email
+                phone_number
+                created_at
+                date_of_birth
+                gender
+            }
+            total_count
+            page_info {
+                page_size
+                current_page
+                total_pages
+            }
+        }
+    }
+`;
 export const CREATE_CUSTOMER = gql`
     mutation (
         $firstname: String!
