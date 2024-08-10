@@ -213,6 +213,30 @@ export const BaseRouter = () => {
                     }
                 />
                 <Route
+                    path={BASE_ROUTER.CUSTOMER_NEW}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.NewCustomer />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.CUSTOMER_LIST}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ListCustomer />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.CUSTOMER_Detail}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.CustomerDetail />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
                     path={BASE_ROUTER.RESTAURENT_MANAGER}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>

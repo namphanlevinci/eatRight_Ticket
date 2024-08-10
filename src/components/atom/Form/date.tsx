@@ -1,18 +1,23 @@
 import { FormItem } from 'components/atom/Form/Item';
-import { DarkInput } from 'components/atom/Input';
 import React from 'react';
 import { Rule } from 'antd/es/form';
-export default function Input({
+import { useTheme } from 'context/themeContext';
+import { DatePicker } from 'antd';
+export default function DatePickerForm({
     label,
     name,
-    placeholder,
     rule,
+    required = true,
+    disabled,
 }: {
     label: string;
     name: string;
     placeholder: string;
     rule?: Rule[];
+    required?: boolean;
+    disabled?: boolean;
 }) {
+    const { theme } = useTheme();
     return (
         <div style={{ position: 'relative' }}>
             <FormItem
@@ -23,15 +28,20 @@ export default function Input({
                         ? rule
                         : [
                               {
-                                  required: true,
+                                  required: required,
                               },
                           ]
                 }
-                required={false}
+                required={required}
             >
-                <DarkInput
-                    placeholder={placeholder}
-                    style={{ paddingRight: 50 }}
+                <DatePicker
+                    style={{
+                        width: '100%',
+                        height: 56,
+                        background: theme.nEUTRALBase,
+                        border: 0,
+                    }}
+                    disabled={disabled}
                 />
             </FormItem>
         </div>

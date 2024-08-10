@@ -34,15 +34,15 @@ export const ContainerPaginationText = styled.p`
 export const StyledColumnContainer = styled.div`
     display: flex;
     height: 64px;
-    overflow: visible;
+    overflow: auto;
+    gap: 10px;
 `;
 
 export const StyledColumn = styled.div<StyledColumnProps>`
-    min-width: 200px;
     opacity: ${(props) => props.opacity || 1};
     font-weight: ${(props) => props.fontWeight || '400'};
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     opacity: 0.7;
     font-size: 20px;
@@ -50,6 +50,7 @@ export const StyledColumn = styled.div<StyledColumnProps>`
     text-overflow: ellipsis;
     white-space: nowrap;
     padding-left: 5px;
+    overflow: auto;
 `;
 
 export const PaginationStyled = styled(Pagination)`

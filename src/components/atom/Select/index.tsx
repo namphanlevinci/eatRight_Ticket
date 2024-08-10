@@ -1,10 +1,9 @@
-import { Input, InputProps } from 'antd';
+import { SelectProps, Select } from 'antd';
 import { useTheme } from 'context/themeContext';
 import styled from 'styled-components';
 const getTextColor = (props: { theme: any }) => props.theme.fieldTextIcon;
-const getBackgroundColor = (props: { theme: any }) =>
-    props.theme.fieldBackground;
-export const DarkInputDefault = styled(Input)`
+const getBackgroundColor = (props: { theme: any }) => props.theme.nEUTRALBase;
+export const SelectStyled = styled(Select)`
     &::placeholder {
         color: #808080;
         opacity: 1;
@@ -14,13 +13,18 @@ export const DarkInputDefault = styled(Input)`
     border: 0px;
     height: 56px;
     color: ${getTextColor};
+    .ant-select-selector {
+        background: ${getBackgroundColor} !important;
+        border: 0px !important;
+    }
 `;
-export const DarkInput = (props: InputProps) => {
+
+export const SelectCustom = (props: SelectProps) => {
     const { theme } = useTheme();
 
     return (
-        <DarkInputDefault theme={theme} {...props}>
+        <SelectStyled theme={theme} {...props}>
             {props.children}
-        </DarkInputDefault>
+        </SelectStyled>
     );
 };

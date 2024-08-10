@@ -9,7 +9,7 @@ import { BASE_ROUTER } from 'constants/router';
 import { useMutation } from '@apollo/client';
 import { FORGOT_PASSWORD } from 'graphql/auth/forgotpassword';
 import LoadingModal from 'components/modal/loadingModal';
-import InputPassword from 'pages/Settings/components/inputPassword';
+import InputPassword from 'components/atom/Form/inputPassword';
 export const ForgotPasswordPage: React.FC = () => {
     const [onForgotPassword, { loading }] = useMutation(FORGOT_PASSWORD);
     const [sendSuccess, setSendSuccess] = React.useState(false);

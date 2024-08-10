@@ -23,4 +23,7 @@ export const BASE_ROUTER = {
     MENU_MANAGER: '/menu-manager',
     PROMOTIONS: '/promotions',
     CUSTOMERS_INFORMATION: '/customers-information',
+    CUSTOMER_NEW: '/customer/new',
+    CUSTOMER_LIST: '/customer/list',
+    CUSTOMER_Detail: '/customer/detail',
 };

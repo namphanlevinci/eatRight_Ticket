@@ -1,12 +1,12 @@
 import { App, Button, Form, Layout } from 'antd';
 import { Text } from 'components/atom/Text';
-import InputPassword from './components/inputPassword';
 import { useMutation } from '@apollo/client';
 import { CHANGE_PASSWORD } from 'graphql/auth/changePassword';
 import LoadingModal from 'components/modal/loadingModal';
 import { useDispatch } from 'react-redux';
 import { updateStatusLogout } from 'features/auth/authSlice';
 import { useTheme } from 'context/themeContext';
+import InputPassword from 'components/atom/Form/inputPassword';
 export default function SettingPasswordPage() {
     const [changePassword, { loading }] = useMutation(CHANGE_PASSWORD);
     const { modal } = App.useApp();
