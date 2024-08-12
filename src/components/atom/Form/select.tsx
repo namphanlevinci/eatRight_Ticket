@@ -44,6 +44,7 @@ export default function SelectForm({
                         borderRadius: 8,
                         height: 56,
                     }}
+                    theme={theme}
                     options={options}
                     suffixIcon={
                         <svg
