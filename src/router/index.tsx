@@ -35,6 +35,7 @@ export const BaseRouter = () => {
     useEffect(() => {
         const token = urlParams.get('token');
         const from = urlParams.get('from');
+        const tableId = urlParams.get('tableId');
         if (token) {
             localStorage.setItem('token', token);
             if (from === 'merchant') {
@@ -44,7 +45,11 @@ export const BaseRouter = () => {
             }
 
             const { pathname } = location;
-            navigate(pathname);
+            if (tableId) {
+                navigate(`${pathname}?tableId=${tableId}`);
+            } else {
+                navigate(pathname);
+            }
         }
     }, []);
 
