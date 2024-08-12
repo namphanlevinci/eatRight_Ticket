@@ -12,7 +12,6 @@ import {
     StyledFloorLine,
     CountAvaiable,
 } from './styled';
-import EmptyTable from './components/EmptyTable';
 import Table from './components/Table';
 import { BASE_ROUTER } from 'constants/router';
 import BreadCrum from 'components/atom/BreadCrum/BreadCrum';
