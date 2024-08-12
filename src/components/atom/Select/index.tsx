@@ -1,4 +1,4 @@
-import { SelectProps, Select } from 'antd';
+import { Select } from 'antd';
 import styled from 'styled-components';
 const getTextColor = (props: { theme: any }) => props.theme.fieldTextIcon;
 const getBackgroundColor = (props: { theme: any }) => props.theme.nEUTRALBase;
@@ -18,6 +18,6 @@ export const SelectStyled = styled(Select)`
     }
 `;
 
-export const SelectCustom = (props: SelectProps & { theme: any }) => {
+export const SelectCustom = (props: any) => {
     return <SelectStyled {...props}>{props.children}</SelectStyled>;
 };
