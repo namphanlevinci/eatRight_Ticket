@@ -12,6 +12,7 @@ import SearchTable from 'pages/Home/components/Search';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useTheme } from 'context/themeContext';
+import { useMediaQuery } from 'react-responsive';
 
 export default function Menu() {
     const {
@@ -25,6 +26,9 @@ export default function Menu() {
     const { addToCart } = useCart();
     const { notification } = App.useApp();
     const [search, setSearch] = useState();
+    const isMobile = useMediaQuery({
+        query: '(max-width: 767px)',
+    });
     function searchProductByName(productName: string, products: any) {
         var foundProducts: any = [];
         products?.forEach(function (category: any) {
@@ -85,7 +89,7 @@ export default function Menu() {
                 </StyledSearch>
             </Row>
             {breadCrumbs.length < 2 || !product ? (
-                <Row>
+                <Row style={{ marginTop: 16 }}>
                     <RenderCategoryColumn
                         data={data}
                         categoryIndex={categoryIndex}
@@ -101,10 +105,15 @@ export default function Menu() {
                                                   xs={{ span: 24 }}
                                                   md={{ span: 8 }}
                                                   key={index}
-                                                  style={{
-                                                      display: 'flex',
-                                                      justifyContent: 'end',
-                                                  }}
+                                                  style={
+                                                      isMobile
+                                                          ? {
+                                                                display: 'flex',
+                                                                justifyContent:
+                                                                    'end',
+                                                            }
+                                                          : {}
+                                                  }
                                               >
                                                   <div
                                                       onClick={() =>
@@ -146,10 +155,15 @@ export default function Menu() {
                                                   xs={{ span: 24 }}
                                                   md={{ span: 8 }}
                                                   key={index}
-                                                  style={{
-                                                      display: 'flex',
-                                                      justifyContent: 'end',
-                                                  }}
+                                                  style={
+                                                      isMobile
+                                                          ? {
+                                                                display: 'flex',
+                                                                justifyContent:
+                                                                    'end',
+                                                            }
+                                                          : {}
+                                                  }
                                               >
                                                   <div
                                                       onClick={() =>
