@@ -6,7 +6,7 @@ import { getInitialCartState } from 'context/cartContext';
 
 import LoadingModal from 'components/modal/loadingModal';
 import { useCartTable } from './useGetCart';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ChangeTableModal from 'components/modal/changeTableModal';
 
 export default function OrderCart({ table }: { table: any }) {
@@ -22,7 +22,13 @@ export default function OrderCart({ table }: { table: any }) {
         tableId,
     } = useCartTable();
     const [modalChangeTable, setModalChangeTableOpen] = useState(false);
-
+    useEffect(() => {
+        if (listCart.length === 0) {
+            setSelectedCart(listCart.length);
+            setListCart([...listCart, `${listCart.length + 1}`]);
+            addCart(getInitialCartState(`${listCart.length + 1}`));
+        }
+    }, [listCart]);
     return (
         <div style={{ marginBottom: 20 }}>
             <LoadingModal showLoading={loading} />
