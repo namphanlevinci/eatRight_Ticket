@@ -74,9 +74,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 // Xử lý tin nhắn từ socket
                 if (msg?.item_type === 'QUOTE') {
                     notification.success({
-                        message: `Table ${tableData.find(
-                            (item: any) => item?.id == msg?.quote?.table_id,
-                        )?.name}`,
+                        message: `Table ${
+                            tableData.find(
+                                (item: any) => item?.id == msg?.quote?.table_id,
+                            )?.name
+                        }`,
                         description: msg?.message,
                         onClick: () => {
                             if (msg?.quote?.table_id) {

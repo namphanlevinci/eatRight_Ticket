@@ -22,8 +22,10 @@ export const useCartTable = (isRefreshParams = true) => {
     const [removeItem, { loading: removeLoading }] =
         useMutation(REMOVE_ITEM_ON_CART);
     const tableId = parseInt(searchParams.get('tableId') || '0');
-    const [onGetCart, { loading }] = useLazyQuery(GET_CART_BY_ID);
-    const [onGetCartByTable] = useLazyQuery(GET_CARTS_BY_TABLE);
+    const [loading, setLoading] = useState(true);
+    const [onGetCart] = useLazyQuery(GET_CART_BY_ID);
+    const [onGetCartByTable, { loading: getCartByTableLoading }] =
+        useLazyQuery(GET_CARTS_BY_TABLE);
     const [updateStatusItem, { loading: updateLoading }] =
         useMutation(UPDATE_STATUS_ITEM);
     useEffect(() => {
@@ -49,12 +51,14 @@ export const useCartTable = (isRefreshParams = true) => {
 
     const getCartsTable = async () => {
         if (tableId) {
+            setLoading(true);
             const listCartId = await onGetCartByTable({
                 variables: {
                     tableId,
                 },
                 fetchPolicy: 'no-cache',
             });
+
             if (listCartId?.data?.getCartIdsByTable.length > 0) {
                 const list = listCartId?.data?.getCartIdsByTable;
                 const promises = list.map((item: any) => {
@@ -69,6 +73,7 @@ export const useCartTable = (isRefreshParams = true) => {
                     .then((carts) => {
                         // Lọc bỏ các cart trả về kết quả là null
                         handleDataGetCart(carts);
+                        setLoading(false);
                     })
                     .catch((error) => {
                         // Xử lý lỗi nếu có
@@ -85,6 +90,7 @@ export const useCartTable = (isRefreshParams = true) => {
                         }
                     });
                 }
+                setLoading(false);
             }
         }
     };
@@ -190,7 +196,7 @@ export const useCartTable = (isRefreshParams = true) => {
     };
     return {
         loading:
-            (listCart.length < 1 && loading) || removeLoading || updateLoading,
+            loading || removeLoading || updateLoading || getCartByTableLoading,
         listCart,
         setSelectedCart,
         setListCart,

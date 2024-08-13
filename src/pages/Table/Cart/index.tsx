@@ -23,12 +23,20 @@ export default function OrderCart({ table }: { table: any }) {
     } = useCartTable();
     const [modalChangeTable, setModalChangeTableOpen] = useState(false);
     useEffect(() => {
-        if (listCart.length === 0) {
-            setSelectedCart(listCart.length);
-            setListCart([...listCart, `${listCart.length + 1}`]);
-            addCart(getInitialCartState(`${listCart.length + 1}`));
+        if (!loading && listCart.length === 0) {
+            const timeoutId = setTimeout(() => {
+                if (!loading && listCart.length === 0) {
+                    // Thực hiện các thao tác cần thiết
+                    setSelectedCart(listCart.length);
+                    setListCart([...listCart, `${listCart.length + 1}`]);
+                    addCart(getInitialCartState(`${listCart.length + 1}`));
+                }
+            }, 300); // 1000ms = 1s
+
+            // Dọn dẹp timeout nếu component bị unmount hoặc effect được gọi lại
+            return () => clearTimeout(timeoutId);
         }
-    }, [listCart]);
+    }, [listCart, loading]);
     return (
         <div style={{ marginBottom: 20 }}>
             <LoadingModal showLoading={loading} />
