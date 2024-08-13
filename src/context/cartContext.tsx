@@ -55,50 +55,57 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         setIndexTable(getIndexTable);
     }, [tableId, cartItems]);
     const addCart = (item: CartItemType[]) => {
-        const newCartItems = [...cartItems];
-        const indexTable = cartItems.findIndex(
-            (item) => item.tableId == tableId,
-        );
+        setCartItems((prevCartItems) => {
+            const newCartItems = [...prevCartItems];
+            const tableId = searchParams.get('tableId') || '0';
+            const indexTable = prevCartItems.findIndex(
+                (item) => item.tableId == tableId,
+            );
 
-        if (indexTable == -1) {
-            const newCart = item.map((currentCart) => {
-                const Tax =
-                    (currentCart.prices?.applied_taxes?.[0]?.tax_percent ||
-                        10) / 100;
-                const itemsCanceled = currentCart.items.filter((item) => {
-                    return item.status === 'cancel';
-                });
-                return {
-                    ...currentCart,
-                    prices: {
-                        ...currentCart.prices,
-                        total_canceled: {
-                            value:
-                                itemsCanceled.reduce((total, item) => {
-                                    return (
-                                        total +
-                                        (item.prices.price.value *
-                                            item.quantity -
-                                            (item.prices?.total_item_discount
-                                                ?.value || 0) *
-                                                item.quantity)
-                                    );
-                                }, 0) *
-                                (Tax + 1),
+            if (indexTable == -1) {
+                const newCart = item.map((currentCart) => {
+                    const Tax =
+                        (currentCart.prices?.applied_taxes?.[0]?.tax_percent ||
+                            10) / 100;
+                    const itemsCanceled = currentCart.items.filter((item) => {
+                        return item.status === 'cancel';
+                    });
+                    return {
+                        ...currentCart,
+                        prices: {
+                            ...currentCart.prices,
+                            total_canceled: {
+                                value:
+                                    itemsCanceled.reduce((total, item) => {
+                                        return (
+                                            total +
+                                            (item.prices.price.value *
+                                                item.quantity -
+                                                (item.prices
+                                                    ?.total_item_discount
+                                                    ?.value || 0) *
+                                                    item.quantity)
+                                        );
+                                    }, 0) *
+                                    (Tax + 1),
+                            },
                         },
-                    },
-                };
-            });
+                    };
+                });
 
-            newCartItems.push({
-                tableId: tableId,
-                carts: newCart,
-            });
-        } else {
-            updateCart(item, indexTable);
-        }
-        setCartItems(newCartItems);
+                newCartItems.push({
+                    tableId: tableId,
+                    carts: newCart,
+                });
+            } else {
+                console.log('run update cart');
+                updateCart(item, indexTable);
+            }
+
+            return newCartItems;
+        });
     };
+
     const updateCartIndex = (cart: CartItemType) => {
         const getIndexTable = cartItems.findIndex(
             (item) => item.tableId == tableId,
@@ -129,92 +136,107 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
     const updateCart = (cartItemNew: CartItemType[], indexTable: number) => {
-        const currentCartItems = [...cartItems];
-        const result = currentCartItems[indexTable].carts.map((currentCart) => {
-            const itemsIsUnSend = currentCart.items.filter((item) => {
-                return item.isUnsend;
-            });
-            const newCarts = cartItemNew.find((itemNew) => {
-                return itemNew.id === currentCart.id;
-            });
-            const itemsCanceled = currentCart.items.filter((item) => {
-                return item.status === 'cancel';
-            });
-            const Tax =
-                (currentCart.prices?.applied_taxes?.[0]?.tax_percent || 10) /
-                100;
-            if (newCarts) {
-                if (newCarts?.items && newCarts?.items.length > 0) {
+        setCartItems((prevCartItems) => {
+            const currentCartItems = [...prevCartItems];
+            const result = currentCartItems[indexTable].carts.map(
+                (currentCart) => {
+                    const itemsIsUnSend = currentCart.items.filter((item) => {
+                        return item.isUnsend;
+                    });
+                    const newCarts = cartItemNew.find((itemNew) => {
+                        return itemNew.id === currentCart.id;
+                    });
+                    const itemsCanceled = currentCart.items.filter((item) => {
+                        return item.status === 'cancel';
+                    });
+                    const Tax =
+                        (currentCart.prices?.applied_taxes?.[0]?.tax_percent ||
+                            10) / 100;
+                    if (newCarts) {
+                        if (newCarts?.items && newCarts?.items.length > 0) {
+                            return {
+                                ...newCarts,
+                                items: [...newCarts.items, ...itemsIsUnSend],
+                                prices: {
+                                    ...newCarts.prices,
+                                    grand_total: {
+                                        value:
+                                            newCarts.prices.grand_total.value +
+                                            itemsIsUnSend.reduce(
+                                                (total, item) => {
+                                                    return (
+                                                        total +
+                                                        item.prices.price
+                                                            .value *
+                                                            item.quantity
+                                                    );
+                                                },
+                                                0,
+                                            ),
+                                    },
+                                    total_canceled: {
+                                        value:
+                                            itemsCanceled.reduce(
+                                                (total, item) => {
+                                                    return (
+                                                        total +
+                                                        (item.prices.price
+                                                            .value *
+                                                            item.quantity -
+                                                            (item.prices
+                                                                ?.total_item_discount
+                                                                ?.value || 0) *
+                                                                item.quantity)
+                                                    );
+                                                },
+                                                0,
+                                            ) *
+                                            (Tax + 1),
+                                    },
+                                },
+                            };
+                        }
+                        return {
+                            ...newCarts,
+                            prices: {
+                                ...newCarts.prices,
+                                total_canceled: {
+                                    value:
+                                        itemsCanceled.reduce((total, item) => {
+                                            return (
+                                                total +
+                                                (item.prices.price.value *
+                                                    item.quantity -
+                                                    (item.prices
+                                                        ?.total_item_discount
+                                                        ?.value || 0) *
+                                                        item.quantity)
+                                            );
+                                        }, 0) *
+                                        (Tax + 1),
+                                },
+                            },
+                        };
+                    }
+
                     return {
-                        ...newCarts,
-                        items: [...newCarts.items, ...itemsIsUnSend],
-                        prices: {
-                            ...newCarts.prices,
-                            grand_total: {
-                                value:
-                                    newCarts.prices.grand_total.value +
-                                    itemsIsUnSend.reduce((total, item) => {
-                                        return (
-                                            total +
-                                            item.prices.price.value *
-                                                item.quantity
-                                        );
-                                    }, 0),
-                            },
-                            total_canceled: {
-                                value:
-                                    itemsCanceled.reduce((total, item) => {
-                                        return (
-                                            total +
-                                            (item.prices.price.value *
-                                                item.quantity -
-                                                (item.prices
-                                                    ?.total_item_discount
-                                                    ?.value || 0) *
-                                                    item.quantity)
-                                        );
-                                    }, 0) *
-                                    (Tax + 1),
-                            },
-                        },
+                        ...currentCart,
                     };
+                },
+            );
+
+            // Kiểm tra xem cart này đã có tồn tại hay chưa , nếu chưa thì thêm mới
+            cartItemNew.forEach((newItem) => {
+                if (!result.find((item) => item.id === newItem.id)) {
+                    result.push(newItem);
                 }
-                return {
-                    ...newCarts,
-                    prices: {
-                        ...newCarts.prices,
-                        total_canceled: {
-                            value:
-                                itemsCanceled.reduce((total, item) => {
-                                    return (
-                                        total +
-                                        (item.prices.price.value *
-                                            item.quantity -
-                                            (item.prices?.total_item_discount
-                                                ?.value || 0) *
-                                                item.quantity)
-                                    );
-                                }, 0) *
-                                (Tax + 1),
-                        },
-                    },
-                };
-            }
+            });
 
-            return {
-                ...currentCart,
-            };
+            currentCartItems[indexTable].carts = result;
+            return currentCartItems;
         });
-        // Kiểm tra xem cart này đã có tồn tại hay chưa , nếu chưa thì thêm mới
-        cartItemNew.forEach((newItem) => {
-            if (!result.find((item) => item.id === newItem.id)) {
-                result.push(newItem);
-            }
-        });
-
-        currentCartItems[indexTable].carts = result;
-        setCartItems(currentCartItems);
     };
+
     const addToCart = (item: ItemType) => {
         const index = parseInt(searchParams.get('cartIndex') || '0');
         let newCartItems;
