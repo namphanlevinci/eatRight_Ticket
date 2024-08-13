@@ -1,5 +1,5 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import { Col, Row } from 'antd';
+import { Col } from 'antd';
 import { TextDark } from 'components/atom/Text';
 import Barcode from 'react-barcode';
 
@@ -81,7 +81,9 @@ export const RenderBill = ({
                     <TextDark>{data?.order_source}</TextDark>
                     <TextDark>
                         <BoldText>Bill: </BoldText>
-                        {data?.order_number}
+                        {selectDataShowbill
+                            ? selectDataShowbill?.number
+                            : data?.order_number}
                     </TextDark>
                 </RowStyled>
                 <RowStyled>
@@ -136,33 +138,6 @@ export const RenderBill = ({
                         - {CURRENTCY} {totalDiscount.toFixed(2)}
                     </TextDark>
                 </RowStyled>
-                {selectDataShowbill
-                    ? selectDataShowbill.total?.discounts.map(
-                          (discount: any, index: number) => {
-                              return (
-                                  <Row
-                                      justify={'end'}
-                                      key={`Discount-${index}`}
-                                  >
-                                      <TextDark style={{ fontSize: 14 }}>
-                                          {discount?.label} -{' '}
-                                          {discount?.amount?.value.toFixed(2)}
-                                      </TextDark>
-                                  </Row>
-                              );
-                          },
-                      )
-                    : data?.discount?.length > 0 &&
-                      data?.discount?.map((discount: any, index: number) => {
-                          return (
-                              <Row justify={'end'} key={`Discount-${index}`}>
-                                  <TextDark style={{ fontSize: 14 }}>
-                                      {discount?.label} -{' '}
-                                      {discount?.amount?.value.toFixed(2)}
-                                  </TextDark>
-                              </Row>
-                          );
-                      })}
                 {data?.total?.total_tax?.value && (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>Tax</TextDark>
