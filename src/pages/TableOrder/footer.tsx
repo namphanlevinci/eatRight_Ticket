@@ -1,6 +1,6 @@
 import { Col, Divider, Row } from 'antd';
 import { Text } from 'components/atom/Text';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Colors } from 'themes/colors';
 import { CartItemType } from 'context/cartType';
 import { formatNumberWithCommas } from 'utils/format';
@@ -12,10 +12,10 @@ import ButtonSubmit from 'pages/TableBill/components/buttonSubmit';
 import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
 import { useTheme } from 'context/themeContext';
+import { roundTo } from 'utils/number';
 
 export default function OrderFooter({
     cart,
-    total,
     loading,
     contextHolder,
 }: {
@@ -35,6 +35,33 @@ export default function OrderFooter({
         navigation(`${BASE_ROUTER.TABLE_BILL}${window.location.search}`);
     };
     const { theme } = useTheme();
+    const totalMoney = useMemo(
+        () =>
+            (cart?.prices?.subtotal_excluding_tax?.value || 0) -
+            (cart?.prices?.total_canceled_without_tax?.value || 0),
+        [cart],
+    );
+
+    const Tax = useMemo(
+        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100,
+        [cart],
+    );
+
+    const totalDiscount = useMemo(
+        () =>
+            roundTo(
+                (cart?.prices?.discount?.amount?.value || 0) +
+                    (cart?.prices?.total_items_canceled_discount?.value || 0),
+                2,
+            ),
+        [cart],
+    );
+
+    const grandTotal = useMemo(
+        () =>
+            (totalMoney + totalDiscount) * (Tax + 1) + (cart?.tip_amount || 0),
+        [totalMoney, totalDiscount, Tax, cart],
+    );
     return (
         <Row style={{ marginTop: 20 }}>
             {contextHolder}
@@ -68,19 +95,14 @@ export default function OrderFooter({
                     <Text style={{ fontSize: 20 }}>Billing Information</Text>
                     <RenderBillInfomationRow
                         title="Total"
-                        value={`$ ${formatNumberWithCommas(total)}`}
+                        value={`$ ${formatNumberWithCommas(totalMoney)}`}
                     />
                     {cart?.prices?.discounts &&
                         cart?.prices?.discounts[0]?.amount.value && (
                             <RenderBillInfomationRow
                                 title="Discounted"
-                                value={`-$ ${formatNumberWithCommas(
-                                    parseInt(
-                                        `${cart?.prices.discounts[0]?.amount?.value}`,
-                                    ) -
-                                        parseInt(
-                                            `${cart?.prices.total_items_canceled_discount?.value}`,
-                                        ),
+                                value={`$ ${formatNumberWithCommas(
+                                    totalDiscount,
                                 )} `}
                             />
                         )}
@@ -89,9 +111,7 @@ export default function OrderFooter({
                         <RenderBillInfomationRow
                             title="Tax"
                             value={`$ ${formatNumberWithCommas(
-                                parseFloat(
-                                    `${cart?.prices?.applied_taxes[0]?.amount.value}`,
-                                ),
+                                (totalMoney + totalDiscount) * Tax,
                             )}`}
                         />
                     ) : (
@@ -105,16 +125,6 @@ export default function OrderFooter({
                     ) : (
                         <></>
                     )}
-                    {cart?.prices?.total_canceled?.value ? (
-                        <RenderBillInfomationRow
-                            title="Canceled Item"
-                            value={`-
-                                   $ ${cart?.prices?.total_canceled?.value?.toFixed(2)}
-                            `}
-                        />
-                    ) : (
-                        <></>
-                    )}
 
                     {/* <RenderBillInfomationRow title="Taxes" value="$10.99" />
                 <RenderBillInfomationRow title="Service fee" value="$5.99" /> */}
@@ -122,10 +132,7 @@ export default function OrderFooter({
 
                     <RenderBillInfomationRow
                         title="To be paid"
-                        value={`$ ${formatNumberWithCommas(
-                            (cart?.prices.grand_total.value || 0) -
-                                (cart?.prices?.total_canceled?.value || 0),
-                        )} `}
+                        value={`$ ${formatNumberWithCommas(grandTotal)} `}
                         textRightStyle={{
                             fontSize: 24,
                             fontWeight: '600',

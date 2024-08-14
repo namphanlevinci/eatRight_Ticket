@@ -127,7 +127,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems];
         newCartItems[getIndexTable].carts[cartIndex] = cart;
-        setCartItems(newCartItems);
+        updateCart(newCartItems[getIndexTable].carts, getIndexTable);
     };
     const removeCartIndex = (index?: number) => {
         const getIndexTable = cartItems.findIndex(
