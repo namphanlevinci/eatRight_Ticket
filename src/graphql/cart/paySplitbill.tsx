@@ -1,5 +1,16 @@
 import { gql } from '@apollo/client';
 
+export const PAY_SPLIT_BILL_POS = gql`
+    mutation ($invoice_number: String!, $terminal_id: String!) {
+        arisePosSaleInvoiceForMarchant(
+            input: {
+                terminal_id: $terminal_id
+                invoice_number: $invoice_number
+            }
+        )
+    }
+`;
+
 export const PAY_SPLITBILL = gql`
     mutation ($invoice_number: String!, $payment_method: String!) {
         merchantPayInvoice(

@@ -9,23 +9,28 @@ export const GET_APPOTA_URL = gql`
 `;
 
 export const POS_PAYMENT = gql`
-    mutation ($orderId: String!, $posId: Int!) {
-        posSaleForMarchant(input: { order_number: $orderId, pos_id: $posId })
+    mutation ($orderId: String!, $posId: String!) {
+        arisePosSaleOrderForMarchant(
+            input: { terminal_id: $posId, order_number: $orderId }
+        )
     }
 `;
 
 export const POS_DEVICE_LIST = gql`
-    query {
-        getPosDevices(currentPage: 1, pageSize: 20) {
+    {
+        merchantGetTerminalList {
             items {
-                entity_id
-                name
-                status
-            }
-            page_info {
-                current_page
-                page_size
-                total_pages
+                id
+                serialNumber
+                terminalManufacturer
+                terminalModel
+                deliveryStatusId
+                deliveryStatusName
+                merchantCompanyName
+                terminalModeId
+                terminalModeName
+                createdOn
+                modifiedOn
             }
         }
     }

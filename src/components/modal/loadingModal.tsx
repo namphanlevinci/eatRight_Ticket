@@ -34,5 +34,6 @@ export default function LoadingModal({
 const CustomModal = styled(Modal)`
     .ant-modal-content {
         background: transparent;
+        box-shadow: none !important;
     }
 `;

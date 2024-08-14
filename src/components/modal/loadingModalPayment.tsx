@@ -1,4 +1,4 @@
-import { Modal, Spin, Button } from 'antd';
+import { Modal, Spin } from 'antd';
 import { Text } from 'components/atom/Text';
 import React from 'react';
 import styled from 'styled-components';
@@ -30,8 +30,6 @@ export default function LoadingModalPayment({
             >
                 <Spin />
                 <Text style={{ color: 'white' }}>{title}</Text>
-
-                <Button> Cancel </Button>
             </div>
         </CustomModal>
     ) : (
@@ -42,5 +40,6 @@ export default function LoadingModalPayment({
 const CustomModal = styled(Modal)`
     .ant-modal-content {
         background: transparent;
+        box-shadow: none !important;
     }
 `;

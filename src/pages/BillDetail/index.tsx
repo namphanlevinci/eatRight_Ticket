@@ -72,15 +72,20 @@ export default function index() {
     useEffect(() => {
         if (
             dataSplitBill?.merchantGetOrderInvoices &&
-            data?.orderDetail?.payment_method_code === 'splitbill' &&
-            data?.orderDetail?.status !== 'complete'
+            data?.orderDetail?.payment_method_code === 'splitbill'
         ) {
             if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length > 0) {
-                localStorage.setItem(
-                    'split_bill_data',
-                    JSON.stringify(dataSplitBill?.merchantGetOrderInvoices),
-                );
-                navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+                const isNotPaid =
+                    dataSplitBill?.merchantGetOrderInvoices?.invoice?.find(
+                        (item: any) => item.state !== 'PAID',
+                    );
+                if (isNotPaid) {
+                    localStorage.setItem(
+                        'split_bill_data',
+                        JSON.stringify(dataSplitBill?.merchantGetOrderInvoices),
+                    );
+                    navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+                }
             }
         }
     }, [dataSplitBill]);
@@ -113,7 +118,7 @@ export default function index() {
                 variables: {
                     invoiceNumber: `${invoiceNumber}`,
                     phoneNumber: value,
-                    region_code: '+84',
+                    region_code: '+1',
                 },
             })
                 .then(() => {
@@ -324,7 +329,7 @@ export default function index() {
                 <ModalPosDevices
                     isVisibleModalPos={isVisibleModalPos}
                     setVisibleMoalPos={setVisibleMoalPos}
-                    onPressOK={(pos_id: number) => {
+                    onPressOK={(pos_id: string) => {
                         handlePOSPayment(pos_id, {
                             order_number: data?.orderDetail?.order_number,
                             order_id: orderId ? orderId : btoa(order_ID || ''),

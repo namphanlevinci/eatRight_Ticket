@@ -121,7 +121,7 @@ export default function ColRight({
             <ModalPosDevices
                 isVisibleModalPos={isVisibleModalPos}
                 setVisibleMoalPos={setVisibleMoalPos}
-                onPressOK={(pos_id: number) => {
+                onPressOK={(pos_id: string) => {
                     handlePOSPayment(pos_id);
                 }}
             />
@@ -190,7 +190,8 @@ export default function ColRight({
                                     align={'middle'}
                                     style={{ cursor: 'pointer' }}
                                 >
-                                    <Text>$ {tip}</Text> <ArrowRightIcon />
+                                    <Text>$ {tip?.toFixed(2)}</Text>{' '}
+                                    <ArrowRightIcon />
                                 </Row>
                             ) : (
                                 'ADD TIP'
@@ -216,7 +217,7 @@ export default function ColRight({
                 cart?.prices?.applied_taxes[0]?.amount ? (
                     <RenderBillInfomationRow
                         title="Tax"
-                        value={`$ ${cart?.prices?.applied_taxes[0]?.amount?.value || 0} `}
+                        value={`$ ${formatNumberWithCommas(parseFloat(`${cart?.prices?.applied_taxes[0]?.amount?.value}`) || 0)} `}
                     />
                 ) : (
                     <></>

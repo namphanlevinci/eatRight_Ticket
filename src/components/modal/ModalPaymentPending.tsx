@@ -1,6 +1,7 @@
 import { Modal, Row } from 'antd';
 import { Button } from 'components/atom/Button';
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 import styled from 'styled-components';
 import { formatNumberWithCommas } from 'utils/format';
 
@@ -30,6 +31,7 @@ export default function ModalPaymentPending({
                   return total;
               }, 0)
             : 0;
+    const { theme } = useTheme();
     return showLoading ? (
         <CustomModal
             open={showLoading}
@@ -42,7 +44,7 @@ export default function ModalPaymentPending({
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    background: '#1F242F',
+                    background: theme.nEUTRALPrimary,
                     borderRadius: 8,
                     padding: 40,
                 }}
@@ -115,27 +117,45 @@ export default function ModalPaymentPending({
                         style={{
                             fontSize: 24,
                             fontWeight: '600',
-                            color: '#CC7D00',
+                            color: theme.pRIMARY6Primary,
                         }}
                     >
                         {currentcy} {formatNumberWithCommas(data?.grand_total)}
                     </Text>
                 </Row>
                 <Button
-                    style={{ marginTop: 30, marginInline: 0 }}
+                    style={{
+                        marginTop: 30,
+                        marginInline: 0,
+                        border: 'none',
+                    }}
                     onClick={onPOS}
+                    background={theme.pRIMARY6Primary}
+                    color={theme.pRIMARY1}
                 >
                     POS Payment
                 </Button>
                 <Button
-                    style={{ marginTop: 10, marginInline: 0 }}
+                    style={{
+                        marginTop: 10,
+                        marginInline: 0,
+                        border: 'none',
+                    }}
                     onClick={onCard}
+                    background={theme.pRIMARY6Primary}
+                    color={theme.pRIMARY1}
                 >
                     Payment Online
                 </Button>
                 <Button
-                    style={{ marginTop: 10, marginInline: 0 }}
+                    style={{
+                        marginTop: 10,
+                        marginInline: 0,
+                        border: 'none',
+                    }}
                     onClick={onCash}
+                    background={theme.pRIMARY6Primary}
+                    color={theme.pRIMARY1}
                 >
                     Use Cash
                 </Button>
@@ -144,14 +164,14 @@ export default function ModalPaymentPending({
                     style={{
                         marginTop: 10,
                         marginInline: 0,
-                        background: '#1F242F',
                         border: 0,
                     }}
                     onClick={onSkip}
+                    background={theme.nEUTRALPrimary}
                 >
                     <Text
                         style={{
-                            color: 'white',
+                            color: theme.tEXTPrimary,
                         }}
                     >
                         Skip
@@ -167,5 +187,6 @@ export default function ModalPaymentPending({
 const CustomModal = styled(Modal)`
     .ant-modal-content {
         background: transparent;
+        box-shadow: none !important;
     }
 `;
