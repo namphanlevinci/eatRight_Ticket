@@ -113,7 +113,7 @@ export default function index() {
                 variables: {
                     invoiceNumber: `${invoiceNumber}`,
                     phoneNumber: value,
-                    region_code: '+84',
+                    region_code: '+1',
                 },
             })
                 .then(() => {
@@ -324,7 +324,7 @@ export default function index() {
                 <ModalPosDevices
                     isVisibleModalPos={isVisibleModalPos}
                     setVisibleMoalPos={setVisibleMoalPos}
-                    onPressOK={(pos_id: number) => {
+                    onPressOK={(pos_id: string) => {
                         handlePOSPayment(pos_id, {
                             order_number: data?.orderDetail?.order_number,
                             order_id: orderId ? orderId : btoa(order_ID || ''),

@@ -116,7 +116,7 @@ export const useTableBill = (isGoBack = true) => {
             });
     };
     const handlePOSPayment = (
-        posId: number,
+        posId: string,
         orderDetail?: {
             order_number: number;
             order_id: any;
@@ -129,13 +129,17 @@ export const useTableBill = (isGoBack = true) => {
                     : orderInfo?.order_number,
                 posId: posId,
             },
-        }).then((res) => {
-            if (res.data.posSaleForMarchant) {
-                showModalSuccess(
-                    `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
-                );
-            }
-        });
+        })
+            .then((res) => {
+                if (res.data.posSaleForMarchant) {
+                    showModalSuccess(
+                        `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                    );
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
     useEffect(() => {
         if (isGoBack) {

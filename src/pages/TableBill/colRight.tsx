@@ -121,7 +121,7 @@ export default function ColRight({
             <ModalPosDevices
                 isVisibleModalPos={isVisibleModalPos}
                 setVisibleMoalPos={setVisibleMoalPos}
-                onPressOK={(pos_id: number) => {
+                onPressOK={(pos_id: string) => {
                     handlePOSPayment(pos_id);
                 }}
             />
