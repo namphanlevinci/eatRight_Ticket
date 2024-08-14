@@ -89,7 +89,7 @@ export default function ModalTip({
                 </div>
             </Row>
             <Text style={{ marginBlock: 16 }}>
-                Sub total : $ {totalWithoutTax.toFixed(2)}
+                Total : $ {totalWithoutTax.toFixed(2)}
             </Text>
             <Text style={{ marginBlock: 16 }}>
                 Total bill {`(Include Tax)`}: $ {total.toFixed(2)}

@@ -114,8 +114,8 @@ export default function ColRight({
                 }}
                 total={totalTmp}
                 totalWithoutTax={
-                    cart?.prices.subtotal_with_discount_excluding_tax?.value ||
-                    0
+                    total -
+                    (cart?.prices?.total_canceled_without_tax?.value || 0)
                 }
             />
             <ModalPosDevices
@@ -160,6 +160,20 @@ export default function ColRight({
                     title="Sub total"
                     value={`$ ${formatNumberWithCommas(total)}`}
                 />
+                {cart?.prices?.total_canceled?.value ? (
+                    <RenderBillInfomationRow
+                        title="Canceled Item"
+                        value={`-$
+                            ${(cart?.prices?.total_canceled_without_tax?.value || 0)?.toFixed(2)}
+                        `}
+                    />
+                ) : (
+                    <></>
+                )}
+                <RenderBillInfomationRow
+                    title="Total"
+                    value={`$ ${formatNumberWithCommas(total - (cart?.prices?.total_canceled_without_tax?.value || 0))}`}
+                />
                 {cart?.prices?.discounts && (
                     <RenderDiscountRow
                         title="Discounted"
@@ -175,7 +189,12 @@ export default function ColRight({
                                     : theme.pRIMARY6Primary,
                         }}
                         valueDiscount={
-                            cart?.prices?.discounts[0]?.amount?.value || 0
+                            parseInt(
+                                `${cart?.prices?.discounts[0]?.amount?.value || 0}`,
+                            ) -
+                            parseInt(
+                                `${cart?.prices.total_items_canceled_discount?.value}`,
+                            )
                         }
                         onRightClick={() => setModalDiscount(true)}
                     />
@@ -203,21 +222,12 @@ export default function ColRight({
                         onRightClick={() => setModalTip(true)}
                     />
                 )}
-                {cart?.prices?.total_canceled?.value ? (
-                    <RenderBillInfomationRow
-                        title="Canceled Item"
-                        value={`-$
-                            ${cart?.prices?.total_canceled?.value?.toFixed(2)}
-                        `}
-                    />
-                ) : (
-                    <></>
-                )}
+
                 {cart?.prices?.applied_taxes &&
                 cart?.prices?.applied_taxes[0]?.amount ? (
                     <RenderBillInfomationRow
                         title="Tax"
-                        value={`$ ${formatNumberWithCommas(parseFloat(`${cart?.prices?.applied_taxes[0]?.amount?.value}`) || 0)} `}
+                        value={`$ ${formatNumberWithCommas(parseFloat(`${cart?.prices?.applied_taxes[0]?.amount?.value - (cart?.prices?.total_canceled_without_tax?.value || 0) * Tax}`) || 0)} `}
                     />
                 ) : (
                     <></>

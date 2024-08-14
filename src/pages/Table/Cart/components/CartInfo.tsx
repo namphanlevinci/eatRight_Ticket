@@ -91,7 +91,7 @@ export default function CartInfo({ table }: { table?: any }) {
             />
             <Col
                 style={{
-                    minWidth: isMobile ? '100%' : 200,
+                    minWidth: isMobile ? '100%' : 300,
                 }}
             >
                 <Row
@@ -118,7 +118,7 @@ export default function CartInfo({ table }: { table?: any }) {
             </Col>
             <Col
                 style={{
-                    minWidth: isMobile ? '100%' : 200,
+                    minWidth: isMobile ? '100%' : 300,
                 }}
             >
                 <Row

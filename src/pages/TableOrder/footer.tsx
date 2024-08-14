@@ -77,7 +77,10 @@ export default function OrderFooter({
                                 value={`-$ ${formatNumberWithCommas(
                                     parseInt(
                                         `${cart?.prices.discounts[0]?.amount?.value}`,
-                                    ),
+                                    ) -
+                                        parseInt(
+                                            `${cart?.prices.total_items_canceled_discount?.value}`,
+                                        ),
                                 )} `}
                             />
                         )}
