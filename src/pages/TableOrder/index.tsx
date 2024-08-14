@@ -10,7 +10,7 @@ import OrderFooter from './footer';
 import { useTheme } from 'context/themeContext';
 export default function TableBill() {
     const { loading, removeItemOnCartServer, updateStatusItemServer } =
-        useCartTable(false);
+        useCartTable(false, false);
     const {
         cart,
         count,

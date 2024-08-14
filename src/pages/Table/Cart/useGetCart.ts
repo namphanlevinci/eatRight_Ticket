@@ -8,7 +8,7 @@ import { findIndicesNotInArray } from 'utils/findIndicesNotInArray';
 import { REMOVE_ITEM_ON_CART } from 'graphql/cart/removeItemOnCart';
 import { UPDATE_STATUS_ITEM } from 'graphql/cart/updateStatusItem';
 import { emitter } from 'graphql/client';
-export const useCartTable = (isRefreshParams = true) => {
+export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
     const [listCart, setListCart] = useState<string[]>([]);
     const [searchParams] = useSearchParams();
     const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
@@ -22,7 +22,7 @@ export const useCartTable = (isRefreshParams = true) => {
     const [removeItem, { loading: removeLoading }] =
         useMutation(REMOVE_ITEM_ON_CART);
     const tableId = parseInt(searchParams.get('tableId') || '0');
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(defaultLoading);
     const [onGetCart] = useLazyQuery(GET_CART_BY_ID);
     const [onGetCartByTable, { loading: getCartByTableLoading }] =
         useLazyQuery(GET_CARTS_BY_TABLE);
