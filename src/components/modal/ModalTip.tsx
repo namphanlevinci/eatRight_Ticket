@@ -162,7 +162,7 @@ export default function ModalTip({
                 Grand Total{' '}
                 <span style={{ fontSize: 18, fontWeight: '600' }}>
                     {' '}
-                    ${roundTo(total + value, 3)}{' '}
+                    ${roundTo(total + value, 3)?.toFixed(2)}{' '}
                 </span>
             </Text>
             <ButtonPrimary
