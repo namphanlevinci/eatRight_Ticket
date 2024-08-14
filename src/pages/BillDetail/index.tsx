@@ -53,6 +53,7 @@ export default function index() {
                     variables: {
                         OrderNumber: res.data?.orderDetail?.order_number,
                     },
+                    fetchPolicy: 'no-cache',
                 });
             });
         }
