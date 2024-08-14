@@ -24,17 +24,17 @@ export default function PaymentOptions({
                 title: 'Cash',
             },
             {
-                id: 'credit_card',
-                title: 'Credit Card',
+                id: 'pos',
+                title: 'POS',
             },
-            {
-                id: 'debit_card',
-                title: 'Debit Card',
-            },
-            {
-                id: 'e_wallet',
-                title: 'E-Wallet',
-            },
+            // {
+            //     id: 'debit_card',
+            //     title: 'Debit Card',
+            // },
+            // {
+            //     id: 'e_wallet',
+            //     title: 'E-Wallet',
+            // },
         ]);
     }, []);
     return (
