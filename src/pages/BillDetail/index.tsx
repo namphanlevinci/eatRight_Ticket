@@ -72,15 +72,20 @@ export default function index() {
     useEffect(() => {
         if (
             dataSplitBill?.merchantGetOrderInvoices &&
-            data?.orderDetail?.payment_method_code === 'splitbill' &&
-            data?.orderDetail?.status !== 'complete'
+            data?.orderDetail?.payment_method_code === 'splitbill'
         ) {
             if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length > 0) {
-                localStorage.setItem(
-                    'split_bill_data',
-                    JSON.stringify(dataSplitBill?.merchantGetOrderInvoices),
-                );
-                navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+                const isNotPaid =
+                    dataSplitBill?.merchantGetOrderInvoices?.invoice?.find(
+                        (item: any) => item.state !== 'PAID',
+                    );
+                if (isNotPaid) {
+                    localStorage.setItem(
+                        'split_bill_data',
+                        JSON.stringify(dataSplitBill?.merchantGetOrderInvoices),
+                    );
+                    navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+                }
             }
         }
     }, [dataSplitBill]);

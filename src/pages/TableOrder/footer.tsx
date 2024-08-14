@@ -85,15 +85,19 @@ export default function OrderFooter({
                     cart?.prices?.applied_taxes[0]?.amount ? (
                         <RenderBillInfomationRow
                             title="Tax"
-                            value={`$ ${cart?.prices?.applied_taxes[0]?.amount.value}`}
+                            value={`$ ${formatNumberWithCommas(
+                                parseFloat(
+                                    `${cart?.prices?.applied_taxes[0]?.amount.value}`,
+                                ),
+                            )}`}
                         />
                     ) : (
                         <></>
                     )}
                     {cart?.tip_amount && cart?.tip_amount ? (
                         <RenderBillInfomationRow
-                            title="Tax"
-                            value={`$ ${cart?.tip_amount}`}
+                            title="Tip"
+                            value={`$ ${cart?.tip_amount.toFixed(2)}`}
                         />
                     ) : (
                         <></>

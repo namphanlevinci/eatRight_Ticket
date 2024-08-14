@@ -40,16 +40,38 @@ export const useTableBill = (isGoBack = true) => {
 
     const [onGetAppotaUrl] = useMutation(GET_APPOTA_URL);
     const [placeOrder, { loading }] = useMutation(PLACE_ORDER);
-    const [onPosPayment, { loading: pos_Loading }] = useMutation(POS_PAYMENT);
+    const [onPosPayment] = useMutation(POS_PAYMENT);
     const [onSetTips, { loading: tips_Loading }] = useMutation(SET_TIPS);
     const navigation = useNavigate();
-
+    const [pos_Loading, setPos_Loading] = React.useState<boolean>(false);
+    useEffect(() => {
+        emitter.on('arise_result', (msg: any) => {
+            setPos_Loading(false);
+            if (msg?.additional_data?.payment_status === 'success') {
+                showModalSuccess(`${orderInfo?.order_id}`);
+            } else {
+                showError(msg?.message, `${orderInfo?.order_id}`);
+            }
+        });
+        return () => {
+            emitter.off('arise_result');
+        };
+    }, [orderInfo]);
     const showConfirm = () => {
         modal.confirm({
             title: 'Do you want to check out?',
             centered: true,
             onOk: () => {
                 handleCheckOut();
+            },
+        });
+    };
+    const showError = (msg: string, order_id: string) => {
+        modal.error({
+            title: msg,
+            centered: true,
+            onOk: () => {
+                navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${order_id}`);
             },
         });
     };
@@ -122,6 +144,10 @@ export const useTableBill = (isGoBack = true) => {
             order_id: any;
         },
     ) => {
+        setPos_Loading(true);
+        if (orderDetail) {
+            setOrderInfo(orderDetail);
+        }
         onPosPayment({
             variables: {
                 orderId: orderDetail?.order_number

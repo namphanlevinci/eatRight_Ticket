@@ -175,12 +175,16 @@ export const RenderBill = ({
                     <TextDark>
                         {CURRENTCY}{' '}
                         {selectDataShowbill
-                            ? selectDataShowbill?.total?.subtotal?.value -
-                              totalDiscount +
-                              selectDataShowbill?.total?.total_tax?.value
-                            : data?.total?.subtotal?.value -
-                              totalDiscount +
-                              data?.total?.total_tax?.value}
+                            ? (
+                                  selectDataShowbill?.total?.subtotal?.value -
+                                  totalDiscount +
+                                  selectDataShowbill?.total?.total_tax?.value
+                              )?.toFixed(2)
+                            : (
+                                  data?.total?.subtotal?.value -
+                                  totalDiscount +
+                                  data?.total?.total_tax?.value
+                              )?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />

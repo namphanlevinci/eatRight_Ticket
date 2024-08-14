@@ -46,5 +46,116 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-
+:root {
+	/* Light Mode */
+	--semantic-positive: #198754;
+	--semantic-warning: #ffc107;
+	--semantic-critical: #dc3545;
+	--semantic-info: #4285f4;
+	--semantic-info-light: #0dcaf0;
+	--field-background: #eaecf0;
+	--form-background: #ffffff;
+	--field-text-icon: #333741;
+	--item-card-background: #f9f9f9;
+	--item-card-text: #1e1e1e;
+	--tab-bg-container: #f9f9f9;
+	--primary-1: #f0fee7;
+	--primary-2: #defccb;
+	--primary-3: #bef99d;
+	--primary-4: #95f264;
+	--primary-5: #4fcc16;
+	--primary-6: #389e0d;
+	--primary-7: #2d7c0f;
+	--primary-8: #286212;
+	--primary-9: #245314;
+	--primary-10: #0e2e05;
+	--text-primary: #1d2433;
+	--text-secondary: #4a505c;
+	--text-disabled: #6c707a;
+	--neutral-primary: #ffffff;
+	--neutral-base: #f8f9fc;
+	--neutral-sec-bg: #f1f3f9;
+	--neutral-line: #e1e6ef;
+	--tertiary-1-bg: #f8f5ff;
+	--tertiary-2-default: #8a54f7;
+	--tertiary-3-hover: #6d35de;
+	--tertiary-4-pressed: #5221b5;
+	--success-1-bg: #edfdf8;
+	--success-2-default: #08875d;
+	--success-3-hover: #03724d;
+	--success-4-pressed: #066042;
+	--warning-1-bg: #fff8eb;
+	--warning-2-default: #b25e09;
+	--warning-3-hover: #96530f;
+	--warning-4-pressed: #7f460d;
+	--error-1-bg: #fef1f2;
+	--error-2-default: #e02d3c;
+	--error-3-hover: #ba2532;
+	--error-4-pressed: #981b25;
+	--secondary-1-light: #fffcea;
+	--secondary-2-default: #ff9d00;
+	--secondary-3-hover: #e27500;
+	--secondary-4-pressed: #983d08;
+	--info-1-bg: #edf8ff;
+	--info-2-default: #1677ff;
+	--info-3-hover: #0f4abe;
+	--info-4-pressed: #112a5a;
+  }
+  
+  [data-theme="dark"] {
+	/* Dark Mode */
+	--semantic-positive: #146c43;
+	--semantic-warning: #cc9a05;
+	--semantic-critical: #b02a37;
+	--semantic-info: #346ac3;
+	--semantic-info-light: #0aa1c0;
+	--field-background: #161b26;
+	--form-background: #1f242f;
+	--field-text-icon: #f5f5f6;
+	--item-card-background: #0c111d;
+	--item-card-text: #fefefe;
+	--tab-bg-container: #182230;
+	--primary-1: #1c2e21;
+	--primary-2: #224120;
+	--primary-3: #2b5322;
+	--primary-4: #326d1f;
+	--primary-5: #3d8f1c;
+	--primary-6: #47b219;
+	--primary-7: #69c639;
+	--primary-8: #8fdc60;
+	--primary-9: #b3ec8c;
+	--primary-10: #d8fbbc;
+	--text-primary: #ffffff;
+	--text-secondary: #c2c2c4;
+	--text-disabled: #9d9ea1;
+	--neutral-primary: #1b1f27;
+	--neutral-base: #0a0d14;
+	--neutral-sec-bg: #23272f;
+	--neutral-line: #3f444d;
+	--tertiary-1-bg: #03010a;
+	--tertiary-2-default: #4110a2;
+	--tertiary-3-hover: #5c29c2;
+	--tertiary-4-pressed: #7e51d6;
+	--success-1-bg: #03120d;
+	--success-2-default: #7ef1cb;
+	--success-3-hover: #92f6d5;
+	--success-4-pressed: #a4f4d9;
+	--warning-1-bg: #130d01;
+	--warning-2-default: #eda154;
+	--warning-3-hover: #eaad71;
+	--warning-4-pressed: #ecba88;
+	--error-1-bg: #0e0203;
+	--error-2-default: #c82835;
+	--error-3-hover: #d24b57;
+	--error-4-pressed: #de6e77;
+	--secondary-1-light: #131101;
+	--secondary-2-default: #f29a0d;
+	--secondary-3-hover: #f4922a;
+	--secondary-4-pressed: #f09f70;
+	--info-1-bg: #010c13;
+	--info-2-default: #0c64df;
+	--info-3-hover: #4a7fe8;
+	--info-4-pressed: #a9c0ea;
+  }
+  
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');

@@ -29,6 +29,7 @@ export enum TableStatus {
     Cancelled = 'Cancelled',
     Complete = 'Complete',
     Processing = 'Processing',
+    Received = 'Received',
 }
 
 export const ConvertStatusText = (status: TableStatus) => {
@@ -41,6 +42,8 @@ export const ConvertStatusText = (status: TableStatus) => {
             return 'Paid';
         case TableStatus.Complete:
             return 'Paid';
+        case TableStatus.Received:
+            return 'Received';
         case TableStatus.UnPaid:
             return 'Pending Payment';
         case TableStatus.Processing:
@@ -99,6 +102,19 @@ const convertStatus = (status: TableStatus) => {
                         opacity: 1,
                         fontWeight: 600,
                         color: '#00fc43',
+                    }}
+                >
+                    {ConvertStatusText(status)}
+                </StyledColumn>
+            );
+        case TableStatus.Received:
+            return (
+                <StyledColumn
+                    style={{
+                        width: '100%',
+                        opacity: 1,
+                        fontWeight: 600,
+                        color: 'var(--info-2-default)',
                     }}
                 >
                     {ConvertStatusText(status)}
