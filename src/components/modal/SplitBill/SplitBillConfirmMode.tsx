@@ -123,16 +123,14 @@ export default function SplitBillConfirmMode({
                       />
                   ))
                 : groupedData.map(({ guestId, items }) => {
-                      console.log(items);
                       const totalTmp = items.reduce((acc, item) => {
                           return (
                               acc +
                               (item.status === 'cancel'
                                   ? 0
-                                  : (item.prices.price.value -
+                                  : (item.prices.price.value * item.quantity -
                                         (item.prices?.total_item_discount
                                             ?.value || 0)) *
-                                    item.quantity *
                                     (1 + Tax))
                           );
                       }, 0);

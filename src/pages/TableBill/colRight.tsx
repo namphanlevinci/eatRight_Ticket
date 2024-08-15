@@ -70,7 +70,7 @@ export default function ColRight({
     const [modalTip, setModalTip] = useState(false);
     const { handleAddCoupon } = useCouponCart();
     const { theme } = useTheme();
-    
+
     useEffect(() => {
         if (cart?.tip_amount) {
             setTip(cart?.tip_amount);
@@ -106,6 +106,23 @@ export default function ColRight({
             (totalMoney + totalDiscount) * (Tax + 1) + (cart?.tip_amount || 0),
         [totalMoney, totalDiscount, Tax, cart],
     );
+    const isNewPriceForListItems = useMemo(() => {
+        let total = 0;
+        listItems?.forEach(({ items }) => {
+            const totalTmp = items.reduce((acc, item) => {
+                const price =
+                    (item.prices.price.value * item.quantity -
+                        (item.prices?.total_item_discount?.value || 0)) *
+                    (1 + Tax);
+                return (
+                    acc +
+                    (item.status === 'cancel' ? 0 : price + tipPercent * price)
+                );
+            }, 0);
+            total += totalTmp;
+        });
+        return grandTotal / total || 1;
+    }, [grandTotal, listItems]);
     return (
         <ColStyled style={{ width: 257 }}>
             <ModalInput
@@ -134,7 +151,7 @@ export default function ColRight({
                     );
                     setModalTip(false);
                 }}
-                total={(totalMoney + totalDiscount)* (Tax + 1) }
+                total={(totalMoney + totalDiscount) * (Tax + 1)}
                 totalWithoutTax={
                     total -
                     (cart?.prices?.total_canceled_without_tax?.value || 0)
@@ -240,9 +257,7 @@ export default function ColRight({
 
                 <RenderBillInfomationRow
                     title="To be paid"
-                    value={`$ ${formatNumberWithCommas(
-                       grandTotal
-                    )} `}
+                    value={`$ ${formatNumberWithCommas(grandTotal)} `}
                     textRightStyle={{
                         fontSize: 24,
                         fontWeight: '600',
@@ -275,10 +290,9 @@ export default function ColRight({
                         : listItems?.map(({ guestId, items }) => {
                               const total = items.reduce((acc, item) => {
                                   const price =
-                                      (item.prices.price.value -
+                                      (item.prices.price.value * item.quantity -
                                           (item.prices?.total_item_discount
                                               ?.value || 0)) *
-                                      item.quantity *
                                       (1 + Tax);
                                   return (
                                       acc +
@@ -292,7 +306,10 @@ export default function ColRight({
                                       <RenderSplitBillGuest
                                           key={guestId}
                                           title={guestId}
-                                          total={roundTo(total, 2)}
+                                          total={roundTo(
+                                              total * isNewPriceForListItems,
+                                              2,
+                                          )}
                                           onPress={openModalSplitBill}
                                       />
                                   )

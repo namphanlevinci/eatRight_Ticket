@@ -66,7 +66,7 @@ export default function RenderDiscountRow({
                     style={{ marginBlock: marginBlock }}
                 >
                     <Text style={textRightStyle}>Applied</Text>
-                    <Text style={textRightStyle}>- ${valueDiscount}</Text>
+                    <Text style={textRightStyle}>$ {valueDiscount}</Text>
                 </Row>
             ) : (
                 <></>
