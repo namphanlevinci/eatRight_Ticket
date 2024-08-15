@@ -57,12 +57,34 @@ export default function SplitBillConfirmMode({
         query: '(max-width: 768px)',
     });
     const { theme } = useTheme();
-    const Tax =
-        (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100 || 0.1;
-    const total =
-        (cart?.prices.grand_total?.value || 0) -
-        (cart?.prices?.total_canceled?.value || 0);
+    const totalMoney = useMemo(
+        () =>
+            (cart?.prices?.subtotal_excluding_tax?.value || 0) -
+            (cart?.prices?.total_canceled_without_tax?.value || 0),
+        [cart],
+    );
 
+    const Tax = useMemo(
+        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100,
+        [cart],
+    );
+
+    const totalDiscount = useMemo(
+        () =>
+            roundTo(
+                (cart?.prices?.discount?.amount?.value || 0) +
+                    (cart?.prices?.total_items_canceled_discount?.value || 0),
+                2,
+            ),
+        [cart],
+    );
+
+    const total = useMemo(
+        () =>
+            (totalMoney + totalDiscount) * (Tax + 1) + (cart?.tip_amount || 0),
+        [totalMoney, totalDiscount, Tax, cart],
+    );
+    const tip = cart?.tip_amount || 0;
     return (
         <div style={ismobile ? { width: '100%' } : { width: 450 }}>
             <Row justify={'space-between'}>
@@ -101,6 +123,7 @@ export default function SplitBillConfirmMode({
                       />
                   ))
                 : groupedData.map(({ guestId, items }) => {
+                      console.log(items);
                       const totalTmp = items.reduce((acc, item) => {
                           return (
                               acc +
@@ -113,7 +136,6 @@ export default function SplitBillConfirmMode({
                                     (1 + Tax))
                           );
                       }, 0);
-                      const tip = cart?.tip_amount || 0;
                       return (
                           totalTmp > 0 && (
                               <RenderGuestTotal

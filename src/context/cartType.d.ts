@@ -17,7 +17,7 @@ export type CartItemType = {
     prices: {
         applied_taxes?: {
             amount: {
-                value: number | string;
+                value: number;
             };
             label: string;
             tax_percent: number;
@@ -28,11 +28,23 @@ export type CartItemType = {
             };
             label: string;
         }[];
+        discount?: {
+            amount: {
+                value: number | string;
+            };
+            label: string;
+        };
         grand_total: {
             value: number;
         };
         total_canceled?: {
             value: number;
+        };
+        total_canceled_without_tax?: {
+            value: number;
+        };
+        total_items_canceled_discount?: {
+            value: any;
         };
         subtotal_excluding_tax?: {
             value: number;

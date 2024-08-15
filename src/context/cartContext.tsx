@@ -70,24 +70,38 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     const itemsCanceled = currentCart.items.filter((item) => {
                         return item.status === 'cancel';
                     });
+                    const total_canceled_without_tax = itemsCanceled.reduce(
+                        (total, item) => {
+                            return (
+                                total + item.prices.price.value * item.quantity
+                            );
+                        },
+                        0,
+                    );
+                    const total_canceled =
+                        total_canceled_without_tax * (Tax + 1);
+                    const total_items_canceled_discount = itemsCanceled.reduce(
+                        (total, item) => {
+                            return (
+                                total +
+                                (item.prices.total_item_discount?.value ||
+                                    0 * item.quantity)
+                            );
+                        },
+                        0,
+                    );
                     return {
                         ...currentCart,
                         prices: {
                             ...currentCart.prices,
                             total_canceled: {
-                                value:
-                                    itemsCanceled.reduce((total, item) => {
-                                        return (
-                                            total +
-                                            (item.prices.price.value *
-                                                item.quantity -
-                                                (item.prices
-                                                    ?.total_item_discount
-                                                    ?.value || 0) *
-                                                    item.quantity)
-                                        );
-                                    }, 0) *
-                                    (Tax + 1),
+                                value: total_canceled,
+                            },
+                            total_canceled_without_tax: {
+                                value: total_canceled_without_tax,
+                            },
+                            total_items_canceled_discount: {
+                                value: total_items_canceled_discount,
                             },
                         },
                     };
@@ -113,7 +127,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems];
         newCartItems[getIndexTable].carts[cartIndex] = cart;
-        setCartItems(newCartItems);
+        updateCart(newCartItems[getIndexTable].carts, getIndexTable);
     };
     const removeCartIndex = (index?: number) => {
         const getIndexTable = cartItems.findIndex(
@@ -152,6 +166,26 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     const Tax =
                         (currentCart.prices?.applied_taxes?.[0]?.tax_percent ||
                             10) / 100;
+
+                    const total_itemsCanceled_without_tax =
+                        itemsCanceled.reduce((total, item) => {
+                            return (
+                                total + item.prices.price.value * item.quantity
+                            );
+                        }, 0);
+                    const total_itemsCanceled =
+                        total_itemsCanceled_without_tax * (Tax + 1);
+                    const total_items_canceled_discount = itemsCanceled.reduce(
+                        (total, item) => {
+                            return (
+                                total +
+                                (item.prices.total_item_discount?.value ||
+                                    0 * item.quantity)
+                            );
+                        },
+                        0,
+                    );
+
                     if (newCarts) {
                         if (newCarts?.items && newCarts?.items.length > 0) {
                             return {
@@ -175,23 +209,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                                             ),
                                     },
                                     total_canceled: {
-                                        value:
-                                            itemsCanceled.reduce(
-                                                (total, item) => {
-                                                    return (
-                                                        total +
-                                                        (item.prices.price
-                                                            .value *
-                                                            item.quantity -
-                                                            (item.prices
-                                                                ?.total_item_discount
-                                                                ?.value || 0) *
-                                                                item.quantity)
-                                                    );
-                                                },
-                                                0,
-                                            ) *
-                                            (Tax + 1),
+                                        value: total_itemsCanceled,
+                                    },
+                                    total_canceled_without_tax: {
+                                        value: total_itemsCanceled_without_tax,
+                                    },
+                                    total_items_canceled_discount: {
+                                        value: total_items_canceled_discount,
                                     },
                                 },
                             };
@@ -201,19 +225,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                             prices: {
                                 ...newCarts.prices,
                                 total_canceled: {
-                                    value:
-                                        itemsCanceled.reduce((total, item) => {
-                                            return (
-                                                total +
-                                                (item.prices.price.value *
-                                                    item.quantity -
-                                                    (item.prices
-                                                        ?.total_item_discount
-                                                        ?.value || 0) *
-                                                        item.quantity)
-                                            );
-                                        }, 0) *
-                                        (Tax + 1),
+                                    value: total_itemsCanceled,
+                                },
+                                total_canceled_without_tax: {
+                                    value: total_itemsCanceled_without_tax,
+                                },
+                                total_items_canceled_discount: {
+                                    value: total_items_canceled_discount,
                                 },
                             },
                         };

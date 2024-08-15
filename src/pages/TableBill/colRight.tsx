@@ -1,6 +1,6 @@
 import { Divider, Row } from 'antd';
 import { Text } from 'components/atom/Text';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import InputInfoCart from './components/inputInfo';
 import RenderBillInfomationRow from './components/billInfo';
 import ButtonOptions from './components/buttonOptions';
@@ -70,12 +70,7 @@ export default function ColRight({
     const [modalTip, setModalTip] = useState(false);
     const { handleAddCoupon } = useCouponCart();
     const { theme } = useTheme();
-    const Tax =
-        (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100 || 0.1;
-    const totalTmp =
-        (cart?.prices.grand_total?.value || 0) -
-        (cart?.prices?.total_canceled?.value || 0) -
-        (cart?.tip_amount || 0);
+    
     useEffect(() => {
         if (cart?.tip_amount) {
             setTip(cart?.tip_amount);
@@ -84,6 +79,33 @@ export default function ColRight({
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
     });
+    const totalMoney = useMemo(
+        () =>
+            (cart?.prices?.subtotal_excluding_tax?.value || 0) -
+            (cart?.prices?.total_canceled_without_tax?.value || 0),
+        [cart],
+    );
+
+    const Tax = useMemo(
+        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100,
+        [cart],
+    );
+
+    const totalDiscount = useMemo(
+        () =>
+            roundTo(
+                (cart?.prices?.discount?.amount?.value || 0) +
+                    (cart?.prices?.total_items_canceled_discount?.value || 0),
+                2,
+            ),
+        [cart],
+    );
+
+    const grandTotal = useMemo(
+        () =>
+            (totalMoney + totalDiscount) * (Tax + 1) + (cart?.tip_amount || 0),
+        [totalMoney, totalDiscount, Tax, cart],
+    );
     return (
         <ColStyled style={{ width: 257 }}>
             <ModalInput
@@ -112,10 +134,10 @@ export default function ColRight({
                     );
                     setModalTip(false);
                 }}
-                total={totalTmp}
+                total={(totalMoney + totalDiscount)* (Tax + 1) }
                 totalWithoutTax={
-                    cart?.prices.subtotal_with_discount_excluding_tax?.value ||
-                    0
+                    total -
+                    (cart?.prices?.total_canceled_without_tax?.value || 0)
                 }
             />
             <ModalPosDevices
@@ -158,8 +180,9 @@ export default function ColRight({
                 <Text style={{ fontSize: 20 }}>Billing Information</Text>
                 <RenderBillInfomationRow
                     title="Sub total"
-                    value={`$ ${formatNumberWithCommas(total)}`}
+                    value={`$ ${formatNumberWithCommas(totalMoney)}`}
                 />
+
                 {cart?.prices?.discounts && (
                     <RenderDiscountRow
                         title="Discounted"
@@ -174,9 +197,7 @@ export default function ColRight({
                                     ? theme.sUCCESS2Default
                                     : theme.pRIMARY6Primary,
                         }}
-                        valueDiscount={
-                            cart?.prices?.discounts[0]?.amount?.value || 0
-                        }
+                        valueDiscount={totalDiscount}
                         onRightClick={() => setModalDiscount(true)}
                     />
                 )}
@@ -203,21 +224,12 @@ export default function ColRight({
                         onRightClick={() => setModalTip(true)}
                     />
                 )}
-                {cart?.prices?.total_canceled?.value ? (
-                    <RenderBillInfomationRow
-                        title="Canceled Item"
-                        value={`-$
-                            ${cart?.prices?.total_canceled?.value?.toFixed(2)}
-                        `}
-                    />
-                ) : (
-                    <></>
-                )}
+
                 {cart?.prices?.applied_taxes &&
                 cart?.prices?.applied_taxes[0]?.amount ? (
                     <RenderBillInfomationRow
                         title="Tax"
-                        value={`$ ${formatNumberWithCommas(parseFloat(`${cart?.prices?.applied_taxes[0]?.amount?.value}`) || 0)} `}
+                        value={`$ ${formatNumberWithCommas((totalMoney + totalDiscount) * Tax)}`}
                     />
                 ) : (
                     <></>
@@ -229,7 +241,7 @@ export default function ColRight({
                 <RenderBillInfomationRow
                     title="To be paid"
                     value={`$ ${formatNumberWithCommas(
-                        totalTmp + (tip || 0),
+                       grandTotal
                     )} `}
                     textRightStyle={{
                         fontSize: 24,
@@ -248,13 +260,13 @@ export default function ColRight({
                                   title={`Guest ${index + 1}`}
                                   total={
                                       index + 1 === numbersSplit
-                                          ? totalTmp -
-                                            (totalTmp / numbersSplit) *
+                                          ? grandTotal -
+                                            (grandTotal / numbersSplit) *
                                                 (numbersSplit - 1) +
                                             ((tip || 0) -
                                                 (tip / numbersSplit || 0) *
                                                     (numbersSplit - 1))
-                                          : totalTmp / numbersSplit +
+                                          : grandTotal / numbersSplit +
                                             (tip / numbersSplit || 0)
                                   }
                                   onPress={openModalSplitBill}
