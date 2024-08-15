@@ -49,9 +49,9 @@ const ChildComponent = React.forwardRef<ChildComponentRef, ChildProps>(
             menu: (base: any) => ({
                 ...base,
                 padding: 0,
-                color: '#ffffff',
+                color: theme.tEXTPrimary,
                 fontSize: 18,
-                background: '#333',
+                background: theme.nEUTRALLine,
             }),
             singleValue: (provided: any) => ({
                 ...provided,
@@ -61,8 +61,10 @@ const ChildComponent = React.forwardRef<ChildComponentRef, ChildProps>(
             option: (base: any, { isFocused }: any) => {
                 return {
                     ...base,
-                    backgroundColor: isFocused ? '#eeeeee' : 'transparent',
-                    color: isFocused ? '#333' : '#ffffff',
+                    backgroundColor: isFocused
+                        ? theme.pRIMARY6Primary
+                        : 'transparent',
+                    color: isFocused ? theme.pRIMARY1 : theme.tEXTPrimary,
                 };
             },
             placeholder: (defaultStyles: any) => {
