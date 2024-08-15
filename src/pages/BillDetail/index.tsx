@@ -379,7 +379,7 @@ export default function index() {
                                     border: `2px solid ${theme.pRIMARY6Primary}`,
                                     padding: '0 16px',
                                 }}
-                                onClick={() => navigation(-1)}
+                                onClick={() => navigation(BASE_ROUTER.BILL)}
                                 background={theme.nEUTRALPrimary}
                             >
                                 <TextDark
