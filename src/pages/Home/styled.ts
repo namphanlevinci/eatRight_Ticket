@@ -108,7 +108,7 @@ export const StyledTableStatus = styled(StyledTableSize)`
     font-weight: 400;
 `;
 
-export const CountAvaiable = styled.div`
+export const CountAvailable = styled.div`
     border-radius: 3000px;
     background: #ff9d00;
     width: 40px;

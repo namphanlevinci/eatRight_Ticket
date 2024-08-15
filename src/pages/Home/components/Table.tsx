@@ -5,7 +5,7 @@ import {
     StyledTableSize,
     StyledTableStatus,
     StyledLine,
-    CountAvaiable,
+    CountAvailable,
 } from '../styled';
 import { ColorsThemeType, useTheme } from 'context/themeContext';
 
@@ -28,10 +28,10 @@ interface ITable {
 }
 
 enum TableStatus {
-    Avaiable,
+    Available,
     Dining,
     Reserved,
-    Unavaiable,
+    Unavailable,
     Disabled,
 }
 
@@ -39,10 +39,10 @@ const getStatusTableByCardIds = (item: IItem) => {
     const tempNumber = item.size - item.numberOfCustomer;
     let status = TableStatus.Disabled;
     if (tempNumber < 0) {
-        status = TableStatus.Unavaiable;
+        status = TableStatus.Unavailable;
     }
     if (item.cartIds.length == 0 && item.size > 0) {
-        status = TableStatus.Avaiable;
+        status = TableStatus.Available;
     }
     if (item.status == '2') {
         status = TableStatus.Reserved;
@@ -58,7 +58,7 @@ const getColorByStatus = (item: IItem, theme: ColorsThemeType) => {
     const status = getStatusTableByCardIds(item);
     let color = '#ffffff';
     switch (status) {
-        case TableStatus.Avaiable:
+        case TableStatus.Available:
             color = theme.sUCCESS2Default;
             break;
         case TableStatus.Dining:
@@ -67,7 +67,7 @@ const getColorByStatus = (item: IItem, theme: ColorsThemeType) => {
         case TableStatus.Reserved:
             color = theme.tERTIARY2Default;
             break;
-        case TableStatus.Unavaiable:
+        case TableStatus.Unavailable:
             color = theme.eRROR2Default;
             break;
         case TableStatus.Disabled:
@@ -81,14 +81,14 @@ const getColorByStatus = (item: IItem, theme: ColorsThemeType) => {
 
 function getStatusName(status: TableStatus): string {
     switch (status) {
-        case TableStatus.Avaiable:
-            return 'Avaiable';
+        case TableStatus.Available:
+            return 'Available';
         case TableStatus.Dining:
             return 'Dining';
         case TableStatus.Reserved:
             return 'Reserved';
-        case TableStatus.Unavaiable:
-            return 'Unavaiable';
+        case TableStatus.Unavailable:
+            return 'Unavailable';
         case TableStatus.Disabled:
             return 'Disabled';
         default:
@@ -106,7 +106,7 @@ const Table = ({ item, onClick }: ITable) => {
         <StyledTable
             background={
                 status == TableStatus.Disabled ||
-                status == TableStatus.Unavaiable
+                status == TableStatus.Unavailable
                     ? theme.tEXTDisabled
                     : theme.itemCardBackground
             }
@@ -125,14 +125,14 @@ const Table = ({ item, onClick }: ITable) => {
             </StyledTableStatus>
 
             {item.cartIds.length > 0 && (
-                <CountAvaiable
+                <CountAvailable
                     style={{
                         background: theme.pRIMARY6Primary,
                         color: theme.pRIMARY2,
                     }}
                 >
                     <div>{item.cartIds.length}</div>
-                </CountAvaiable>
+                </CountAvailable>
             )}
             <StyledLine background={getColorByStatus(item, theme)} />
         </StyledTable>

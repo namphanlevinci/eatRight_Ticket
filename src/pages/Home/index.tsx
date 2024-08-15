@@ -10,7 +10,7 @@ import {
     StyledFloor,
     StyledFloors,
     StyledFloorLine,
-    CountAvaiable,
+    CountAvailable,
 } from './styled';
 import Table from './components/Table';
 import { BASE_ROUTER } from 'constants/router';
@@ -98,7 +98,7 @@ const HomePage: React.FC = () => {
                         to={`${BASE_ROUTER.TABLE}?tableId=${counterTable?.id}`}
                     >
                         <div style={{ position: 'relative' }}>
-                            <CountAvaiable
+                            <CountAvailable
                                 style={{
                                     background: theme.pRIMARY6Primary,
                                     color: theme.pRIMARY2,
@@ -106,7 +106,7 @@ const HomePage: React.FC = () => {
                                 }}
                             >
                                 <div>{counterTable?.cartIds?.length || 0}</div>
-                            </CountAvaiable>
+                            </CountAvailable>
                             {!ismobile && (
                                 <CounterTakeAway
                                     style={{ background: theme.pRIMARY3 }}
