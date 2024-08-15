@@ -47,7 +47,10 @@ export const useTableBill = (isGoBack = true) => {
     useEffect(() => {
         emitter.on('arise_result', (msg: any) => {
             setPos_Loading(false);
-            if (msg?.additional_data?.payment_status === 'success') {
+            if (
+                msg?.additional_data?.payment_status === 'success' &&
+                orderInfo?.order_id
+            ) {
                 showModalSuccess(`${orderInfo?.order_id}`);
             } else {
                 showError(msg?.message, `${orderInfo?.order_id}`);
