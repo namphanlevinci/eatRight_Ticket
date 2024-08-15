@@ -7,6 +7,7 @@ import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import { GET_TIPS } from 'graphql/tips/tips';
 import React, { useEffect, useRef } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { roundTo } from 'utils/number';
 export default function ModalTip({
     isModalOpen,
@@ -63,6 +64,9 @@ export default function ModalTip({
         onSubmit(value);
     };
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     return (
         <Modal
             title="Basic Modal"
@@ -134,7 +138,8 @@ export default function ModalTip({
                         style={{
                             height: 56,
                             margin: 0,
-                            width: '30%',
+                            width: isMobile ? '25%' : '30%',
+                            minWidth: '70px',
                             border: `2px solid ${theme.pRIMARY6Primary}`,
                         }}
                         background={

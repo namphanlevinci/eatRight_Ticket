@@ -1,4 +1,4 @@
-import { Button, Col, Layout, Popover, Row, Spin } from 'antd';
+import { Col, Layout, Popover, Row, Spin } from 'antd';
 import { Text } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -21,6 +21,7 @@ import { GET_NOTIFICATION } from 'graphql/notification';
 import { NotiTitle, NotificationItem, AnnaBellStyle } from './styled';
 import DrawerMenu from './components/DrawerMenu';
 import { useTheme } from 'context/themeContext';
+import { useMediaQuery } from 'react-responsive';
 
 type Props = {
     children: React.ReactNode;
@@ -193,8 +194,8 @@ export const DarkLayout = (props: Props) => {
         </InfiniteScroll>
     );
 
-    const { theme, toggleTheme } = useTheme();
-
+    const { theme } = useTheme();
+    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <Layout
             style={{
@@ -233,7 +234,7 @@ export const DarkLayout = (props: Props) => {
                     <Row style={{ gap: 10 }} align={'middle'}>
                         {/* <BellIcon />
                             <HelpIcon /> */}
-                        <Button onClick={toggleTheme} title="Change Theme" />
+                        {/* <Button onClick={toggleTheme} title="Change Theme" /> */}
                         {isLogged && (
                             <>
                                 <Popover
@@ -278,7 +279,7 @@ export const DarkLayout = (props: Props) => {
                             textAlign: 'center',
                             background: theme.nEUTRALPrimary,
                             paddingInline: 16,
-                            paddingBlock: 16,
+                            paddingBlock: isMobile ? 10 : 16,
                         }}
                     >
                         <Row justify={'space-between'}>
@@ -286,11 +287,30 @@ export const DarkLayout = (props: Props) => {
                                 <Text style={{ fontWeight: '600' }}>
                                     {firstname} {lastname}
                                 </Text>
-                                <Text style={{ fontSize: 14, marginTop: 6 }}>
+                                <Text
+                                    style={{
+                                        fontSize: 14,
+                                        marginTop: isMobile ? 0 : 6,
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                    }}
+                                >
                                     {restaurant_name} {'-'} {restaurant_address}
                                 </Text>
                             </Col>
-                            <Col>
+                            <Col
+                                style={
+                                    isMobile
+                                        ? {
+                                              display: 'flex',
+                                              justifyContent: 'space-between',
+                                              width: '100%',
+                                              alignItems: 'center',
+                                          }
+                                        : {}
+                                }
+                            >
                                 <Text
                                     style={{
                                         color: isOnline
