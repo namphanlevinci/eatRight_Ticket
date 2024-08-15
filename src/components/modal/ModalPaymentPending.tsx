@@ -12,7 +12,7 @@ export default function ModalPaymentPending({
     currentcy = '$',
     onSkip,
     onCash,
-    onCard,
+    onPOS_DJV,
     onPOS,
 }: {
     showLoading: boolean;
@@ -21,7 +21,7 @@ export default function ModalPaymentPending({
     currentcy?: string;
     onSkip?: () => void;
     onCash?: () => void;
-    onCard?: () => void;
+    onPOS_DJV?: () => void;
     onPOS?: () => void;
 }) {
     const totalDiscount =
@@ -133,7 +133,7 @@ export default function ModalPaymentPending({
                     background={theme.pRIMARY6Primary}
                     color={theme.pRIMARY1}
                 >
-                    POS Payment
+                    POS Payment (ARISE)
                 </Button>
                 <Button
                     style={{
@@ -141,11 +141,11 @@ export default function ModalPaymentPending({
                         marginInline: 0,
                         border: 'none',
                     }}
-                    onClick={onCard}
+                    onClick={onPOS_DJV}
                     background={theme.pRIMARY6Primary}
                     color={theme.pRIMARY1}
                 >
-                    Payment Online
+                    POS Payment (DJV)
                 </Button>
                 <Button
                     style={{

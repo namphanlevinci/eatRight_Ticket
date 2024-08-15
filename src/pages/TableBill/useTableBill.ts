@@ -7,7 +7,11 @@ import { GET_CART_BY_ID } from 'graphql/cart/getCart';
 import { PLACE_ORDER, SET_TIPS } from 'graphql/cart/placeOrder';
 import { SPLIT_BILL_BY_ITEM, SPLIT_BILL_EVENLY } from 'graphql/cart/splitBill';
 import { emitter } from 'graphql/client';
-import { GET_APPOTA_URL, POS_PAYMENT } from 'graphql/orders/paymentMethod';
+import {
+    GET_APPOTA_URL,
+    POS_PAYMENT,
+    POS_PAYMENT_WITH_DJV,
+} from 'graphql/orders/paymentMethod';
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -33,6 +37,8 @@ export const useTableBill = (isGoBack = true) => {
 
     const [isVisibleModalPos, setVisibleMoalPos] =
         React.useState<boolean>(false);
+    const [isVisibleModalPosDJV, setVisibleMoalPosDJV] =
+        React.useState<boolean>(false);
     const [orderInfo, setOrderInfo] = React.useState<{
         order_number?: number;
         order_id?: number;
@@ -41,6 +47,8 @@ export const useTableBill = (isGoBack = true) => {
     const [onGetAppotaUrl] = useMutation(GET_APPOTA_URL);
     const [placeOrder, { loading }] = useMutation(PLACE_ORDER);
     const [onPosPayment] = useMutation(POS_PAYMENT);
+    const [onPosDJV, { loading: djv_Loading }] =
+        useMutation(POS_PAYMENT_WITH_DJV);
     const [onSetTips, { loading: tips_Loading }] = useMutation(SET_TIPS);
     const navigation = useNavigate();
     const [pos_Loading, setPos_Loading] = React.useState<boolean>(false);
@@ -118,7 +126,9 @@ export const useTableBill = (isGoBack = true) => {
         placeOrder({
             variables: {
                 cartId: cartItems[indexTable].carts[cartIndex].id,
-                paymentMethod: paymentMethod,
+                paymentMethod: paymentMethod.includes('pos')
+                    ? 'pos'
+                    : paymentMethod,
             },
         })
             .then((res) => {
@@ -129,9 +139,38 @@ export const useTableBill = (isGoBack = true) => {
                 } else if (paymentMethod === 'pos') {
                     setVisibleMoalPos(true);
                     setOrderInfo(res.data.createMerchantOrder.order);
+                } else if (paymentMethod === 'pos_djv') {
+                    setVisibleMoalPosDJV(true);
+                    setOrderInfo(res.data.createMerchantOrder.order);
                 } else {
                     showModalAlertPayment(
                         res.data.createMerchantOrder.order.order_id,
+                    );
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+    const handlePOSPaymentWithDJV = (
+        posId: number,
+        orderDetail?: {
+            order_number: number;
+            order_id: any;
+        },
+    ) => {
+        onPosDJV({
+            variables: {
+                orderId: orderDetail?.order_number
+                    ? orderDetail?.order_number
+                    : orderInfo?.order_number,
+                posId: posId,
+            },
+        })
+            .then((res) => {
+                if (res.data.posSaleForMarchant) {
+                    showModalSuccess(
+                        `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
                     );
                 }
             })
@@ -299,7 +338,8 @@ export const useTableBill = (isGoBack = true) => {
             split_even_loading ||
             split_items_loading ||
             tips_Loading ||
-            loadingGetCart,
+            loadingGetCart ||
+            djv_Loading,
         pos_Loading,
         contextHolder,
         paymentMethod,
@@ -314,5 +354,9 @@ export const useTableBill = (isGoBack = true) => {
         handlePOSPayment,
         handleSetTip,
         setCart,
+        handlePOSPaymentWithDJV,
+
+        setVisibleMoalPosDJV,
+        isVisibleModalPosDJV,
     };
 };

@@ -15,7 +15,11 @@ export const POS_PAYMENT = gql`
         )
     }
 `;
-
+export const POS_PAYMENT_WITH_DJV = gql`
+    mutation ($orderId: String!, $posId: Int!) {
+        posSaleForMarchant(input: { order_number: $orderId, pos_id: $posId })
+    }
+`;
 export const POS_DEVICE_LIST = gql`
     {
         merchantGetTerminalList {
@@ -31,6 +35,22 @@ export const POS_DEVICE_LIST = gql`
                 terminalModeName
                 createdOn
                 modifiedOn
+            }
+        }
+    }
+`;
+export const POS_DEVICE_LIST_DJV = gql`
+    query {
+        getPosDevices(currentPage: 1, pageSize: 20) {
+            items {
+                entity_id
+                name
+                status
+            }
+            page_info {
+                current_page
+                page_size
+                total_pages
             }
         }
     }

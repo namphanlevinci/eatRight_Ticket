@@ -21,6 +21,7 @@ import ModalTip from 'components/modal/ModalTip';
 import { useTheme } from 'context/themeContext';
 import RenderDiscountRow from './components/renderDiscountRow';
 import { useMediaQuery } from 'react-responsive';
+import ModalPosDevicesDJV from './components/ModalPosDevicesDJV';
 
 export default function ColRight({
     cart,
@@ -59,6 +60,9 @@ export default function ColRight({
         handlePOSPayment,
         pos_Loading,
         handleSetTip,
+        isVisibleModalPosDJV,
+        setVisibleMoalPosDJV,
+        handlePOSPaymentWithDJV,
     } = useTableBill();
 
     useEffect(() => {
@@ -162,6 +166,13 @@ export default function ColRight({
                 setVisibleMoalPos={setVisibleMoalPos}
                 onPressOK={(pos_id: string) => {
                     handlePOSPayment(pos_id);
+                }}
+            />
+            <ModalPosDevicesDJV
+                isVisibleModalPos={isVisibleModalPosDJV}
+                setVisibleMoalPos={setVisibleMoalPosDJV}
+                onPressOK={(pos_id: number) => {
+                    handlePOSPaymentWithDJV(pos_id);
                 }}
             />
             {contextHolder}
@@ -329,13 +340,13 @@ export default function ColRight({
                     />
                     <div style={{ marginTop: 15 }} />
                     <ButtonOptions
-                        title="Online Banking"
-                        isSelected={paymentMethod === 'lvc_appota'}
-                        onClick={() => setPaymentMethod('lvc_appota')}
+                        title="POS (DJV)"
+                        isSelected={paymentMethod === 'pos_djv'}
+                        onClick={() => setPaymentMethod('pos_djv')}
                     />
                     <div style={{ marginTop: 15 }} />
                     <ButtonOptions
-                        title="POS"
+                        title="POS (ARISE)"
                         isSelected={paymentMethod === 'pos'}
                         onClick={() => setPaymentMethod('pos')}
                     />

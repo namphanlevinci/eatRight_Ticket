@@ -31,6 +31,7 @@ import { RenderBill } from './components/RenderBill';
 import { ButtonBill } from './components/ButtonBill';
 import { ButtonSelectBill } from './components/ButtonSelectBill';
 import { useMediaQuery } from 'react-responsive';
+import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
 export default function index() {
     const [getOrderDetail, { data, loading }] = useLazyQuery(GET_ORDER_DETAIL, {
         fetchPolicy: 'cache-and-network',
@@ -185,16 +186,25 @@ export default function index() {
         setVisibleMoalPos,
         pos_Loading,
         contextHolder,
+        isVisibleModalPosDJV,
+        setVisibleMoalPosDJV,
+        handlePOSPaymentWithDJV,
     } = useTableBill(false);
     const modalConfirm = (paymentMethod = 'cashondelivery') => {
         modal.confirm({
             title: `Are you sure repayment with ${
-                paymentMethod === 'cashondelivery' ? 'Cash' : 'Online Payment'
+                paymentMethod === 'cashondelivery'
+                    ? 'Cash'
+                    : paymentMethod === 'pos'
+                      ? 'POS Arise'
+                      : 'Pos DJV'
             } ?`,
             centered: true,
             onOk: () => {
                 if (paymentMethod === 'pos') {
                     setVisibleMoalPos(true);
+                } else if (paymentMethod === 'pos_djv') {
+                    setVisibleMoalPosDJV(true);
                 } else {
                     handleCheckOut(paymentMethod);
                 }
@@ -336,6 +346,16 @@ export default function index() {
                         });
                     }}
                 />
+                <ModalPosDevicesDJV
+                    isVisibleModalPos={isVisibleModalPosDJV}
+                    setVisibleMoalPos={setVisibleMoalPosDJV}
+                    onPressOK={(pos_id: number) => {
+                        handlePOSPaymentWithDJV(pos_id, {
+                            order_number: data?.orderDetail?.order_number,
+                            order_id: orderId ? orderId : btoa(order_ID || ''),
+                        });
+                    }}
+                />
                 <LoadingModalPayment
                     showLoading={pos_Loading}
                     title="POS Payment Processing ..."
@@ -346,7 +366,7 @@ export default function index() {
                     showLoading={showPendingPayment}
                     data={data?.orderDetail}
                     onSkip={() => setShowPendingPayment(false)}
-                    onCard={() => modalConfirm('lvc_appota')}
+                    onPOS_DJV={() => modalConfirm('pos_djv')}
                     onCash={() => modalConfirm('cashondelivery')}
                     onPOS={() => modalConfirm('pos')}
                 />
