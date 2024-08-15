@@ -24,12 +24,12 @@ export const LoginPage: React.FC = () => {
             style={{
                 height: ismobile ? 620 : 650,
                 width: 380,
-                background: theme.nEUTRALBase,
+                background: ismobile ? theme.nEUTRALPrimary : theme.nEUTRALBase,
                 borderRadius: 16,
                 padding: 16,
                 paddingBlock: 32,
                 alignSelf: 'center',
-                border: `1px solid ${theme.nEUTRALLine}`,
+                border: `${ismobile ? '0px' : '1px'} solid ${theme.nEUTRALLine}`,
             }}
         >
             <span
