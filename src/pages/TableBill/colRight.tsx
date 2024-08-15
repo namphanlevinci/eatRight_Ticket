@@ -284,17 +284,7 @@ export default function ColRight({
                               <RenderSplitBillGuest
                                   key={index}
                                   title={`Guest ${index + 1}`}
-                                  total={
-                                      index + 1 === numbersSplit
-                                          ? grandTotal -
-                                            (grandTotal / numbersSplit) *
-                                                (numbersSplit - 1) +
-                                            ((tip || 0) -
-                                                (tip / numbersSplit || 0) *
-                                                    (numbersSplit - 1))
-                                          : grandTotal / numbersSplit +
-                                            (tip / numbersSplit || 0)
-                                  }
+                                  total={grandTotal / numbersSplit}
                                   onPress={openModalSplitBill}
                               />
                           ))

@@ -78,7 +78,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 if (msg?.item_type === 'QUOTE') {
                     notification.success({
                         message: `Table ${
-                            tableData.find(
+                            tableData?.find(
                                 (item: any) => item?.id == msg?.quote?.table_id,
                             )?.name
                         }`,
