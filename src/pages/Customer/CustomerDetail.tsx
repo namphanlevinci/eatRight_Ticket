@@ -7,9 +7,16 @@ import { BASE_ROUTER } from 'constants/router';
 import React from 'react';
 import CustomerGeneral from './components/CustomerGeneral';
 import CustomerOrder from './components/CustomerOrder';
+import { useMediaQuery } from 'react-responsive';
 
 export default function CustomerDetail() {
     const [selected, setSelected] = React.useState('General');
+    const [customerInfo, setCustomerInfo] = React.useState({
+        name: '',
+        status: 0,
+        group_id: 0,
+    });
+    const isMobile = useMediaQuery({ maxWidth: 767 });
     return (
         <Layout
             style={{
@@ -27,7 +34,7 @@ export default function CustomerDetail() {
                 title="Customer Detail"
             />
 
-            <Row>
+            <Row style={isMobile ? { flexDirection: 'column' } : {}}>
                 <Col style={{ width: 260 }}>
                     <Row>
                         <Col>
@@ -42,7 +49,7 @@ export default function CustomerDetail() {
                             }}
                         >
                             <Text style={{ fontSize: 17, fontWeight: '600' }}>
-                                Jamel Deen
+                                {customerInfo.name}
                             </Text>
 
                             <Text
@@ -50,9 +57,11 @@ export default function CustomerDetail() {
                                     fontSize: 15,
                                 }}
                             >
-                                Customer group
+                                Group {customerInfo.group_id}
                             </Text>
-                            <Text>Active</Text>
+                            <Text>
+                                {customerInfo.status ? 'Active' : 'Inactive'}
+                            </Text>
                         </Col>
                     </Row>
                     <ButtonSelect
@@ -67,7 +76,9 @@ export default function CustomerDetail() {
                     />
                 </Col>
                 <Col style={{ flex: 1, paddingLeft: 20 }}>
-                    {selected === 'General' && <CustomerGeneral />}
+                    {selected === 'General' && (
+                        <CustomerGeneral setCustomerInfo={setCustomerInfo} />
+                    )}
                     {selected === 'Orders & Reservations' && <CustomerOrder />}
                 </Col>
             </Row>

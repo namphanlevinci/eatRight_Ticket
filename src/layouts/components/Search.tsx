@@ -8,19 +8,21 @@ export default function SearchSettings({
     allowClear,
     data,
     placeholder,
+    width = '100%',
 }: {
     onChangeText?: any;
     height?: number;
     allowClear?: boolean;
     data?: string;
     placeholder?: string;
+    width?: number | string;
 }) {
     const { theme } = useTheme();
     return (
         <div
             style={{
                 height: 40,
-                width: '100%',
+                width: width,
                 paddingInline: 16,
                 position: 'relative',
             }}

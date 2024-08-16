@@ -21,6 +21,7 @@ export const GET_CUSTOMER_LIST = gql`
                 created_at
                 date_of_birth
                 gender
+                status
             }
             total_count
             page_info {
@@ -74,7 +75,7 @@ export const UPDATE_CUSTOMER_INFOMATION = gql`
         $email: String!
         $gender: Int!
         $date_of_birth: String!
-        $id: String!
+        $id: Int!
     ) {
         merchantUpdateCustomer(
             input: {

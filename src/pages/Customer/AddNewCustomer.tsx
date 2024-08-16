@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import { CREATE_CUSTOMER } from 'graphql/customer';
 import React from 'react';
 import { useNavigate } from 'react-router';
-
+const calling_code = '+84';
 export default function AddNewCustomer() {
     const { theme } = useTheme();
     const [onCreateCustomer, { loading }] = useMutation(CREATE_CUSTOMER);
@@ -25,10 +25,10 @@ export default function AddNewCustomer() {
                 firstname: values.firstname,
                 lastname: values.lastname,
                 email: values.email,
-                calling_code: '+84',
+                calling_code: calling_code,
                 gender: values.gender,
                 date_of_birth: dayjs(values.dob).format('YYYY-MM-DD'),
-                phone_number: values.phoneNumber.phoneNumber.replace(/\s/g, ''),
+                phone_number: `${calling_code}${values.phoneNumber.phoneNumber.replace(/\s/g, '')}`,
                 status: values.status,
                 group_id: values.group_id,
             },
@@ -117,7 +117,7 @@ export default function AddNewCustomer() {
                         <SelectForm
                             label="Customer group"
                             name="group_id"
-                            placeholder="First Name"
+                            placeholder="Customer group"
                             options={[
                                 {
                                     label: 'General',

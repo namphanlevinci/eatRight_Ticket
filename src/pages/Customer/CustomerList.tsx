@@ -20,6 +20,8 @@ import { Link } from 'react-router-dom';
 import SearchSettings from 'layouts/components/Search';
 import _ from 'lodash';
 import { formatPhoneNumber } from 'utils/number';
+import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+import ListCustomerForMobile from './listCustomerForMobile';
 
 // import ListBillForMobile from './listForMobile';
 
@@ -76,12 +78,23 @@ const CustomerList: React.FC = () => {
                         <Text>/</Text>
                         <Text>Customer List</Text>
                     </Row>
-                    <Row>
+                    <Row
+                        align={'middle'}
+                        style={isMobile ? { width: '100%' } : {}}
+                    >
                         <SearchSettings
                             placeholder="name or last 4 number"
                             onChangeText={(value: string) =>
                                 debouncedSetSearch(value)
                             }
+                            width={isMobile ? '100%' : '300px'}
+                        />
+                        <ButtonPrimary
+                            title="New Customer"
+                            onClick={() => navigation(BASE_ROUTER.CUSTOMER_NEW)}
+                            width={isMobile ? '100%' : '200px'}
+                            marginTop={isMobile ? '16px' : '0px'}
+                            height="48px"
                         />
                     </Row>
                 </Row>
@@ -91,8 +104,7 @@ const CustomerList: React.FC = () => {
                     <div />
                 </ContainerPaginationText>
                 {isMobile ? (
-                    // <ListBillForMobile listOrders={listOrders} />
-                    1
+                    <ListCustomerForMobile listOrders={listOrders} />
                 ) : (
                     <div>
                         <StyledColumnContainer
