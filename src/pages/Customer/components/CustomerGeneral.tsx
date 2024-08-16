@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { Button, Form, Row } from 'antd';
+import { App, Button, Form, Row } from 'antd';
 import DatePickerForm from 'components/atom/Form/date';
 import InputForm from 'components/atom/Form/input';
 import InputPhoneNumberForm from 'components/atom/Form/inputPhoneNumber';
@@ -16,15 +16,25 @@ import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { RootState } from 'store';
 import { formatPhoneNumber } from 'utils/number';
+import weekday from 'dayjs/plugin/weekday';
+import localeData from 'dayjs/plugin/localeData';
+import LoadingModal from 'components/modal/loadingModal';
 
-export default function CustomerGeneral() {
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+export default function CustomerGeneral({
+    setCustomerInfo,
+}: {
+    setCustomerInfo: any;
+}) {
     const { theme } = useTheme();
     const [form] = Form.useForm();
-    const [onUpdateCustomerInfomation] = useMutation(
+    const [onUpdateCustomerInfomation, { loading }] = useMutation(
         UPDATE_CUSTOMER_INFOMATION,
     );
     const [searchParams] = useSearchParams();
     const customerId = searchParams.get('customerId');
+    const { notification } = App.useApp();
     const handleSubmit = (values: any) => {
         onUpdateCustomerInfomation({
             variables: {
@@ -34,17 +44,25 @@ export default function CustomerGeneral() {
                 date_of_birth: values.dob,
             },
         })
-            .then((res) => {
-                console.log(res);
+            .then(() => {
+                notification.success({
+                    message: 'Update success',
+                    placement: 'topRight',
+                });
+                setIsEdit(false);
             })
-            .catch((err) => {
-                console.log(err);
+            .catch(() => {
+                notification.error({
+                    message: 'Update failed',
+                    placement: 'topRight',
+                });
             });
     };
     // const [isCancel, setIsCancel] = React.useState(false);
     const [isEdit, setIsEdit] = React.useState(false);
     const { isMerchant } = useSelector((state: RootState) => state.auth);
-    const [onGetCustomerDetail, { data }] = useLazyQuery(GET_CUSTOMER_DETAIL);
+    const [onGetCustomerDetail, { data, loading: loadingGet }] =
+        useLazyQuery(GET_CUSTOMER_DETAIL);
 
     // Get value from params
 
@@ -67,6 +85,14 @@ export default function CustomerGeneral() {
                         ),
                         gender: res.data?.merchantGetCustomer?.gender,
                     });
+                    setCustomerInfo({
+                        name:
+                            res.data?.merchantGetCustomer?.firstname +
+                            ' ' +
+                            res.data?.merchantGetCustomer?.lastname,
+                        status: res.data?.merchantGetCustomer?.status,
+                        group_id: res.data?.merchantGetCustomer?.group_id,
+                    });
                 })
                 .catch((err) => {
                     console.log(err);
@@ -83,6 +109,7 @@ export default function CustomerGeneral() {
             layout="vertical"
             size="large"
         >
+            <LoadingModal showLoading={loading || loadingGet} />
             <div>
                 <Row
                     style={{ height: 100, justifyContent: 'flex-end', gap: 20 }}
