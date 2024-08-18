@@ -33,3 +33,17 @@ export const AnnaBellStyle = styled.div`
     display: flex;
     margin-right: 10px;
 `;
+
+export const SwitchContainer = styled.div`
+    .ant-switch-handle {
+        height: 26px;
+        width: 26px;
+        border-radius: 100px;
+        overflow: hidden;
+    }
+    .ant-switch-checked {
+        .ant-switch-handle {
+            inset-inline-start: calc(100% - 30px);
+        }
+    }
+`;

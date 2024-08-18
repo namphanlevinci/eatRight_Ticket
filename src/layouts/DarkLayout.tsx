@@ -1,4 +1,4 @@
-import { Col, Layout, Popover, Row, Spin } from 'antd';
+import { Col, Layout, Popover, Row, Spin, Switch } from 'antd';
 import { Text } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -18,7 +18,12 @@ import blackNoti from 'assets/icons/black-noti.png';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { format } from 'date-fns';
 import { GET_NOTIFICATION } from 'graphql/notification';
-import { NotiTitle, NotificationItem, AnnaBellStyle } from './styled';
+import {
+    NotiTitle,
+    NotificationItem,
+    AnnaBellStyle,
+    SwitchContainer,
+} from './styled';
 import DrawerMenu from './components/DrawerMenu';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
@@ -35,6 +40,7 @@ export const DarkLayout = (props: Props) => {
         lastname,
         restaurant_address,
         restaurant_name,
+        isMerchant,
     } = useSelector((state: RootState) => state.auth);
     const [onGetInfo] = useLazyQuery(USER_INFO);
     const [onGetRestaurent] = useLazyQuery(GET_RESTAURANT);
@@ -237,6 +243,31 @@ export const DarkLayout = (props: Props) => {
                         {/* <Button onClick={toggleTheme} title="Change Theme" /> */}
                         {isLogged && (
                             <>
+                                {isMerchant && (
+                                    <SwitchContainer
+                                        style={{
+                                            display: 'flex',
+                                            marginRight: 16,
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <Text style={{ fontSize: 18 }}>
+                                            Table View
+                                        </Text>
+                                        <Switch
+                                            defaultChecked
+                                            onChange={() => {
+                                                const url = `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`;
+                                                window.location.href = url;
+                                            }}
+                                            style={{
+                                                marginLeft: 5,
+                                                height: 32,
+                                                width: 72,
+                                            }}
+                                        />
+                                    </SwitchContainer>
+                                )}
                                 <Popover
                                     content={noti}
                                     title={notiTitle}
