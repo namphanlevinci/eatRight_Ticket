@@ -18,11 +18,11 @@ import CustomerIcon from 'assets/icons/customerIcon';
 import SettingV2Icon from 'assets/icons/settingV2';
 import ReceiptBillV2Icon from 'assets/icons/receiptV2Bill';
 const MenuMerchant = [
-    {
-        title: 'Go Merchant',
-        icon: <StoreIcon />,
-        to: `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`,
-    },
+    // {
+    //     title: 'Go Merchant',
+    //     icon: <StoreIcon />,
+    //     to: `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`,
+    // },
     {
         title: 'Restaurant Manager',
         icon: <StoreIcon />,
