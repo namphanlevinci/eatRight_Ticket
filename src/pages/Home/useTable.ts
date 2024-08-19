@@ -67,19 +67,18 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
             tableData = data2?.getTablesByStore;
         }
         if (tableData && Array.isArray(tableData)) {
-            const counterTable = tableData.find(
+            const counterTable = tableData?.find(
                 (data: any) => data?.name === 'Counter',
             );
-            const tableNormal = tableData.filter(
+            const tableNormal = tableData?.filter(
                 (data: any) => data?.name !== 'Counter',
             );
             let tableList = tableNormal;
             if (searchText) {
-                tableList = tableNormal.filter(
-                    (table: any) =>
-                        table?.name
-                            ?.toLowerCase()
-                            .includes(searchText.toLowerCase()),
+                tableList = tableNormal.filter((table: any) =>
+                    table?.name
+                        ?.toLowerCase()
+                        .includes(searchText.toLowerCase()),
                 );
             }
             const tempTableList = new Array(30).fill(null);
