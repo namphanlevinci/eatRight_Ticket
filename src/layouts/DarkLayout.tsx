@@ -251,9 +251,11 @@ export const DarkLayout = (props: Props) => {
                                             alignItems: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontSize: 18 }}>
-                                            Table View
-                                        </Text>
+                                        {!isMobile && (
+                                            <Text style={{ fontSize: 18 }}>
+                                                Table View
+                                            </Text>
+                                        )}
                                         <Switch
                                             defaultChecked
                                             onChange={() => {

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Drawer, Modal } from 'antd';
 import BoardMenuIcon from 'assets/icons/boardMenu';
 
-import StoreIcon from 'layouts/icons/storeIcon';
+// import StoreIcon from 'layouts/icons/storeIcon';
 import MenuManagerIcon from 'layouts/icons/menuManagerIcon';
-import PromotionsIcon from 'layouts/icons/promotions';
-import AccountIcon from 'layouts/icons/accountIcon';
+// import PromotionsIcon from 'layouts/icons/promotions';
+// import AccountIcon from 'layouts/icons/accountIcon';
 import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
 import { Header, RenderItem, RenderLogout } from './components';
@@ -23,26 +23,26 @@ const MenuMerchant = [
     //     icon: <StoreIcon />,
     //     to: `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`,
     // },
-    {
-        title: 'Restaurant Manager',
-        icon: <StoreIcon />,
-        to: BASE_ROUTER.RESTAURENT_MANAGER,
-    },
+    // {
+    //     title: 'Restaurant Manager',
+    //     icon: <StoreIcon />,
+    //     to: BASE_ROUTER.RESTAURENT_MANAGER,
+    // },
     {
         title: 'Menu Manager',
         icon: <MenuManagerIcon />,
         to: BASE_ROUTER.RESTAURENT_MANAGER,
     },
-    {
-        title: 'Promotions',
-        icon: <PromotionsIcon />,
-        to: BASE_ROUTER.RESTAURENT_MANAGER,
-    },
-    {
-        title: 'Customer Information',
-        icon: <AccountIcon />,
-        to: BASE_ROUTER.CUSTOMER_LIST,
-    },
+    // {
+    //     title: 'Promotions',
+    //     icon: <PromotionsIcon />,
+    //     to: BASE_ROUTER.RESTAURENT_MANAGER,
+    // },
+    // {
+    //     title: 'Customer Information',
+    //     icon: <AccountIcon />,
+    //     to: BASE_ROUTER.CUSTOMER_LIST,
+    // },
 ];
 const MenuList = [
     {

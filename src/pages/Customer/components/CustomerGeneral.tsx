@@ -99,6 +99,13 @@ export default function CustomerGeneral({
                 });
         }
     }, [customerId]);
+    const openEditMode = () => {
+        setIsEdit(true);
+        console.log(data);
+        if (!data?.merchantGetCustomer?.date_of_birth) {
+            form.setFieldValue('dob', dayjs('2000-01-01'));
+        }
+    };
     return (
         <Form
             form={form}
@@ -176,7 +183,7 @@ export default function CustomerGeneral({
                                     alignItems: 'center',
                                     height: 48,
                                 }}
-                                onClick={() => setIsEdit(true)}
+                                onClick={openEditMode}
                             >
                                 <Text
                                     style={{
