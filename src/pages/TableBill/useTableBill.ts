@@ -53,6 +53,13 @@ export const useTableBill = (isGoBack = true) => {
     const navigation = useNavigate();
     const [pos_Loading, setPos_Loading] = React.useState<boolean>(false);
     useEffect(() => {
+        if (pos_Loading) {
+            setTimeout(() => {
+                onCloseProcessingPayment();
+            }, 60000);
+        }
+    }, [pos_Loading]);
+    useEffect(() => {
         emitter.on('arise_result', (msg: any) => {
             if (orderInfo?.order_number === msg?.additional_data.order_number) {
                 setPos_Loading(false);
