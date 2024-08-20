@@ -23,6 +23,7 @@ import RenderNote from './RenderNote';
 import { useTheme } from 'context/themeContext';
 import { DividedDashed } from 'pages/BillDetail/styled';
 import { roundTo } from 'utils/number';
+import ModalInput from 'components/modal/ModalInput';
 export default function CartItemList({
     data,
     cartInfo,
@@ -203,6 +204,10 @@ export default function CartItemList({
         () => (total + totalDiscount) * (Tax + 1) + (data?.tip_amount || 0),
         [total, totalDiscount, Tax, data],
     );
+    const [showNoteModal, setShowNoteModalState] = useState({
+        show: false,
+        index: 0,
+    });
     return data ? (
         <StyledCartBorder
             style={{
@@ -220,6 +225,17 @@ export default function CartItemList({
                     createCart(e)
                 }
                 table={table}
+            />
+            <ModalInput
+                title="Input your note"
+                isModalOpen={showNoteModal.show}
+                onCancel={() =>
+                    setShowNoteModalState({ ...showNoteModal, show: false })
+                }
+                onSubmit={(e: any) => {
+                    setShowNoteModalState({ ...showNoteModal, show: false });
+                    InputNoteItemFromCart(showNoteModal.index, e);
+                }}
             />
             <div style={{ minHeight: 200 }}>
                 {data?.items?.map((item: any, index: any) => {
@@ -311,15 +327,10 @@ export default function CartItemList({
                                                         height: 24,
                                                     }}
                                                     onClick={() => {
-                                                        const note =
-                                                            prompt(
-                                                                'Note',
-                                                                item?.note,
-                                                            ) || item?.note;
-                                                        InputNoteItemFromCart(
-                                                            index,
-                                                            note,
-                                                        );
+                                                        setShowNoteModalState({
+                                                            index: index,
+                                                            show: true,
+                                                        });
                                                     }}
                                                 >
                                                     {item.isUnsend && (
