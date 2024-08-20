@@ -30,12 +30,35 @@ export default function TableSplitBillCheckOut() {
     const [loading, setLoading] = useState(false);
     const [selectGuest, setSelectGuest] = React.useState<InvoiceWithSplit>();
     const { theme } = useTheme();
+    const [loadingPosResult, setLoadingPosResult] = useState(false);
     useEffect(() => {
         const dataTmp = JSON.parse(dataStorage || '{}');
-        if (dataTmp) {
-            setSelectGuest({ ...dataTmp.invoice[0], index: 0 });
+        const selectGuestIndex = dataTmp.invoice.findIndex(
+            (value: InvoiceWithSplit) => value.state === 'UNPAID',
+        );
+        if (selectGuestIndex) {
+            setSelectGuest({
+                ...dataTmp.invoice[selectGuestIndex],
+                index: selectGuestIndex,
+            });
+        } else {
+            setSelectGuest({
+                ...dataTmp.invoice[0],
+                index: 0,
+            });
         }
     }, []);
+    let intervalId: any = null;
+    useEffect(() => {
+        if (loadingPosResult) {
+            intervalId = setInterval(ReloadInvoice, 30000);
+        }
+        return () => {
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        };
+    }, [loadingPosResult, intervalId]);
     const handlePayment = (paymentMethod: string) => {
         if (paymentMethod === 'cash') {
             onPaymentWithCash({
@@ -101,6 +124,7 @@ export default function TableSplitBillCheckOut() {
     };
     const handlePaymentWithPOS = (id: string) => {
         setLoading(true);
+        setLoadingPosResult(true);
         onPaymentWithPOS({
             variables: {
                 invoice_number: selectGuest?.number,
@@ -111,38 +135,64 @@ export default function TableSplitBillCheckOut() {
     const [onGetInvoices] = useLazyQuery(GET_INVOICES);
     useEffect(() => {
         emitter.on('arise_result', (msg: any) => {
+            if (msg.additional_data?.invoice_number !== selectGuest?.number) {
+                return;
+            }
             if (msg?.additional_data?.payment_status === 'success') {
                 showModalSuccess();
-                onGetInvoices({
-                    variables: {
-                        OrderNumber: data.order.order_number,
-                    },
-                    fetchPolicy: 'no-cache',
-                })
-                    .then((res) => {
-                        const newData = res?.data?.merchantGetOrderInvoices;
-                        setData(newData);
-                        localStorage.setItem(
-                            'split_bill_data',
-                            JSON.stringify(newData),
-                        );
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        // showError(msg?.message, `${orderInfo?.order_id}`);
-                    })
-                    .finally(() => {
-                        setLoading(false);
-                    });
+                ReloadInvoice();
             } else {
                 setLoading(false);
                 showError(msg?.message);
             }
+            setLoadingPosResult(false);
         });
         return () => {
             emitter.off('arise_result');
         };
-    }, []);
+    }, [selectGuest]);
+    const ReloadInvoice = () => {
+        onGetInvoices({
+            variables: {
+                OrderNumber: data.order.order_number,
+            },
+            fetchPolicy: 'no-cache',
+        })
+            .then((res) => {
+                const newData = res?.data?.merchantGetOrderInvoices;
+                setData(newData);
+                localStorage.setItem(
+                    'split_bill_data',
+                    JSON.stringify(newData),
+                );
+                const selectGuestIndex = newData.invoice.findIndex(
+                    (value: InvoiceWithSplit) => value.state === 'UNPAID',
+                );
+                if (
+                    selectGuestIndex &&
+                    newData.invoice[selectGuestIndex].state === 'PAID'
+                ) {
+                    setLoadingPosResult(false);
+                    setLoading(false);
+                }
+                if (
+                    selectGuestIndex &&
+                    selectGuestIndex !== selectGuest?.index
+                ) {
+                    setSelectGuest({
+                        ...newData.invoice[selectGuestIndex],
+                        index: selectGuestIndex,
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                // showError(msg?.message, `${orderInfo?.order_id}`);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
     const showModalSuccess = () => {
         modal.success({
             title: 'Payment Success',
@@ -180,7 +230,10 @@ export default function TableSplitBillCheckOut() {
             }}
         >
             {contextHolder}
-            <LoadingModalPayment showLoading={loading} />
+            <LoadingModalPayment
+                showLoading={loading}
+                onClose={() => setLoading(false)}
+            />
             <ModalPosDevices
                 isVisibleModalPos={showPosModal}
                 setVisibleMoalPos={setShowPosModal}

@@ -47,7 +47,7 @@ export const RenderCart = ({ cart }: { cart: InvoiceWithSplit }) => {
                 <DividedSolid color={theme.nEUTRALLine} />
                 <RenderText
                     title="Tip"
-                    value={`$${cart?.total?.tip_amount?.value?.toFixed(2)}`}
+                    value={`$${(cart?.total?.tip_amount?.value || 0).toFixed(2)}`}
                 />
                 <RenderText
                     title="Grand Total"

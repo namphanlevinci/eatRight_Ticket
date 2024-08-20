@@ -63,6 +63,7 @@ export default function ColRight({
         isVisibleModalPosDJV,
         setVisibleMoalPosDJV,
         handlePOSPaymentWithDJV,
+        onCloseProcessingPayment,
     } = useTableBill();
 
     useEffect(() => {
@@ -180,6 +181,7 @@ export default function ColRight({
             <LoadingModalPayment
                 showLoading={pos_Loading}
                 title="POS Payment Processing ..."
+                onClose={onCloseProcessingPayment}
             />
             {isMobile && (
                 <Row justify={'end'} style={{ marginTop: 20 }}>

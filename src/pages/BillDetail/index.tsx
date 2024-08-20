@@ -33,20 +33,60 @@ import { ButtonSelectBill } from './components/ButtonSelectBill';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
 export default function index() {
-    const [getOrderDetail, { data, loading }] = useLazyQuery(GET_ORDER_DETAIL, {
-        fetchPolicy: 'cache-and-network',
-    });
+    const [getOrderDetail, { data, loading, refetch }] = useLazyQuery(
+        GET_ORDER_DETAIL,
+        {
+            fetchPolicy: 'cache-and-network',
+        },
+    );
     const [onGetInvoices, { data: dataSplitBill }] = useLazyQuery(GET_INVOICES);
     const [searchParams] = useSearchParams();
     const [showPendingPayment, setShowPendingPayment] = React.useState(false);
     const orderId = searchParams.get('orderId');
     const order_ID = searchParams.get('order_id');
+    const [loadingPosResult, setLoadingPosResult] = useState(false);
+    let intervalId: any = null;
+    useEffect(() => {
+        if (loadingPosResult) {
+            intervalId = setInterval(refetch, 30000);
+        }
+        return () => {
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        };
+    }, [loadingPosResult, intervalId]);
     const [onSendBillToEmail, { loading: sendLoading1 }] = useMutation(
         SEND_RECEIPT_TO_EMAIL,
     );
     const [onSendBillToPhone, { loading: sendLoading2 }] = useMutation(
         SEND_RECEIPT_TO_PHONENUMBER,
     );
+    useEffect(() => {
+        if (data?.orderDetail.payment_method_code === 'pos') {
+            if (data?.orderDetail.status === 'pending_payment') {
+                setLoadingPosResult(true);
+            } else {
+                setLoadingPosResult(false);
+            }
+        }
+        emitter.on('arise_result', (msg: any) => {
+            if (
+                data?.orderDetail?.order_number ===
+                msg?.additional_data.order_number
+            ) {
+                if (msg?.additional_data?.payment_status === 'success') {
+                    showModalSuccess(`${btoa(data?.orderDetail?.id)}`);
+                    setLoadingPosResult(false);
+                } else {
+                    showError(msg?.message, `${btoa(data?.orderDetail?.id)}`);
+                }
+            }
+        });
+        return () => {
+            emitter.off('arise_result');
+        };
+    }, [data?.orderDetail]);
     useEffect(() => {
         if (orderId !== null && orderId !== 'undefined') {
             getOrderDetail({ variables: { id: atob(orderId) } }).then((res) => {
@@ -189,6 +229,9 @@ export default function index() {
         isVisibleModalPosDJV,
         setVisibleMoalPosDJV,
         handlePOSPaymentWithDJV,
+        setPos_Loading,
+        showModalSuccess,
+        showError,
     } = useTableBill(false);
     const modalConfirm = (paymentMethod = 'cashondelivery') => {
         modal.confirm({
@@ -359,10 +402,12 @@ export default function index() {
                 <LoadingModalPayment
                     showLoading={pos_Loading}
                     title="POS Payment Processing ..."
+                    onClose={() => setPos_Loading(false)}
                 />
                 <LoadingModal showLoading={sendLoading1 || sendLoading2} />
                 <LazyLoadedScripts />
                 <ModalPaymentPending
+                    title="Payment in progress"
                     showLoading={showPendingPayment}
                     data={data?.orderDetail}
                     onSkip={() => setShowPendingPayment(false)}

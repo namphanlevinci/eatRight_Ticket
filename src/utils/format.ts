@@ -1,5 +1,5 @@
 export function formatNumberWithCommas(number: number) {
-    const formattedNumber = number.toFixed(2);
+    const formattedNumber = number?.toFixed(2);
     return formattedNumber;
 }
 
