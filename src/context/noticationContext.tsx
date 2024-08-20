@@ -57,6 +57,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 onSocket({
                     variables: {
                         socketId,
+                        type: 'waiter',
                     },
                 })
                     .then((res) => {
