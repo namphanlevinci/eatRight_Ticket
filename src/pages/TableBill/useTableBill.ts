@@ -54,7 +54,7 @@ export const useTableBill = (isGoBack = true) => {
     const [pos_Loading, setPos_Loading] = React.useState<boolean>(false);
     useEffect(() => {
         emitter.on('arise_result', (msg: any) => {
-            if (orderInfo?.order_id) {
+            if (orderInfo?.order_number === msg?.additional_data.order_number) {
                 setPos_Loading(false);
                 if (msg?.additional_data?.payment_status === 'success') {
                     showModalSuccess(`${orderInfo?.order_id}`);
@@ -84,6 +84,10 @@ export const useTableBill = (isGoBack = true) => {
                 navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${order_id}`);
             },
         });
+    };
+    const onCloseProcessingPayment = () => {
+        setPos_Loading(false);
+        navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${orderInfo?.order_id}`);
     };
     const showModalSuccess = (order_id: string) => {
         modal.success({
@@ -355,8 +359,11 @@ export const useTableBill = (isGoBack = true) => {
         handleSetTip,
         setCart,
         handlePOSPaymentWithDJV,
-
         setVisibleMoalPosDJV,
         isVisibleModalPosDJV,
+        onCloseProcessingPayment,
+        setPos_Loading,
+        showModalSuccess,
+        showError,
     };
 };

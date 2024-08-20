@@ -48,6 +48,23 @@ export default function index() {
         SEND_RECEIPT_TO_PHONENUMBER,
     );
     useEffect(() => {
+        emitter.on('arise_result', (msg: any) => {
+            if (
+                data?.orderDetail?.order_number ===
+                msg?.additional_data.order_number
+            ) {
+                if (msg?.additional_data?.payment_status === 'success') {
+                    showModalSuccess(`${btoa(data?.orderDetail?.id)}`);
+                } else {
+                    showError(msg?.message, `${data?.orderDetail?.id}`);
+                }
+            }
+        });
+        return () => {
+            emitter.off('arise_result');
+        };
+    }, [data?.orderDetail]);
+    useEffect(() => {
         if (orderId !== null && orderId !== 'undefined') {
             getOrderDetail({ variables: { id: atob(orderId) } }).then((res) => {
                 onGetInvoices({
@@ -189,6 +206,9 @@ export default function index() {
         isVisibleModalPosDJV,
         setVisibleMoalPosDJV,
         handlePOSPaymentWithDJV,
+        setPos_Loading,
+        showModalSuccess,
+        showError,
     } = useTableBill(false);
     const modalConfirm = (paymentMethod = 'cashondelivery') => {
         modal.confirm({
@@ -359,10 +379,12 @@ export default function index() {
                 <LoadingModalPayment
                     showLoading={pos_Loading}
                     title="POS Payment Processing ..."
+                    onClose={() => setPos_Loading(false)}
                 />
                 <LoadingModal showLoading={sendLoading1 || sendLoading2} />
                 <LazyLoadedScripts />
                 <ModalPaymentPending
+                    title="Payment in progress"
                     showLoading={showPendingPayment}
                     data={data?.orderDetail}
                     onSkip={() => setShowPendingPayment(false)}
