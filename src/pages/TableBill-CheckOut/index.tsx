@@ -135,7 +135,6 @@ export default function TableSplitBillCheckOut() {
     const [onGetInvoices] = useLazyQuery(GET_INVOICES);
     useEffect(() => {
         emitter.on('arise_result', (msg: any) => {
-            console.log(msg, selectGuest);
             if (msg.additional_data?.invoice_number !== selectGuest?.number) {
                 return;
             }
@@ -151,7 +150,7 @@ export default function TableSplitBillCheckOut() {
         return () => {
             emitter.off('arise_result');
         };
-    }, []);
+    }, [selectGuest]);
     const ReloadInvoice = () => {
         onGetInvoices({
             variables: {
@@ -169,7 +168,10 @@ export default function TableSplitBillCheckOut() {
                 const selectGuestIndex = newData.invoice.findIndex(
                     (value: InvoiceWithSplit) => value.state === 'UNPAID',
                 );
-                if (newData.invoice[selectGuestIndex].state === 'PAID') {
+                if (
+                    selectGuestIndex &&
+                    newData.invoice[selectGuestIndex].state === 'PAID'
+                ) {
                     setLoadingPosResult(false);
                     setLoading(false);
                 }
