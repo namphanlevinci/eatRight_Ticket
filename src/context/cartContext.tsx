@@ -1,6 +1,8 @@
+/* eslint-disable no-else-return */
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { CartItemType, CartTableType, ItemType } from './cartType';
 import { useSearchParams } from 'react-router-dom';
+import { App } from 'antd';
 
 // Định nghĩa loại dữ liệu cho sản phẩm trong giỏ hàng
 
@@ -325,17 +327,41 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         newCartTable[indexTable].carts = newCartItems;
         setCartItems(newCartTable);
     };
+    const { modal } = App.useApp();
+    const onRemoveItem = async (index: number) => {
+        await modal.confirm({
+            title: 'Do you want to this item remove?',
+            onOk: () => {
+                const cartIndex = parseInt(
+                    searchParams.get('cartIndex') || '0',
+                );
+                const newCartItems = [...cartItems[indexTable].carts];
+                let total =
+                    newCartItems[cartIndex].prices?.new_items_total?.value || 0;
+                total -=
+                    newCartItems[cartIndex].items[index].prices.price.value;
+                newCartItems[cartIndex].items.splice(index, 1);
+                newCartItems[cartIndex].prices = {
+                    ...newCartItems[cartIndex].prices,
+                    new_items_total: {
+                        value: total,
+                    },
+                };
+                const newCartTable = [...cartItems];
+                newCartTable[indexTable].carts = newCartItems;
+                setCartItems(newCartTable);
+            },
+            centered: true,
+        });
+    };
     const updateQuantityItemFromCart = (index: number, quantity: number) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems[indexTable].carts];
         let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
 
         if (quantity === 0) {
-            if (confirm('Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?')) {
-                total -=
-                    newCartItems[cartIndex].items[index].prices.price.value;
-                newCartItems[cartIndex].items.splice(index, 1);
-            }
+            onRemoveItem(index);
+            return;
         } else {
             if (newCartItems[cartIndex].items[index].quantity > quantity) {
                 total -=
