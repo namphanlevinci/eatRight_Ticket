@@ -146,6 +146,7 @@ export default function TableSplitBillCheckOut() {
                 setLoading(false);
                 showError(msg?.message);
             }
+            setLoadingPosResult(false);
         });
         return () => {
             emitter.off('arise_result');
