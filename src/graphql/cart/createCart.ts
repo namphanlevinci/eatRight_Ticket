@@ -17,6 +17,7 @@ export const CREATE_CART = gql`
             is_counter: $is_counter
         ) {
             cart {
+                is_active
                 id
                 email
                 firstname

@@ -9,6 +9,7 @@ export const ADD_MORE_ITEM_TO_CART = gql`
             cart {
                 id
                 email
+                is_active
                 firstname
                 lastname
                 numberOfCustomer

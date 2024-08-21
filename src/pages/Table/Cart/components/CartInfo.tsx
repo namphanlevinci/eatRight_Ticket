@@ -76,7 +76,12 @@ export default function CartInfo({ table }: { table?: any }) {
                 }) => {
                     setName(e.username);
                     setNoC(e.numberOfCustomer);
-                    setCustomerName(e.username, selectedCart, indexTable);
+                    setCustomerName(
+                        e.username,
+                        selectedCart,
+                        indexTable,
+                        e.numberOfCustomer,
+                    );
                     setShowModal(false);
                     updateCustomerInfo({
                         name: e.username,
