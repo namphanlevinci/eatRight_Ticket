@@ -4,10 +4,16 @@ export type CartTableType = {
 };
 
 export type CartItemType = {
+    is_active?: boolean;
+    order_number?: string;
+    order_id?: string;
     id: string;
     items: ItemType[];
     firstname: string;
     numberOfCustomer: number;
+    order?: {
+        items?: OrderItemType[];
+    };
     applied_coupons?:
         | {
               code: string;
@@ -58,6 +64,18 @@ export type CartItemType = {
         new_items_total?: {
             value: number;
         };
+    };
+};
+export type OrderItemType = {
+    id?: string;
+    name?: string;
+    qty?: number;
+    price?: number;
+    serving_status?: string;
+    options?: {
+        name: string;
+        qty: number;
+        price: number;
     };
 };
 export type ItemType = {

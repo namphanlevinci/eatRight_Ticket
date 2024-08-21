@@ -3,6 +3,9 @@ import { gql } from '@apollo/client';
 export const GET_CART_BY_ID = gql`
     query merchantCart($cartId: String!) {
         merchantCart(cart_id: $cartId) {
+            is_active
+            order_number
+            order_id
             id
             email
             firstname
@@ -76,6 +79,20 @@ export const GET_CART_BY_ID = gql`
                 code
             }
             tip_amount
+            order {
+                items {
+                    id
+                    name
+                    qty
+                    price
+                    serving_status
+                    options {
+                        name
+                        qty
+                        price
+                    }
+                }
+            }
             prices {
                 subtotal_including_tax {
                     value

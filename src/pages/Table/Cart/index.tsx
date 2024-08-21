@@ -8,6 +8,7 @@ import LoadingModal from 'components/modal/loadingModal';
 import { useCartTable } from './useGetCart';
 import { useEffect, useState } from 'react';
 import ChangeTableModal from 'components/modal/changeTableModal';
+import { useMenuContext } from '../context/MenuContext';
 
 export default function OrderCart({ table }: { table: any }) {
     const {
@@ -21,6 +22,7 @@ export default function OrderCart({ table }: { table: any }) {
         setSelectedCart,
         tableId,
     } = useCartTable();
+    const { setShowMenu } = useMenuContext();
     const [modalChangeTable, setModalChangeTableOpen] = useState(false);
     useEffect(() => {
         if (!loading && listCart.length === 0) {
@@ -37,6 +39,15 @@ export default function OrderCart({ table }: { table: any }) {
             return () => clearTimeout(timeoutId);
         }
     }, [listCart, loading]);
+    useEffect(() => {
+        if (cartItems.length > 0 && indexTable !== -1 && selectedCart !== -1) {
+            if (cartItems[indexTable]?.carts[selectedCart]?.is_active) {
+                setShowMenu(true);
+            } else {
+                setShowMenu(false);
+            }
+        }
+    }, [cartItems, indexTable, selectedCart]);
     return (
         <div style={{ marginBottom: 20 }}>
             <LoadingModal showLoading={loading} />

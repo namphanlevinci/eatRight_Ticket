@@ -1,5 +1,5 @@
 import { CusTomRow, StyledCartBorder } from '../styled';
-import { Col, Divider, Row } from 'antd';
+import { App, Col, Divider, Row } from 'antd';
 import { Text } from 'components/atom/Text';
 import UpDownNumber from 'components/UpdownNumber';
 import { Button } from 'components/atom/Button';
@@ -24,6 +24,8 @@ import { useTheme } from 'context/themeContext';
 import { DividedDashed } from 'pages/BillDetail/styled';
 import { roundTo } from 'utils/number';
 import ModalInput from 'components/modal/ModalInput';
+import { useMutation } from '@apollo/client';
+import { CLEAN_UP_CART_TABLE } from 'graphql/table/cleanTable';
 export default function CartItemList({
     data,
     cartInfo,
@@ -43,6 +45,7 @@ export default function CartItemList({
 
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
+        removeCartIndex,
     } = useCart();
     const { addCart, loading, addMoreCart } = useAddCart();
     const navigation = useNavigate();
@@ -175,7 +178,7 @@ export default function CartItemList({
             addMoreCart(data.id, carts);
         }
     };
-    const { setUpdate, targetRef } = useMenuContext();
+    const { setUpdate, targetRef, showMenu } = useMenuContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { theme } = useTheme();
     const total = useMemo(
@@ -208,6 +211,47 @@ export default function CartItemList({
         show: false,
         index: 0,
     });
+    const goViewBill = (id: string) => {
+        navigation(`${BASE_ROUTER.BILL_DETAIL}?order_id=${id}`);
+    };
+    const [onCleanUpCart, { loading: loadingClean }] =
+        useMutation(CLEAN_UP_CART_TABLE);
+    const { modal } = App.useApp();
+    const onCompleteService = () => {
+        modal.confirm({
+            title: 'Do you want to complete service ?',
+            onOk: () => {
+                onCleanUpCart({
+                    variables: {
+                        cartId: data?.id,
+                        tableId: table?.id,
+                    },
+                })
+                    .then(() => {
+                        modal.success({
+                            centered: true,
+                            title: 'Complete service successfully',
+                            onOk: () => {
+                                goViewBill(data?.order_id);
+                            },
+                            onCancel: () => {
+                                goTable();
+                            },
+                            okCancel: true,
+
+                            cancelText: 'Close',
+                        });
+                    })
+                    .catch((err) => {
+                        console.log('error', err);
+                    });
+            },
+            centered: true,
+        });
+    };
+    const goTable = () => {
+        removeCartIndex(selectedCart);
+    };
     return data ? (
         <StyledCartBorder
             style={{
@@ -217,7 +261,7 @@ export default function CartItemList({
                 border: `1px solid ${theme.nEUTRALLine}`,
             }}
         >
-            <LoadingModal showLoading={loading} />
+            <LoadingModal showLoading={loading || loadingClean} />
             <InfoCartModal
                 isModalOpen={isModalOpen}
                 onCancel={() => setIsModalOpen(!isModalOpen)}
@@ -239,6 +283,9 @@ export default function CartItemList({
             />
             <div style={{ minHeight: 200 }}>
                 {data?.items?.map((item: any, index: any) => {
+                    const orderItems = data.order.items.find(
+                        (i: any) => item.product.name == i.name,
+                    );
                     return (
                         <div key={index}>
                             <Row align={'middle'} justify={'space-between'}>
@@ -253,7 +300,9 @@ export default function CartItemList({
                                                 {...getTagStyled(
                                                     item.isUnsend
                                                         ? 'New'
-                                                        : item?.status,
+                                                        : orderItems
+                                                          ? orderItems.serving_status
+                                                          : item?.status,
                                                     theme,
                                                 )}
                                             />
@@ -347,6 +396,7 @@ export default function CartItemList({
                                                     );
                                                 }}
                                                 isSend={!item.isUnsend}
+                                                disableUp={!showMenu}
                                             />
                                         </Row>
                                     </Row>
@@ -623,22 +673,37 @@ export default function CartItemList({
                 <Col style={ismobile ? { width: '100%' } : {}}>
                     <Row justify={'space-between'}>
                         <Col>
-                            <Button
-                                style={{
-                                    width: 154,
-                                    height: 44,
-                                    gap: 10,
-                                    border: `0px solid ${theme.pRIMARY6Primary}`,
-                                }}
-                                onClick={() => isNewItem && SendCart()}
-                                isDisable={!isNewItem}
-                                disabled={!isNewItem}
-                                background={theme.pRIMARY6Primary}
-                                color={theme.nEUTRALBase}
-                            >
-                                <CartIcon isDisabled={!isNewItem} />
-                                Send
-                            </Button>
+                            {showMenu ? (
+                                <Button
+                                    style={{
+                                        width: 154,
+                                        height: 44,
+                                        gap: 10,
+                                        border: `0px solid ${theme.pRIMARY6Primary}`,
+                                    }}
+                                    onClick={() => isNewItem && SendCart()}
+                                    isDisable={!isNewItem}
+                                    disabled={!isNewItem}
+                                    background={theme.pRIMARY6Primary}
+                                    color={theme.nEUTRALBase}
+                                >
+                                    <CartIcon isDisabled={!isNewItem} />
+                                    Send
+                                </Button>
+                            ) : (
+                                <Button
+                                    style={{
+                                        width: 154,
+                                        height: 44,
+                                        border: `0px solid ${theme.pRIMARY6Primary}`,
+                                    }}
+                                    onClick={() => goViewBill(data?.order_id)}
+                                    background={theme.pRIMARY6Primary}
+                                    color={theme.nEUTRALBase}
+                                >
+                                    View Bill
+                                </Button>
+                            )}
                         </Col>
                         <Col>
                             {!isNewItem && data?.items?.length > 0 ? (
@@ -683,21 +748,39 @@ export default function CartItemList({
                     </Row>
                     <Row>
                         {isAllDone ? (
-                            <Button
-                                style={{
-                                    width: '100%',
-                                    height: 44,
-                                    border: 0,
-                                }}
-                                onClick={goBill}
-                                isDisable={
-                                    isNewItem || data?.items?.length === 0
-                                }
-                                background={theme.pRIMARY6Primary}
-                                color={theme.nEUTRALBase}
-                            >
-                                Bill
-                            </Button>
+                            showMenu ? (
+                                <Button
+                                    style={{
+                                        width: '100%',
+                                        height: 44,
+                                        border: 0,
+                                    }}
+                                    onClick={goBill}
+                                    isDisable={
+                                        isNewItem || data?.items?.length === 0
+                                    }
+                                    background={theme.pRIMARY6Primary}
+                                    color={theme.nEUTRALBase}
+                                >
+                                    Bill
+                                </Button>
+                            ) : (
+                                <Button
+                                    style={{
+                                        width: '100%',
+                                        height: 44,
+                                        border: 0,
+                                    }}
+                                    onClick={onCompleteService}
+                                    isDisable={
+                                        isNewItem || data?.items?.length === 0
+                                    }
+                                    background={theme.pRIMARY6Primary}
+                                    color={theme.nEUTRALBase}
+                                >
+                                    Complete Service
+                                </Button>
+                            )
                         ) : (
                             <Button
                                 style={{
@@ -709,12 +792,12 @@ export default function CartItemList({
                                 onClick={() =>
                                     !cartItems[indexTable]?.carts[
                                         selectedCart
-                                    ].firstname?.includes('Guest') &&
+                                    ]?.firstname?.includes('Guest') &&
                                     goOrderList()
                                 }
                                 isDisable={cartItems[indexTable]?.carts[
                                     selectedCart
-                                ].firstname?.includes('Guest')}
+                                ]?.firstname?.includes('Guest')}
                             >
                                 Order List
                             </Button>

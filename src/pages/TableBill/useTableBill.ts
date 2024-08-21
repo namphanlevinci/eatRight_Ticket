@@ -18,6 +18,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 export const useTableBill = (isGoBack = true) => {
     const [searchParams] = useSearchParams();
     const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
+    const tableId = parseInt(searchParams.get('tableId') || '0');
     const [modal, contextHolder] = Modal.useModal();
     const { cartItems, indexTable, updateCartIndex } = useCart();
     const [onGetCart, { loading: loadingGetCart }] =
@@ -104,7 +105,17 @@ export const useTableBill = (isGoBack = true) => {
                 navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${order_id}`);
                 emitter.emit('REPAYMENT_SUCCESS');
             },
+            onCancel: () => {
+                goTable();
+            },
+            okCancel: true,
+
+            cancelText: 'Go back to table',
+            okText: 'Go bill',
         });
+    };
+    const goTable = () => {
+        navigation(`${BASE_ROUTER.TABLE}?tableId=${tableId}`);
     };
     const showModalAlertPayment = (order_id: string) => {
         const order_id_b64 = atob(order_id);

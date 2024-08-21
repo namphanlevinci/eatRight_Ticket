@@ -78,6 +78,9 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
                     .catch((error) => {
                         // Xử lý lỗi nếu có
                         console.error(error);
+                    })
+                    .finally(() => {
+                        setLoading(false);
                     });
             } else {
                 const indexTable = cartItems.findIndex(
@@ -179,10 +182,17 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
                 }
             });
     };
-    const updateStatusItemServer = ({ cartId }: { cartId: string }) => {
+    const updateStatusItemServer = ({
+        cartId,
+        itemType = 'QUOTE',
+    }: {
+        cartId: string;
+        itemType?: string;
+    }) => {
         updateStatusItem({
             variables: {
-                id: cartId,
+                id: parseInt(cartId),
+                itemType,
             },
         })
             .catch((error) => console.error(error))

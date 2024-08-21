@@ -1,4 +1,4 @@
-import { Col, Divider, Row } from 'antd';
+import { App, Col, Divider, Row } from 'antd';
 import { Text } from 'components/atom/Text';
 import React, { useEffect, useMemo } from 'react';
 import { Colors } from 'themes/colors';
@@ -13,16 +13,21 @@ import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
 import { useTheme } from 'context/themeContext';
 import { roundTo } from 'utils/number';
+import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+import { CLEAN_UP_CART_TABLE } from 'graphql/table/cleanTable';
+import { useMutation } from '@apollo/client';
 
 export default function OrderFooter({
     cart,
     loading,
     contextHolder,
+    tableId,
 }: {
     cart?: CartItemType;
     total: number;
     loading: boolean;
     contextHolder: any;
+    tableId?: any;
 }) {
     const [customerName, setCustomerName] = React.useState<any>(
         cart?.firstname,
@@ -33,6 +38,46 @@ export default function OrderFooter({
     const navigation = useNavigate();
     const goTableBill = () => {
         navigation(`${BASE_ROUTER.TABLE_BILL}${window.location.search}`);
+    };
+    const [onCleanUpCart, { loading: loadingClean }] =
+        useMutation(CLEAN_UP_CART_TABLE);
+    const { modal } = App.useApp();
+    const onCompleteService = () => {
+        modal.confirm({
+            title: 'Do you want to complete service ?',
+            onOk: () => {
+                onCleanUpCart({
+                    variables: {
+                        cartId: cart?.id,
+                        tableId: tableId,
+                    },
+                })
+                    .then(() => {
+                        modal.success({
+                            centered: true,
+                            title: 'Complete service successfully',
+                            onOk: () => {
+                                goBillDetail();
+                            },
+                            onCancel: () => {
+                                goTable();
+                            },
+                            okCancel: true,
+                            cancelText: 'Close',
+                        });
+                    })
+                    .catch((err) => {
+                        console.log('error', err);
+                    });
+            },
+            centered: true,
+        });
+    };
+    const goTable = () => {
+        navigation(`${BASE_ROUTER.TABLE}?table_id=${tableId}`);
+    };
+    const goBillDetail = () => {
+        navigation(`${BASE_ROUTER.BILL_DETAIL}?order_id=${cart?.order_id}`);
     };
     const { theme } = useTheme();
     const totalMoney = useMemo(
@@ -65,7 +110,7 @@ export default function OrderFooter({
     return (
         <Row style={{ marginTop: 20 }}>
             {contextHolder}
-            <LoadingModal showLoading={loading} />
+            <LoadingModal showLoading={loading || loadingClean} />
             <Col
                 md={{ span: 12 }}
                 xs={{ span: 24 }}
@@ -141,10 +186,25 @@ export default function OrderFooter({
                     />
                 </div>
                 <div>
-                    <ButtonSubmit
-                        title="Go Bill"
-                        onClick={() => goTableBill()}
-                    />
+                    {cart?.order_id && (
+                        <ButtonPrimary
+                            title="View Bill"
+                            onClick={() => goBillDetail()}
+                            backgroundColor="#fff"
+                            color={theme.pRIMARY6Primary}
+                        />
+                    )}
+                    {cart?.is_active ? (
+                        <ButtonSubmit
+                            title="Go Bill"
+                            onClick={() => goTableBill()}
+                        />
+                    ) : (
+                        <ButtonSubmit
+                            title="Complete Service"
+                            onClick={() => onCompleteService()}
+                        />
+                    )}
                 </div>
             </Col>
         </Row>
