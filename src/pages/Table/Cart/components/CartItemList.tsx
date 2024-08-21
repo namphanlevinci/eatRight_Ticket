@@ -55,7 +55,7 @@ export default function CartItemList({
     const selectedCart = parseInt(searchParams.get('cartIndex') || '0');
     useEffect(() => {
         if (data?.items?.length > 0) {
-            const items: ItemType[] = data?.items.filter(
+            const items: ItemType[] = data?.items?.filter(
                 (item: ItemType) => item.isUnsend,
             );
             if (items.length > 0) {
@@ -283,7 +283,7 @@ export default function CartItemList({
             />
             <div style={{ minHeight: 200 }}>
                 {data?.items?.map((item: any, index: any) => {
-                    const orderItems = data.order.items.find(
+                    const orderItems = data?.order?.items?.find(
                         (i: any) => item.product.name == i.name,
                     );
                     return (
