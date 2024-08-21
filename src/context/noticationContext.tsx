@@ -72,6 +72,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                     });
             });
             socketInstance.on('chat message', (msg) => {
+                console.log('socket', msg);
                 // Xử lý tin nhắn từ socket
                 if (msg?.additional_data?.payment_method === 'arise_pos') {
                     emitter.emit('arise_result', msg);

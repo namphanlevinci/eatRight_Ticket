@@ -115,7 +115,7 @@ const CustomerList: React.FC = () => {
                         >
                             <StyledColumn
                                 style={{
-                                    width: '5%',
+                                    width: '10%',
                                     color: theme.tEXTPrimary,
                                 }}
                             >
@@ -156,7 +156,7 @@ const CustomerList: React.FC = () => {
                             </StyledColumn>
                             <StyledColumn
                                 style={{
-                                    width: '30%',
+                                    width: '25%',
                                     color: theme.tEXTPrimary,
                                 }}
                             >
@@ -196,7 +196,7 @@ const CustomerList: React.FC = () => {
                             >
                                 <StyledColumn
                                     style={{
-                                        width: '5%',
+                                        width: '10%',
                                         color: theme.tEXTPrimary,
                                     }}
                                 >{`# ${dt?.id}`}</StyledColumn>
@@ -242,7 +242,7 @@ const CustomerList: React.FC = () => {
                                 </StyledColumn>
                                 <StyledColumn
                                     style={{
-                                        width: '30%',
+                                        width: '25%',
                                         color: theme.tEXTPrimary,
                                     }}
                                 >
@@ -259,10 +259,17 @@ const CustomerList: React.FC = () => {
                                 <StyledColumn
                                     style={{
                                         width: '10%',
-                                        color: theme.tEXTPrimary,
+                                        color:
+                                            dt?.status === 1
+                                                ? theme.pRIMARY6Primary
+                                                : theme.eRROR2Default,
                                     }}
                                 >
-                                    {dt?.status}
+                                    {dt?.status === 1
+                                        ? 'Active'
+                                        : dt?.status === 2
+                                          ? 'Blacklist'
+                                          : 'Inactive'}
                                 </StyledColumn>
                             </StyledColumnContainer>
                         ))}
