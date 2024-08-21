@@ -252,22 +252,26 @@ export const DarkLayout = (props: Props) => {
                                         }}
                                     >
                                         {!isMobile && (
-                                            <Text style={{ fontSize: 18 }}>
-                                                Table View
-                                            </Text>
+                                            <>
+                                                <Text style={{ fontSize: 18 }}>
+                                                    Table View
+                                                </Text>
+
+                                                <Switch
+                                                    defaultChecked
+                                                    onChange={() => {
+                                                        const url = `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`;
+                                                        window.location.href =
+                                                            url;
+                                                    }}
+                                                    style={{
+                                                        marginLeft: 5,
+                                                        height: 32,
+                                                        width: 72,
+                                                    }}
+                                                />
+                                            </>
                                         )}
-                                        <Switch
-                                            defaultChecked
-                                            onChange={() => {
-                                                const url = `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`;
-                                                window.location.href = url;
-                                            }}
-                                            style={{
-                                                marginLeft: 5,
-                                                height: 32,
-                                                width: 72,
-                                            }}
-                                        />
                                     </SwitchContainer>
                                 )}
                                 <Popover

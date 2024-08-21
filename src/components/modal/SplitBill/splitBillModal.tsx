@@ -10,6 +10,7 @@ import { CartItemType, ItemType } from 'context/cartType';
 import SplitBillConfirmMode from './SplitBillConfirmMode';
 import { useTheme } from 'context/themeContext';
 import { roundTo } from 'utils/number';
+import { useMediaQuery } from 'react-responsive';
 
 export enum SplitBillMode {
     EVEN = 0,
@@ -82,6 +83,9 @@ export default function SplitBillModal({
             (totalMoney + totalDiscount) * (Tax + 1) + (cart?.tip_amount || 0),
         [totalMoney, totalDiscount, Tax, cart],
     );
+    const isMobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     return (
         <>
             <ModalStyled
@@ -105,7 +109,7 @@ export default function SplitBillModal({
                             justify={'space-between'}
                             style={{ width: '100%' }}
                         >
-                            <Row style={{ gap: 40 }}>
+                            <Row style={{ gap: isMobile ? 20 : 40 }}>
                                 <RadioButton
                                     title="Split evenly"
                                     selected={mode === SplitBillMode.EVEN}
