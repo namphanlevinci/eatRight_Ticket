@@ -5,6 +5,7 @@ export const GET_CART_BY_ID = gql`
         merchantCart(cart_id: $cartId) {
             is_active
             order_number
+            order_id
             id
             email
             firstname

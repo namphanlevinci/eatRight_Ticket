@@ -80,6 +80,7 @@ export default function TableBill() {
                     cart={cart}
                     loading={loadingTable}
                     contextHolder={contextHolder}
+                    tableId={tableId}
                 />
             </div>
         </Layout>

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-export const CLEAR_UP_CART_TABLE = gql`
-    mutation {
-        merchantClearCartTable(table_id: 1)
+export const CLEAN_UP_CART_TABLE = gql`
+    mutation ($cartId: String!, $tableId: Int!) {
+        merchantClearCartTable(table_id: $tableId, cart_id: $cartId)
     }
 `;

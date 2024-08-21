@@ -41,7 +41,7 @@ export default function OrderCart({ table }: { table: any }) {
     }, [listCart, loading]);
     useEffect(() => {
         if (cartItems.length > 0 && indexTable !== -1 && selectedCart !== -1) {
-            if (cartItems[indexTable].carts[selectedCart].is_active) {
+            if (cartItems[indexTable]?.carts[selectedCart]?.is_active) {
                 setShowMenu(true);
             } else {
                 setShowMenu(false);

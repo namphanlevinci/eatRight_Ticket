@@ -1,5 +1,5 @@
 import { CusTomRow, StyledCartBorder } from '../styled';
-import { Col, Divider, Row } from 'antd';
+import { App, Col, Divider, Row } from 'antd';
 import { Text } from 'components/atom/Text';
 import UpDownNumber from 'components/UpdownNumber';
 import { Button } from 'components/atom/Button';
@@ -24,6 +24,8 @@ import { useTheme } from 'context/themeContext';
 import { DividedDashed } from 'pages/BillDetail/styled';
 import { roundTo } from 'utils/number';
 import ModalInput from 'components/modal/ModalInput';
+import { useMutation } from '@apollo/client';
+import { CLEAN_UP_CART_TABLE } from 'graphql/table/cleanTable';
 export default function CartItemList({
     data,
     cartInfo,
@@ -43,6 +45,7 @@ export default function CartItemList({
 
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
+        removeCartIndex,
     } = useCart();
     const { addCart, loading, addMoreCart } = useAddCart();
     const navigation = useNavigate();
@@ -209,10 +212,45 @@ export default function CartItemList({
         index: 0,
     });
     const goViewBill = (id: string) => {
-        navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${id}`);
+        navigation(`${BASE_ROUTER.BILL_DETAIL}?order_id=${id}`);
     };
+    const [onCleanUpCart, { loading: loadingClean }] =
+        useMutation(CLEAN_UP_CART_TABLE);
+    const { modal } = App.useApp();
     const onCompleteService = () => {
-        console.log('');
+        modal.confirm({
+            title: 'Do you want to complete service ?',
+            onOk: () => {
+                onCleanUpCart({
+                    variables: {
+                        cartId: data?.id,
+                        tableId: table?.id,
+                    },
+                })
+                    .then(() => {
+                        modal.success({
+                            centered: true,
+                            title: 'Complete service successfully',
+                            onOk: () => {
+                                goViewBill(data?.order_id);
+                            },
+                            onCancel: () => {
+                                goTable();
+                            },
+                            okCancel: true,
+
+                            cancelText: 'Close',
+                        });
+                    })
+                    .catch((err) => {
+                        console.log('error', err);
+                    });
+            },
+            centered: true,
+        });
+    };
+    const goTable = () => {
+        removeCartIndex(selectedCart);
     };
     return data ? (
         <StyledCartBorder
@@ -223,7 +261,7 @@ export default function CartItemList({
                 border: `1px solid ${theme.nEUTRALLine}`,
             }}
         >
-            <LoadingModal showLoading={loading} />
+            <LoadingModal showLoading={loading || loadingClean} />
             <InfoCartModal
                 isModalOpen={isModalOpen}
                 onCancel={() => setIsModalOpen(!isModalOpen)}
@@ -749,12 +787,12 @@ export default function CartItemList({
                                 onClick={() =>
                                     !cartItems[indexTable]?.carts[
                                         selectedCart
-                                    ].firstname?.includes('Guest') &&
+                                    ]?.firstname?.includes('Guest') &&
                                     goOrderList()
                                 }
                                 isDisable={cartItems[indexTable]?.carts[
                                     selectedCart
-                                ].firstname?.includes('Guest')}
+                                ]?.firstname?.includes('Guest')}
                             >
                                 Order List
                             </Button>

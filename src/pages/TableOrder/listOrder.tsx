@@ -118,14 +118,18 @@ export default function ListOrder({
                                     marginLeft: isMobile ? 0 : 20,
                                 }}
                             >
-                                {!tag && item.status === 'sent' && (
-                                    <div
-                                        onClick={() => onRemoveItem(item.id)}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <IconButtonDeleteItem />
-                                    </div>
-                                )}
+                                {!tag &&
+                                    item.status === 'sent' &&
+                                    cart?.is_active && (
+                                        <div
+                                            onClick={() =>
+                                                onRemoveItem(item.id)
+                                            }
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            <IconButtonDeleteItem />
+                                        </div>
+                                    )}
                                 {!tag && item.status === 'ready' && (
                                     <ButtonPrimary
                                         title="Served"

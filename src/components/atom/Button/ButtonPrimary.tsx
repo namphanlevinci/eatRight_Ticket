@@ -14,6 +14,7 @@ export default function ButtonPrimary({
     isDisable = false,
     backgroundColor,
     isLoading,
+    color,
 }: {
     title: string;
     onClick: any;
@@ -25,6 +26,7 @@ export default function ButtonPrimary({
     isDisable?: boolean;
     backgroundColor?: string;
     isLoading?: boolean;
+    color?: string;
 }) {
     const { theme } = useTheme();
     return (
@@ -61,11 +63,13 @@ export default function ButtonPrimary({
                     style={{
                         fontSize: 18,
                         fontWeight: '600',
-                        color: isDisable
-                            ? theme.nEUTRALLine
-                            : isCancel
-                              ? theme.pRIMARY6Primary
-                              : theme.pRIMARY1,
+                        color: color
+                            ? color
+                            : isDisable
+                              ? theme.nEUTRALLine
+                              : isCancel
+                                ? theme.pRIMARY6Primary
+                                : theme.pRIMARY1,
                     }}
                 >
                     {title}
