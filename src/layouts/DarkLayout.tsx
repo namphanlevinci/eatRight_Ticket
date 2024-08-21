@@ -298,7 +298,7 @@ export const DarkLayout = (props: Props) => {
             </div>
 
             <div style={{ width: '100%' }}>{children}</div>
-            {isLogged && (
+            {isLogged && !isMobile && (
                 <div
                     style={{
                         position: 'fixed',

@@ -164,6 +164,7 @@ export const CounterTakeAway = styled.div<StyledBackgroundProps>`
 
 export const StyledFloors = styled.div`
     display: flex;
+    overflow: auto;
 `;
 
 export const StyledFloor = styled.div<StyledFloorProps>`
