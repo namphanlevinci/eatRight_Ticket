@@ -25,6 +25,8 @@ interface MenuContextType {
         options: BundleCartItem[];
     };
     targetRef?: any;
+    showMenu?: boolean;
+    setShowMenu?: any;
 }
 
 export const MenuContext = createContext<MenuContextType | undefined>(

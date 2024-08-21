@@ -3,6 +3,8 @@ import { gql } from '@apollo/client';
 export const GET_CART_BY_ID = gql`
     query merchantCart($cartId: String!) {
         merchantCart(cart_id: $cartId) {
+            is_active
+            order_number
             id
             email
             firstname

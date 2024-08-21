@@ -78,6 +78,9 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
                     .catch((error) => {
                         // Xử lý lỗi nếu có
                         console.error(error);
+                    })
+                    .finally(() => {
+                        setLoading(false);
                     });
             } else {
                 const indexTable = cartItems.findIndex(

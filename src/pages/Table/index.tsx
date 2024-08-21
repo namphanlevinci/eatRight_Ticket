@@ -32,6 +32,7 @@ type TableType = {
 export const TablePage: React.FC = () => {
     const menu = useMenu();
     const targetRef = useRef(null);
+    const [showMenu, setShowMenu] = useState(true);
     const tables: any = localStorage.getItem('tableData');
     const [searchParams] = useSearchParams();
     const tableId = searchParams.get('tableId');
@@ -134,11 +135,16 @@ export const TablePage: React.FC = () => {
                     )}
                 </Row>
                 <Divider style={{ background: Colors.grey3 }} />
-                <MenuContext.Provider value={{ ...menu, targetRef: targetRef }}>
+                <MenuContext.Provider
+                    value={{
+                        ...menu,
+                        targetRef: targetRef,
+                        showMenu,
+                        setShowMenu,
+                    }}
+                >
                     <OrderCart table={table} />
-                    <div ref={targetRef}>
-                        <Menu />
-                    </div>
+                    <div ref={targetRef}>{showMenu && <Menu />}</div>
                 </MenuContext.Provider>
             </Content>
         </Layout>

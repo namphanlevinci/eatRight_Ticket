@@ -175,7 +175,7 @@ export default function CartItemList({
             addMoreCart(data.id, carts);
         }
     };
-    const { setUpdate, targetRef } = useMenuContext();
+    const { setUpdate, targetRef, showMenu } = useMenuContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { theme } = useTheme();
     const total = useMemo(
@@ -208,6 +208,12 @@ export default function CartItemList({
         show: false,
         index: 0,
     });
+    const goViewBill = (id: string) => {
+        navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${id}`);
+    };
+    const onCompleteService = () => {
+        console.log('');
+    };
     return data ? (
         <StyledCartBorder
             style={{
@@ -347,6 +353,7 @@ export default function CartItemList({
                                                     );
                                                 }}
                                                 isSend={!item.isUnsend}
+                                                disableUp={!showMenu}
                                             />
                                         </Row>
                                     </Row>
@@ -623,22 +630,37 @@ export default function CartItemList({
                 <Col style={ismobile ? { width: '100%' } : {}}>
                     <Row justify={'space-between'}>
                         <Col>
-                            <Button
-                                style={{
-                                    width: 154,
-                                    height: 44,
-                                    gap: 10,
-                                    border: `0px solid ${theme.pRIMARY6Primary}`,
-                                }}
-                                onClick={() => isNewItem && SendCart()}
-                                isDisable={!isNewItem}
-                                disabled={!isNewItem}
-                                background={theme.pRIMARY6Primary}
-                                color={theme.nEUTRALBase}
-                            >
-                                <CartIcon isDisabled={!isNewItem} />
-                                Send
-                            </Button>
+                            {showMenu ? (
+                                <Button
+                                    style={{
+                                        width: 154,
+                                        height: 44,
+                                        gap: 10,
+                                        border: `0px solid ${theme.pRIMARY6Primary}`,
+                                    }}
+                                    onClick={() => isNewItem && SendCart()}
+                                    isDisable={!isNewItem}
+                                    disabled={!isNewItem}
+                                    background={theme.pRIMARY6Primary}
+                                    color={theme.nEUTRALBase}
+                                >
+                                    <CartIcon isDisabled={!isNewItem} />
+                                    Send
+                                </Button>
+                            ) : (
+                                <Button
+                                    style={{
+                                        width: 154,
+                                        height: 44,
+                                        border: `0px solid ${theme.pRIMARY6Primary}`,
+                                    }}
+                                    onClick={() => goViewBill(data?.order_id)}
+                                    background={theme.pRIMARY6Primary}
+                                    color={theme.nEUTRALBase}
+                                >
+                                    View Bill
+                                </Button>
+                            )}
                         </Col>
                         <Col>
                             {!isNewItem && data?.items?.length > 0 ? (
@@ -683,21 +705,39 @@ export default function CartItemList({
                     </Row>
                     <Row>
                         {isAllDone ? (
-                            <Button
-                                style={{
-                                    width: '100%',
-                                    height: 44,
-                                    border: 0,
-                                }}
-                                onClick={goBill}
-                                isDisable={
-                                    isNewItem || data?.items?.length === 0
-                                }
-                                background={theme.pRIMARY6Primary}
-                                color={theme.nEUTRALBase}
-                            >
-                                Bill
-                            </Button>
+                            showMenu ? (
+                                <Button
+                                    style={{
+                                        width: '100%',
+                                        height: 44,
+                                        border: 0,
+                                    }}
+                                    onClick={goBill}
+                                    isDisable={
+                                        isNewItem || data?.items?.length === 0
+                                    }
+                                    background={theme.pRIMARY6Primary}
+                                    color={theme.nEUTRALBase}
+                                >
+                                    Bill
+                                </Button>
+                            ) : (
+                                <Button
+                                    style={{
+                                        width: '100%',
+                                        height: 44,
+                                        border: 0,
+                                    }}
+                                    onClick={onCompleteService}
+                                    isDisable={
+                                        isNewItem || data?.items?.length === 0
+                                    }
+                                    background={theme.pRIMARY6Primary}
+                                    color={theme.nEUTRALBase}
+                                >
+                                    Complete Service
+                                </Button>
+                            )
                         ) : (
                             <Button
                                 style={{

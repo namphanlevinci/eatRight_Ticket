@@ -484,6 +484,7 @@ export const getInitialTableState = (id: string, tableId: string | number) => {
 export const getInitialCartState = (id: string) => {
     return [
         {
+            is_active: true,
             id: id,
             items: [],
             applied_coupons: null,

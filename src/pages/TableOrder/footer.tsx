@@ -13,6 +13,7 @@ import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
 import { useTheme } from 'context/themeContext';
 import { roundTo } from 'utils/number';
+import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 
 export default function OrderFooter({
     cart,
@@ -33,6 +34,12 @@ export default function OrderFooter({
     const navigation = useNavigate();
     const goTableBill = () => {
         navigation(`${BASE_ROUTER.TABLE_BILL}${window.location.search}`);
+    };
+    const onCompleteService = () => {
+        console.log('');
+    };
+    const goBillDetail = () => {
+        navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${cart?.order_id}`);
     };
     const { theme } = useTheme();
     const totalMoney = useMemo(
@@ -141,10 +148,23 @@ export default function OrderFooter({
                     />
                 </div>
                 <div>
-                    <ButtonSubmit
-                        title="Go Bill"
-                        onClick={() => goTableBill()}
-                    />
+                    {cart?.order_id && (
+                        <ButtonPrimary
+                            title="View Bill"
+                            onClick={() => goBillDetail()}
+                        />
+                    )}
+                    {cart?.is_active ? (
+                        <ButtonSubmit
+                            title="Go Bill"
+                            onClick={() => goTableBill()}
+                        />
+                    ) : (
+                        <ButtonSubmit
+                            title="Complete Service"
+                            onClick={() => onCompleteService()}
+                        />
+                    )}
                 </div>
             </Col>
         </Row>

@@ -4,6 +4,9 @@ export type CartTableType = {
 };
 
 export type CartItemType = {
+    is_active?: boolean;
+    order_number?: string;
+    order_id?: string;
     id: string;
     items: ItemType[];
     firstname: string;
