@@ -62,6 +62,7 @@ export default function OrderFooter({
                             onCancel: () => {
                                 goTable();
                             },
+                            okCancel: true,
                             cancelText: 'Close',
                         });
                     })

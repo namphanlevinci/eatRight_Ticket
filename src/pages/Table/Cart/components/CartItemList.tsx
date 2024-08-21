@@ -283,6 +283,9 @@ export default function CartItemList({
             />
             <div style={{ minHeight: 200 }}>
                 {data?.items?.map((item: any, index: any) => {
+                    const orderItems = data.order.items.find(
+                        (i: any) => item.product.name == i.name,
+                    );
                     return (
                         <div key={index}>
                             <Row align={'middle'} justify={'space-between'}>
@@ -297,7 +300,9 @@ export default function CartItemList({
                                                 {...getTagStyled(
                                                     item.isUnsend
                                                         ? 'New'
-                                                        : item?.status,
+                                                        : orderItems
+                                                          ? orderItems.serving_status
+                                                          : item?.status,
                                                     theme,
                                                 )}
                                             />

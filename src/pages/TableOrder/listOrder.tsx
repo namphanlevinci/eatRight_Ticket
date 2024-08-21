@@ -23,13 +23,18 @@ export default function ListOrder({
     updateStatusItemServer?: any;
 }) {
     const { modal } = App.useApp();
-    const onDone = async (id?: string, itemName?: string) => {
+    const onDone = async (
+        id?: string,
+        itemName?: string,
+        itemType?: string,
+    ) => {
         await modal.confirm({
             title: `Confirmation of serving ${itemName} ?`,
             onOk: () => {
                 if (id) {
                     updateStatusItemServer({
                         cartId: id,
+                        itemType: itemType || 'QUOTE',
                     });
                 }
             },
@@ -68,6 +73,10 @@ export default function ListOrder({
                 const tag = item.bundle_options?.find((e) => {
                     return e.values?.find((value) => value?.status !== 'sent');
                 });
+                const orderItems = cart.order?.items?.find(
+                    (e) => e.name === item.product.name,
+                );
+
                 return (
                     <div key={index}>
                         <Row
@@ -87,7 +96,9 @@ export default function ListOrder({
                                                 {...getTagStyled(
                                                     item.isUnsend
                                                         ? 'New'
-                                                        : item?.status,
+                                                        : orderItems
+                                                          ? orderItems.serving_status
+                                                          : item?.status,
                                                     theme,
                                                 )}
                                             />
@@ -130,18 +141,29 @@ export default function ListOrder({
                                             <IconButtonDeleteItem />
                                         </div>
                                     )}
-                                {!tag && item.status === 'ready' && (
-                                    <ButtonPrimary
-                                        title="Served"
-                                        onClick={() => {
-                                            onDone(item.id, item.product.name);
-                                        }}
-                                        size="medium"
-                                        width="80px"
-                                        height="40px"
-                                        marginTop="0px"
-                                    />
-                                )}
+                                {!tag &&
+                                    (orderItems
+                                        ? orderItems.serving_status === 'ready'
+                                        : item.status === 'ready') && (
+                                        <ButtonPrimary
+                                            title="Served"
+                                            onClick={() => {
+                                                onDone(
+                                                    orderItems
+                                                        ? orderItems.id
+                                                        : item.id,
+                                                    item.product.name,
+                                                    orderItems
+                                                        ? 'ORDER'
+                                                        : 'QUOTE',
+                                                );
+                                            }}
+                                            size="medium"
+                                            width="80px"
+                                            height="40px"
+                                            marginTop="0px"
+                                        />
+                                    )}
                             </Col>
                         </Row>
 
@@ -200,8 +222,13 @@ export default function ListOrder({
                                                                 title="Served"
                                                                 onClick={() => {
                                                                     onDone(
-                                                                        product.item_id,
+                                                                        orderItems
+                                                                            ? orderItems.id
+                                                                            : product.item_id,
                                                                         product.label,
+                                                                        orderItems
+                                                                            ? 'ORDER'
+                                                                            : 'QUOTE',
                                                                     );
                                                                 }}
                                                                 size="medium"
