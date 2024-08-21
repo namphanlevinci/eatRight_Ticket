@@ -80,7 +80,7 @@ export const ButtonContainer = styled.div<{
     right: 10px;
     @media (max-width: 767px) {
         position: fixed;
-        bottom: 100px;
+        bottom: 20px;
         left: 10px;
         z-index: 50;
         display: flex;
