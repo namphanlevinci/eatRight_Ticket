@@ -98,6 +98,27 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                         emitter.emit('updateStatusCart', msg?.quote?.table_id);
                     }
                 }
+                if (msg?.item_type === 'ORDER') {
+                    notification.success({
+                        message: `Table ${
+                            tableData?.find(
+                                (item: any) => item?.id == msg?.table_id,
+                            )?.name
+                        }`,
+                        description: msg?.message,
+                        onClick: () => {
+                            if (msg?.quote?.table_id) {
+                                navigation(
+                                    `${BASE_ROUTER.TABLE}?tableId=${msg?.table_id}`,
+                                );
+                            }
+                        },
+                        duration: 2,
+                    });
+                    if (location.pathname.includes('table')) {
+                        emitter.emit('updateStatusCart', msg?.table_id);
+                    }
+                }
                 if (msg?.message?.includes('Table')) {
                     emitter.emit('updateTable');
                 }
