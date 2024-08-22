@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { Colors } from 'themes/colors';
 import Logo from 'assets/logos/logo.png';
+import LogoMerchant from 'assets/logos/logo_merchant.png';
 // import HelpIcon from 'assets/icons/help';
 import { Link } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
@@ -235,7 +236,11 @@ export const DarkLayout = (props: Props) => {
                         to={BASE_ROUTER.HOME}
                         style={{ cursor: 'pointer', height: 36 }}
                     >
-                        <img src={Logo} style={{ height: 36 }} />
+                        {isMerchant ? (
+                            <img src={LogoMerchant} style={{ height: 36 }} />
+                        ) : (
+                            <img src={Logo} style={{ height: 36 }} />
+                        )}
                     </Link>
                     <Row style={{ gap: 10 }} align={'middle'}>
                         {/* <BellIcon />
