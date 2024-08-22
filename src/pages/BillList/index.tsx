@@ -49,7 +49,7 @@ export const ConvertStatusText = (status: TableStatus) => {
         case TableStatus.Processing:
             return 'Processing';
         default:
-            return 'Unknown';
+            return status;
     }
 };
 
@@ -147,7 +147,18 @@ const convertStatus = (status: TableStatus) => {
                 </StyledColumn>
             );
         default:
-            return <></>;
+            return (
+                <StyledColumn
+                    style={{
+                        width: '100%',
+                        opacity: 1,
+                        fontWeight: 600,
+                        color: 'var(--info-2-default)',
+                    }}
+                >
+                    {status}
+                </StyledColumn>
+            );
     }
 };
 
