@@ -74,7 +74,7 @@ export default function OrderFooter({
         });
     };
     const goTable = () => {
-        navigation(`${BASE_ROUTER.TABLE}?table_id=${tableId}`);
+        navigation(`${BASE_ROUTER.TABLE}?tableId=${tableId}`);
     };
     const goBillDetail = () => {
         navigation(`${BASE_ROUTER.BILL_DETAIL}?order_id=${cart?.order_id}`);
