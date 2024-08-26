@@ -10,6 +10,8 @@ export const GET_INVOICES = gql`
                 created_at
                 lead_guest
                 guests
+                payment_method
+                payment_method_code
                 total {
                     grand_total {
                         value
@@ -80,6 +82,14 @@ export const GET_INVOICES = gql`
                         currency
                     }
                     quantity_invoiced
+                }
+                payment_methods {
+                    name
+                    type
+                    additional_data {
+                        name
+                        value
+                    }
                 }
             }
         }

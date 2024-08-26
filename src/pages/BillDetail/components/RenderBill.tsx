@@ -218,7 +218,11 @@ export const RenderBill = ({
                 <DividedDashed />
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Payment Method:</TextDark>
-                    <TextDark>{data?.payment_method}</TextDark>
+                    <TextDark>
+                        {selectDataShowbill
+                            ? selectDataShowbill?.payment_methods[0]?.name
+                            : data?.payment_method}
+                    </TextDark>
                 </RowStyled>
 
                 {data?.payment_methods &&
