@@ -1,5 +1,7 @@
 import { Button, Form, Input, Modal, Row } from 'antd';
+import CloseXIcon from 'assets/icons/closeIcon';
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 import React, { useEffect, useRef } from 'react';
 type FieldType = {
     username?: string;
@@ -9,7 +11,6 @@ export default function InfoCartModal({
     isModalOpen,
     onCancel,
     onSubmit,
-    table,
     value,
 }: {
     isModalOpen: boolean;
@@ -44,6 +45,7 @@ export default function InfoCartModal({
             callback();
         }
     };
+    const { theme } = useTheme();
     return (
         <Modal
             title="Basic Modal"
@@ -55,16 +57,18 @@ export default function InfoCartModal({
                 header: {
                     display: 'none',
                 },
-                content: {},
+                content: {
+                    padding: 16,
+                },
             }}
             closeIcon={<></>}
             centered
+            width={380}
         >
             <Form
                 name="basic"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                style={{ maxWidth: 600 }}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
                 initialValues={{
                     username: value?.name, // Giá trị mặc định cho trường username
                     numberOfCustomer: value?.number,
@@ -74,23 +78,42 @@ export default function InfoCartModal({
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
-                <Text
-                    style={{
-                        color: 'black',
-                        textAlign: 'center',
-                        fontSize: 20,
-                        marginBottom: 20,
-                    }}
+                <Row
+                    justify={'end'}
+                    align={'middle'}
+                    style={{ position: 'relative' }}
                 >
-                    Table {table?.name} - size {table?.size}
-                </Text>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            zIndex: 1,
+                        }}
+                    >
+                        <Text style={{ fontWeight: '600', fontSize: 20 }}>
+                            Guest info
+                        </Text>
+                    </div>
+                    <div
+                        style={{ cursor: 'pointer', zIndex: 1000 }}
+                        onClick={onCancel}
+                    >
+                        <CloseXIcon />
+                    </div>
+                </Row>
                 <Form.Item<FieldType>
-                    label="Username"
+                    label="Lead guest"
                     name="username"
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your username!',
+                            message: 'Please input your Lead guest!',
                         },
                         {
                             validator: validateUsername,
@@ -101,29 +124,52 @@ export default function InfoCartModal({
                         size="large"
                         autoFocus={true}
                         ref={inputRef}
-                        placeholder="Guest Name"
+                        placeholder="Lead guest"
                         allowClear
+                        style={{
+                            flex: 1,
+                            height: 56,
+                            backgroundColor: theme.nEUTRALBase,
+                            color: theme.tEXTPrimary,
+                            border: `1px solid ${theme.nEUTRALLine}`,
+                        }}
                     />
                 </Form.Item>
 
                 <Form.Item<FieldType>
-                    label="Number of customer"
+                    label="Number of guests"
                     name="numberOfCustomer"
                     rules={[
                         {
                             required: true,
-                            message: 'Please input number of customer',
+                            message: 'Please input number of guests!',
                         },
                     ]}
                 >
-                    <Input type="number" size="large" placeholder="1" />
+                    <Input
+                        type="number"
+                        size="large"
+                        placeholder="1"
+                        style={{
+                            flex: 1,
+                            height: 56,
+                            backgroundColor: theme.nEUTRALBase,
+                            color: theme.tEXTPrimary,
+                            border: `1px solid ${theme.nEUTRALLine}`,
+                        }}
+                    />
                 </Form.Item>
 
                 <Row style={{ justifyContent: 'center', gap: 20 }}>
                     <Button
                         type="default"
                         size="large"
-                        style={{ width: 150 }}
+                        style={{
+                            width: 162,
+                            height: 56,
+                            border: `2px solid ${theme.tEXTPrimary}`,
+                            color: theme.tEXTPrimary,
+                        }}
                         onClick={onCancel}
                     >
                         Cancel
@@ -133,7 +179,11 @@ export default function InfoCartModal({
                         type="primary"
                         htmlType="submit"
                         size="large"
-                        style={{ width: 150 }}
+                        style={{
+                            width: 166,
+                            background: theme.pRIMARY6Primary,
+                            height: 56,
+                        }}
                     >
                         Submit
                     </Button>

@@ -23,9 +23,9 @@ import RenderNote from './RenderNote';
 import { useTheme } from 'context/themeContext';
 import { DividedDashed } from 'pages/BillDetail/styled';
 import { roundTo } from 'utils/number';
-import ModalInput from 'components/modal/ModalInput';
 import { useMutation } from '@apollo/client';
 import { CLEAN_UP_CART_TABLE } from 'graphql/table/cleanTable';
+import ModalInputNote from 'components/modal/ModalInputNote';
 export default function CartItemList({
     data,
     cartInfo,
@@ -270,8 +270,8 @@ export default function CartItemList({
                 }
                 table={table}
             />
-            <ModalInput
-                title="Input your note"
+            <ModalInputNote
+                title="Add note"
                 isModalOpen={showNoteModal.show}
                 onCancel={() =>
                     setShowNoteModalState({ ...showNoteModal, show: false })
