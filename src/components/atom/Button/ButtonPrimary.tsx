@@ -15,6 +15,7 @@ export default function ButtonPrimary({
     backgroundColor,
     isLoading,
     color,
+    borderColor,
 }: {
     title: string;
     onClick: any;
@@ -27,6 +28,7 @@ export default function ButtonPrimary({
     backgroundColor?: string;
     isLoading?: boolean;
     color?: string;
+    borderColor?: string;
 }) {
     const { theme } = useTheme();
     return (
@@ -53,6 +55,7 @@ export default function ButtonPrimary({
                 borderRadius: 8,
                 cursor: 'pointer',
                 width,
+                border: `${borderColor ? '2px' : '0px'} solid ${borderColor ? borderColor : theme.pRIMARY6Primary}`,
             }}
             onClick={onClick}
         >
