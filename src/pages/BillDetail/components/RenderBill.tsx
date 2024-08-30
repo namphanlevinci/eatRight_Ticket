@@ -48,10 +48,10 @@ export const RenderBill = ({
         >
             <div id="billHeader">
                 <TextDark style={{ ...text24, fontWeight: '600' }}>
-                    {data?.firstname}
+                    {data?.restaurant_name}
                 </TextDark>
                 <TextDark style={{ ...text16W, marginTop: 16 }}>
-                    {data?.address}
+                    {data?.restaurant_address}
                 </TextDark>
                 <TextDark style={{ ...text16W, marginTop: 8 }}>
                     Hotline: {data?.phone}
@@ -86,27 +86,31 @@ export const RenderBill = ({
                             : data?.order_number}
                     </TextDark>
                 </RowStyled>
-                <RowStyled>
-                    <TextDark>
-                        <BoldText>Table: </BoldText>
-                        {data?.table}
-                    </TextDark>
-                    <TextDark
-                        style={{
-                            width: 150,
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                        }}
-                    >
-                        <BoldText>Server: </BoldText>
-                        {data?.serve_name}
-                    </TextDark>
-                </RowStyled>
+                {data?.table ? (
+                    <RowStyled>
+                        <TextDark>
+                            <BoldText>Table: </BoldText>
+                            {data?.table}
+                        </TextDark>
+                        <TextDark
+                            style={{
+                                width: 150,
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                            }}
+                        >
+                            <BoldText>Server: </BoldText>
+                            {data?.serve_name}
+                        </TextDark>
+                    </RowStyled>
+                ) : (
+                    <></>
+                )}
                 <RowStyled>
                     <TextDark>
                         <BoldText>Customer: </BoldText>
-                        {data?.customer?.firstname || 'Guest'}
+                        {data?.firstname || 'Guest'}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
