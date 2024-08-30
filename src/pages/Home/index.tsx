@@ -111,13 +111,13 @@ const HomePage: React.FC = () => {
                                     style={{ background: theme.pRIMARY3 }}
                                     background={theme.pRIMARY6Primary}
                                 >
-                                    <h3 style={{ color: theme.tEXTPrimary }}>
+                                    {/* <h3 style={{ color: theme.tEXTPrimary }}>
                                         Take Out
-                                    </h3>
+                                    </h3> */}
                                     <h2
                                         style={{ color: theme.pRIMARY6Primary }}
                                     >
-                                        TAKE AWAY
+                                        Take Out
                                     </h2>
                                     <div />
                                 </CounterTakeAway>
@@ -136,13 +136,13 @@ const HomePage: React.FC = () => {
                                     style={{ background: theme.pRIMARY3 }}
                                     background={theme.pRIMARY6Primary}
                                 >
-                                    <h3 style={{ color: theme.tEXTPrimary }}>
+                                    {/* <h3 style={{ color: theme.tEXTPrimary }}>
                                         Take Out
-                                    </h3>
+                                    </h3> */}
                                     <h2
                                         style={{ color: theme.pRIMARY6Primary }}
                                     >
-                                        TAKE AWAY
+                                        Take Out
                                     </h2>
                                     <div />
                                 </CounterTakeAway>
