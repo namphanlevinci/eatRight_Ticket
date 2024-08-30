@@ -113,7 +113,7 @@ const HomePage: React.FC = () => {
                                     background={theme.pRIMARY6Primary}
                                 >
                                     <h3 style={{ color: theme.tEXTPrimary }}>
-                                        Counter
+                                        Take Out
                                     </h3>
                                     <h2
                                         style={{ color: theme.pRIMARY6Primary }}
@@ -138,7 +138,7 @@ const HomePage: React.FC = () => {
                                     background={theme.pRIMARY6Primary}
                                 >
                                     <h3 style={{ color: theme.tEXTPrimary }}>
-                                        Counter
+                                        Take Out
                                     </h3>
                                     <h2
                                         style={{ color: theme.pRIMARY6Primary }}
