@@ -16,7 +16,7 @@ import Table from './components/Table';
 import { BASE_ROUTER } from 'constants/router';
 import BreadCrum from 'components/atom/BreadCrum/BreadCrum';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
-import SearchTable from './components/Search';
+// import SearchTable from './components/Search';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { useTheme } from 'context/themeContext';
@@ -26,10 +26,9 @@ const { Content } = Layout;
 
 const HomePage: React.FC = () => {
     const navigation = useNavigate();
-    const { data, counterTable, setSearchText, floorActive, setFloorActive } =
-        useGetAllTable({
-            cache: false,
-        });
+    const { data, counterTable, floorActive, setFloorActive } = useGetAllTable({
+        cache: false,
+    });
     const { floor: floors } = useSelector((state: RootState) => state.auth);
 
     const memoizedTables = useMemo(() => data, [data]);
@@ -151,7 +150,7 @@ const HomePage: React.FC = () => {
                         )}
                     </Link>
                 </ContainerTableHeader>
-                <SearchTable onChangeText={(e: string) => setSearchText(e)} />
+                {/* <SearchTable onChangeText={(e: string) => setSearchText(e)} /> */}
                 <ContainerTableBody>
                     {data.map(
                         (dt: any) =>
