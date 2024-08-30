@@ -245,7 +245,7 @@ export default function ColRight({
                                     <ArrowRightIcon />
                                 </Row>
                             ) : (
-                                'ADD TIP'
+                                ''
                             )
                         }
                         textRightStyle={{
