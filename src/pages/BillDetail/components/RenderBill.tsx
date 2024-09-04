@@ -54,7 +54,7 @@ export const RenderBill = ({
                     {data?.restaurant_address}
                 </TextDark>
                 <TextDark style={{ ...text16W, marginTop: 8 }}>
-                    Hotline: {data?.phone}
+                    Hotline: {data?.restaurant_phone}
                 </TextDark>
 
                 <DividedDashed />
