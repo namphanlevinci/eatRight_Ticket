@@ -107,6 +107,9 @@ export default function OrderFooter({
             (totalMoney + totalDiscount) * (Tax + 1) + (cart?.tip_amount || 0),
         [totalMoney, totalDiscount, Tax, cart],
     );
+    const isAllItemDone = cart?.order?.items?.every(
+        (item) => item.serving_status === 'done',
+    );
     return (
         <Row style={{ marginTop: 20 }}>
             {contextHolder}
@@ -200,9 +203,10 @@ export default function OrderFooter({
                             onClick={() => goTableBill()}
                         />
                     ) : (
-                        <ButtonSubmit
+                        <ButtonPrimary
                             title="Complete Service"
-                            onClick={() => onCompleteService()}
+                            onClick={() => isAllItemDone && onCompleteService()}
+                            isDisable={!isAllItemDone}
                         />
                     )}
                 </div>
