@@ -250,6 +250,14 @@ export const BaseRouter = () => {
                     }
                 />
                 <Route
+                    path={BASE_ROUTER.RESTAURENT_RESERVATION}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.RestaurentReservation />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
                     path={BASE_ROUTER.RESTAURENT_Tip}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>

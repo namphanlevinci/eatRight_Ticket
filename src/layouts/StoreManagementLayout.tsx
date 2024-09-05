@@ -10,6 +10,7 @@ import LocationIcon from './icons/Restaurent/locationIcon';
 import OpeningHoursIcon from './icons/Restaurent/openingHoursIcon';
 import TipIcon from './icons/tipIcon';
 import { useTheme } from 'context/themeContext';
+import ReservationIcon from './icons/Restaurent/reservation_icon';
 
 type Props = {
     children: React.ReactNode;
@@ -53,6 +54,17 @@ export default function RestaurentManagementLayout(props: Props) {
             ),
         },
         {
+            title: 'Reservation',
+            path: BASE_ROUTER.RESTAURENT_RESERVATION,
+            icon: (
+                <ReservationIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_RESERVATION
+                    }
+                />
+            ),
+        },
+        {
             title: 'Tip',
             path: BASE_ROUTER.RESTAURENT_Tip,
             icon: (
@@ -75,12 +87,13 @@ export default function RestaurentManagementLayout(props: Props) {
                     display: 'flex',
                     justifyContent: 'center',
                     marginTop: 20,
+                    padding: '0 20px',
                 }}
             >
                 <Layout
                     style={{
                         background: theme.pRIMARY1,
-                        maxWidth: 673,
+                        maxWidth: '100%',
                         minHeight: '80vh',
                         borderRadius: 8,
                         boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.08)',
