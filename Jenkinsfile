@@ -53,6 +53,20 @@ pipeline {
 		}
     }
 	
+	stage('Build Production') {
+		when {
+			branch 'production'
+		}
+		steps {
+			sh '''echo "NODE_OPTIONS=--max-old-space-size=4096" >> ~/.bash_profile
+			. ~/.bash_profile
+			CI=false npm run build:prod
+			cd build
+			tar -cvf ${program_filename}.tar .
+			mv ${program_filename}.tar ${WORKSPACE}'''
+		}
+    }
+	
 	stage('Deploy to Dev Eatright Waiter') {
 		when {
 			branch 'dev'
@@ -93,6 +107,39 @@ pipeline {
 				#Write the code for your startup program.
 				echo "completed"''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'eatright.tar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
 			}
+	}
+	
+	stage('Deploy to Production') {
+		when {
+			branch 'production'
+		}		
+		stages {
+			stage('approve to deploy Production') {
+				options {
+					timeout(time: 180, unit: "SECONDS")
+				}
+
+				steps {
+					input 'Click Process if you want to deploy!'
+				}
+			}
+			stage('deploying to Production') {
+				steps {
+						sshPublisher(publishers: [sshPublisherDesc(configName: 'eatright_prod_fe', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''set -xe
+						source ~/.bash_profile
+						#Source file
+						origin_filename=${ER_prod_target}${ER_prod_filename}.tar
+						#Unzip file
+						tar -xvf ${origin_filename} -C ${ER_prod_waiter_webroot}
+						#After copying, delete the source file
+						if [ -f "${origin_filename}" ];then
+							rm -f ${origin_filename}
+							echo "${origin_filename} delete success"
+						fi
+						echo "completed"''', execTimeout: 600000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'eatright.tar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+				}
+			}
+		}
 	}
 	
   }
