@@ -21,6 +21,7 @@ export const USER_INFO = gql`
             restaurant_address
             restaurant_name
             restaurant_id
+            store_view_code
         }
     }
 `;
