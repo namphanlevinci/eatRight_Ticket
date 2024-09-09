@@ -65,6 +65,10 @@ export const DarkLayout = (props: Props) => {
                 if (res?.data?.getMerchantInfo) {
                     dispatch(updateCustomerInfo(res?.data?.getMerchantInfo));
                     sessionStorage.setItem('isTokenValidated', 'true');
+                    localStorage.setItem(
+                        'store_view_code',
+                        res?.data?.getMerchantInfo?.store_view_code,
+                    );
                 }
             });
             onGetRestaurent({ fetchPolicy: 'no-cache' }).then((res) => {
