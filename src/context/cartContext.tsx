@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { CartItemType, CartTableType, ItemType } from './cartType';
 import { useSearchParams } from 'react-router-dom';
-import { App } from 'antd';
+import ModalConfirm from 'components/modal/ModalConfirm';
 
 // Định nghĩa loại dữ liệu cho sản phẩm trong giỏ hàng
 
@@ -328,32 +328,29 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         newCartTable[indexTable].carts = newCartItems;
         setCartItems(newCartTable);
     };
-    const { modal } = App.useApp();
+
     const onRemoveItem = async (index: number) => {
-        await modal.confirm({
-            title: 'Do you want to this item remove?',
-            onOk: () => {
-                const cartIndex = parseInt(
-                    searchParams.get('cartIndex') || '0',
-                );
-                const newCartItems = [...cartItems[indexTable].carts];
-                let total =
-                    newCartItems[cartIndex].prices?.new_items_total?.value || 0;
-                total -=
-                    newCartItems[cartIndex].items[index].prices.price.value;
-                newCartItems[cartIndex].items.splice(index, 1);
-                newCartItems[cartIndex].prices = {
-                    ...newCartItems[cartIndex].prices,
-                    new_items_total: {
-                        value: total,
-                    },
-                };
-                const newCartTable = [...cartItems];
-                newCartTable[indexTable].carts = newCartItems;
-                setCartItems(newCartTable);
-            },
-            centered: true,
-        });
+        setIdx(index);
+        setIsModalConfirm(true);
+    };
+    const RemoveItemFromCartIndex = (index: number) => {
+        {
+            const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
+            const newCartItems = [...cartItems[indexTable].carts];
+            let total =
+                newCartItems[cartIndex].prices?.new_items_total?.value || 0;
+            total -= newCartItems[cartIndex].items[index].prices.price.value;
+            newCartItems[cartIndex].items.splice(index, 1);
+            newCartItems[cartIndex].prices = {
+                ...newCartItems[cartIndex].prices,
+                new_items_total: {
+                    value: total,
+                },
+            };
+            const newCartTable = [...cartItems];
+            newCartTable[indexTable].carts = newCartItems;
+            setCartItems(newCartTable);
+        }
     };
     const updateQuantityItemFromCart = (index: number, quantity: number) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
@@ -449,9 +446,24 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
     };
-
+    const [isModalConfirm, setIsModalConfirm] = React.useState<boolean>(false);
+    const [idx, setIdx] = React.useState<any>('');
+    const onCancel = () => {
+        setIsModalConfirm(false);
+    };
+    const onSubmit = () => {
+        setIsModalConfirm(false);
+        RemoveItemFromCartIndex(idx);
+    };
     return (
         <CartContext.Provider value={cartContextValue}>
+            <ModalConfirm
+                isModalOpen={isModalConfirm}
+                onCancel={onCancel}
+                onSubmit={onSubmit}
+                title="Remove this item?"
+                content="Do you want to this item remove?"
+            />
             {children}
         </CartContext.Provider>
     );

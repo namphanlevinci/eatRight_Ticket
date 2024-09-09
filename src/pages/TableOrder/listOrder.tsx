@@ -11,6 +11,7 @@ import { App } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
+import ModalConfirm from 'components/modal/ModalConfirm';
 export default function ListOrder({
     cart,
     count,
@@ -42,21 +43,26 @@ export default function ListOrder({
         });
     };
     const onRemoveItem = async (id?: string) => {
-        await modal.confirm({
-            title: 'Do you want to this item remove?',
-            onOk: () => {
-                if (id) {
-                    removeItemOnCartServer({
-                        cartId: cart?.id,
-                        cartItemId: id,
-                    });
-                }
-            },
-            centered: true,
-        });
+        setIsModalConfirm(true);
+        setId(id);
     };
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const [isModalConfirm, setIsModalConfirm] = React.useState<boolean>(false);
+    const [id, setId] = React.useState<string | undefined>('');
+    const onCancel = () => {
+        setIsModalConfirm(false);
+        setId('');
+    };
+    const onSubmit = () => {
+        setIsModalConfirm(false);
+        if (id) {
+            removeItemOnCartServer({
+                cartId: cart?.id,
+                cartItemId: id,
+            });
+        }
+    };
     return (
         <ColStyled
             style={{
@@ -68,6 +74,13 @@ export default function ListOrder({
                 padding: 16,
             }}
         >
+            <ModalConfirm
+                isModalOpen={isModalConfirm}
+                onCancel={onCancel}
+                onSubmit={onSubmit}
+                title="Remove this item?"
+                content="Do you want to this item remove?"
+            />
             <Text>Total {count} Items</Text>
             {cart?.items?.map((item, index) => {
                 const tag = item.bundle_options?.find((e) => {
