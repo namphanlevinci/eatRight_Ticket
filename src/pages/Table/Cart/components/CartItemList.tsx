@@ -264,7 +264,9 @@ export default function CartItemList({
             <LoadingModal showLoading={loading || loadingClean} />
             <InfoCartModal
                 isModalOpen={isModalOpen}
-                onCancel={() => setIsModalOpen(!isModalOpen)}
+                onCancel={() => {
+                    setIsModalOpen(!isModalOpen), setIsNewItem(true);
+                }}
                 onSubmit={(e: { username: string; numberOfCustomer: number }) =>
                     createCart(e)
                 }
