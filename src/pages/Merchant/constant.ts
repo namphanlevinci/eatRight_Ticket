@@ -37,3 +37,26 @@ export function getRandomInt(min: number, max: number) {
     // Adding min ensures the result is in the range [min, max]
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export const STATUS_COLUMNS = [
+    {
+        title: 'New',
+        status: 'pending',
+    },
+    {
+        title: 'received',
+        status: 'received',
+    },
+    {
+        title: 'cooking',
+        status: 'cooking',
+    },
+    {
+        title: 'ready_to_ship',
+        status: 'ready_to_ship',
+    },
+    {
+        title: 'Serving',
+        status: 'serving',
+    },
+];
