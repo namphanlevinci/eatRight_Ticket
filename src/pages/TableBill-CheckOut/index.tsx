@@ -149,11 +149,16 @@ export default function TableSplitBillCheckOut() {
                 invoice_number: selectGuest?.number,
                 pos_id: id,
             },
-        }).catch((err) => {
-            console.log(err);
-            setLoading(false);
-            setLoadingPosResult(false);
-        });
+        })
+            .then(() => {
+                showModalSuccess();
+                ReloadInvoice();
+            })
+            .catch((err) => {
+                console.log(err);
+                setLoading(false);
+                setLoadingPosResult(false);
+            });
     };
     const [onGetInvoices] = useLazyQuery(GET_INVOICES);
     useEffect(() => {

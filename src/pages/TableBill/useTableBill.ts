@@ -97,9 +97,9 @@ export const useTableBill = (isGoBack = true) => {
         setPos_Loading(false);
         navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${orderInfo?.order_id}`);
     };
-    const showModalSuccess = (order_id: string) => {
+    const showModalSuccess = (order_id: string, isGoToTable = true) => {
         modal.success({
-            title: 'Check Out Success',
+            title: !isGoToTable ? 'Payment Success' : 'Check Out Success',
             centered: true,
             onOk: () => {
                 navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${order_id}`);
@@ -108,15 +108,16 @@ export const useTableBill = (isGoBack = true) => {
             onCancel: () => {
                 goTable();
             },
-            okCancel: true,
+            okCancel: isGoToTable,
 
             cancelText: 'Go back to table',
-            okText: 'Go bill',
+            okText: isGoToTable ? 'Go bill' : 'Ok',
         });
     };
     const showModalErrorPayment = (order_id?: string) => {
         modal.error({
-            title: 'Check Out Failed',
+            title: 'Payment Failed',
+            content: 'Please try again',
             centered: true,
             onOk: () => {
                 navigation(
@@ -193,7 +194,12 @@ export const useTableBill = (isGoBack = true) => {
             order_number: number;
             order_id: any;
         },
+        isGoToTable = true,
     ) => {
+        setPos_Loading(true);
+        if (orderDetail) {
+            setOrderInfo(orderDetail);
+        }
         onPosDJV({
             variables: {
                 orderId: orderDetail?.order_number
@@ -206,6 +212,7 @@ export const useTableBill = (isGoBack = true) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
                         `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                        isGoToTable,
                     );
                 }
             })
@@ -214,6 +221,9 @@ export const useTableBill = (isGoBack = true) => {
                 showModalErrorPayment(
                     `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
                 );
+            })
+            .finally(() => {
+                setPos_Loading(false);
             });
     };
     const handlePOSPayment = (
@@ -247,6 +257,9 @@ export const useTableBill = (isGoBack = true) => {
                 showModalErrorPayment(
                     `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
                 );
+            })
+            .finally(() => {
+                setPos_Loading(false);
             });
     };
     useEffect(() => {
