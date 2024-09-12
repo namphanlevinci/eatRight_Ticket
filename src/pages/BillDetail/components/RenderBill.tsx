@@ -13,7 +13,8 @@ import {
     text16W,
     BoldText,
 } from '../styled';
-export const RenderBill = ({
+import React from 'react';
+const RenderBillItem = ({
     data,
     selectDataShowbill,
 }: {
@@ -282,7 +283,7 @@ export const RenderBill = ({
         </div>
     );
 };
-
+export const RenderBill = React.memo(RenderBillItem);
 const RenderItem = ({ data }: { data: any }) => {
     return data?.items?.map((item: any, index: number) => {
         return (
