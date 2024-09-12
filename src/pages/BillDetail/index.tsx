@@ -232,6 +232,7 @@ export default function index() {
         setPos_Loading,
         showModalSuccess,
         showError,
+        showModalErrorPayment,
     } = useTableBill(false);
     const modalConfirm = (paymentMethod = 'cashondelivery') => {
         modal.confirm({
@@ -397,6 +398,9 @@ export default function index() {
                             order_number: data?.orderDetail?.order_number,
                             order_id: orderId ? orderId : btoa(order_ID || ''),
                         });
+                    }}
+                    onCancel={() => {
+                        showModalErrorPayment(data?.orderDetail?.order_number);
                     }}
                 />
                 <LoadingModalPayment

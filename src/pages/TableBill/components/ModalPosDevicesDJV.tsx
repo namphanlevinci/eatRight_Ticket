@@ -12,10 +12,12 @@ const ModalPosDevicesDJV = ({
     onPressOK,
     isVisibleModalPos,
     setVisibleMoalPos,
+    onCancel,
 }: {
     onPressOK: (item: any) => void;
     isVisibleModalPos: boolean;
     setVisibleMoalPos: (visible: boolean) => void;
+    onCancel: () => void;
 }) => {
     const [selectedOption, setSelectedOption] = useState<any>(null);
     const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST_DJV);
@@ -34,6 +36,7 @@ const ModalPosDevicesDJV = ({
 
     const handleCancel = (): void => {
         setVisibleMoalPos(false);
+        onCancel();
     };
 
     const handleChange = (item: any): void => {

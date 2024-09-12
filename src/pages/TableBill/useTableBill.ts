@@ -114,6 +114,19 @@ export const useTableBill = (isGoBack = true) => {
             okText: 'Go bill',
         });
     };
+    const showModalErrorPayment = (order_id?: string) => {
+        modal.error({
+            title: 'Check Out Failed',
+            centered: true,
+            onOk: () => {
+                navigation(
+                    `${BASE_ROUTER.BILL_DETAIL}?orderId=${
+                        order_id ? order_id : orderInfo?.order_id
+                    }`,
+                );
+            },
+        });
+    };
     const goTable = () => {
         navigation(`${BASE_ROUTER.TABLE}?tableId=${tableId}`);
     };
@@ -198,6 +211,9 @@ export const useTableBill = (isGoBack = true) => {
             })
             .catch((err) => {
                 console.log(err);
+                showModalErrorPayment(
+                    `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                );
             });
     };
     const handlePOSPayment = (
@@ -228,6 +244,9 @@ export const useTableBill = (isGoBack = true) => {
             })
             .catch((err) => {
                 console.log(err);
+                showModalErrorPayment(
+                    `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                );
             });
     };
     useEffect(() => {
@@ -383,5 +402,6 @@ export const useTableBill = (isGoBack = true) => {
         setPos_Loading,
         showModalSuccess,
         showError,
+        showModalErrorPayment,
     };
 };
