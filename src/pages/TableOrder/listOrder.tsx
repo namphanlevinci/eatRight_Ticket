@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col, Modal, Row } from 'antd';
 import IconButtonDeleteItem from 'assets/icons/ButtonDelete';
 import CustomTag from 'components/atom/Tag/CustomTag';
 import { Text, Text18 } from 'components/atom/Text';
@@ -7,11 +7,11 @@ import { ColStyled } from 'pages/TableBill/styleds';
 import React from 'react';
 import { formatNumberWithCommas } from 'utils/format';
 import { getTagStyled } from 'utils/tag';
-import { App } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
 import ModalConfirm from 'components/modal/ModalConfirm';
+const { confirm } = Modal;
 export default function ListOrder({
     cart,
     count,
@@ -23,21 +23,24 @@ export default function ListOrder({
     removeItemOnCartServer?: any;
     updateStatusItemServer?: any;
 }) {
-    const { modal } = App.useApp();
     const onDone = async (
         id?: string,
         itemName?: string,
         itemType?: string,
     ) => {
-        await modal.confirm({
+        await confirm({
             title: `Confirmation of serving ${itemName} ?`,
             onOk: () => {
                 if (id) {
+                    Modal.destroyAll();
                     updateStatusItemServer({
                         cartId: id,
                         itemType: itemType || 'QUOTE',
                     });
                 }
+            },
+            onCancel: () => {
+                Modal.destroyAll();
             },
             centered: true,
         });
