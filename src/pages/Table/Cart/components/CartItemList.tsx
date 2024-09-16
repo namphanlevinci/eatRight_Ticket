@@ -184,7 +184,9 @@ export default function CartItemList({
     const total = useMemo(
         () =>
             (data?.prices?.subtotal_excluding_tax?.value || 0) -
-            (data?.prices?.total_canceled_without_tax?.value || 0),
+            (data?.order_number
+                ? 0
+                : data?.prices?.total_canceled_without_tax?.value || 0),
         [data],
     );
 
