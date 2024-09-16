@@ -64,6 +64,7 @@ export default function ColRight({
         setVisibleMoalPosDJV,
         handlePOSPaymentWithDJV,
         onCloseProcessingPayment,
+        showModalErrorPayment,
     } = useTableBill();
 
     useEffect(() => {
@@ -174,6 +175,9 @@ export default function ColRight({
                 setVisibleMoalPos={setVisibleMoalPosDJV}
                 onPressOK={(pos_id: number) => {
                     handlePOSPaymentWithDJV(pos_id);
+                }}
+                onCancel={() => {
+                    showModalErrorPayment();
                 }}
             />
             {contextHolder}

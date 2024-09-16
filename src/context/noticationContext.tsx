@@ -12,7 +12,8 @@ import io from 'socket.io-client';
 import { RootState } from 'store';
 // Khởi tạo một context mới
 const SocketContext = createContext<Socket | null>(null);
-
+const SocketURL =
+    process.env.REACT_APP_SOCKETURL || 'https://fnb-socket.test88.info';
 // Tạo một custom hook để sử dụng context này
 export const useSocket = () => useContext(SocketContext);
 
@@ -48,7 +49,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                     });
             }
             console.log(tableData);
-            const socketInstance = io('https://fnb-socket.test88.info');
+            const socketInstance = io(SocketURL);
 
             setSocket(socketInstance);
 
@@ -64,6 +65,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                         if (res?.data?.receiveSocketId?.result) {
                             console.log(
                                 'Kết nối thành công đến máy chủ socket.',
+                                socketId,
                             );
                         }
                     })
