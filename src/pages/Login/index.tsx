@@ -57,7 +57,7 @@ export const LoginPage: React.FC = () => {
                 size="large"
             >
                 <FormItem
-                    label="Email / Phone number"
+                    label="Username"
                     name="username"
                     rules={[
                         {
@@ -69,7 +69,7 @@ export const LoginPage: React.FC = () => {
                     theme={theme}
                 >
                     <DarkInput
-                        placeholder="Email / Phone number"
+                        placeholder="Username"
                         style={{ background: theme.fieldBackground }}
                     />
                 </FormItem>
