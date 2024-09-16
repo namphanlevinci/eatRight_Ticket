@@ -33,7 +33,7 @@ type Props = {
     children: React.ReactNode;
 };
 
-const MERCHANTURL = process.env.REACT_APP_MERCHANT_URL;
+const MERCHANTURL = process.env.REACT_APP_MERCHANTURL;
 export const DarkLayout = (props: Props) => {
     const { children } = props;
     const {
