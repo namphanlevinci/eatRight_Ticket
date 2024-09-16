@@ -5,9 +5,9 @@ import { BASE_ROUTER } from 'constants/router';
 import React from 'react';
 import { useLocation } from 'react-router';
 import SearchSettings from './components/Search';
-import GeneralIcon from './icons/Restaurent/general_icon';
-import LocationIcon from './icons/Restaurent/locationIcon';
-import OpeningHoursIcon from './icons/Restaurent/openingHoursIcon';
+// import GeneralIcon from './icons/Restaurent/general_icon';
+// import LocationIcon from './icons/Restaurent/locationIcon';
+// import OpeningHoursIcon from './icons/Restaurent/openingHoursIcon';
 import TipIcon from './icons/tipIcon';
 import { useTheme } from 'context/themeContext';
 
@@ -19,39 +19,39 @@ export default function RestaurentManagementLayout(props: Props) {
     const { children } = props;
     const location = useLocation();
     const paths = [
-        {
-            title: 'General',
-            path: BASE_ROUTER.RESTAURENT_MANAGER,
-            icon: (
-                <GeneralIcon
-                    isSelected={
-                        location.pathname === BASE_ROUTER.RESTAURENT_MANAGER
-                    }
-                />
-            ),
-        },
-        {
-            title: 'Location',
-            path: BASE_ROUTER.RESTAURENT_Location,
-            icon: (
-                <LocationIcon
-                    isSelected={
-                        location.pathname === BASE_ROUTER.RESTAURENT_Location
-                    }
-                />
-            ),
-        },
-        {
-            title: 'Opening Hours',
-            path: BASE_ROUTER.RESTAURENT_Opening,
-            icon: (
-                <OpeningHoursIcon
-                    isSelected={
-                        location.pathname === BASE_ROUTER.RESTAURENT_Opening
-                    }
-                />
-            ),
-        },
+        // {
+        //     title: 'General',
+        //     path: BASE_ROUTER.RESTAURENT_MANAGER,
+        //     icon: (
+        //         <GeneralIcon
+        //             isSelected={
+        //                 location.pathname === BASE_ROUTER.RESTAURENT_MANAGER
+        //             }
+        //         />
+        //     ),
+        // },
+        // {
+        //     title: 'Location',
+        //     path: BASE_ROUTER.RESTAURENT_Location,
+        //     icon: (
+        //         <LocationIcon
+        //             isSelected={
+        //                 location.pathname === BASE_ROUTER.RESTAURENT_Location
+        //             }
+        //         />
+        //     ),
+        // },
+        // {
+        //     title: 'Opening Hours',
+        //     path: BASE_ROUTER.RESTAURENT_Opening,
+        //     icon: (
+        //         <OpeningHoursIcon
+        //             isSelected={
+        //                 location.pathname === BASE_ROUTER.RESTAURENT_Opening
+        //             }
+        //         />
+        //     ),
+        // },
         {
             title: 'Tip',
             path: BASE_ROUTER.RESTAURENT_Tip,
