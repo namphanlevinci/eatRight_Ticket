@@ -7,10 +7,14 @@ export default function RenderTab({
     id,
     selected,
     onClick,
+    isAllowDelete,
+    onRemoveItem,
 }: {
     id?: string;
     selected?: boolean;
     onClick?: () => void;
+    isAllowDelete?: boolean;
+    onRemoveItem?: () => void;
 }) {
     const { theme } = useTheme();
     return (
@@ -33,6 +37,7 @@ export default function RenderTab({
                 alignItems: 'center',
                 paddingInline: 16,
                 marginRight: 8,
+                position: 'relative',
             }}
             onClick={onClick}
         >
@@ -64,6 +69,29 @@ export default function RenderTab({
                     >
                         New
                     </Text>
+                </>
+            )}
+            {isAllowDelete && (
+                <>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 6,
+                            right: 10,
+                            cursor: 'pointer',
+                        }}
+                        onClick={onRemoveItem}
+                    >
+                        <Text
+                            style={{
+                                color: theme.textTitle,
+                                fontWeight: '400',
+                            }}
+                        >
+                            X
+                        </Text>
+                    </div>
+                    <div style={{ width: 20, height: 20 }} />
                 </>
             )}
         </div>
