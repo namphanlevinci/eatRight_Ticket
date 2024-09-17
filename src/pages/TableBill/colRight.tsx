@@ -336,16 +336,16 @@ export default function ColRight({
                     />
                     <div style={{ marginTop: 15 }} />
                     <ButtonOptions
-                        title="POS (DJV)"
+                        title="Credit Card"
                         isSelected={paymentMethod === 'pos_djv'}
                         onClick={() => setPaymentMethod('pos_djv')}
                     />
                     <div style={{ marginTop: 15 }} />
-                    <ButtonOptions
+                    {/* <ButtonOptions
                         title="POS (ARISE)"
                         isSelected={paymentMethod === 'pos'}
                         onClick={() => setPaymentMethod('pos')}
-                    />
+                    /> */}
                 </div>
             )}
             <div style={{ marginTop: 40 }}>
