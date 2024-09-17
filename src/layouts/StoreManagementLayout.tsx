@@ -3,7 +3,7 @@ import { Col, Layout, Row } from 'antd';
 import { RestaurentManageButton } from 'components/atom/Button/RestaurentManageButton';
 import { BASE_ROUTER } from 'constants/router';
 import React from 'react';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import SearchSettings from './components/Search';
 // import GeneralIcon from './icons/Restaurent/general_icon';
 // import LocationIcon from './icons/Restaurent/locationIcon';
@@ -11,6 +11,10 @@ import SearchSettings from './components/Search';
 import TipIcon from './icons/tipIcon';
 import { useTheme } from 'context/themeContext';
 import ReservationIcon from './icons/Restaurent/reservation_icon';
+import KitchenStationIcon from './icons/Restaurent/kitchen_station_icon';
+import { Link } from 'react-router-dom';
+import { ArrawLeftIcon } from './SettingLayout';
+import { Text } from 'components/atom/Text';
 
 type Props = {
     children: React.ReactNode;
@@ -65,6 +69,18 @@ export default function RestaurentManagementLayout(props: Props) {
             ),
         },
         {
+            title: 'Kitchen Station',
+            path: BASE_ROUTER.RESTAURENT_KITCHEN_STATION,
+            icon: (
+                <KitchenStationIcon
+                    isSelected={
+                        location.pathname ===
+                        BASE_ROUTER.RESTAURENT_KITCHEN_STATION
+                    }
+                />
+            ),
+        },
+        {
             title: 'Tip',
             path: BASE_ROUTER.RESTAURENT_Tip,
             icon: (
@@ -77,9 +93,66 @@ export default function RestaurentManagementLayout(props: Props) {
         },
     ];
     const { theme } = useTheme();
+    const navigation = useNavigate();
+    const Breadcrumb = () => {
+        const isSelected = location.pathname.includes('/restaurent/');
+        const array = location.pathname.split('/');
+
+        return (
+            <Row style={{ padding: '0 20px', gap: 16, alignItems: 'center' }}>
+                <div
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                        navigation(-1);
+                    }}
+                >
+                    <ArrawLeftIcon />
+                </div>
+                {isSelected && (
+                    <Link to={BASE_ROUTER.RESTAURENT_MANAGER}>
+                        <Row align={'middle'} style={{ gap: 16 }}>
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    color: theme.pRIMARY6Primary,
+                                }}
+                            >
+                                Restaurant Management
+                            </Text>
+                        </Row>
+                    </Link>
+                )}
+                {array.map((path, index) => {
+                    return index > 1 ? (
+                        <Link to={array.slice(0, index + 1).join('/')}>
+                            <Row
+                                key={index}
+                                style={{ gap: 10, marginLeft: 10 }}
+                            >
+                                <Text>/</Text>{' '}
+                                <Text
+                                    style={{
+                                        color:
+                                            array.length - 1 > index
+                                                ? theme.pRIMARY6Primary
+                                                : theme.tEXTPrimary,
+                                    }}
+                                >
+                                    {NameObject[array[index]]}
+                                </Text>
+                            </Row>
+                        </Link>
+                    ) : (
+                        <></>
+                    );
+                })}
+            </Row>
+        );
+    };
     return (
         <DarkLayout>
             {/* <Text>Restaurant management</Text> */}
+            <Breadcrumb />
             <div
                 style={{
                     height: '100%',
@@ -142,3 +215,10 @@ export default function RestaurentManagementLayout(props: Props) {
         </DarkLayout>
     );
 }
+
+const NameObject: any = {
+    kitchenStation: 'Kitchen Station',
+    Detail: 'Detail',
+    tip: 'Tip',
+    reservation: 'Reservation',
+};
