@@ -169,15 +169,24 @@ export default function KitchenStationDetailPage() {
                     </Text>
                     <Row style={{ gap: 16 }}>
                         {id ? (
-                            <ButtonPrimary
-                                isCancel
-                                title="Delete"
-                                onClick={() => setShowModalDelete(true)}
-                                width="100px"
-                                backgroundColor={theme.eRROR1BG}
-                                color={theme.eRROR2Default}
-                                height="48px"
-                            />
+                            <>
+                                <ButtonPrimary
+                                    isCancel
+                                    title="Delete"
+                                    onClick={() => setShowModalDelete(true)}
+                                    width="100px"
+                                    backgroundColor={theme.eRROR1BG}
+                                    color={theme.eRROR2Default}
+                                    height="48px"
+                                />
+                                <ButtonPrimary
+                                    isCancel
+                                    title="Cancel"
+                                    onClick={() => navigation(-1)}
+                                    width="100px"
+                                    height="48px"
+                                />
+                            </>
                         ) : (
                             <ButtonPrimary
                                 isCancel
