@@ -184,7 +184,9 @@ export default function CartItemList({
     const total = useMemo(
         () =>
             (data?.prices?.subtotal_excluding_tax?.value || 0) -
-            (data?.prices?.total_canceled_without_tax?.value || 0),
+            (data?.order_number
+                ? 0
+                : data?.prices?.total_canceled_without_tax?.value || 0),
         [data],
     );
 
@@ -264,7 +266,9 @@ export default function CartItemList({
             <LoadingModal showLoading={loading || loadingClean} />
             <InfoCartModal
                 isModalOpen={isModalOpen}
-                onCancel={() => setIsModalOpen(!isModalOpen)}
+                onCancel={() => {
+                    setIsModalOpen(!isModalOpen), setIsNewItem(true);
+                }}
                 onSubmit={(e: { username: string; numberOfCustomer: number }) =>
                     createCart(e)
                 }

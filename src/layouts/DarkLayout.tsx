@@ -33,6 +33,7 @@ type Props = {
     children: React.ReactNode;
 };
 
+const MERCHANTURL = process.env.REACT_APP_MERCHANTURL;
 export const DarkLayout = (props: Props) => {
     const { children } = props;
     const {
@@ -65,6 +66,10 @@ export const DarkLayout = (props: Props) => {
                 if (res?.data?.getMerchantInfo) {
                     dispatch(updateCustomerInfo(res?.data?.getMerchantInfo));
                     sessionStorage.setItem('isTokenValidated', 'true');
+                    localStorage.setItem(
+                        'store_view_code',
+                        res?.data?.getMerchantInfo?.store_view_code,
+                    );
                 }
             });
             onGetRestaurent({ fetchPolicy: 'no-cache' }).then((res) => {
@@ -265,7 +270,7 @@ export const DarkLayout = (props: Props) => {
                                                 <Switch
                                                     defaultChecked
                                                     onChange={() => {
-                                                        const url = `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`;
+                                                        const url = `${MERCHANTURL}/home?token=${localStorage.getItem('token')}`;
                                                         window.location.href =
                                                             url;
                                                     }}

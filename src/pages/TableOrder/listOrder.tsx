@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col, Modal, Row } from 'antd';
 import IconButtonDeleteItem from 'assets/icons/ButtonDelete';
 import CustomTag from 'components/atom/Tag/CustomTag';
 import { Text, Text18 } from 'components/atom/Text';
@@ -7,10 +7,11 @@ import { ColStyled } from 'pages/TableBill/styleds';
 import React from 'react';
 import { formatNumberWithCommas } from 'utils/format';
 import { getTagStyled } from 'utils/tag';
-import { App } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
+import ModalConfirm from 'components/modal/ModalConfirm';
+const { confirm } = Modal;
 export default function ListOrder({
     cart,
     count,
@@ -22,41 +23,49 @@ export default function ListOrder({
     removeItemOnCartServer?: any;
     updateStatusItemServer?: any;
 }) {
-    const { modal } = App.useApp();
     const onDone = async (
         id?: string,
         itemName?: string,
         itemType?: string,
     ) => {
-        await modal.confirm({
+        await confirm({
             title: `Confirmation of serving ${itemName} ?`,
             onOk: () => {
                 if (id) {
+                    Modal.destroyAll();
                     updateStatusItemServer({
                         cartId: id,
                         itemType: itemType || 'QUOTE',
                     });
                 }
             },
-            centered: true,
-        });
-    };
-    const onRemoveItem = async (id?: string) => {
-        await modal.confirm({
-            title: 'Do you want to this item remove?',
-            onOk: () => {
-                if (id) {
-                    removeItemOnCartServer({
-                        cartId: cart?.id,
-                        cartItemId: id,
-                    });
-                }
+            onCancel: () => {
+                Modal.destroyAll();
             },
             centered: true,
         });
     };
+    const onRemoveItem = async (id?: string) => {
+        setIsModalConfirm(true);
+        setId(id);
+    };
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const [isModalConfirm, setIsModalConfirm] = React.useState<boolean>(false);
+    const [id, setId] = React.useState<string | undefined>('');
+    const onCancel = () => {
+        setIsModalConfirm(false);
+        setId('');
+    };
+    const onSubmit = () => {
+        setIsModalConfirm(false);
+        if (id) {
+            removeItemOnCartServer({
+                cartId: cart?.id,
+                cartItemId: id,
+            });
+        }
+    };
     return (
         <ColStyled
             style={{
@@ -68,6 +77,13 @@ export default function ListOrder({
                 padding: 16,
             }}
         >
+            <ModalConfirm
+                isModalOpen={isModalConfirm}
+                onCancel={onCancel}
+                onSubmit={onSubmit}
+                title="Remove this item?"
+                content="Do you want to this item remove?"
+            />
             <Text>Total {count} Items</Text>
             {cart?.items?.map((item, index) => {
                 const tag = item.bundle_options?.find((e) => {

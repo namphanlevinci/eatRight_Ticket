@@ -64,6 +64,7 @@ export default function InfoCartModal({
             closeIcon={<></>}
             centered
             width={380}
+            closable={false}
         >
             <Form
                 name="basic"

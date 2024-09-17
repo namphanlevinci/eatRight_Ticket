@@ -97,7 +97,10 @@ export const TablePage: React.FC = () => {
                         <BreadCrum>Home</BreadCrum>
                     </Link>
                     <ArrowRightIcon />
-                    <BreadCrum isSelected>Table {table?.name}</BreadCrum>
+                    <BreadCrum isSelected>
+                        Table{' '}
+                        {table?.name === 'Counter' ? 'Take Out' : table?.name}
+                    </BreadCrum>
                     {!(table && table?.numberOfCustomer > 0) && (
                         <div
                             style={{

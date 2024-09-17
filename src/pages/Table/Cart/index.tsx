@@ -1,6 +1,6 @@
 import CartItemList from './components/CartItemList';
 import CartInfo from './components/CartInfo';
-import { Row } from 'antd';
+import { Modal, Row } from 'antd';
 import RenderTab from './components/RenderTab';
 import { getInitialCartState } from 'context/cartContext';
 
@@ -63,6 +63,20 @@ export default function OrderCart({ table }: { table: any }) {
                             id={item}
                             selected={selectedCart === index}
                             onClick={() => setSelectedCart(index)}
+                            isAllowDelete={item.includes('Guest')}
+                            onRemoveItem={() => {
+                                Modal.confirm({
+                                    title: 'Are you sure you want to delete this cart?',
+                                    onOk: () => {
+                                        setListCart(
+                                            listCart.filter(
+                                                (cart) => cart !== item,
+                                            ),
+                                        );
+                                    },
+                                    centered: true,
+                                });
+                            }}
                         />
                     );
                 })}
