@@ -21,7 +21,7 @@ export const Header = ({
                 <img
                     src={logo}
                     alt="logo"
-                    style={{ width: '100%', height: 40 }}
+                    style={{ width: '100%', height: 40, minWidth: '188' }}
                 />
             </div>
             <div style={{ cursor: 'pointer' }} onClick={onClose}>
