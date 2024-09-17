@@ -1,3 +1,4 @@
+import { Spin } from 'antd';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import React from 'react';
@@ -5,9 +6,11 @@ import React from 'react';
 export default function ButtonSubmit({
     onClick,
     title,
+    loading = false,
 }: {
     onClick: any;
     title: string;
+    loading?: boolean;
 }) {
     const { theme } = useTheme();
     return (
@@ -24,15 +27,19 @@ export default function ButtonSubmit({
             }}
             onClick={onClick}
         >
-            <Text
-                style={{
-                    fontSize: 18,
-                    fontWeight: '600',
-                    color: theme.pRIMARY1,
-                }}
-            >
-                {title}
-            </Text>
+            {loading ? (
+                <Spin />
+            ) : (
+                <Text
+                    style={{
+                        fontSize: 18,
+                        fontWeight: '600',
+                        color: theme.pRIMARY1,
+                    }}
+                >
+                    {title}
+                </Text>
+            )}
         </div>
     );
 }
