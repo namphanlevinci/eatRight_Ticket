@@ -43,6 +43,7 @@ export default function SelectForm({
                         background: theme.nEUTRALBase,
                         borderRadius: 8,
                         height: 56,
+                        ...props.style,
                     }}
                     theme={theme}
                     options={options}

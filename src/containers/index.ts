@@ -26,6 +26,12 @@ export const containers = {
     RestaurentReservation: lazy(
         () => import('containers/RestaurentManagement/Reservation'),
     ),
+    KitchenStationReservation: lazy(
+        () => import('containers/RestaurentManagement/KitchenStation'),
+    ),
+    KitchenStationDetailReservation: lazy(
+        () => import('containers/RestaurentManagement/KitchenStationDetail'),
+    ),
 };
 
 export default containers;

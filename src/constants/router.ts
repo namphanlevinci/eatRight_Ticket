@@ -27,4 +27,6 @@ export const BASE_ROUTER = {
     CUSTOMER_LIST: '/customer/list',
     CUSTOMER_Detail: '/customer/detail',
     RESTAURENT_RESERVATION: '/restaurent/reservation',
+    RESTAURENT_KITCHEN_STATION: '/restaurent/kitchenStation',
+    RESTAURENT_KITCHEN_STATION_DETAIL: '/restaurent/kitchenStation/Detail',
 };
