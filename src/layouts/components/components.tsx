@@ -3,7 +3,9 @@ import logo from 'assets/logos/logo.png';
 import CloseXIcon from 'assets/icons/closeIcon';
 import { Text } from 'components/atom/Text';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
-
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
+import LogoMerchant from 'assets/logos/logo_merchant.png';
 export const Header = ({
     onClose,
     onLogo,
@@ -11,6 +13,7 @@ export const Header = ({
     onClose: () => void;
     onLogo: () => void;
 }) => {
+    const { isMerchant } = useSelector((state: RootState) => state.auth);
     return (
         <Row
             justify={'space-between'}
@@ -18,11 +21,11 @@ export const Header = ({
             style={{ marginBottom: 16 }}
         >
             <div onClick={onLogo}>
-                <img
-                    src={logo}
-                    alt="logo"
-                    style={{ width: '100%', height: 40, minWidth: '188' }}
-                />
+                {isMerchant ? (
+                    <img src={LogoMerchant} style={{ height: 40 }} />
+                ) : (
+                    <img src={logo} alt="logo" style={{ height: 40 }} />
+                )}
             </div>
             <div style={{ cursor: 'pointer' }} onClick={onClose}>
                 <CloseXIcon />
