@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import { CREATE_CUSTOMER } from 'graphql/customer';
 import React from 'react';
 import { useNavigate } from 'react-router';
-const calling_code = '+84';
+const calling_code = '+1';
 export default function AddNewCustomer() {
     const { theme } = useTheme();
     const [onCreateCustomer, { loading }] = useMutation(CREATE_CUSTOMER);
