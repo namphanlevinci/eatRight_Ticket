@@ -130,7 +130,8 @@ export default function ModalInputNote({
                 <ButtonPrimary
                     title="Cancel"
                     onClick={onCancel}
-                    width="162px"
+                    maxWidth="162px"
+                    width="45%"
                     marginTop="0px"
                     isCancel
                     borderColor={theme.tEXTPrimary}
@@ -140,7 +141,8 @@ export default function ModalInputNote({
                 <ButtonPrimary
                     title="Send"
                     onClick={onFinish}
-                    width="166px"
+                    maxWidth="166px"
+                    width="45%"
                     marginTop="0px"
                     height="56px"
                 />
