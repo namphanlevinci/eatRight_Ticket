@@ -56,7 +56,7 @@ export default function ListCustomerForMobile({
                         value={
                             item?.date_of_birth
                                 ? dayjs(item?.date_of_birth).format(
-                                      'DD/MM/YYYY',
+                                      'MM/DD/YYYY',
                                   )
                                 : '-'
                         }
