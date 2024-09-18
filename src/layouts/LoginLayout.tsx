@@ -16,7 +16,6 @@ export default function LoginLayout(props: Props) {
         <div
             style={{
                 display: 'flex',
-                minHeight: '100vh',
                 flexDirection: 'column',
                 background: theme.nEUTRALPrimary,
             }}

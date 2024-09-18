@@ -31,6 +31,7 @@ export default function SelectForm({
                         : [
                               {
                                   required: true,
+                                  message: `Field is required`,
                               },
                           ]
                 }
