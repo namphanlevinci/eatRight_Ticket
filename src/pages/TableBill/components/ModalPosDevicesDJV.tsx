@@ -81,7 +81,7 @@ const ModalPosDevicesDJV = ({
                             marginBottom: 24,
                         }}
                     >
-                        POS Device List
+                        Terminals
                     </p>
                     {posDeviceList?.map?.((pos: any) => (
                         <Button

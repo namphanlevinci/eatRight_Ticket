@@ -36,10 +36,10 @@ export const CREATE_CUSTOMER = gql`
     mutation (
         $firstname: String!
         $lastname: String!
-        $email: String!
+        $email: String
         $calling_code: String!
         $gender: Int!
-        $date_of_birth: String!
+        $date_of_birth: String
         $status: Int!
         $phone_number: String!
         $group_id: Int!

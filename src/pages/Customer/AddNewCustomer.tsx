@@ -24,13 +24,18 @@ export default function AddNewCustomer() {
             variables: {
                 firstname: values.firstname,
                 lastname: values.lastname,
-                email: values.email,
                 calling_code: calling_code,
                 gender: values.gender,
-                date_of_birth: dayjs(values.dob).format('YYYY-MM-DD'),
-                phone_number: `${calling_code}${values.phoneNumber.phoneNumber.replace(/\s/g, '')}`,
+                phone_number: `${calling_code}${values.phoneNumber.phoneNumber.replace(
+                    /\s/g,
+                    '',
+                )}`,
                 status: 1,
                 group_id: 2,
+                ...(values?.email && { email: values.email }),
+                ...(values?.dob && {
+                    date_of_birth: dayjs(values.dob).format('YYYY-MM-DD'),
+                }),
             },
         })
             .then((res) => {

@@ -75,15 +75,15 @@ export const useTableBill = (isGoBack = true) => {
             emitter.off('arise_result');
         };
     }, [orderInfo]);
-    const showConfirm = () => {
-        modal.confirm({
-            title: 'Do you want to check out?',
-            centered: true,
-            onOk: () => {
-                handleCheckOut();
-            },
-        });
-    };
+    // const showConfirm = () => {
+    //     modal.confirm({
+    //         title: 'Do you want to check out?',
+    //         centered: true,
+    //         onOk: () => {
+    //             handleCheckOut();
+    //         },
+    //     });
+    // };
     const showError = (msg: string, order_id: string) => {
         modal.error({
             title: msg,
@@ -386,7 +386,7 @@ export const useTableBill = (isGoBack = true) => {
         cart,
         total,
         count,
-        handleCheckOut: showConfirm,
+        handleCheckOut,
         loading:
             loading ||
             split_even_loading ||
