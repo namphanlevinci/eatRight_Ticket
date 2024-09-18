@@ -193,10 +193,6 @@ export default function ColRight({
                 </Row>
             )}
 
-            {!isMobile && (
-                <Text style={{ fontSize: 20 }}>Customer Information</Text>
-            )}
-
             <InputInfoCart
                 icon={<AccountIcon />}
                 value={customerName}
@@ -211,7 +207,6 @@ export default function ColRight({
             /> */}
 
             <div style={{ marginTop: isMobile ? 20 : 56 }}>
-                <Text style={{ fontSize: 20 }}>Billing Information</Text>
                 <RenderBillInfomationRow
                     title="Sub total"
                     value={`$ ${formatNumberWithCommas(totalMoney)}`}
@@ -326,7 +321,7 @@ export default function ColRight({
             ) : (
                 <div style={{ marginTop: 56 }}>
                     <Text style={{ fontSize: 20, marginBottom: 16 }}>
-                        Payment options
+                        Payment method
                     </Text>
 
                     <ButtonOptions
@@ -336,16 +331,16 @@ export default function ColRight({
                     />
                     <div style={{ marginTop: 15 }} />
                     <ButtonOptions
-                        title="POS (DJV)"
+                        title="Credit Card"
                         isSelected={paymentMethod === 'pos_djv'}
                         onClick={() => setPaymentMethod('pos_djv')}
                     />
                     <div style={{ marginTop: 15 }} />
-                    <ButtonOptions
+                    {/* <ButtonOptions
                         title="POS (ARISE)"
                         isSelected={paymentMethod === 'pos'}
                         onClick={() => setPaymentMethod('pos')}
-                    />
+                    /> */}
                 </div>
             )}
             <div style={{ marginTop: 40 }}>

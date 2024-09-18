@@ -5,7 +5,6 @@ import UpDownNumber from 'components/UpdownNumber';
 import { Button } from 'components/atom/Button';
 import { formatNumberWithCommas } from 'utils/format';
 import { useCart } from 'context/cartContext';
-import CartIcon from 'assets/icons/cartIcon';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import { useMediaQuery } from 'react-responsive';
@@ -691,8 +690,7 @@ export default function CartItemList({
                                     background={theme.pRIMARY6Primary}
                                     color={theme.nEUTRALBase}
                                 >
-                                    <CartIcon isDisabled={!isNewItem} />
-                                    Send
+                                    Confirm
                                 </Button>
                             ) : (
                                 <Button
@@ -803,7 +801,7 @@ export default function CartItemList({
                                     selectedCart
                                 ]?.firstname?.includes('Guest')}
                             >
-                                Order List
+                                Checkout
                             </Button>
                         )}
                     </Row>

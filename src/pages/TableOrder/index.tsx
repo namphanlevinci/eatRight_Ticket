@@ -18,7 +18,6 @@ export default function TableBill() {
         loading: loadingTable,
         contextHolder,
     } = useTableBill();
-    const tables = JSON.parse(localStorage.getItem('tableData') || '[]');
     const [searchParams] = useSearchParams();
     const tableId = searchParams.get('tableId');
     const { Header } = Layout;
@@ -48,7 +47,8 @@ export default function TableBill() {
                 <Text
                     style={{ fontSize: 20, fontWeight: '600', marginLeft: 20 }}
                 >
-                    Table {tables?.find((item: any) => item.id == tableId).name}
+                    {/* Table {tables?.find((item: any) => item.id == tableId).name} */}
+                    Bill Infomation
                 </Text>
             </Header>
         );
@@ -64,9 +64,6 @@ export default function TableBill() {
             <LoadingModal showLoading={loading} />
             <RenderHeader />
             <div style={{ flex: 1, padding: 16 }}>
-                <Text style={{ fontSize: 20, fontWeight: '400' }}>
-                    Order summary
-                </Text>
                 <Row style={{ height: '95%', marginTop: 16 }}>
                     <ListOrder
                         cart={cart}

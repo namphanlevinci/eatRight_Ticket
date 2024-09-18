@@ -94,7 +94,7 @@ export const BaseRouter = () => {
             console.log('need show modal logout please');
             error({
                 title: 'Error',
-                content: 'Token is expried !',
+                content: 'Session expired. Please log in again!',
                 onOk: () => {
                     setNeedLogout(false);
                     dispatch(updateStatusLogout());
@@ -109,6 +109,7 @@ export const BaseRouter = () => {
             setNeedLogout(false);
         }
     }, [isLogged]);
+    
     return (
         <Suspense fallback={'loading'}>
             <Routes>

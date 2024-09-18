@@ -57,7 +57,7 @@ export default function TableBill() {
                     <span style={{ color: theme.pRIMARY6Primary }}>
                         Order Id
                     </span>{' '}
-                    / Bill Number
+                    / Bill Infomation
                 </Text>
             </Header>
         );
@@ -122,9 +122,6 @@ export default function TableBill() {
             <RenderHeader />
             <div style={{ flex: 1, padding: 16 }}>
                 <Row justify={'space-between'} align={'middle'}>
-                    <Text style={{ fontSize: 20, fontWeight: '400' }}>
-                        Order summary
-                    </Text>
                     {!isMobile && <SplitBillButton />}
                 </Row>
                 <Row style={{ marginTop: 16 }}>
