@@ -61,6 +61,7 @@ export default function MenuItem({
     children,
     selected,
     isProduct,
+    isVirtualProduct,
     isSubCategory,
     isDisabled,
 }: {
@@ -69,6 +70,7 @@ export default function MenuItem({
     isProduct?: boolean;
     isSubCategory?: boolean;
     isDisabled?: boolean;
+    isVirtualProduct?: boolean;
 }) {
     const { theme } = useTheme();
     const backgroundColor = getBackgroundColor({
@@ -98,7 +100,7 @@ export default function MenuItem({
                 borderColor: borderColor,
             }}
         >
-            {isSubCategory && (
+            {!isVirtualProduct && isSubCategory && (
                 <div
                     style={{
                         position: 'absolute',
