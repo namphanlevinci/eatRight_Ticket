@@ -94,7 +94,7 @@ export default function SetUpTipPage() {
     }, [data, type]);
     return (
         <Container>
-            <RowStyled>
+            <RowStyled style={{ maxWidth: 600 }}>
                 <Text>Include tax in tip</Text>
                 <Switch value={isTax} onChange={(value) => setIsTax(value)} />
             </RowStyled>
@@ -109,6 +109,7 @@ export default function SetUpTipPage() {
                     width: '100%',
                     height: 56,
                     color: theme.fieldTextIcon,
+                    maxWidth: 600,
                 }}
                 size="large"
                 onChange={handleChange}
@@ -123,7 +124,14 @@ export default function SetUpTipPage() {
                     },
                 ]}
             />
-            <RowStyled style={{ gap: 20, marginTop: 20, marginBottom: 40 }}>
+            <RowStyled
+                style={{
+                    gap: 20,
+                    marginTop: 20,
+                    marginBottom: 40,
+                    maxWidth: 600,
+                }}
+            >
                 <InputStyled
                     value={inputValue.value1}
                     onChange={(e) =>
@@ -164,6 +172,7 @@ export default function SetUpTipPage() {
                     handleSetTips();
                 }}
                 isLoading={loading}
+                maxWidth="600px"
             />
         </Container>
     );

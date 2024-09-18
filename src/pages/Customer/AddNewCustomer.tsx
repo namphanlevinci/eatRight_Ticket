@@ -26,9 +26,12 @@ export default function AddNewCustomer() {
                 lastname: values.lastname,
                 calling_code: calling_code,
                 gender: values.gender,
-                phone_number: `${calling_code}${values.phoneNumber.phoneNumber.replace(/\s/g, '')}`,
-                status: values.status,
-                group_id: values.group_id,
+                phone_number: `${calling_code}${values.phoneNumber.phoneNumber.replace(
+                    /\s/g,
+                    '',
+                )}`,
+                status: 1,
+                group_id: 2,
                 ...(values?.email && { email: values.email }),
                 ...(values?.dob && {
                     date_of_birth: dayjs(values.dob).format('YYYY-MM-DD'),
@@ -114,7 +117,7 @@ export default function AddNewCustomer() {
                         />
                     </ColContainer>
                 </Row>
-                <Row>
+                {/* <Row>
                     <ColContainer>
                         <SelectForm
                             label="Customer group"
@@ -149,7 +152,7 @@ export default function AddNewCustomer() {
                             ]}
                         />
                     </ColContainer>
-                </Row>
+                </Row> */}
                 <Text
                     style={{ fontSize: 20, fontWeight: '600', paddingLeft: 16 }}
                 >

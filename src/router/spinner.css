@@ -1,0 +1,25 @@
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Chiều cao full màn hình */
+  }
+  
+  .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1); /* Vòng ngoài màu nhạt */
+    border-top: 4px solid rgb(4, 85, 191); /* Phần trên có màu xanh */
+    border-radius: 50%; /* Tạo hình tròn */
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite; /* Áp dụng animation */
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg); /* Bắt đầu tại 0 độ */
+    }
+    100% {
+      transform: rotate(360deg); /* Kết thúc tại 360 độ */
+    }
+  }
+  

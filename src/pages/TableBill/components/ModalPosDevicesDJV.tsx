@@ -27,6 +27,14 @@ const ModalPosDevicesDJV = ({
             setPosDeviceList(res?.data?.getPosDevices?.items ?? []);
         });
     }, []);
+    useEffect(() => {
+        if (isVisibleModalPos && posDeviceList) {
+            if (posDeviceList && posDeviceList?.length === 1) {
+                onPressOK(posDeviceList[0].entity_id);
+                setVisibleMoalPos(false);
+            }
+        }
+    }, [isVisibleModalPos]);
     const handleOk = (): void => {
         if (selectedOption) {
             onPressOK(selectedOption?.entity_id);

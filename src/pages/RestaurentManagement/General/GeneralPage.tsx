@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function RestaurentGeneralPage() {
-    return <div>RestaurentGeneralPage</div>;
+    return <div>Restaurent Reservation</div>;
 }

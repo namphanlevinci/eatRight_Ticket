@@ -16,6 +16,7 @@ export default function ButtonPrimary({
     isLoading,
     color,
     borderColor,
+    maxWidth = '100%',
 }: {
     title: string;
     onClick: any;
@@ -29,6 +30,7 @@ export default function ButtonPrimary({
     isLoading?: boolean;
     color?: string;
     borderColor?: string;
+    maxWidth?: string;
 }) {
     const { theme } = useTheme();
     return (
@@ -56,6 +58,7 @@ export default function ButtonPrimary({
                 cursor: 'pointer',
                 width,
                 border: `${borderColor ? '2px' : '0px'} solid ${borderColor ? borderColor : theme.pRIMARY6Primary}`,
+                maxWidth: maxWidth,
             }}
             onClick={onClick}
         >

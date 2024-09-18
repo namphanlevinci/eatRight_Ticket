@@ -1,0 +1,18 @@
+$white_color: #ffffff;
+
+.customButton {
+  border: 1px solid $white_color;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: $white_color;
+  font-weight: 600;
+  display: flex;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 300ms ease-in-out;
+  background-color: #1d2433;
+  &:hover {
+    background-color: rgb(0, 0, 0, 0.7);
+  }
+}

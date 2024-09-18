@@ -8,8 +8,6 @@ import { GET_ORDER_DETAIL } from 'graphql/orders/orderDetail';
 import { ButtonContainer, ButtonLeftContainer, Container } from './styled';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
-import { usePrinter } from 'context/printerContext';
-import { PrinterContextType } from 'context/printerType';
 import ModalPaymentPending from 'components/modal/ModalPaymentPending';
 import { GET_RE_PAYMENT_URL } from 'graphql/orders/repayment';
 import LazyLoadedScripts from 'LazyLoadedScripts';
@@ -32,6 +30,7 @@ import { ButtonBill } from './components/ButtonBill';
 import { ButtonSelectBill } from './components/ButtonSelectBill';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
+import { PRINT_BILL } from 'graphql/printer';
 export default function index() {
     const [getOrderDetail, { data, loading, refetch }] = useLazyQuery(
         GET_ORDER_DETAIL,
@@ -175,27 +174,65 @@ export default function index() {
     };
     const navigation = useNavigate();
     const { modal } = App.useApp();
-    const { print, connectionStatus }: PrinterContextType = usePrinter();
-    const PrintBill = () => {
-        if (connectionStatus === 'Connected') {
-            print();
-            modal.success({
-                title: 'Print bill Success',
-                content: 'Please go to printer to take the bill!',
-                centered: true,
-                onOk: () => {
-                    navigation(BASE_ROUTER.HOME);
+    // const { print, connectionStatus }: PrinterContextType = usePrinter();
+    // const PrintBill = () => {
+    //     if (connectionStatus === 'Connected') {
+    //         print();
+    //         modal.success({
+    //             title: 'Print bill Success',
+    //             content: 'Please go to printer to take the bill!',
+    //             centered: true,
+    //             onOk: () => {
+    //                 navigation(BASE_ROUTER.HOME);
+    //             },
+    //         });
+    //     } else {
+    //         modal.error({
+    //             title: 'Print bill Failed',
+    //             content: 'Please set up printer then try again!',
+    //             centered: true,
+    //             onOk: () => {
+    //                 navigation(BASE_ROUTER.SETTINGS_PRINTER);
+    //             },
+    //         });
+    //     }
+    // };
+    const [onPrintBill] = useMutation(PRINT_BILL);
+    const PrintBillApi = () => {
+        if (childBill.length) {
+            onPrintBill({
+                variables: {
+                    invoice_number: selectDataShowbill.number,
                 },
-            });
+            })
+                .then(() => {
+                    modal.success({
+                        title: 'Print bill Success',
+                        content: 'Please go to printer to take the bill!',
+                        centered: true,
+                    });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
         } else {
-            modal.error({
-                title: 'Print bill Failed',
-                content: 'Please set up printer then try again!',
-                centered: true,
-                onOk: () => {
-                    navigation(BASE_ROUTER.SETTINGS_PRINTER);
+            onPrintBill({
+                variables: {
+                    invoice_number:
+                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                            ?.number,
                 },
-            });
+            })
+                .then(() => {
+                    modal.success({
+                        title: 'Print bill Success',
+                        content: 'Please go to printer to take the bill!',
+                        centered: true,
+                    });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
         }
     };
     const showSuccess = ({
@@ -433,17 +470,20 @@ export default function index() {
                         />
 
                         <ButtonContainer>
-                            <ButtonBill title="Print" onPress={PrintBill} />
                             {(childBill.length === 0 || selectDataShowbill) && (
                                 <>
+                                    <ButtonBill
+                                        title="Print"
+                                        onPress={PrintBillApi}
+                                    />
                                     <ButtonBill
                                         title="Email"
                                         onPress={() => setModalInputEmail(true)}
                                     />
-                                    <ButtonBill
+                                    {/* <ButtonBill
                                         title="Sms"
                                         onPress={() => setModalInputPhone(true)}
-                                    />
+                                    /> */}
                                 </>
                             )}
                             <Button
@@ -463,7 +503,7 @@ export default function index() {
                                         fontWeight: '600',
                                     }}
                                 >
-                                    No receipt
+                                    Close
                                 </TextDark>
                             </Button>
                         </ButtonContainer>
