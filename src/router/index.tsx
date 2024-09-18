@@ -94,8 +94,8 @@ export const BaseRouter = () => {
         if (needLogout && isLogged) {
             console.log('need show modal logout please');
             error({
-                title: 'Error',
-                content: 'Session expired. Please log in again!',
+                title: 'Session Expired',
+                content: 'Please log in again!',
                 onOk: () => {
                     setNeedLogout(false);
                     dispatch(updateStatusLogout());
