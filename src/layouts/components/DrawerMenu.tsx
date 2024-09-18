@@ -17,21 +17,24 @@ import { useTheme } from 'context/themeContext';
 import CustomerIcon from 'assets/icons/customerIcon';
 import SettingV2Icon from 'assets/icons/settingV2';
 import ReceiptBillV2Icon from 'assets/icons/receiptV2Bill';
+import StoreIcon from 'layouts/icons/storeIcon';
+const MerchantURL = process.env.REACT_APP_MERCHANTURL;
 const MenuMerchant = [
-    // {
-    //     title: 'Go Merchant',
-    //     icon: <StoreIcon />,
-    //     to: `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`,
-    // },
     // {
     //     title: 'Restaurant Manager',
     //     icon: <StoreIcon />,
     //     to: BASE_ROUTER.RESTAURENT_MANAGER,
     // },
     {
+        title: 'Restaurant Manager',
+        icon: <StoreIcon />,
+        to: BASE_ROUTER.RESTAURENT_MANAGER,
+    },
+    {
         title: 'Menu Manager',
         icon: <MenuManagerIcon />,
-        to: BASE_ROUTER.RESTAURENT_MANAGER,
+        to: `${MerchantURL}/menu?token=${localStorage.getItem('token')}`,
+        isGo: true,
     },
     // {
     //     title: 'Promotions',
@@ -72,7 +75,14 @@ export default function DrawerMenu() {
     const onClose = () => {
         setOpen(false);
     };
-    const [MenuData, setMenuData] = useState(MenuList);
+    const [MenuData, setMenuData] = useState<
+        {
+            title: string;
+            icon: JSX.Element;
+            to: string;
+            isGo?: boolean;
+        }[]
+    >(MenuList);
     useEffect(() => {
         if (isMerchant) {
             const newData = [...MenuMerchant, ...MenuList];
@@ -137,7 +147,7 @@ export default function DrawerMenu() {
                             icon={item.icon}
                             title={item.title}
                             onPress={() => {
-                                if (item.title === 'Go Merchant') {
+                                if (item?.isGo) {
                                     window.location.href = item.to;
                                     return;
                                 }

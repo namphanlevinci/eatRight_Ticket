@@ -29,15 +29,21 @@ export default function Menu() {
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
     });
+    function removeAccents(str: string) {
+        return str
+            .normalize('NFD') // Decompose accents from letters
+            .replace(/[\u0300-\u036f]/g, ''); // Remove all the accent marks
+    }
     function searchProductByName(productName: string, products: any) {
         var foundProducts: any = [];
+        const normalizedProductName = removeAccents(productName.toLowerCase());
+
         products?.forEach(function (category: any) {
             category?.products?.items?.forEach(function (product: any) {
-                if (
-                    product.name
-                        .toLowerCase()
-                        .includes(productName.toLowerCase())
-                ) {
+                const normalizedProduct = removeAccents(
+                    product.name.toLowerCase(),
+                );
+                if (normalizedProduct.includes(normalizedProductName)) {
                     foundProducts.push(product);
                 }
             });
@@ -180,7 +186,26 @@ export default function Menu() {
                                                               'SimpleProduct'
                                                           }
                                                       >
-                                                          {item.name}
+                                                          <span
+                                                              style={{
+                                                                  display:
+                                                                      '-webkit-box',
+                                                                  WebkitLineClamp: 2,
+                                                                  WebkitBoxOrient:
+                                                                      'vertical',
+                                                                  overflow:
+                                                                      'hidden',
+                                                                  textOverflow:
+                                                                      'ellipsis',
+                                                                  maxWidth:
+                                                                      '200px', // Đặt chiều rộng tối đa
+                                                                  whiteSpace:
+                                                                      'normal', // Đảm bảo dòng được bẻ đúng cách
+                                                              }}
+                                                          >
+                                                              {' '}
+                                                              {item.name}
+                                                          </span>
                                                           {item.__typename ===
                                                               'SimpleProduct' && (
                                                               <p

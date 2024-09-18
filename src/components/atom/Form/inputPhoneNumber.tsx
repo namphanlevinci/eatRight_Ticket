@@ -28,6 +28,7 @@ export default function InputPhoneNumberForm({
                         : [
                               {
                                   required: true,
+                                  message: `Field is required`,
                               },
                           ]
                 }
