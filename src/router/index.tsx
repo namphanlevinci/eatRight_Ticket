@@ -21,6 +21,7 @@ import {
     updateStatusLogout,
 } from 'features/auth/authSlice';
 import _ from 'lodash';
+import { LoadingScreen } from './LoadingSpin';
 export const BaseRouter = () => {
     const { notification } = App.useApp();
     const dispatch = useDispatch();
@@ -109,8 +110,9 @@ export const BaseRouter = () => {
             setNeedLogout(false);
         }
     }, [isLogged]);
+
     return (
-        <Suspense fallback={'loading'}>
+        <Suspense fallback={<LoadingScreen />}>
             <Routes>
                 <Route path={BASE_ROUTER.LOGIN} element={<Container.Login />} />
                 <Route
@@ -246,6 +248,30 @@ export const BaseRouter = () => {
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
                             <Container.RestaurentGeneral />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.RESTAURENT_RESERVATION}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.RestaurentReservation />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.RESTAURENT_KITCHEN_STATION}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.KitchenStationReservation />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.RESTAURENT_KITCHEN_STATION_DETAIL}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.KitchenStationDetailReservation />
                         </PrivateRoute>
                     }
                 />

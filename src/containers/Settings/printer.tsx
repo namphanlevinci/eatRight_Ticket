@@ -1,5 +1,5 @@
 import SettingLayout from 'layouts/SettingLayout';
-import PrinterPage from 'pages/Settings/printerSetup';
+import PrinterPage from 'pages/Settings/printerAppSetup';
 
 export const HomeContainer = () => (
     <SettingLayout>
