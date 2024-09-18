@@ -23,6 +23,7 @@ import { formatPhoneNumber } from 'utils/number';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import ListCustomerForMobile from './listCustomerForMobile';
 import { formatPhoneNumberByUSA } from 'utils/format';
+import dayjs from 'dayjs';
 
 // import ListBillForMobile from './listForMobile';
 
@@ -221,7 +222,7 @@ const CustomerList: React.FC = () => {
                                     }}
                                 >
                                     {dt?.date_of_birth
-                                        ? dt?.date_of_birth
+                                        ? dayjs(dt?.date_of_birth).format('DD/MM/YYYY')
                                         : '-'}
                                 </StyledColumn>
                                 <StyledColumn

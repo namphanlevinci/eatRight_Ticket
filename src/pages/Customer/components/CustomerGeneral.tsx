@@ -245,9 +245,10 @@ export default function CustomerGeneral({
 
             <Text>
                 Customer since{' '}
-                {new Date(
+                {/* {new Date(
                     data?.merchantGetCustomer?.created_at,
-                ).toLocaleDateString()}
+                ).toLocaleDateString()} */}
+                {dayjs(data?.merchantGetCustomer?.created_at).format("DD/MM/YYYY")}
             </Text>
         </Form>
     );
