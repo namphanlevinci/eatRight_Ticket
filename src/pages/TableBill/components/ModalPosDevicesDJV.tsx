@@ -34,7 +34,7 @@ const ModalPosDevicesDJV = ({
                 setVisibleMoalPos(false);
             }
         }
-    }, [isVisibleModalPos]);
+    }, [isVisibleModalPos, posDeviceList]);
     const handleOk = (): void => {
         if (selectedOption) {
             onPressOK(selectedOption?.entity_id);

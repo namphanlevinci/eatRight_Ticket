@@ -267,12 +267,14 @@ export default function TableSplitBillCheckOut() {
                 setVisibleMoalPos={setShowPosModal}
                 onPressOK={handlePaymentWithPOS}
             />
-            <ModalPosDevicesDJV
-                isVisibleModalPos={showPosModalDJV}
-                setVisibleMoalPos={setShowPosModalDJV}
-                onPressOK={handlePaymentWithPOSDJV}
-                onCancel={() => setShowPosModalDJV(false)}
-            />
+            {showPosModalDJV && (
+                <ModalPosDevicesDJV
+                    isVisibleModalPos={showPosModalDJV}
+                    setVisibleMoalPos={setShowPosModalDJV}
+                    onPressOK={handlePaymentWithPOSDJV}
+                    onCancel={() => setShowPosModalDJV(false)}
+                />
+            )}
             <RenderHeader />
             <CartInfo data={data} />
             <div style={{ marginTop: 20 }} />

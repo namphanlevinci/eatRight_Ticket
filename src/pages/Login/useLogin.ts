@@ -38,8 +38,17 @@ export const useLogin = () => {
                     res.data.generateMerchantToken.account_type === 'merchant'
                 ) {
                     dispatch(updateStatusLoginForMerchant());
-                } else {
+                } else if (
+                    res.data.generateMerchantToken.account_type === 'waiter'
+                ) {
                     dispatch(updateStatusLogin());
+                } else {
+                    notification.open({
+                        message: 'Login Failed',
+                        description: 'Your account type is not valid',
+                        type: 'error',
+                    });
+                    return;
                 }
 
                 navigate(BASE_ROUTER.HOME);

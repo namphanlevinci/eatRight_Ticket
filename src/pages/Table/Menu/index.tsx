@@ -186,7 +186,26 @@ export default function Menu() {
                                                               'SimpleProduct'
                                                           }
                                                       >
-                                                          <p>{item.name}</p>
+                                                          <span
+                                                              style={{
+                                                                  display:
+                                                                      '-webkit-box',
+                                                                  WebkitLineClamp: 2,
+                                                                  WebkitBoxOrient:
+                                                                      'vertical',
+                                                                  overflow:
+                                                                      'hidden',
+                                                                  textOverflow:
+                                                                      'ellipsis',
+                                                                  maxWidth:
+                                                                      '200px', // Đặt chiều rộng tối đa
+                                                                  whiteSpace:
+                                                                      'normal', // Đảm bảo dòng được bẻ đúng cách
+                                                              }}
+                                                          >
+                                                              {' '}
+                                                              {item.name}
+                                                          </span>
                                                           {item.__typename ===
                                                               'SimpleProduct' && (
                                                               <p
