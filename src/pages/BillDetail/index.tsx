@@ -480,10 +480,10 @@ export default function index() {
                                         title="Email"
                                         onPress={() => setModalInputEmail(true)}
                                     />
-                                    <ButtonBill
+                                    {/* <ButtonBill
                                         title="Sms"
                                         onPress={() => setModalInputPhone(true)}
-                                    />
+                                    /> */}
                                 </>
                             )}
                             <Button
@@ -503,7 +503,7 @@ export default function index() {
                                         fontWeight: '600',
                                     }}
                                 >
-                                    No receipt
+                                    Close
                                 </TextDark>
                             </Button>
                         </ButtonContainer>

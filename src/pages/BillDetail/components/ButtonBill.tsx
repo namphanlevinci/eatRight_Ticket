@@ -22,30 +22,32 @@ export const ButtonBill = ({
                 padding: isMobile ? 0 : '16px',
                 paddingInline: isMobile ? 10 : 0,
                 flexDirection: isMobile ? 'column' : 'row',
-                gap: 0,
+                gap: isMobile ? 0 : 10,
             }}
             onClick={onPress}
             background={theme.pRIMARY6Primary}
         >
-            {!isMobile ? (
-                <></>
-            ) : title === 'Print' ? (
-                <PrintIcon />
-            ) : title === 'Sms' ? (
-                <SMSIcon />
-            ) : (
-                <EmailIcon />
-            )}
-            <TextDark
-                style={{
-                    color: theme.pRIMARY1,
-                    fontWeight: isMobile ? '400' : '600',
-                    fontSize: isMobile ? 14 : 16,
-                    lineHeight: isMobile ? '14px' : '20px',
-                }}
-            >
-                {title}
-            </TextDark>
+            <div style={{ height: 24, width: 24 }}>
+                {title === 'Print' ? (
+                    <PrintIcon />
+                ) : title === 'Sms' ? (
+                    <SMSIcon />
+                ) : (
+                    <EmailIcon />
+                )}
+            </div>
+            <div style={{ width: 50 }}>
+                <TextDark
+                    style={{
+                        color: theme.pRIMARY1,
+                        fontWeight: isMobile ? '400' : '600',
+                        fontSize: isMobile ? 14 : 16,
+                        lineHeight: isMobile ? '14px' : '20px',
+                    }}
+                >
+                    {title}
+                </TextDark>
+            </div>
         </Button>
     );
 };
