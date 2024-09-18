@@ -41,8 +41,9 @@ export default function ChangeTableModal({
     };
     const showConfirm = () => {
         const oldTable = tables?.find((item: any) => item.id == tableId);
-        const selectTable = tables?.filter((table: any) =>
-            table?.name?.toLowerCase().includes(searchText.toLowerCase()),
+        const selectTable = tables?.filter(
+            (table: any) =>
+                table?.name?.toLowerCase().includes(searchText.toLowerCase()),
         )[indexSelected];
         confirm({
             title: `Confirm`,
@@ -87,7 +88,9 @@ export default function ChangeTableModal({
                         border: `2px solid ${theme.nEUTRALLine}`,
                     },
                 }}
-                onClose={() => setModalChangeTableOpen(false)}
+                // onClose={() => setModalChangeTableOpen(false)}
+                onCancel={() => setModalChangeTableOpen(false)}
+                maskClosable
                 closable={false}
                 closeIcon={null}
             >
@@ -102,10 +105,11 @@ export default function ChangeTableModal({
                 </Row>
                 <div style={{ height: 300, overflow: 'scroll' }}>
                     {tables
-                        ?.filter((table: any) =>
-                            table?.name
-                                ?.toLowerCase()
-                                .includes(searchText.toLowerCase()),
+                        ?.filter(
+                            (table: any) =>
+                                table?.name
+                                    ?.toLowerCase()
+                                    .includes(searchText.toLowerCase()),
                         )
                         .map((item: any, index: number) => {
                             return (
