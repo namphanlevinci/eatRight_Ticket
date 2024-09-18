@@ -13,7 +13,6 @@ export default function ModalPaymentPending({
     onSkip,
     onCash,
     onPOS_DJV,
-    onPOS,
 }: {
     showLoading: boolean;
     data?: any;
