@@ -34,7 +34,7 @@ export default function AddNewCustomer() {
                 group_id: 2,
                 ...(values?.email && { email: values.email }),
                 ...(values?.dob && {
-                    date_of_birth: dayjs(values.dob).format('DD-MM-YYYY'),
+                    date_of_birth: dayjs(values.dob).format('MM/DD/YYYY'),
                 }),
             },
         })
@@ -173,7 +173,9 @@ export default function AddNewCustomer() {
                             placeholder="example@gmail.com"
                             required={false}
                             inputMode="email"
-                            rule={[{ type: 'email', message: "Email is invalid" }]}
+                            rule={[
+                                { type: 'email', message: 'Email is invalid' },
+                            ]}
                         />
                     </ColContainer>
                 </Row>

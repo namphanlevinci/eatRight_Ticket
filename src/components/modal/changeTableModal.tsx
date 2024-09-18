@@ -87,6 +87,9 @@ export default function ChangeTableModal({
                         border: `2px solid ${theme.nEUTRALLine}`,
                     },
                 }}
+                onClose={() => setModalChangeTableOpen(false)}
+                closable={false}
+                closeIcon={null}
             >
                 <Row justify={'center'}>
                     <Text style={{ fontSize: 20 }}>Change Table</Text>
@@ -110,7 +113,7 @@ export default function ChangeTableModal({
                                     key={index}
                                     onClick={() => setIndex(index)}
                                     style={{
-                                        background: theme.pRIMARY2,
+                                        background: theme.pRIMARY1,
                                     }}
                                 >
                                     <Row>
@@ -129,7 +132,9 @@ export default function ChangeTableModal({
                                     </Row>
                                     <Row align={'middle'}>
                                         {indexSelected === index && (
-                                            <RadioSelected />
+                                            <RadioSelected
+                                                color={theme.tEXTPrimary}
+                                            />
                                         )}
                                         <Text style={{ marginLeft: 20 }}>
                                             {`${item.numberOfCustomer || 0}/${

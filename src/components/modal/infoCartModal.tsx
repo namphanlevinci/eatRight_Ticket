@@ -6,6 +6,7 @@ import React, { useEffect, useRef } from 'react';
 type FieldType = {
     username?: string;
     numberOfCustomer?: string;
+    phoneNumber?: string;
 };
 export default function InfoCartModal({
     isModalOpen,
@@ -46,6 +47,24 @@ export default function InfoCartModal({
         }
     };
     const { theme } = useTheme();
+    const names = [
+        'Liam',
+        'Emma',
+        'Noah',
+        'Olly',
+        'Zara',
+        'Finn',
+        'Lila',
+        'Eli',
+        'Mila',
+        'Jade',
+    ];
+
+    function generateRandomName() {
+        const randomIndex = Math.floor(Math.random() * names.length);
+        return names[randomIndex];
+    }
+
     return (
         <Modal
             title="Basic Modal"
@@ -71,8 +90,8 @@ export default function InfoCartModal({
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 initialValues={{
-                    username: value?.name, // Giá trị mặc định cho trường username
-                    numberOfCustomer: value?.number,
+                    username: value?.name || generateRandomName(), // Giá trị mặc định cho trường username
+                    numberOfCustomer: value?.number || 1,
                     remember: true,
                 }}
                 onFinish={onFinish}
@@ -136,7 +155,30 @@ export default function InfoCartModal({
                         }}
                     />
                 </Form.Item>
-
+                <Form.Item<FieldType>
+                    label="Phone number"
+                    name="phoneNumber"
+                    rules={[
+                        {
+                            required: false,
+                        },
+                    ]}
+                >
+                    <Input
+                        size="large"
+                        autoFocus={true}
+                        ref={inputRef}
+                        placeholder="Phone Number"
+                        allowClear
+                        style={{
+                            flex: 1,
+                            height: 56,
+                            backgroundColor: theme.nEUTRALBase,
+                            color: theme.tEXTPrimary,
+                            border: `1px solid ${theme.nEUTRALLine}`,
+                        }}
+                    />
+                </Form.Item>
                 <Form.Item<FieldType>
                     label="Number of guests"
                     name="numberOfCustomer"

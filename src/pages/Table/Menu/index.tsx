@@ -58,7 +58,10 @@ export default function Menu() {
     }, [categoryIndex]);
     const { theme } = useTheme();
     const onClickAddToCart = (item: any) => {
-        if (item.__typename === 'SimpleProduct') {
+        if (
+            item.__typename === 'SimpleProduct' ||
+            item.__typename === 'VirtualProduct'
+        ) {
             const Item: ItemType = {
                 id: item.sku,
                 prices: {
@@ -184,6 +187,10 @@ export default function Menu() {
                                                           isProduct={
                                                               item.__typename ===
                                                               'SimpleProduct'
+                                                          }
+                                                          isVirtualProduct={
+                                                              item.__typename ===
+                                                              'VirtualProduct'
                                                           }
                                                       >
                                                           <span
