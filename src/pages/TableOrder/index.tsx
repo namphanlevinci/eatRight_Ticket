@@ -48,7 +48,7 @@ export default function TableBill() {
                     style={{ fontSize: 20, fontWeight: '600', marginLeft: 20 }}
                 >
                     {/* Table {tables?.find((item: any) => item.id == tableId).name} */}
-                    Bill Infomation
+                    Bill Information
                 </Text>
             </Header>
         );
