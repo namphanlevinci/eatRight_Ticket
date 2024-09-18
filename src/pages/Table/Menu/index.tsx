@@ -159,13 +159,6 @@ export default function Menu() {
                                   )
                                 : data[categoryIndex]?.products.items?.map(
                                       (item: any, index: number) => {
-                                          console.log(
-                                              'data',
-                                              item,
-
-                                              item.__typename ===
-                                                  'VirtualProduct',
-                                          );
                                           return (
                                               <Col
                                                   xs={{ span: 24 }}
