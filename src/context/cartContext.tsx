@@ -167,7 +167,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     const newCarts = cartItemNew.find((itemNew) => {
                         return itemNew.id === currentCart.id;
                     });
-                    const itemsCanceled = cartItemNew[index].items.filter(
+                    const itemsCanceled = cartItemNew[index]?.items?.filter(
                         (item) => {
                             return item.status === 'cancel';
                         },
@@ -177,14 +177,14 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                             10) / 100;
 
                     const total_itemsCanceled_without_tax =
-                        itemsCanceled.reduce((total, item) => {
+                        itemsCanceled?.reduce((total, item) => {
                             return (
                                 total + item.prices.price.value * item.quantity
                             );
                         }, 0);
                     const total_itemsCanceled =
                         total_itemsCanceled_without_tax * (Tax + 1);
-                    const total_items_canceled_discount = itemsCanceled.reduce(
+                    const total_items_canceled_discount = itemsCanceled?.reduce(
                         (total, item) => {
                             return (
                                 total +
