@@ -186,7 +186,7 @@ export default function Menu() {
                                                               'SimpleProduct'
                                                           }
                                                       >
-                                                          {item.name}
+                                                          <p>{item.name}</p>
                                                           {item.__typename ===
                                                               'SimpleProduct' && (
                                                               <p

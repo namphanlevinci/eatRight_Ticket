@@ -117,7 +117,7 @@ export default function MenuItem({
             <Text
                 style={{
                     color: textColor,
-                    fontSize: 16,
+                    fontSize: "100%",
                     fontWeight: '500',
                     textAlign: 'center',
                     textWrap: 'wrap',
