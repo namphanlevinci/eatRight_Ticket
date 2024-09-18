@@ -38,7 +38,12 @@ export default function index() {
             fetchPolicy: 'cache-and-network',
         },
     );
-    const [onGetInvoices, { data: dataSplitBill }] = useLazyQuery(GET_INVOICES);
+    const [onGetInvoices, { data: dataSplitBill }] = useLazyQuery(
+        GET_INVOICES,
+        {
+            fetchPolicy: 'cache-and-network',
+        },
+    );
     const [searchParams] = useSearchParams();
     const [showPendingPayment, setShowPendingPayment] = React.useState(false);
     const orderId = searchParams.get('orderId');
