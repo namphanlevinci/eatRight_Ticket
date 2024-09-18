@@ -22,14 +22,18 @@ import _ from 'lodash';
 import { formatPhoneNumber } from 'utils/number';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import ListCustomerForMobile from './listCustomerForMobile';
+import { formatPhoneNumberByUSA } from 'utils/format';
 
 // import ListBillForMobile from './listForMobile';
 
 const { Content } = Layout;
 
 const CustomerList: React.FC = () => {
+    console.log('CustomerList');
     const navigation = useNavigate();
+    const { theme } = useTheme();
     const {
+        isMerchant,
         listOrders,
         pageSize,
         setPageSize,
@@ -39,7 +43,6 @@ const CustomerList: React.FC = () => {
         loading,
         setSearch,
     } = useCustomerList();
-    const { theme } = useTheme();
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
     });
@@ -238,7 +241,11 @@ const CustomerList: React.FC = () => {
                                         color: theme.tEXTPrimary,
                                     }}
                                 >
-                                    {formatPhoneNumber(dt.phone_number)}
+                                    {isMerchant
+                                        ? formatPhoneNumberByUSA(
+                                              dt.phone_number,
+                                          )
+                                        : formatPhoneNumber(dt.phone_number)}
                                 </StyledColumn>
                                 <StyledColumn
                                     style={{

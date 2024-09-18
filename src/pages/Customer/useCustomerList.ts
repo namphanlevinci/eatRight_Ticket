@@ -52,6 +52,7 @@ export const useCustomerList = () => {
         }
     }, [search]);
     return {
+        isMerchant,
         listOrders: customerList,
         total_count: data?.merchantGetCustomers?.total_count,
         setPageSize,
