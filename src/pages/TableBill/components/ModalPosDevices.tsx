@@ -104,7 +104,11 @@ const ModalPosDevices = ({
                         </Button>
                     ))}
 
-                    <ButtonSubmit title="Pay" onClick={handleOk} />
+                    <ButtonSubmit
+                        title="Pay"
+                        onClick={handleOk}
+                        disabled={!selectedOption}
+                    />
                 </div>
             </Modal>
         </>
