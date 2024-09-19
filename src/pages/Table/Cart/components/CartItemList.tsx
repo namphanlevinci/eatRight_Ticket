@@ -109,9 +109,11 @@ export default function CartItemList({
     const createCart = ({
         username,
         numberOfCustomer = 1,
+        phoneNumber,
     }: {
         username?: string;
         numberOfCustomer?: number;
+        phoneNumber?: string;
     }) => {
         if (username) {
             setIsModalOpen(false);
@@ -172,6 +174,7 @@ export default function CartItemList({
                 username || '',
                 numberOfCustomer,
                 table?.name?.toLowerCase()?.includes('counter') ? true : false,
+                phoneNumber,
             );
         } else {
             addMoreCart(data.id, carts);
@@ -268,9 +271,11 @@ export default function CartItemList({
                 onCancel={() => {
                     setIsModalOpen(!isModalOpen), setIsNewItem(true);
                 }}
-                onSubmit={(e: { username: string; numberOfCustomer: number }) =>
-                    createCart(e)
-                }
+                onSubmit={(e: {
+                    username: string;
+                    numberOfCustomer: number;
+                    phoneNumber: string;
+                }) => createCart(e)}
                 table={table}
             />
             <ModalInputNote

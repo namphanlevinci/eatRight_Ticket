@@ -10,6 +10,7 @@ export type CartItemType = {
     id: string;
     items: ItemType[];
     firstname: string;
+    phonenumber?: string;
     numberOfCustomer: number;
     order?: {
         items?: OrderItemType[];

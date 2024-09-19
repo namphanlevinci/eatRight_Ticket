@@ -27,6 +27,7 @@ export type ProductType = {
             };
         };
     };
+    display_platforms: string[];
     small_image?: {
         url: string;
         label: string;
@@ -35,9 +36,10 @@ export type ProductType = {
 export const useCategory = () => {
     const { data, loading } = useQuery(GET_CAGORYLIST, {
         variables: {
-            pageSize: 10,
+            pageSize: 100,
             currentPage: 1,
         },
+        fetchPolicy: 'cache-and-network',
     });
     const [category, setCategory] = useState([]);
     useEffect(() => {

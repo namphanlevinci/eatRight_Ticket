@@ -13,8 +13,9 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
+import { ProductType } from './useCategory';
 
-export default function Menu() {
+export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
     const {
         breadCrumbs,
         categoryIndex,
@@ -103,12 +104,30 @@ export default function Menu() {
                         data={data}
                         categoryIndex={categoryIndex}
                         onSetCategoryIndex={onSetCategoryIndex}
+                        isEatOut={isEatOut}
                     />
                     <Col xs={{ span: 12 }} md={{ span: 18 }}>
                         <Row>
                             {search
                                 ? searchProductByName(search, data).map(
-                                      (item: any, index: number) => {
+                                      (item: ProductType, index: number) => {
+                                          if (isEatOut) {
+                                              if (
+                                                  !item.display_platforms.includes(
+                                                      'online',
+                                                  )
+                                              ) {
+                                                  return null;
+                                              }
+                                          } else {
+                                              if (
+                                                  !item.display_platforms.includes(
+                                                      'dine_in',
+                                                  )
+                                              ) {
+                                                  return null;
+                                              }
+                                          }
                                           return (
                                               <Col
                                                   xs={{ span: 24 }}
@@ -159,6 +178,23 @@ export default function Menu() {
                                   )
                                 : data[categoryIndex]?.products.items?.map(
                                       (item: any, index: number) => {
+                                          if (isEatOut) {
+                                              if (
+                                                  !item.display_platforms.includes(
+                                                      'online',
+                                                  )
+                                              ) {
+                                                  return null;
+                                              }
+                                          } else {
+                                              if (
+                                                  !item.display_platforms.includes(
+                                                      'dine_in',
+                                                  )
+                                              ) {
+                                                  return null;
+                                              }
+                                          }
                                           return (
                                               <Col
                                                   xs={{ span: 24 }}

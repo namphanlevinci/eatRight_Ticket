@@ -7,6 +7,7 @@ export const CREATE_CART = gql`
         $cartItems: [CartItemInput!]!
         $numberOfCustomer: Int!
         $is_counter: Boolean!
+        $phonenumber: String!
     ) {
         addProductsToCartTable(
             firstname: $firstname
@@ -15,6 +16,7 @@ export const CREATE_CART = gql`
             tableId: $tableId
             cartItems: $cartItems
             is_counter: $is_counter
+            phonenumber: $phonenumber
         ) {
             cart {
                 is_active

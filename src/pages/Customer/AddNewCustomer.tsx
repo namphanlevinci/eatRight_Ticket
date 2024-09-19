@@ -34,7 +34,7 @@ export default function AddNewCustomer() {
                 group_id: 2,
                 ...(values?.email && { email: values.email }),
                 ...(values?.dob && {
-                    date_of_birth: dayjs(values.dob).format('MM/DD/YYYY'),
+                    date_of_birth: dayjs(values.dob).format('YYYY-MM-DD'),
                 }),
             },
         })
