@@ -120,11 +120,12 @@ export const useTableBill = (isGoBack = true) => {
             content: 'Please try again',
             centered: true,
             onOk: () => {
-                navigation(
-                    `${BASE_ROUTER.BILL_DETAIL}?orderId=${
-                        order_id ? order_id : orderInfo?.order_id
-                    }`,
-                );
+                // navigation(
+                //     `${BASE_ROUTER.BILL_DETAIL}?orderId=${
+                //         order_id ? order_id : orderInfo?.order_id
+                //     }`,
+                // );
+                console.log('error payment', order_id);
             },
         });
     };
@@ -217,7 +218,6 @@ export const useTableBill = (isGoBack = true) => {
                 }
             })
             .catch((err) => {
-                console.log(err);
                 showModalErrorPayment(
                     `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
                 );
