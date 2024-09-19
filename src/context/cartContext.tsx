@@ -167,11 +167,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     const newCarts = cartItemNew.find((itemNew) => {
                         return itemNew.id === currentCart.id;
                     });
-                    const itemsCanceled = cartItemNew[index]?.items?.filter(
-                        (item) => {
+                    const itemsCanceled =
+                        cartItemNew[index]?.items?.filter((item) => {
                             return item.status === 'cancel';
-                        },
-                    );
+                        }) ||
+                        currentCart.items.filter((item) => {
+                            return item.status === 'cancel';
+                        });
                     const Tax =
                         (currentCart?.prices?.applied_taxes?.[0]?.tax_percent ||
                             10) / 100;
