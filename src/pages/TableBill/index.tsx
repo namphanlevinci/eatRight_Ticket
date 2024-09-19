@@ -54,10 +54,7 @@ export default function TableBill() {
                         marginLeft: 20,
                     }}
                 >
-                    <span style={{ color: theme.pRIMARY6Primary }}>
-                        Order Id
-                    </span>{' '}
-                    / Bill Information
+                    Bill Information
                 </Text>
             </Header>
         );

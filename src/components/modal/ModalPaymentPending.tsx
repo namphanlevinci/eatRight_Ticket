@@ -140,11 +140,11 @@ export default function ModalPaymentPending({
                         marginInline: 0,
                         border: 'none',
                     }}
-                    onClick={onPOS_DJV}
+                    onClick={onCash}
                     background={theme.pRIMARY6Primary}
                     color={theme.pRIMARY1}
                 >
-                    POS Payment (DJV)
+                    Cash
                 </Button>
                 <Button
                     style={{
@@ -152,11 +152,11 @@ export default function ModalPaymentPending({
                         marginInline: 0,
                         border: 'none',
                     }}
-                    onClick={onCash}
+                    onClick={onPOS_DJV}
                     background={theme.pRIMARY6Primary}
                     color={theme.pRIMARY1}
                 >
-                    Use Cash
+                    Credit Card
                 </Button>
 
                 <Button
