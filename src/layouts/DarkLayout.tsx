@@ -223,8 +223,9 @@ export const DarkLayout = (props: Props) => {
             .then((res) => {
                 if (res) {
                     notification.success({
-                        message: 'Success',
-                        description: 'Open casher successfully',
+                        message: 'Open Casher Successful',
+                        description:
+                            'Please wait for few seconds to open casher',
                     });
                 }
             })
