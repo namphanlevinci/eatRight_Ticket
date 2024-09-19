@@ -13,7 +13,6 @@ export default function ModalPaymentPending({
     onSkip,
     onCash,
     onPOS_DJV,
-    onPOS,
 }: {
     showLoading: boolean;
     data?: any;
@@ -123,7 +122,7 @@ export default function ModalPaymentPending({
                         {currentcy} {formatNumberWithCommas(data?.grand_total)}
                     </Text>
                 </Row>
-                <Button
+                {/* <Button
                     style={{
                         marginTop: 30,
                         marginInline: 0,
@@ -134,7 +133,7 @@ export default function ModalPaymentPending({
                     color={theme.pRIMARY1}
                 >
                     POS Payment (ARISE)
-                </Button>
+                </Button> */}
                 <Button
                     style={{
                         marginTop: 10,

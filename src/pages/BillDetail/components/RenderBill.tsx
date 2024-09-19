@@ -295,7 +295,7 @@ const RenderItem = ({ data }: { data: any }) => {
                     <Col style={{ flex: 1 }}> {item?.name}</Col>
                     <Col style={{ textAlign: 'end', width: 50 }}>
                         {CURRENTCY}
-                        {item?.price.toFixed(2)}
+                        {(item?.qty * item?.price).toFixed(2)}
                     </Col>
                 </RowStyled>
                 {item?.options?.map((option: any, idx: number) => {
@@ -324,7 +324,10 @@ const RenderItem2 = ({ data }: { data: any }) => {
                     <Col style={{ flex: 1 }}> {item?.product_name}</Col>
                     <Col style={{ textAlign: 'end', width: 50 }}>
                         {CURRENTCY}
-                        {item?.product_sale_price?.value?.toFixed(2)}
+                        {(
+                            item?.quantity_invoiced *
+                            item?.product_sale_price?.value
+                        )?.toFixed(2)}
                     </Col>
                 </RowStyled>
             </>
