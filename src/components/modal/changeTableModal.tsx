@@ -41,8 +41,9 @@ export default function ChangeTableModal({
     };
     const showConfirm = () => {
         const oldTable = tables?.find((item: any) => item.id == tableId);
-        const selectTable = tables?.filter((table: any) =>
-            table?.name?.toLowerCase().includes(searchText.toLowerCase()),
+        const selectTable = tables?.filter(
+            (table: any) =>
+                table?.name?.toLowerCase().includes(searchText.toLowerCase()),
         )[indexSelected];
         confirm({
             title: `Confirm`,
@@ -87,6 +88,11 @@ export default function ChangeTableModal({
                         border: `2px solid ${theme.nEUTRALLine}`,
                     },
                 }}
+                // onClose={() => setModalChangeTableOpen(false)}
+                onCancel={() => setModalChangeTableOpen(false)}
+                maskClosable
+                closable={false}
+                closeIcon={null}
             >
                 <Row justify={'center'}>
                     <Text style={{ fontSize: 20 }}>Change Table</Text>
@@ -99,10 +105,11 @@ export default function ChangeTableModal({
                 </Row>
                 <div style={{ height: 300, overflow: 'scroll' }}>
                     {tables
-                        ?.filter((table: any) =>
-                            table?.name
-                                ?.toLowerCase()
-                                .includes(searchText.toLowerCase()),
+                        ?.filter(
+                            (table: any) =>
+                                table?.name
+                                    ?.toLowerCase()
+                                    .includes(searchText.toLowerCase()),
                         )
                         .map((item: any, index: number) => {
                             return (
@@ -110,7 +117,7 @@ export default function ChangeTableModal({
                                     key={index}
                                     onClick={() => setIndex(index)}
                                     style={{
-                                        background: theme.pRIMARY2,
+                                        background: theme.pRIMARY1,
                                     }}
                                 >
                                     <Row>
@@ -129,7 +136,9 @@ export default function ChangeTableModal({
                                     </Row>
                                     <Row align={'middle'}>
                                         {indexSelected === index && (
-                                            <RadioSelected />
+                                            <RadioSelected
+                                                color={theme.tEXTPrimary}
+                                            />
                                         )}
                                         <Text style={{ marginLeft: 20 }}>
                                             {`${item.numberOfCustomer || 0}/${

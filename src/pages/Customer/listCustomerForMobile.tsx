@@ -5,6 +5,7 @@ import { useTheme } from 'context/themeContext';
 import { useNavigate } from 'react-router';
 import { BASE_ROUTER } from 'constants/router';
 import { formatPhoneNumber } from 'utils/number';
+import dayjs from 'dayjs';
 export default function ListCustomerForMobile({
     listOrders,
 }: {
@@ -51,7 +52,16 @@ export default function ListCustomerForMobile({
                         value={`${item?.firstname + ' ' + item?.lastname}`}
                         title="Name"
                     />
-                    <RenderRow value={`${item?.date_of_birth}`} title="D.o.B" />
+                    <RenderRow
+                        value={
+                            item?.date_of_birth
+                                ? dayjs(item?.date_of_birth).format(
+                                      'MM/DD/YYYY',
+                                  )
+                                : '-'
+                        }
+                        title="D.o.B"
+                    />
                     <RenderRow
                         value={item?.gender === 1 ? 'Male' : 'Female'}
                         title="Gender"
@@ -62,7 +72,13 @@ export default function ListCustomerForMobile({
                     />
                     <RenderRow value={item?.email} title="Email" />
                     <RenderRow
-                        value={`${item?.status === 1 ? 'Active' : item?.status === 2 ? 'Blacklisted' : 'Inactive'}`}
+                        value={`${
+                            item?.status === 1
+                                ? 'Active'
+                                : item?.status === 2
+                                  ? 'Blacklisted'
+                                  : 'Inactive'
+                        }`}
                         title="Status"
                         textStyle={{
                             fontWeight: '600',
