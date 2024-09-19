@@ -222,7 +222,9 @@ const CustomerList: React.FC = () => {
                                     }}
                                 >
                                     {dt?.date_of_birth
-                                        ? dayjs(dt?.date_of_birth).format('YYYY-MM-DD')
+                                        ? dayjs(dt?.date_of_birth).format(
+                                              'MM-DD-YYYY',
+                                          )
                                         : '-'}
                                 </StyledColumn>
                                 <StyledColumn
