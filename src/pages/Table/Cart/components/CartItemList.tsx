@@ -256,6 +256,7 @@ export default function CartItemList({
     const goTable = () => {
         removeCartIndex(selectedCart);
     };
+    const [noteSelectValue, setNoteSelectValue] = useState('');
     return data ? (
         <StyledCartBorder
             style={{
@@ -284,17 +285,23 @@ export default function CartItemList({
                     }}
                 />
             )}
-            <ModalInputNote
-                title="Add note"
-                isModalOpen={showNoteModal.show}
-                onCancel={() =>
-                    setShowNoteModalState({ ...showNoteModal, show: false })
-                }
-                onSubmit={(e: any) => {
-                    setShowNoteModalState({ ...showNoteModal, show: false });
-                    InputNoteItemFromCart(showNoteModal.index, e);
-                }}
-            />
+            {showNoteModal.show && (
+                <ModalInputNote
+                    title="Add note"
+                    isModalOpen={showNoteModal.show}
+                    onCancel={() =>
+                        setShowNoteModalState({ ...showNoteModal, show: false })
+                    }
+                    onSubmit={(e: any) => {
+                        setShowNoteModalState({
+                            ...showNoteModal,
+                            show: false,
+                        });
+                        InputNoteItemFromCart(showNoteModal.index, e);
+                    }}
+                    inputValue={noteSelectValue}
+                />
+            )}
             <div style={{ minHeight: 200 }}>
                 {data?.items?.map((item: any, index: any) => {
                     const orderItems = data?.order?.items?.find(
@@ -394,6 +401,9 @@ export default function CartItemList({
                                                             index: index,
                                                             show: true,
                                                         });
+                                                        setNoteSelectValue(
+                                                            item.note,
+                                                        );
                                                     }}
                                                 >
                                                     {item.isUnsend && (
