@@ -6,26 +6,34 @@ import React from 'react';
 export default function ButtonSubmit({
     onClick,
     title,
+    disabled,
     loading = false,
 }: {
     onClick: any;
     title: string;
     loading?: boolean;
+    disabled?: boolean;
 }) {
     const { theme } = useTheme();
     return (
-        <div
+        <button
             style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: 56,
-                background: theme.pRIMARY6Primary,
+                background: disabled
+                    ? theme.tEXTDisabled
+                    : theme.pRIMARY6Primary,
                 marginTop: 20,
                 borderRadius: 8,
                 cursor: 'pointer',
+                width: '100%',
+                outline: 'none',
+                border: 'none',
             }}
             onClick={onClick}
+            disabled={disabled}
         >
             {loading ? (
                 <Spin />
@@ -40,6 +48,6 @@ export default function ButtonSubmit({
                     {title}
                 </Text>
             )}
-        </div>
+        </button>
     );
 }
