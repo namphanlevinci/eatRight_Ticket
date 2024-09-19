@@ -1,4 +1,13 @@
-import { Col, Layout, Popover, Row, Spin, Switch } from 'antd';
+import {
+    Button,
+    Col,
+    Layout,
+    notification,
+    Popover,
+    Row,
+    Spin,
+    Switch,
+} from 'antd';
 import { Text } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -9,7 +18,7 @@ import LogoMerchant from 'assets/logos/logo_merchant.png';
 // import HelpIcon from 'assets/icons/help';
 import { Link } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { USER_INFO } from 'graphql/auth/login';
 import { useDispatch } from 'react-redux';
 import { updateCustomerInfo, updateFloor } from 'features/auth/authSlice';
@@ -28,6 +37,7 @@ import {
 import DrawerMenu from './components/DrawerMenu';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
+import { OPEN_CASHER } from 'graphql/printer';
 
 type Props = {
     children: React.ReactNode;
@@ -47,7 +57,7 @@ export const DarkLayout = (props: Props) => {
     const [onGetInfo] = useLazyQuery(USER_INFO);
     const [onGetRestaurent] = useLazyQuery(GET_RESTAURANT);
     const [getNotification] = useLazyQuery(GET_NOTIFICATION);
-
+    const [onOpenCasher] = useMutation(OPEN_CASHER);
     const dispatch = useDispatch();
 
     const { Header, Footer } = Layout;
@@ -208,6 +218,20 @@ export const DarkLayout = (props: Props) => {
 
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const openCasher = () => {
+        onOpenCasher()
+            .then((res) => {
+                if (res) {
+                    notification.success({
+                        message: 'Success',
+                        description: 'Open casher successfully',
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
     return (
         <Layout
             style={{
@@ -254,35 +278,52 @@ export const DarkLayout = (props: Props) => {
                         {isLogged && (
                             <>
                                 {isMerchant && (
-                                    <SwitchContainer
-                                        style={{
-                                            display: 'flex',
-                                            marginRight: 16,
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        {!isMobile && (
-                                            <>
-                                                <Text style={{ fontSize: 18 }}>
-                                                    Table View
-                                                </Text>
+                                    <Row align={'middle'} style={{ gap: 30 }}>
+                                        <Button
+                                            type="primary"
+                                            onClick={() => openCasher()}
+                                        >
+                                            <Text
+                                                style={{
+                                                    color: theme.nEUTRALPrimary,
+                                                    fontWeight: '600',
+                                                }}
+                                            >
+                                                Open Casher
+                                            </Text>
+                                        </Button>
+                                        <SwitchContainer
+                                            style={{
+                                                display: 'flex',
+                                                marginRight: 16,
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            {!isMobile && (
+                                                <>
+                                                    <Text
+                                                        style={{ fontSize: 18 }}
+                                                    >
+                                                        Table View
+                                                    </Text>
 
-                                                <Switch
-                                                    defaultChecked
-                                                    onChange={() => {
-                                                        const url = `${MERCHANTURL}/home?token=${localStorage.getItem('token')}`;
-                                                        window.location.href =
-                                                            url;
-                                                    }}
-                                                    style={{
-                                                        marginLeft: 5,
-                                                        height: 32,
-                                                        width: 72,
-                                                    }}
-                                                />
-                                            </>
-                                        )}
-                                    </SwitchContainer>
+                                                    <Switch
+                                                        defaultChecked
+                                                        onChange={() => {
+                                                            const url = `${MERCHANTURL}/home?token=${localStorage.getItem('token')}`;
+                                                            window.location.href =
+                                                                url;
+                                                        }}
+                                                        style={{
+                                                            marginLeft: 5,
+                                                            height: 32,
+                                                            width: 72,
+                                                        }}
+                                                    />
+                                                </>
+                                            )}
+                                        </SwitchContainer>
+                                    </Row>
                                 )}
                                 <Popover
                                     content={noti}

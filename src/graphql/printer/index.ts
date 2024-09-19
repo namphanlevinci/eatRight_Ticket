@@ -63,3 +63,9 @@ export const LIST_PRINTER_DEVICES = gql`
         }
     }
 `;
+
+export const OPEN_CASHER = gql`
+    mutation {
+        merchantOpenCashier
+    }
+`;
