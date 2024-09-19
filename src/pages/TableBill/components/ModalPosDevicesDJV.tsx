@@ -51,6 +51,8 @@ const ModalPosDevicesDJV = ({
         setSelectedOption(item);
     };
 
+    console.log(selectedOption);
+
     const { theme } = useTheme();
     return (
         <>
@@ -116,7 +118,11 @@ const ModalPosDevicesDJV = ({
                         </Button>
                     ))}
 
-                    <ButtonSubmit title="Pay" onClick={handleOk} />
+                    <ButtonSubmit
+                        title="Pay"
+                        onClick={handleOk}
+                        disabled={!selectedOption}
+                    />
                 </div>
             </Modal>
         </>

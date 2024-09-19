@@ -80,19 +80,6 @@ export const LoginPage: React.FC = () => {
                         placeholder="Password"
                     />
                 </div>
-                <Row justify={'end'}>
-                    <Link to={BASE_ROUTER.FORGOT_PASSWORD}>
-                        <Text
-                            style={{
-                                fontSize: 16,
-                                color: theme.pRIMARY6Primary,
-                                fontWeight: '600',
-                            }}
-                        >
-                            Forgot Password
-                        </Text>
-                    </Link>
-                </Row>
                 <Form.Item>
                     <Button
                         type="primary"
