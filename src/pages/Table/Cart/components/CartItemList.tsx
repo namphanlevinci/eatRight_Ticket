@@ -278,6 +278,10 @@ export default function CartItemList({
                         phoneNumber: string;
                     }) => createCart(e)}
                     table={table}
+                    value={{
+                        name: 'Diner ' + (selectedCart + 1),
+                        number: 1,
+                    }}
                 />
             )}
             <ModalInputNote

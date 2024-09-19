@@ -99,7 +99,9 @@ export default function CartInfo({ table }: { table?: any }) {
                     }}
                     table={table}
                     value={{
-                        name: customerName,
+                        name: customerName.includes('Guest')
+                            ? customerName.replace('Guest', 'Diner')
+                            : customerName,
                         number: numberOfCustomer,
                         phoneNumber: phoneNumber,
                     }}
