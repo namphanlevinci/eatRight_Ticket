@@ -222,7 +222,7 @@ export default function index() {
                     console.log(e);
                 });
         } else {
-            if (!dataSplitBill?.merchantGetOrderInvoices?.invoice) {
+            if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length === 0) {
                 onGetInvoices({
                     variables: {
                         OrderNumber: data?.orderDetail?.order_number,
