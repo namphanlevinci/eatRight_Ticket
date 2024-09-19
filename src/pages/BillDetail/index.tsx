@@ -110,6 +110,7 @@ export default function index() {
                     variables: {
                         OrderNumber: res.data?.orderDetail?.order_number,
                     },
+                    fetchPolicy: 'no-cache',
                 });
             });
         }
@@ -221,6 +222,33 @@ export default function index() {
                     console.log(e);
                 });
         } else {
+            if (!dataSplitBill?.merchantGetOrderInvoices?.invoice) {
+                onGetInvoices({
+                    variables: {
+                        OrderNumber: data?.orderDetail?.order_number,
+                    },
+                    fetchPolicy: 'no-cache',
+                }).then((res) => {
+                    const newData = res?.data?.merchantGetOrderInvoices;
+                    onPrintBill({
+                        variables: {
+                            invoice_number: newData.invoice[0]?.number,
+                        },
+                    })
+                        .then(() => {
+                            modal.success({
+                                title: 'Print bill Success',
+                                content:
+                                    'Please go to printer to take the bill!',
+                                centered: true,
+                            });
+                        })
+                        .catch((e) => {
+                            console.log(e);
+                        });
+                });
+                return;
+            }
             onPrintBill({
                 variables: {
                     invoice_number:
