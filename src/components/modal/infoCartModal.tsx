@@ -21,6 +21,7 @@ export default function InfoCartModal({
     value?: {
         name: string;
         number: number;
+        phoneNumber?: string;
     };
 }) {
     const inputRef = useRef<any>(null);
@@ -93,6 +94,7 @@ export default function InfoCartModal({
                     username: value?.name || generateRandomName(), // Giá trị mặc định cho trường username
                     numberOfCustomer: value?.number || 1,
                     remember: true,
+                    phoneNumber: value?.phoneNumber || '',
                 }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -162,6 +164,10 @@ export default function InfoCartModal({
                         {
                             required: false,
                         },
+                        {
+                            pattern: /^\d{10,15}$/, // Định dạng số điện thoại có độ dài từ 10-15 chữ số
+                            message: 'Please enter a valid phone number!',
+                        },
                     ]}
                 >
                     <Input
@@ -177,6 +183,8 @@ export default function InfoCartModal({
                             color: theme.tEXTPrimary,
                             border: `1px solid ${theme.nEUTRALLine}`,
                         }}
+                        inputMode="tel"
+                        maxLength={15}
                     />
                 </Form.Item>
                 <Form.Item<FieldType>
