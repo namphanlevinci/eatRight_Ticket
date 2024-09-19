@@ -266,18 +266,20 @@ export default function CartItemList({
             }}
         >
             <LoadingModal showLoading={loading || loadingClean} />
-            <InfoCartModal
-                isModalOpen={isModalOpen}
-                onCancel={() => {
-                    setIsModalOpen(!isModalOpen), setIsNewItem(true);
-                }}
-                onSubmit={(e: {
-                    username: string;
-                    numberOfCustomer: number;
-                    phoneNumber: string;
-                }) => createCart(e)}
-                table={table}
-            />
+            {isModalOpen && (
+                <InfoCartModal
+                    isModalOpen={isModalOpen}
+                    onCancel={() => {
+                        setIsModalOpen(!isModalOpen), setIsNewItem(true);
+                    }}
+                    onSubmit={(e: {
+                        username: string;
+                        numberOfCustomer: number;
+                        phoneNumber: string;
+                    }) => createCart(e)}
+                    table={table}
+                />
+            )}
             <ModalInputNote
                 title="Add note"
                 isModalOpen={showNoteModal.show}

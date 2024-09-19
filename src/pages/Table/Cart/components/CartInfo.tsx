@@ -72,37 +72,39 @@ export default function CartInfo({ table }: { table?: any }) {
                 flexWrap: 'wrap',
             }}
         >
-            <InfoCartModal
-                isModalOpen={showModal}
-                onCancel={() => setShowModal(false)}
-                onSubmit={(e: {
-                    username: string;
-                    numberOfCustomer: number;
-                    phoneNumber?: string;
-                }) => {
-                    setName(e.username);
-                    setNoC(e.numberOfCustomer);
-                    setPhone(e.phoneNumber);
-                    setCustomerName(
-                        e.username,
-                        selectedCart,
-                        indexTable,
-                        e.numberOfCustomer,
-                    );
-                    setShowModal(false);
-                    updateCustomerInfo({
-                        name: e.username,
-                        number: e.numberOfCustomer,
-                        phoneNumber: e.phoneNumber,
-                    });
-                }}
-                table={table}
-                value={{
-                    name: customerName,
-                    number: numberOfCustomer,
-                    phoneNumber: phoneNumber,
-                }}
-            />
+            {showModal && (
+                <InfoCartModal
+                    isModalOpen={showModal}
+                    onCancel={() => setShowModal(false)}
+                    onSubmit={(e: {
+                        username: string;
+                        numberOfCustomer: number;
+                        phoneNumber?: string;
+                    }) => {
+                        setName(e.username);
+                        setNoC(e.numberOfCustomer);
+                        setPhone(e.phoneNumber);
+                        setCustomerName(
+                            e.username,
+                            selectedCart,
+                            indexTable,
+                            e.numberOfCustomer,
+                        );
+                        setShowModal(false);
+                        updateCustomerInfo({
+                            name: e.username,
+                            number: e.numberOfCustomer,
+                            phoneNumber: e.phoneNumber,
+                        });
+                    }}
+                    table={table}
+                    value={{
+                        name: customerName,
+                        number: numberOfCustomer,
+                        phoneNumber: phoneNumber,
+                    }}
+                />
+            )}
             <Col
                 style={{
                     minWidth: isMobile ? '100%' : 300,
