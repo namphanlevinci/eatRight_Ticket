@@ -59,7 +59,7 @@ export default function ListBillForMobile({ listOrders }: { listOrders: any }) {
                 >
                     <RenderRow value={`#${item?.order_number}`} title="Order" />
                     <RenderRow
-                        value={dayjs(item?.created_at).format('MM-DD-YYYY')}
+                        value={dayjs(item?.created_at).format('YYYY-MM-DD')}
                         title="Date"
                     />
                     <RenderRow
