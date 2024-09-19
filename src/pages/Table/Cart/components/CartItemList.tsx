@@ -102,6 +102,8 @@ export default function CartItemList({
                 numberOfCustomer:
                     cartItems[indexTable]?.carts[selectedCart]
                         ?.numberOfCustomer,
+                phoneNumber:
+                    cartItems[indexTable]?.carts[selectedCart]?.phonenumber,
             });
         }
         setIsNewItem(false);
