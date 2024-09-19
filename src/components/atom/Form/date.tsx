@@ -42,7 +42,7 @@ export default function DatePickerForm({
                         border: 0,
                     }}
                     disabled={disabled}
-                    format={'MM/DD/YYYY'}
+                    format={'YYYY-MM-DD'}
                 />
             </FormItem>
         </div>

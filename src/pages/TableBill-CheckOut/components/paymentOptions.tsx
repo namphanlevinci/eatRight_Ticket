@@ -45,7 +45,7 @@ export default function PaymentOptions({
                     marginBottom: 16,
                 }}
             >
-                Payment options
+                Payment method
             </Text>
             <div
                 style={{

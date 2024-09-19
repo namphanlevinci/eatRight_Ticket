@@ -11,15 +11,22 @@ export default function ModalInputNote({
     onSubmit,
     title,
     type,
+    inputValue,
 }: {
     isModalOpen: boolean;
     onCancel: any;
     onSubmit: any;
     title: string;
     type?: 'tel' | 'email';
+    inputValue?: string;
 }) {
     const inputRef = useRef<any>(null);
     const [value, setValue] = React.useState('');
+    useEffect(() => {
+        if (inputValue) {
+            setValue(inputValue);
+        }
+    }, [inputValue]);
     useEffect(() => {
         // Kiểm tra xem modal có mở không
         if (isModalOpen && inputRef.current) {
@@ -120,6 +127,7 @@ export default function ModalInputNote({
                         fontSize: 17,
                     }}
                     inputMode={type}
+                    maxLength={60}
                 />
             </Row>
             <Row

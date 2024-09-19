@@ -9,7 +9,8 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
     const { restaurant_id, floor } = useSelector(
         (state: RootState) => state.auth,
     );
-    const [onGetTable, { data, loading }] = useLazyQuery(GET_ALL_TABLE);
+    const [onGetTable, { data, loading, refetch }] =
+        useLazyQuery(GET_ALL_TABLE);
     const [onGetTableFloor, { data: data2, loading: loading2 }] =
         useLazyQuery(GET_ALL_TABLE_Floor);
     const [floorActive, setFloorActive] = useState<number>(-1);
@@ -51,6 +52,11 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
         }
     }, [searchText]);
     useEffect(() => {
+        if (!data?.getTablesByStore) {
+            refetch();
+        }
+    }, [data?.getTablesByStore]);
+    useEffect(() => {
         let tableData = data?.getTablesByStore;
         if (data?.getTablesByStore) {
             localStorage.setItem(
@@ -61,6 +67,8 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
             const tableDataString = localStorage.getItem('tableData');
             if (tableDataString) {
                 tableData = JSON.parse(tableDataString);
+            } else {
+                refetch();
             }
         }
         if (floorActive !== -1 && searchText === '') {

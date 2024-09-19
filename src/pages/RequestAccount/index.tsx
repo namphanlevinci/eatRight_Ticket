@@ -58,12 +58,12 @@ export const RequestAccountPage: React.FC = () => {
                     color: theme.pRIMARY6Primary,
                     alignItems: 'center',
                     display: 'flex',
-                    fontSize: 34,
+                    fontSize: 30,
                     fontWeight: '600',
                     fontFamily: 'Montserrat',
                 }}
             >
-                Request account
+                Request support form
             </span>
 
             <Form

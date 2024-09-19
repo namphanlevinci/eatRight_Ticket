@@ -12,6 +12,7 @@ export const ADD_MORE_ITEM_TO_CART = gql`
                 is_active
                 firstname
                 lastname
+                phonenumber
                 numberOfCustomer
                 items {
                     uid
