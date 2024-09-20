@@ -232,7 +232,6 @@ export default function TableSplitBillCheckOut() {
             return;
         }
         if (selectGuestIndex && selectGuestIndex !== selectGuest?.index) {
-            console.log('select guest', selectGuest);
             setSelectGuest({
                 ...newData.invoice[selectGuestIndex],
                 index: selectGuestIndex,
