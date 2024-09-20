@@ -54,7 +54,7 @@ export const ButtonSelectBill = ({
                     ? title === 'Full Bill'
                         ? 'Full'
                         : `${title}`
-                    : `Guest ${title}`}
+                    : `${title}`}
             </TextDark>
         </Button>
     );
