@@ -54,7 +54,7 @@ export default function TableSplitBillCheckOut() {
                 index: 0,
             });
         }
-    }, []);
+    }, [data]);
     let intervalId: any = null;
     useEffect(() => {
         if (loadingPosResult) {

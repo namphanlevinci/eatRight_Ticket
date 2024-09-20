@@ -30,6 +30,7 @@ export default function InputInfoCart({
                 borderBottom: `1px solid ${theme.nEUTRALLine}`,
                 background: theme.nEUTRALBase,
                 paddingLeft: 8,
+                fontFamily: 'Montserrat',
             }}
         >
             <div style={{ height: 30, width: 30, marginRight: 10 }}>{icon}</div>

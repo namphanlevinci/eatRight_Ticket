@@ -30,7 +30,6 @@ import dayjs from 'dayjs';
 const { Content } = Layout;
 
 const CustomerList: React.FC = () => {
-    console.log('CustomerList');
     const navigation = useNavigate();
     const { theme } = useTheme();
     const {

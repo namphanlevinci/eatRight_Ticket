@@ -170,9 +170,10 @@ export const useTableBill = (isGoBack = true) => {
         })
             .then((res) => {
                 if (paymentMethod === 'cashondelivery') {
-                    showModalSuccess(
-                        res.data.createMerchantOrder.order.order_id,
+                    navigation(
+                        `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data.createMerchantOrder.order.order_id}`,
                     );
+                    emitter.emit('REPAYMENT_SUCCESS');
                 } else if (paymentMethod === 'pos') {
                     setVisibleMoalPos(true);
                     setOrderInfo(res.data.createMerchantOrder.order);
@@ -212,14 +213,22 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
-                        `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                        `${
+                            orderDetail?.order_id
+                                ? orderDetail?.order_id
+                                : orderInfo?.order_id
+                        }`,
                         isGoToTable,
                     );
                 }
             })
-            .catch((err) => {
+            .catch(() => {
                 showModalErrorPayment(
-                    `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                    `${
+                        orderDetail?.order_id
+                            ? orderDetail?.order_id
+                            : orderInfo?.order_id
+                    }`,
                 );
             })
             .finally(() => {
@@ -248,14 +257,22 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
-                        `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                        `${
+                            orderDetail?.order_id
+                                ? orderDetail?.order_id
+                                : orderInfo?.order_id
+                        }`,
                     );
                 }
             })
             .catch((err) => {
                 console.log(err);
                 showModalErrorPayment(
-                    `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                    `${
+                        orderDetail?.order_id
+                            ? orderDetail?.order_id
+                            : orderInfo?.order_id
+                    }`,
                 );
             })
             .finally(() => {
@@ -397,6 +414,7 @@ export const useTableBill = (isGoBack = true) => {
         pos_Loading,
         contextHolder,
         paymentMethod,
+        cartItems,
         setPaymentMethod,
         setListItems,
         listItems,

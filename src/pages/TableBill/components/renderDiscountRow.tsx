@@ -52,7 +52,9 @@ export default function RenderDiscountRow({
                         style={{
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
-                            fontWeight: 'bold',
+                            color: theme.pRIMARY6Primary,
+                            fontWeight: 600,
+                            marginLeft: 16
                         }}
                     >
                         {value}

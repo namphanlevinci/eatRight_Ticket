@@ -1,4 +1,5 @@
 import { Text } from 'components/atom/Text';
+import { BASE_ROUTER } from 'constants/router';
 import { useTheme } from 'context/themeContext';
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
@@ -50,7 +51,7 @@ export default function LoginLayout(props: Props) {
                     >
                         <Text style={{ textAlign: 'center' }}>
                             Having troubles? {ismobile && <br />}
-                            <Link to={'https://levinci.group/contact-us/'}>
+                            <Link to={BASE_ROUTER.REQUEST_ACCOUNT}>
                                 <span
                                     style={{
                                         fontSize: 18,
