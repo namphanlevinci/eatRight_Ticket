@@ -37,7 +37,7 @@ import {
 import DrawerMenu from './components/DrawerMenu';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
-import { OPEN_CASHER } from 'graphql/printer';
+import { OPEN_CASHIER } from 'graphql/printer';
 
 type Props = {
     children: React.ReactNode;
@@ -57,7 +57,7 @@ export const DarkLayout = (props: Props) => {
     const [onGetInfo] = useLazyQuery(USER_INFO);
     const [onGetRestaurent] = useLazyQuery(GET_RESTAURANT);
     const [getNotification] = useLazyQuery(GET_NOTIFICATION);
-    const [onOpenCasher] = useMutation(OPEN_CASHER);
+    const [onOpenCashier] = useMutation(OPEN_CASHIER);
     const dispatch = useDispatch();
 
     const { Header, Footer } = Layout;
@@ -218,14 +218,14 @@ export const DarkLayout = (props: Props) => {
 
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
-    const openCasher = () => {
-        onOpenCasher()
+    const openCashier = () => {
+        onOpenCashier()
             .then((res) => {
                 if (res) {
                     notification.success({
-                        message: 'Open Casher Successful',
+                        message: 'Open Cashier Successful',
                         description:
-                            'Please wait for few seconds to open casher',
+                            'Please wait for few seconds to open Cashier',
                     });
                 }
             })
@@ -282,7 +282,7 @@ export const DarkLayout = (props: Props) => {
                                     <Row align={'middle'} style={{ gap: 30 }}>
                                         <Button
                                             type="primary"
-                                            onClick={() => openCasher()}
+                                            onClick={() => openCashier()}
                                         >
                                             <Text
                                                 style={{
@@ -290,7 +290,7 @@ export const DarkLayout = (props: Props) => {
                                                     fontWeight: '600',
                                                 }}
                                             >
-                                                Open Casher
+                                                Open Cashier
                                             </Text>
                                         </Button>
                                         <SwitchContainer
