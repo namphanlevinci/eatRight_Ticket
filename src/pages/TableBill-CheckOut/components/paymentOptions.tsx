@@ -5,8 +5,10 @@ import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 
 export default function PaymentOptions({
     onPayment,
+    isPaid = false,
 }: {
     onPayment: (type: string) => void;
+    isPaid?: boolean;
 }) {
     const [paymentMethods, setPaymentMethods] = React.useState<
         {
@@ -67,6 +69,7 @@ export default function PaymentOptions({
             <ButtonPrimary
                 title="Proceed Payment"
                 onClick={() => onPayment(selectedPaymentMethod)}
+                isDisable={isPaid}
             />
         </div>
     );

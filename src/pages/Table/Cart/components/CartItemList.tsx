@@ -14,7 +14,6 @@ import LoadingModal from 'components/modal/loadingModal';
 import { isCartIdFromLocal } from 'utils/isNumericId';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMenuContext } from 'pages/Table/context/MenuContext';
-import InfoCartModal from 'components/modal/infoCartModal';
 import NoteIcon from 'assets/icons/noteIcon';
 import CustomTag from 'components/atom/Tag/CustomTag';
 import { getTagStyled } from 'utils/tag';
@@ -94,7 +93,10 @@ export default function CartItemList({
         let CustomerName =
             cartItems[indexTable]?.carts[selectedCart]?.firstname;
         if (CustomerName?.includes('Guest')) {
-            setIsModalOpen(true);
+            createCart({
+                username: 'Diner ' + (selectedCart + 1),
+                numberOfCustomer: 1,
+            });
         } else {
             setCustomerName(CustomerName, selectedCart, indexTable);
             createCart({
@@ -117,10 +119,6 @@ export default function CartItemList({
         numberOfCustomer?: number;
         phoneNumber?: string;
     }) => {
-        if (username) {
-            setIsModalOpen(false);
-        }
-
         const items: ItemType[] = data?.items.filter(
             (item: ItemType) => item.isUnsend,
         );
@@ -183,7 +181,6 @@ export default function CartItemList({
         }
     };
     const { setUpdate, targetRef, showMenu } = useMenuContext();
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const { theme } = useTheme();
     const total = useMemo(
         () =>
@@ -269,24 +266,6 @@ export default function CartItemList({
             }}
         >
             <LoadingModal showLoading={loading || loadingClean} />
-            {isModalOpen && (
-                <InfoCartModal
-                    isModalOpen={isModalOpen}
-                    onCancel={() => {
-                        setIsModalOpen(!isModalOpen), setIsNewItem(true);
-                    }}
-                    onSubmit={(e: {
-                        username: string;
-                        numberOfCustomer: number;
-                        phoneNumber: string;
-                    }) => createCart(e)}
-                    table={table}
-                    value={{
-                        name: 'Diner ' + (selectedCart + 1),
-                        number: 1,
-                    }}
-                />
-            )}
             {showNoteModal.show && (
                 <ModalInputNote
                     title="Add note"
