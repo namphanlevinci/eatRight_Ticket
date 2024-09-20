@@ -128,6 +128,7 @@ export default function ModalInputNote({
                     }}
                     inputMode={type}
                     maxLength={60}
+                    allowClear
                 />
             </Row>
             <Row
