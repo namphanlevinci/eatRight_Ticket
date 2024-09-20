@@ -86,7 +86,7 @@ const RenderBillItem = ({
                         <BoldText>Bill: </BoldText>
                         {selectDataShowbill
                             ? selectDataShowbill?.number
-                            : dataInvoice
+                            : dataInvoice?.length === 1
                               ? dataInvoice[0]?.number
                               : data?.order_number}
                     </TextDark>
