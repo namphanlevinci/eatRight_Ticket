@@ -43,7 +43,7 @@ export default function TableSplitBillCheckOut() {
         const selectGuestIndex = dataTmp.invoice.findIndex(
             (value: InvoiceWithSplit) => value.state === 'UNPAID',
         );
-        if (selectGuestIndex) {
+        if (selectGuestIndex > -1) {
             setSelectGuest({
                 ...dataTmp.invoice[selectGuestIndex],
                 index: selectGuestIndex,

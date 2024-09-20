@@ -1,5 +1,5 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import { App, Row, Spin } from 'antd';
+import { App, Modal, notification, Row, Spin } from 'antd';
 import { Button } from 'components/atom/Button';
 import { TextDark } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
@@ -31,6 +31,7 @@ import { ButtonSelectBill } from './components/ButtonSelectBill';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
 import { PRINT_BILL } from 'graphql/printer';
+import { API_REFUND_INVOICE, API_REFUND_ORDER } from 'graphql/orders/refund';
 export default function index() {
     const [getOrderDetail, { data, loading, refetch }] = useLazyQuery(
         GET_ORDER_DETAIL,
@@ -371,9 +372,67 @@ export default function index() {
     const isMobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
+    const [onRefundInvoice, { loading: refundLoading }] =
+        useMutation(API_REFUND_INVOICE);
+    const [onRefundOrder, { loading: refund2Loading }] =
+        useMutation(API_REFUND_ORDER);
+    const [modalRefund, setModalRefund] = useState(false);
+    const onRefund = ({ reason }: { reason: string }) => {
+        Modal.confirm({
+            title: 'Are you sure refund money?',
+            centered: true,
+            content: 'This action cannot be undone',
+            onOk: () => {
+                if (selectDataShowbill) {
+                    onRefundInvoice({
+                        variables: {
+                            reason: reason,
+                            invoice_number: selectDataShowbill?.number,
+                        },
+                    })
+                        .then(() => {
+                            notification.success({
+                                message: 'Refund Success',
+                                description: 'Your money has been refunded',
+                            });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                } else {
+                    onRefundOrder({
+                        variables: {
+                            reason: reason,
+                            order_number: data?.orderDetail?.order_number,
+                        },
+                    })
+                        .then(() => {
+                            notification.success({
+                                message: 'Refund Success',
+                                description: 'Your money has been refunded',
+                            });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                }
+            },
+        });
+    };
     return (
         <div>
             {' '}
+            <ModalInput
+                isModalOpen={modalRefund}
+                title="Input reason refund money : "
+                onSubmit={(value: string) => {
+                    onRefund({ reason: value });
+                    setModalRefund(false);
+                }}
+                onCancel={() => {
+                    setModalRefund(false);
+                }}
+            />
             <ModalInput
                 isModalOpen={modalInputEmail}
                 title="Input customer e-mail"
@@ -487,7 +546,14 @@ export default function index() {
                     title="Processing ..."
                     onClose={() => setPos_Loading(false)}
                 />
-                <LoadingModal showLoading={sendLoading1 || sendLoading2} />
+                <LoadingModal
+                    showLoading={
+                        sendLoading1 ||
+                        sendLoading2 ||
+                        refundLoading ||
+                        refund2Loading
+                    }
+                />
                 <LazyLoadedScripts />
                 <ModalPaymentPending
                     title="Payment in progress"
@@ -516,6 +582,19 @@ export default function index() {
                                         title="Email"
                                         onPress={() => setModalInputEmail(true)}
                                     />
+                                    {((data?.orderDetail
+                                        ?.payment_method_code === 'pos' &&
+                                        data?.orderDetail?.status ===
+                                            'complete') ||
+                                        (selectDataShowbill?.payment_methods &&
+                                            selectDataShowbill
+                                                ?.payment_methods[0]?.type ===
+                                                'pos')) && (
+                                        <ButtonBill
+                                            title="Refund"
+                                            onPress={() => setModalRefund(true)}
+                                        />
+                                    )}
                                     {/* <ButtonBill
                                         title="Sms"
                                         onPress={() => setModalInputPhone(true)}

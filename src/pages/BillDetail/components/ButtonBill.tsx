@@ -11,6 +11,15 @@ export const ButtonBill = ({
 }) => {
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const Icon = (title: string) => {
+        return title === 'Print' ? (
+            <PrintIcon />
+        ) : title === 'Sms' ? (
+            <SMSIcon />
+        ) : title === 'Email' ? (
+            <EmailIcon />
+        ) : null;
+    };
     return (
         <Button
             style={{
@@ -27,15 +36,9 @@ export const ButtonBill = ({
             onClick={onPress}
             background={theme.pRIMARY6Primary}
         >
-            <div style={{ height: 24, width: 24 }}>
-                {title === 'Print' ? (
-                    <PrintIcon />
-                ) : title === 'Sms' ? (
-                    <SMSIcon />
-                ) : (
-                    <EmailIcon />
-                )}
-            </div>
+            {Icon(title) && (
+                <div style={{ height: 24, width: 24 }}>{Icon(title)}</div>
+            )}
             <div style={{ width: 50 }}>
                 <TextDark
                     style={{

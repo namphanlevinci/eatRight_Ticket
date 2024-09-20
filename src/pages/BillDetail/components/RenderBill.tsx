@@ -277,7 +277,13 @@ const RenderBillItem = ({
                 </TextDark>
 
                 <BarCodeContainer>
-                    <Barcode value={data?.order_number} />
+                    <Barcode
+                        value={
+                            selectDataShowbill
+                                ? selectDataShowbill?.number
+                                : data?.order_number
+                        }
+                    />
                 </BarCodeContainer>
             </div>
         </div>
