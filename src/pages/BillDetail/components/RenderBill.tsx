@@ -17,9 +17,11 @@ import React from 'react';
 const RenderBillItem = ({
     data,
     selectDataShowbill,
+    dataInvoice,
 }: {
     data: any;
     selectDataShowbill: any;
+    dataInvoice: any;
 }) => {
     const totalDiscount = selectDataShowbill
         ? selectDataShowbill?.total?.discounts.reduce(
@@ -84,7 +86,9 @@ const RenderBillItem = ({
                         <BoldText>Bill: </BoldText>
                         {selectDataShowbill
                             ? selectDataShowbill?.number
-                            : data?.order_number}
+                            : dataInvoice
+                              ? dataInvoice[0]?.number
+                              : data?.order_number}
                     </TextDark>
                 </RowStyled>
                 {data?.table ? (

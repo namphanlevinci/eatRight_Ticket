@@ -569,6 +569,9 @@ export default function index() {
                         <RenderBill
                             data={data?.orderDetail}
                             selectDataShowbill={selectDataShowbill}
+                            dataInvoice={
+                                dataSplitBill?.merchantGetOrderInvoices?.invoice
+                            }
                         />
 
                         <ButtonContainer>
