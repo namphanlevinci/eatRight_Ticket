@@ -484,7 +484,7 @@ export default function index() {
                 )}
                 <LoadingModalPayment
                     showLoading={pos_Loading}
-                    title="POS Payment Processing ..."
+                    title="Processing ..."
                     onClose={() => setPos_Loading(false)}
                 />
                 <LoadingModal showLoading={sendLoading1 || sendLoading2} />

@@ -64,7 +64,7 @@ export const LIST_PRINTER_DEVICES = gql`
     }
 `;
 
-export const OPEN_CASHER = gql`
+export const OPEN_CASHIER = gql`
     mutation {
         merchantOpenCashier
     }

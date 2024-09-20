@@ -275,6 +275,22 @@ export const BaseRouter = () => {
                     }
                 />
                 <Route
+                    path={BASE_ROUTER.RESTAURENT_TERMINAL}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.Terminal />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.RESTAURENT_TERMINAL_DETAIL}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.TerminalDetail />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
                     path={BASE_ROUTER.RESTAURENT_Tip}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>

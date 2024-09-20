@@ -22,6 +22,7 @@ import { useTheme } from 'context/themeContext';
 import RenderDiscountRow from './components/renderDiscountRow';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from './components/ModalPosDevicesDJV';
+import { useSearchParams } from 'react-router-dom';
 
 export default function ColRight({
     cart,
@@ -47,8 +48,13 @@ export default function ColRight({
     const [customerName, setCustomerName] = React.useState<any>(
         cart?.firstname,
     );
+
+    const [searchParams] = useSearchParams();
+    const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
+    const tableId = parseInt(searchParams.get('tableId') || '0');
     const {
         handleCheckOut,
+        cartItems,
         loading,
         contextHolder,
         paymentMethod,
@@ -77,11 +83,49 @@ export default function ColRight({
     const { handleAddCoupon } = useCouponCart();
     const { theme } = useTheme();
 
+    const handleProceed = () => {
+        if (tip === undefined) {
+            setModalTip(true);
+            return;
+        }
+        if (isSplitBill) {
+            if (numbersSplit && numbersSplit > 1) {
+                handleSplitEven(numbersSplit);
+            } else {
+                const newData = listItems?.map((item) => {
+                    return {
+                        guestId: item.guestId,
+                        items: item.items.map((data) => {
+                            return {
+                                quantity: data.quantity,
+                                sku: data.product.sku,
+                            };
+                        }),
+                    };
+                });
+
+                handleSplitByItem(newData);
+            }
+        } else {
+            handleCheckOut();
+        }
+    };
+
     useEffect(() => {
         if (cart?.tip_amount) {
             setTip(cart?.tip_amount);
         }
     }, [cart?.tip_amount]);
+
+    useEffect(() => {
+        const getCurrentCart = cartItems.filter(
+            (item) => +item?.tableId === +tableId,
+        )?.[0].carts?.[cartIndex];
+        if (tip && tipPercent && getCurrentCart.tip_amount) {
+            handleProceed();
+        }
+    }, [tip, tipPercent, cartItems, cartIndex, cartItems, tableId]);
+
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
     });
@@ -147,14 +191,15 @@ export default function ColRight({
                 onCancel={() => {
                     setModalTip(false);
                 }}
-                onSubmit={(values: any) => {
-                    handleSetTip(values);
+                onSubmit={async (values: any) => {
                     setTip(values);
                     setTipPercent(
                         values /
                             ((cart?.prices.grand_total.value || 0) -
                                 (cart?.prices?.total_canceled?.value || 0)),
                     );
+                    await handleSetTip(values);
+                    handleProceed();
                     setModalTip(false);
                 }}
                 total={(totalMoney + totalDiscount) * (Tax + 1)}
@@ -184,7 +229,7 @@ export default function ColRight({
             <LoadingModal showLoading={loading} />
             <LoadingModalPayment
                 showLoading={pos_Loading}
-                title="POS Payment Processing ..."
+                title="Processing ..."
                 onClose={onCloseProcessingPayment}
             />
             {isMobile && (
@@ -208,17 +253,17 @@ export default function ColRight({
 
             <div style={{ marginTop: isMobile ? 20 : 56 }}>
                 <RenderBillInfomationRow
-                    title="Sub total"
+                    title="Subtotal"
                     value={`$ ${formatNumberWithCommas(totalMoney)}`}
                 />
 
                 {cart?.prices?.discounts && (
                     <RenderDiscountRow
-                        title="Discounted"
+                        title="Discount"
                         value={
                             cart?.prices?.discounts.length > 0
                                 ? cart?.prices?.discounts[0].label
-                                : 'ADD CODE'
+                                : 'Add Code'
                         }
                         textRightStyle={{
                             color:
@@ -258,7 +303,9 @@ export default function ColRight({
                 cart?.prices?.applied_taxes[0]?.amount ? (
                     <RenderBillInfomationRow
                         title="Tax"
-                        value={`$ ${formatNumberWithCommas((totalMoney + totalDiscount) * Tax)}`}
+                        value={`$ ${formatNumberWithCommas(
+                            (totalMoney + totalDiscount) * Tax,
+                        )}`}
                     />
                 ) : (
                     <></>
@@ -279,7 +326,26 @@ export default function ColRight({
             </div>
             {isSplitBill ? (
                 <div>
-                    <Text style={{ fontSize: 20 }}>Checks</Text>
+                    <div
+                        style={{
+                            display: 'flex',
+                            cursor: 'pointer',
+                        }}
+                        onClick={openModalSplitBill}
+                    >
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                fontWeight: '600',
+                                color: theme.pRIMARY6Primary,
+                            }}
+                        >
+                            Split Bills
+                        </Text>
+                        <div style={{ marginLeft: 'auto', marginTop: 4 }}>
+                            <ArrowRightIcon />
+                        </div>
+                    </div>
                     {listItems?.length === 0 && numbersSplit && numbersSplit > 1
                         ? Array.from({ length: numbersSplit }, (_, index) => (
                               <RenderSplitBillGuest
@@ -344,36 +410,7 @@ export default function ColRight({
                 </div>
             )}
             <div style={{ marginTop: 40 }}>
-                <ButtonSubmit
-                    title="Proceed Payment"
-                    onClick={() => {
-                        if (tip === undefined) {
-                            setModalTip(true);
-                            return;
-                        }
-                        if (isSplitBill) {
-                            if (numbersSplit && numbersSplit > 1) {
-                                handleSplitEven(numbersSplit);
-                            } else {
-                                const newData = listItems?.map((item) => {
-                                    return {
-                                        guestId: item.guestId,
-                                        items: item.items.map((data) => {
-                                            return {
-                                                quantity: data.quantity,
-                                                sku: data.product.sku,
-                                            };
-                                        }),
-                                    };
-                                });
-
-                                handleSplitByItem(newData);
-                            }
-                        } else {
-                            handleCheckOut();
-                        }
-                    }}
-                />
+                <ButtonSubmit title="Proceed Payment" onClick={handleProceed} />
             </div>
         </ColStyled>
     );
@@ -400,7 +437,6 @@ const RenderSplitBillGuest = ({
                 <Text style={{ fontWeight: '400' }}>
                     ${formatNumberWithCommas(total)}
                 </Text>
-                <ArrowRightIcon />
             </Row>
         </Row>
     );
