@@ -43,7 +43,7 @@ export default function TableSplitBillCheckOut() {
         const selectGuestIndex = dataTmp.invoice.findIndex(
             (value: InvoiceWithSplit) => value.state === 'UNPAID',
         );
-        if (selectGuestIndex) {
+        if (selectGuestIndex > -1) {
             setSelectGuest({
                 ...dataTmp.invoice[selectGuestIndex],
                 index: selectGuestIndex,
@@ -232,7 +232,6 @@ export default function TableSplitBillCheckOut() {
             return;
         }
         if (selectGuestIndex && selectGuestIndex !== selectGuest?.index) {
-            console.log('select guest', selectGuest);
             setSelectGuest({
                 ...newData.invoice[selectGuestIndex],
                 index: selectGuestIndex,
@@ -328,7 +327,12 @@ export default function TableSplitBillCheckOut() {
                 </ColumnGuestList>
                 <ColumnCart style={isMobile ? { marginLeft: 0 } : {}}>
                     {selectGuest && <RenderCart cart={selectGuest} />}
-                    {!isMobile && <PaymentOptions onPayment={handlePayment} />}
+                    {!isMobile && (
+                        <PaymentOptions
+                            onPayment={handlePayment}
+                            isPaid={selectGuest?.state === 'PAID'}
+                        />
+                    )}
                 </ColumnCart>
                 {isMobile && (
                     <ColumnGuestList style={isMobile ? { width: '100%' } : {}}>
@@ -360,7 +364,12 @@ export default function TableSplitBillCheckOut() {
                         })}
                     </ColumnGuestList>
                 )}
-                {isMobile && <PaymentOptions onPayment={handlePayment} />}
+                {isMobile && (
+                    <PaymentOptions
+                        onPayment={handlePayment}
+                        isPaid={selectGuest?.state === 'PAID'}
+                    />
+                )}
             </Container>
         </Layout>
     );

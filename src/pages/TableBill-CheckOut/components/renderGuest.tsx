@@ -27,7 +27,7 @@ export const RenderGuest = ({
                 marginBottom: 16,
                 cursor: 'pointer',
             }}
-            onClick={() => !isPaid && onClick()}
+            onClick={() => onClick()}
         >
             <Text
                 style={{
