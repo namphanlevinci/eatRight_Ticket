@@ -8,6 +8,8 @@ export const GET_TERMINALS_DETAIL = gql`
             machine_type
             status
             serial_number
+            tpn
+            auth_key
         }
     }
 `;

@@ -97,6 +97,7 @@ export default function TableSplitBillCheckOut() {
                             'split_bill_data',
                             JSON.stringify(newData),
                         );
+                        SkipSelectGuest({ newData });
                     }
                 })
                 .catch((err) => {
@@ -123,6 +124,7 @@ export default function TableSplitBillCheckOut() {
                             'split_bill_data',
                             JSON.stringify(newData),
                         );
+                        SkipSelectGuest({ newData });
                     }
                 });
         } else if (paymentMethod === 'pos') {
@@ -203,6 +205,7 @@ export default function TableSplitBillCheckOut() {
                     setLoadingPosResult(false);
                     setLoading(false);
                 }
+
                 if (
                     selectGuestIndex &&
                     selectGuestIndex !== selectGuest?.index
@@ -220,6 +223,21 @@ export default function TableSplitBillCheckOut() {
             .finally(() => {
                 setLoading(false);
             });
+    };
+    const SkipSelectGuest = ({ newData }: any) => {
+        const selectGuestIndex = newData.invoice.findIndex(
+            (value: InvoiceWithSplit) => value.state === 'UNPAID',
+        );
+        if (!selectGuestIndex) {
+            return;
+        }
+        if (selectGuestIndex && selectGuestIndex !== selectGuest?.index) {
+            console.log('select guest', selectGuest);
+            setSelectGuest({
+                ...newData.invoice[selectGuestIndex],
+                index: selectGuestIndex,
+            });
+        }
     };
     const showModalSuccess = () => {
         modal.success({
