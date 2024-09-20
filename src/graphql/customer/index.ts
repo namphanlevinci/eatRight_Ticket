@@ -109,7 +109,6 @@ export const GET_CUSTOMER_DETAIL = gql`
                     grand_total
                     status
                     order_date
-
                     shipping_method
                     payment_methods {
                         name
@@ -137,6 +136,7 @@ export const GET_CUSTOMER_DETAIL = gql`
             email
             phone_number
             created_at
+            status
             addresses {
                 firstname
                 lastname
