@@ -32,6 +32,12 @@ export const containers = {
     KitchenStationDetailReservation: lazy(
         () => import('containers/RestaurentManagement/KitchenStationDetail'),
     ),
+    Terminal: lazy(
+        () => import('containers/RestaurentManagement/TerminalSetting'),
+    ),
+    TerminalDetail: lazy(
+        () => import('containers/RestaurentManagement/TerminalDetailSetting'),
+    ),
 };
 
 export default containers;

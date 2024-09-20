@@ -10,11 +10,11 @@ import SearchSettings from './components/Search';
 // import OpeningHoursIcon from './icons/Restaurent/openingHoursIcon';
 import TipIcon from './icons/tipIcon';
 import { useTheme } from 'context/themeContext';
-import ReservationIcon from './icons/Restaurent/reservation_icon';
 import KitchenStationIcon from './icons/Restaurent/kitchen_station_icon';
 import { Link } from 'react-router-dom';
 import { ArrawLeftIcon } from './SettingLayout';
 import { Text } from 'components/atom/Text';
+import PaymentIcon from './icons/Restaurent/payment_icon';
 
 type Props = {
     children: React.ReactNode;
@@ -57,17 +57,17 @@ export default function RestaurentManagementLayout(props: Props) {
         //         />
         //     ),
         // },
-        {
-            title: 'Reservation',
-            path: BASE_ROUTER.RESTAURENT_RESERVATION,
-            icon: (
-                <ReservationIcon
-                    isSelected={
-                        location.pathname === BASE_ROUTER.RESTAURENT_RESERVATION
-                    }
-                />
-            ),
-        },
+        // {
+        //     title: 'Reservation',
+        //     path: BASE_ROUTER.RESTAURENT_RESERVATION,
+        //     icon: (
+        //         <ReservationIcon
+        //             isSelected={
+        //                 location.pathname === BASE_ROUTER.RESTAURENT_RESERVATION
+        //             }
+        //         />
+        //     ),
+        // },
         {
             title: 'Kitchen Station',
             path: BASE_ROUTER.RESTAURENT_KITCHEN_STATION,
@@ -87,6 +87,17 @@ export default function RestaurentManagementLayout(props: Props) {
                 <TipIcon
                     isSelected={
                         location.pathname === BASE_ROUTER.RESTAURENT_Tip
+                    }
+                />
+            ),
+        },
+        {
+            title: 'Payment',
+            path: BASE_ROUTER.RESTAURENT_TERMINAL,
+            icon: (
+                <PaymentIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_TERMINAL
                     }
                 />
             ),
