@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Form } from 'antd';
+import React, { useEffect } from 'react';
+import { Button, Checkbox, Form } from 'antd';
 import { useLogin } from './useLogin';
 import { FormItem } from 'components/atom/Form/Item';
 import { Text } from 'components/atom/Text';
@@ -9,7 +9,7 @@ import { useMediaQuery } from 'react-responsive';
 import InputPassword from 'components/atom/Form/inputPassword';
 
 export const LoginPage: React.FC = () => {
-    const { handleLogin, loading } = useLogin();
+    const { handleLogin, loading, setRemember } = useLogin();
     const onFinishFailed = (errorInfo: any) => {
         console.error('Failed:', errorInfo);
     };
@@ -17,6 +17,18 @@ export const LoginPage: React.FC = () => {
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
+    const [form] = Form.useForm();
+    const encodedUsername = localStorage.getItem('us-923');
+    const encodedPassword = localStorage.getItem('pw-155');
+    useEffect(() => {
+        if (encodedUsername && encodedPassword) {
+            form.setFieldsValue({
+                username: atob(encodedUsername),
+                password: atob(encodedPassword),
+            });
+            setRemember(true);
+        }
+    }, [encodedUsername, encodedPassword]);
     return (
         <div
             style={{
@@ -55,6 +67,7 @@ export const LoginPage: React.FC = () => {
                 autoComplete="off"
                 layout="vertical"
                 size="large"
+                form={form}
             >
                 <FormItem
                     label="Username"
@@ -78,6 +91,21 @@ export const LoginPage: React.FC = () => {
                         label="Password"
                         name="password"
                         placeholder="Password"
+                    />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Text
+                        style={{
+                            color: theme.tEXTSecondary,
+                            fontSize: 14,
+                            fontWeight: '400',
+                        }}
+                    >
+                        Remember Me
+                    </Text>
+                    <Checkbox
+                        defaultChecked={encodedPassword ? true : false}
+                        onChange={(e) => setRemember(e.target.checked)}
                     />
                 </div>
                 <Form.Item>
