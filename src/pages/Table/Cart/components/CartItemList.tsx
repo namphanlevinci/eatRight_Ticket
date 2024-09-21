@@ -25,6 +25,7 @@ import { useMutation } from '@apollo/client';
 import { CLEAN_UP_CART_TABLE } from 'graphql/table/cleanTable';
 import ModalInputNote from 'components/modal/ModalInputNote';
 import { useCartTable } from '../useGetCart';
+import ModalConfirm from 'components/modal/ModalConfirm';
 export default function CartItemList({
     data,
     cartInfo,
@@ -52,6 +53,12 @@ export default function CartItemList({
         removeItemOnCartServer,
         updateStatusItemServer,
     } = useCartTable(false, false);
+
+    const [isOpenModalCancel, setIsOpenModalCancel] = useState(false);
+    const [itemSelected, setItemSelected] = useState<{
+        cartId: string;
+        cartItemId: string;
+    }>();
 
     const { addCart, loading, addMoreCart } = useAddCart();
     const navigation = useNavigate();
@@ -264,6 +271,7 @@ export default function CartItemList({
         removeCartIndex(selectedCart);
     };
     const [noteSelectValue, setNoteSelectValue] = useState('');
+
     return data ? (
         <StyledCartBorder
             style={{
@@ -417,8 +425,10 @@ export default function CartItemList({
                                                     disableUp={!showMenu}
                                                 />
                                             </div>
-                                            {item.status === 'sent' &&
-                                                data?.is_active && (
+                                            {((item.status === 'sent' &&
+                                                data?.is_active) ||
+                                                !item.status) &&
+                                                !item?.isUnsend && (
                                                     <ButtonAnt
                                                         disabled={
                                                             loadingCardTable
@@ -434,14 +444,26 @@ export default function CartItemList({
                                                             borderRadius: 8,
                                                             paddingTop: 0,
                                                         }}
-                                                        onClick={() =>
-                                                            removeItemOnCartServer(
-                                                                {
-                                                                    cartId: data?.id,
-                                                                    cartItemId:
-                                                                        item?.id,
-                                                                },
-                                                            )
+                                                        onClick={
+                                                            () => {
+                                                                setIsOpenModalCancel(
+                                                                    true,
+                                                                );
+                                                                setItemSelected(
+                                                                    {
+                                                                        cartId: data?.id,
+                                                                        cartItemId:
+                                                                            item?.id,
+                                                                    },
+                                                                );
+                                                            }
+                                                            // removeItemOnCartServer(
+                                                            //     {
+                                                            //         cartId: data?.id,
+                                                            //         cartItemId:
+                                                            //             item?.id,
+                                                            //     },
+                                                            // )
                                                         }
                                                     >
                                                         Cancel
@@ -904,8 +926,36 @@ export default function CartItemList({
                     </Row>
                 </Col>
             </CusTomRow>
+            {isOpenModalCancel && (
+                <ModalConfirmCancel
+                    isModalConfirm={isOpenModalCancel}
+                    onCancel={() => setIsOpenModalCancel(false)}
+                    onSubmit={() => {
+                        itemSelected && removeItemOnCartServer(itemSelected);
+                        setIsOpenModalCancel(false);
+                    }}
+                />
+            )}
         </StyledCartBorder>
     ) : (
         <></>
     );
 }
+
+interface IModal {
+    isModalConfirm: boolean;
+    onCancel: () => void;
+    onSubmit: () => void;
+}
+
+const ModalConfirmCancel = ({ isModalConfirm, onCancel, onSubmit }: IModal) => {
+    return (
+        <ModalConfirm
+            isModalOpen={isModalConfirm}
+            onCancel={onCancel}
+            onSubmit={onSubmit}
+            title="Remove this item?"
+            content="Do you want to this item cancel?"
+        />
+    );
+};
