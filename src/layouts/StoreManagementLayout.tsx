@@ -128,7 +128,7 @@ export default function RestaurentManagementLayout(props: Props) {
                                     color: theme.pRIMARY6Primary,
                                 }}
                             >
-                                Restaurant Management
+                                Settings
                             </Text>
                         </Row>
                     </Link>
