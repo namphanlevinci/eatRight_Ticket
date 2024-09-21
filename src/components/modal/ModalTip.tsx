@@ -97,39 +97,42 @@ export default function ModalTip({
             <Text style={{ marginBlock: 16 }}>
                 Total bill {`(Include Tax)`}: $ {total.toFixed(2)}
             </Text>
-            <Input
-                ref={inputRef}
-                value={value}
-                onChange={(e) => {
-                    const inputValue = e.target.value;
-                    // Kiểm tra xem giá trị có phải là số thập phân hợp lệ không
-                    if (/^\d*\.?\d*$/.test(inputValue)) {
-                        setValue(inputValue); // Cập nhật giá trị nếu hợp lệ
+            <Row align={'middle'}>
+                <Text style={{ marginRight: 16 }}>Tip amount</Text>
+                <Input
+                    ref={inputRef}
+                    value={value}
+                    onChange={(e) => {
+                        const inputValue = e.target.value;
+                        // Kiểm tra xem giá trị có phải là số thập phân hợp lệ không
+                        if (/^\d*\.?\d*$/.test(inputValue)) {
+                            setValue(inputValue); // Cập nhật giá trị nếu hợp lệ
+                        }
+                        setSelectTip(0);
+                    }}
+                    style={{
+                        flex: 1,
+                        height: 56,
+                        backgroundColor: theme.nEUTRALBase,
+                        color: theme.tEXTPrimary,
+                        border: `1px solid ${theme.nEUTRALLine}`,
+                    }}
+                    type="text" // Đổi thành type="text"
+                    prefix="$"
+                    allowClear={false}
+                    suffix={
+                        <div
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                                setValue('0'); // Đặt lại giá trị về 0
+                                setSelectTip(0);
+                            }}
+                        >
+                            <ClearIcon />
+                        </div>
                     }
-                    setSelectTip(0);
-                }}
-                style={{
-                    flex: 1,
-                    height: 56,
-                    backgroundColor: theme.nEUTRALBase,
-                    color: theme.tEXTPrimary,
-                    border: `1px solid ${theme.nEUTRALLine}`,
-                }}
-                type="text" // Đổi thành type="text"
-                prefix="$"
-                allowClear={false}
-                suffix={
-                    <div
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                            setValue('0'); // Đặt lại giá trị về 0
-                            setSelectTip(0);
-                        }}
-                    >
-                        <ClearIcon />
-                    </div>
-                }
-            />
+                />
+            </Row>
             <Text style={{ marginBlock: 16 }}>Or pick predefined amount</Text>
 
             <Row justify={'space-between'}>
