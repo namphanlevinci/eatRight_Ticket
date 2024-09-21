@@ -43,7 +43,6 @@ export default function ColLeft({
             <DividedSolid />
             {isSplitBill && listItems.length > 0
                 ? listItems?.map((data) => {
-                      console.log(data);
                       const { items } = data;
                       if (items.find((item) => item.status === 'cancel')) {
                           return null;
