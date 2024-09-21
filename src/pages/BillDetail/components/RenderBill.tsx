@@ -250,12 +250,6 @@ const RenderBillItem = ({
                     )}
 
                 <DividedDashed />
-                <TextDark>
-                    <TextDark style={text16}>
-                        Signature:_________________________
-                    </TextDark>
-                </TextDark>
-                <DividedDashed />
                 <TextDark
                     style={{
                         fontWeight: '600',
