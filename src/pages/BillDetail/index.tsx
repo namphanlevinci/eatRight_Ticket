@@ -480,12 +480,8 @@ export default function index() {
                 </Link>
                 <ArrowRightIcon />
                 <Link to={BASE_ROUTER.BILL}>
-                    <BreadCrum>Bill</BreadCrum>
+                    <BreadCrum>Receipts</BreadCrum>
                 </Link>
-                <ArrowRightIcon />
-                <BreadCrum isSelected>
-                    Order {data?.orderDetail?.order_number}
-                </BreadCrum>
             </Row>
             <Container
                 style={{
