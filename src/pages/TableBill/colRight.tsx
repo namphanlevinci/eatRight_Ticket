@@ -22,7 +22,6 @@ import { useTheme } from 'context/themeContext';
 import RenderDiscountRow from './components/renderDiscountRow';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from './components/ModalPosDevicesDJV';
-import { useSearchParams } from 'react-router-dom';
 
 export default function ColRight({
     cart,
@@ -49,12 +48,8 @@ export default function ColRight({
         cart?.firstname,
     );
 
-    const [searchParams] = useSearchParams();
-    const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
-    const tableId = parseInt(searchParams.get('tableId') || '0');
     const {
         handleCheckOut,
-        cartItems,
         loading,
         contextHolder,
         paymentMethod,
@@ -65,6 +60,7 @@ export default function ColRight({
         setVisibleMoalPos,
         handlePOSPayment,
         pos_Loading,
+        hasGivenTip,
         handleSetTip,
         isVisibleModalPosDJV,
         setVisibleMoalPosDJV,
@@ -118,13 +114,10 @@ export default function ColRight({
     }, [cart?.tip_amount]);
 
     useEffect(() => {
-        const getCurrentCart = cartItems.filter(
-            (item) => +item?.tableId === +tableId,
-        )?.[0].carts?.[cartIndex];
-        if (tip && tipPercent && getCurrentCart.tip_amount) {
+        if (hasGivenTip) {
             handleProceed();
         }
-    }, [tip, tipPercent, cartItems, cartIndex, cartItems, tableId]);
+    }, [hasGivenTip]);
 
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
@@ -198,6 +191,7 @@ export default function ColRight({
                             ((cart?.prices.grand_total.value || 0) -
                                 (cart?.prices?.total_canceled?.value || 0)),
                     );
+
                     await handleSetTip(values);
                     handleProceed();
                     setModalTip(false);
