@@ -145,18 +145,21 @@ const RenderBillItem = ({
                         - {CURRENTCY} {totalDiscount.toFixed(2)}
                     </TextDark>
                 </RowStyled>
-                {data?.total?.total_tax?.value && (
+                {data?.total?.total_tax?.value ? (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>Tax</TextDark>
                         <TextDark>
                             {CURRENTCY}{' '}
-                            {selectDataShowbill
+                            {(selectDataShowbill
                                 ? selectDataShowbill?.total?.total_tax?.value?.toFixed(
                                       2,
                                   )
-                                : data?.total?.total_tax?.value?.toFixed(2)}
+                                : data?.total?.total_tax?.value?.toFixed(2)) ||
+                                0}
                         </TextDark>
                     </RowStyled>
+                ) : (
+                    <></>
                 )}
 
                 {data?.total?.service_charge_amount?.value && (
