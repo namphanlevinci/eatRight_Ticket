@@ -7,6 +7,7 @@ export const GET_ALL_TABLE_Floor = gql`
             name
             status
             size
+            hasReadyItem
             numberOfCustomer
             cartIds {
                 cartId
@@ -21,6 +22,7 @@ export const GET_ALL_TABLE = gql`
             name
             status
             size
+            hasReadyItem
             numberOfCustomer
             cartIds {
                 cartId

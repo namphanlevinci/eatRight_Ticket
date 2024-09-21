@@ -32,6 +32,7 @@ import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
 import { PRINT_BILL } from 'graphql/printer';
 import { API_REFUND_INVOICE, API_REFUND_ORDER } from 'graphql/orders/refund';
+import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 export default function index() {
     const [getOrderDetail, { data, loading, refetch }] = useLazyQuery(
         GET_ORDER_DETAIL,
@@ -581,19 +582,28 @@ export default function index() {
                                         title="Email"
                                         onPress={() => setModalInputEmail(true)}
                                     />
-                                    {((data?.orderDetail
-                                        ?.payment_method_code === 'pos' &&
-                                        data?.orderDetail?.status ===
-                                            'complete') ||
-                                        (selectDataShowbill?.payment_methods &&
-                                            selectDataShowbill
-                                                ?.payment_methods[0]?.type ===
-                                                'pos')) && (
+                                    {data?.orderDetail?.can_refund &&
+                                    !selectDataShowbill ? (
+                                        <ButtonBill
+                                            title="Void"
+                                            onPress={() => setModalRefund(true)}
+                                        />
+                                    ) : selectDataShowbill?.can_refund ? (
                                         <ButtonBill
                                             title="Refund"
                                             onPress={() => setModalRefund(true)}
                                         />
+                                    ) : data?.orderDetail?.is_refunded ||
+                                      selectDataShowbill?.is_refunded ? (
+                                        <ButtonPrimary
+                                            title="Voided"
+                                            onClick={() => console.log('123')}
+                                            isDisable
+                                        />
+                                    ) : (
+                                        <></>
                                     )}
+
                                     {/* <ButtonBill
                                         title="Sms"
                                         onPress={() => setModalInputPhone(true)}
