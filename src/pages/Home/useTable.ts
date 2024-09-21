@@ -89,7 +89,7 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
                         .includes(searchText.toLowerCase()),
                 );
             }
-            const tempTableList = new Array(30).fill(null);
+            const tempTableList = new Array(100).fill(null);
             const mergedTables = tempTableList.reduce((acc, _, index) => {
                 if (index < tableList.length) {
                     acc.push(tableList[index]);
