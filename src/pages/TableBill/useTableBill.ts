@@ -50,7 +50,7 @@ export const useTableBill = (isGoBack = true) => {
     const [onPosPayment] = useMutation(POS_PAYMENT);
     const [onPosDJV, { loading: djv_Loading }] =
         useMutation(POS_PAYMENT_WITH_DJV);
-    const [onSetTips, { loading: tips_Loading }] = useMutation(SET_TIPS);
+    const [onSetTips, {data, loading: tips_Loading }] = useMutation(SET_TIPS);
     const navigation = useNavigate();
     const [pos_Loading, setPos_Loading] = React.useState<boolean>(false);
     useEffect(() => {
@@ -415,6 +415,7 @@ export const useTableBill = (isGoBack = true) => {
         contextHolder,
         paymentMethod,
         cartItems,
+        hasGivenTip: data?.setTipToCart?.success,
         setPaymentMethod,
         setListItems,
         listItems,
