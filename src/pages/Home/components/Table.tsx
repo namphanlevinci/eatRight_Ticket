@@ -21,7 +21,7 @@ interface IItem {
     name: string;
     size: number;
     status: string | number;
-    isNeedServe?: boolean;
+    hasReadyItem?: boolean;
     __typename: string;
 }
 
@@ -137,7 +137,7 @@ const Table = ({ item, onClick }: ITable) => {
                     <div>{item.cartIds.length}</div>
                 </CountAvailable>
             )}
-            {item.isNeedServe && (
+            {item.hasReadyItem && (
                 <BellNeeded>
                     <img src={bellAlarm} style={{ height: 40, width: 40 }} />
                 </BellNeeded>
