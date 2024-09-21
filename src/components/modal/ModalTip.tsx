@@ -98,34 +98,37 @@ export default function ModalTip({
             <Text style={{ marginBlock: 16 }}>
                 Total bill {`(Include Tax)`}: $ {total.toFixed(2)}
             </Text>
-            <Input
-                ref={inputRef}
-                value={value}
-                onChange={(e) => {
-                    setValue(parseFloat(e.target.value || '0'));
-                    setSelectTip(0);
-                }}
-                style={{
-                    flex: 1,
-                    height: 56,
-                    backgroundColor: theme.nEUTRALBase,
-                    color: theme.tEXTPrimary,
-                    border: `1px solid ${theme.nEUTRALLine}`,
-                }}
-                itemType="number"
-                prefix="$"
-                allowClear={false}
-                suffix={
-                    <div
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                            setValue(0), setSelectTip(0);
-                        }}
-                    >
-                        <ClearIcon />
-                    </div>
-                }
-            />
+            <Row align={"middle"}>
+                <Text style={{marginRight: 16}}>Tip amount</Text>
+                <Input
+                    ref={inputRef}
+                    value={value}
+                    onChange={(e) => {
+                        setValue(parseFloat(e.target.value || '0'));
+                        setSelectTip(0);
+                    }}
+                    style={{
+                        flex: 1,
+                        height: 56,
+                        backgroundColor: theme.nEUTRALBase,
+                        color: theme.tEXTPrimary,
+                        border: `1px solid ${theme.nEUTRALLine}`,
+                    }}
+                    itemType="number"
+                    prefix="$"
+                    allowClear={false}
+                    suffix={
+                        <div
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                                setValue(0), setSelectTip(0);
+                            }}
+                        >
+                            <ClearIcon />
+                        </div>
+                    }
+                />
+            </Row>
             <Text style={{ marginBlock: 16 }}>Or pick predefined amount</Text>
 
             <Row justify={'space-between'}>
