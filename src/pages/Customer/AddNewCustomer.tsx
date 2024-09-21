@@ -113,7 +113,7 @@ export default function AddNewCustomer() {
                         <InputForm
                             label="Last Name"
                             name="lastname"
-                            placeholder="First Name"
+                            placeholder="Last Name"
                         />
                     </ColContainer>
                 </Row>
