@@ -47,7 +47,7 @@ const HomePage: React.FC = () => {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                marginRight: 20,
+                                marginRight: 10,
                                 width: 70,
                             }}
                         >
@@ -72,8 +72,8 @@ const HomePage: React.FC = () => {
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'center',
-                                    marginRight: 20,
-                                    width: 70,
+                                    marginRight: 10,
+                                    width: 120,
                                 }}
                             >
                                 <StyledFloor
