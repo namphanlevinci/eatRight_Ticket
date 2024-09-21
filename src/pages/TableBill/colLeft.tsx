@@ -43,6 +43,11 @@ export default function ColLeft({
             <DividedSolid />
             {isSplitBill && listItems.length > 0
                 ? listItems?.map((data) => {
+                      console.log(data);
+                      const { items } = data;
+                      if (items.find((item) => item.status === 'cancel')) {
+                          return null;
+                      }
                       return (
                           <div key={data.guestId}>
                               <Row
@@ -75,6 +80,9 @@ export default function ColLeft({
                       );
                   })
                 : cart?.items?.map((item, index) => {
+                      if (item.status === 'status') {
+                          return null;
+                      }
                       return <RenderItem key={index} item={item} />;
                   })}
         </ColStyled>
