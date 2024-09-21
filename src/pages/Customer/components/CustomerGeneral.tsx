@@ -39,7 +39,7 @@ export default function CustomerGeneral({
         onUpdateCustomerInfomation({
             variables: {
                 id: customerId,
-                email: values.email,
+                email: values?.email?.includes('gen') ? values?.email : '-',
                 gender: values.gender,
                 date_of_birth: values.dob,
             },

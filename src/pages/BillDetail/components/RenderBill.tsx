@@ -1,14 +1,12 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Col } from 'antd';
 import { TextDark } from 'components/atom/Text';
-import Barcode from 'react-barcode';
 
 import { CURRENTCY } from 'constants/currency';
 import {
     DividedDashed,
     RowStyled,
     text24,
-    BarCodeContainer,
     text16,
     text16W,
     BoldText,
@@ -237,20 +235,12 @@ const RenderBillItem = ({
                 {data?.payment_methods &&
                     data?.payment_methods[0]?.additional_data[1]?.value && (
                         <RowStyled align={'middle'}>
-                            <TextDark style={text16}>Cart Type:</TextDark>
-                            <TextDark>
+                            <TextDark style={text16}>
                                 {
                                     data?.payment_methods[0]?.additional_data[1]
                                         ?.value
                                 }
-                            </TextDark>
-                        </RowStyled>
-                    )}
-                {data?.payment_methods &&
-                    data?.payment_methods[0]?.additional_data[0]?.value && (
-                        <RowStyled align={'middle'}>
-                            <TextDark style={text16}>Last 4 Digits:</TextDark>
-                            <TextDark>
+                                {'  '}
                                 {
                                     data?.payment_methods[0]?.additional_data[0]
                                         ?.value
@@ -258,6 +248,7 @@ const RenderBillItem = ({
                             </TextDark>
                         </RowStyled>
                     )}
+
                 <DividedDashed />
                 <TextDark>
                     <TextDark style={text16}>
@@ -279,16 +270,6 @@ const RenderBillItem = ({
                 <TextDark style={{ marginTop: 10 }}>
                     Feedback/Contact us: {data?.feedback_url}
                 </TextDark>
-
-                <BarCodeContainer>
-                    <Barcode
-                        value={
-                            selectDataShowbill
-                                ? selectDataShowbill?.number
-                                : data?.order_number
-                        }
-                    />
-                </BarCodeContainer>
             </div>
         </div>
     );

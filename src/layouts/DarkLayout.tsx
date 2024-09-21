@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { Colors } from 'themes/colors';
 import Logo from 'assets/logos/logo.png';
-import LogoMerchant from 'assets/logos/logo_merchant.png';
+import LogoMerchant from 'assets/logos/merchantLogo.png';
 // import HelpIcon from 'assets/icons/help';
 import { Link } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';

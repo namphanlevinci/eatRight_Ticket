@@ -55,7 +55,7 @@ const getStatusTableByCardIds = (item: IItem) => {
 };
 
 const getColorByStatus = (item: IItem, theme: ColorsThemeType) => {
-    const status = getStatusTableByCardIds(item);
+    const status = parseInt(`${item.status}`);
     let color = '#ffffff';
     switch (status) {
         case TableStatus.Available:

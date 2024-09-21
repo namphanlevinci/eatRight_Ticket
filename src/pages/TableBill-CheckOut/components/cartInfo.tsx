@@ -61,7 +61,7 @@ export default function CartInfo({ data }: { data: MerchantSplitOrderOutput }) {
                     <span style={{ fontWeight: '400', fontSize: 14 }}>
                         Total{' '}
                     </span>
-                    {data.order.total.grand_total.value}
+                    {data.order.total.grand_total.value.toFixed(2)}
                 </Text>
             </div>
         </div>

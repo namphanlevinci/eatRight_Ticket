@@ -5,7 +5,7 @@ import { Text } from 'components/atom/Text';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
-import LogoMerchant from 'assets/logos/logo_merchant.png';
+import LogoMerchant from 'assets/logos/merchantLogo.png';
 export const Header = ({
     onClose,
     onLogo,
@@ -15,11 +15,7 @@ export const Header = ({
 }) => {
     const { isMerchant } = useSelector((state: RootState) => state.auth);
     return (
-        <Row
-            justify={'space-between'}
-            align={'middle'}
-            style={{ marginBottom: 16 }}
-        >
+        <Row justify={'space-between'} align={'middle'}>
             <div onClick={onLogo}>
                 {isMerchant ? (
                     <img src={LogoMerchant} style={{ height: 40 }} />
@@ -48,9 +44,9 @@ export const RenderItem = ({
             justify={'space-between'}
             align={'middle'}
             style={{
-                paddingBlock: 16,
                 borderBottom: '1px solid #CCC',
                 cursor: 'pointer',
+                height: 65,
             }}
             onClick={onPress}
         >

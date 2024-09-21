@@ -214,7 +214,7 @@ export default function index() {
             })
                 .then(() => {
                     modal.success({
-                        title: 'Print bill Success',
+                        title: 'Send request print bill Success',
                         content: 'Please go to printer to take the bill!',
                         centered: true,
                     });
@@ -238,7 +238,7 @@ export default function index() {
                     })
                         .then(() => {
                             modal.success({
-                                title: 'Print bill Success',
+                                title: 'Send request print bill Success',
                                 content:
                                     'Please go to printer to take the bill!',
                                 centered: true,
@@ -259,7 +259,7 @@ export default function index() {
             })
                 .then(() => {
                     modal.success({
-                        title: 'Print bill Success',
+                        title: 'Send request print bill Success',
                         content: 'Please go to printer to take the bill!',
                         centered: true,
                     });
@@ -480,12 +480,8 @@ export default function index() {
                 </Link>
                 <ArrowRightIcon />
                 <Link to={BASE_ROUTER.BILL}>
-                    <BreadCrum>Bill</BreadCrum>
+                    <BreadCrum>Receipts</BreadCrum>
                 </Link>
-                <ArrowRightIcon />
-                <BreadCrum isSelected>
-                    Order {data?.orderDetail?.order_number}
-                </BreadCrum>
             </Row>
             <Container
                 style={{
