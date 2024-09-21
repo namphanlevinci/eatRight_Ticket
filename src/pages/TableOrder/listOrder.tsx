@@ -131,7 +131,7 @@ export default function ListOrder({
                                 </Col>
 
                                 <Text18 style={{ textAlign: 'right' }}>
-                                    {formatNumberWithCommas(
+                                    ${formatNumberWithCommas(
                                         item.prices.price.value,
                                     )}{' '}
                                 </Text18>

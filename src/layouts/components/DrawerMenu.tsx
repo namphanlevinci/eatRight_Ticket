@@ -54,7 +54,7 @@ const MenuList = [
         to: BASE_ROUTER.CUSTOMER_LIST,
     },
     {
-        title: 'Receipt',
+        title: 'Receipts',
         icon: <ReceiptBillV2Icon />,
         to: BASE_ROUTER.BILL,
     },

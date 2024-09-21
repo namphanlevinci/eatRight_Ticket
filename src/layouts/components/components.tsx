@@ -5,7 +5,7 @@ import { Text } from 'components/atom/Text';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
-import LogoMerchant from 'assets/logos/logo_merchant.png';
+import LogoMerchant from 'assets/logos/merchantLogo.png';
 export const Header = ({
     onClose,
     onLogo,
