@@ -65,7 +65,7 @@ export default function SplitBillConfirmMode({
     );
 
     const Tax = useMemo(
-        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100,
+        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 0) / 100,
         [cart],
     );
 

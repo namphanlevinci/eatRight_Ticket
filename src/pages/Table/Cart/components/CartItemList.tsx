@@ -220,7 +220,7 @@ export default function CartItemList({
     );
 
     const Tax = useMemo(
-        () => (data?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100,
+        () => (data?.prices?.applied_taxes?.[0]?.tax_percent || 0) / 100,
         [data],
     );
 

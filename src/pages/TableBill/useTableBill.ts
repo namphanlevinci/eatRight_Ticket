@@ -50,7 +50,7 @@ export const useTableBill = (isGoBack = true) => {
     const [onPosPayment] = useMutation(POS_PAYMENT);
     const [onPosDJV, { loading: djv_Loading }] =
         useMutation(POS_PAYMENT_WITH_DJV);
-    const [onSetTips, {data, loading: tips_Loading }] = useMutation(SET_TIPS);
+    const [onSetTips, { data, loading: tips_Loading }] = useMutation(SET_TIPS);
     const navigation = useNavigate();
     const [pos_Loading, setPos_Loading] = React.useState<boolean>(false);
     useEffect(() => {
@@ -364,7 +364,7 @@ export const useTableBill = (isGoBack = true) => {
                             });
                         const Tax =
                             (res.data.merchantCart.prices?.applied_taxes?.[0]
-                                ?.tax_percent || 10) / 100;
+                                ?.tax_percent || 0) / 100;
                         const newCart = {
                             ...res.data.merchantCart,
                             prices: {
