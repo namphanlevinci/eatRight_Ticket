@@ -23,7 +23,7 @@ export default function Tag({ isUnsend }: { isUnsend: boolean }) {
                 }}
             >
                 {' '}
-                {isUnsend ? 'New' : 'Sent'}
+                {isUnsend ? 'New' : 'Confirmed'}
             </Text>
         </div>
     );

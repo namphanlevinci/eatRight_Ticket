@@ -66,6 +66,9 @@ const errorLink = onError((error) => {
         ) {
             return;
         }
+        if (e.message.includes('Variable "$storeId" of required type')) {
+            return;
+        }
         emitter.emit('error', e.message);
     });
     if (error.networkError) {

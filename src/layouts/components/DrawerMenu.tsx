@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Drawer, Modal } from 'antd';
+import { Button, Drawer, Modal, notification } from 'antd';
 import BoardMenuIcon from 'assets/icons/boardMenu';
 
 // import StoreIcon from 'layouts/icons/storeIcon';
@@ -24,6 +24,10 @@ import {
     SettingFilled,
 } from '@ant-design/icons';
 import BillIcon from './icons/receiptV2Bill';
+import { Text } from 'components/atom/Text';
+import { useMediaQuery } from 'react-responsive';
+import { OPEN_CASHIER } from 'graphql/printer';
+import { useMutation } from '@apollo/client';
 const MerchantURL = process.env.REACT_APP_MERCHANTURL;
 const urlKitchen = process.env.REACT_APP_KITCHENURL;
 const MenuMerchant = [
@@ -67,16 +71,10 @@ const MenuMerchant = [
     },
 
     {
-        title: 'Restaurent Manager',
+        title: 'Settings',
         icon: <SettingFilled style={{ fontSize: 36 }} />,
         to: BASE_ROUTER.RESTAURENT_MANAGER,
     },
-    {
-        title: 'Settings',
-        icon: <SettingV2Icon />,
-        to: BASE_ROUTER.SETTINGS,
-    },
-
     // {
     //     title: 'Promotions',
     //     icon: <PromotionsIcon />,
@@ -144,6 +142,23 @@ export default function DrawerMenu() {
         }
     };
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const [onOpenCashier] = useMutation(OPEN_CASHIER);
+    const openCashier = () => {
+        onOpenCashier()
+            .then((res) => {
+                if (res) {
+                    notification.success({
+                        message: 'Open Cashier Successful',
+                        description:
+                            'Please wait for few seconds to open Cashier',
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
     return (
         <>
             <div
@@ -196,7 +211,31 @@ export default function DrawerMenu() {
                         />
                     ))}
                 </div>
-                <RenderLogout onPress={onLogout} />
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                    }}
+                >
+                    {isMerchant && isMobile && (
+                        <Button
+                            type="primary"
+                            onClick={() => openCashier()}
+                            style={{ marginBottom: 30 }}
+                        >
+                            <Text
+                                style={{
+                                    color: theme.nEUTRALPrimary,
+                                    fontWeight: '600',
+                                }}
+                            >
+                                Open Cashier
+                            </Text>
+                        </Button>
+                    )}
+                    <RenderLogout onPress={onLogout} />
+                </div>
             </Drawer>
         </>
     );

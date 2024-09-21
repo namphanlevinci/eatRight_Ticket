@@ -48,7 +48,7 @@ export const SELECT_PRINTER_DEVICE = gql`
 
 export const PRINT_BILL = gql`
     mutation ($invoice_number: String!) {
-        merchantPrintReceipt(invoice_number: $invoice_number)
+        merchantPrintReceiptCustomer(invoice_number: $invoice_number)
     }
 `;
 

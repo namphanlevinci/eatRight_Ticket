@@ -125,6 +125,23 @@ export const CountAvailable = styled.div`
     z-index: 10;
 `;
 
+export const BellNeeded = styled.div`
+    border-radius: 3000px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: '600';
+    position: absolute;
+    right: -15px;
+    top: -20px;
+    font-family: 'Montserrat';
+    z-index: 10;
+    overflow: hidden;
+`;
+
 export const CounterTakeAway = styled.div<StyledBackgroundProps>`
     display: flex;
     flex-direction: column;

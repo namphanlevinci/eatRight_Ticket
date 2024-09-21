@@ -131,7 +131,8 @@ export default function ListOrder({
                                 </Col>
 
                                 <Text18 style={{ textAlign: 'right' }}>
-                                    ${formatNumberWithCommas(
+                                    $
+                                    {formatNumberWithCommas(
                                         item.prices.price.value,
                                     )}{' '}
                                 </Text18>
@@ -162,7 +163,7 @@ export default function ListOrder({
                                         ? orderItems.serving_status === 'ready'
                                         : item.status === 'ready') && (
                                         <ButtonPrimary
-                                            title="Served"
+                                            title="Done"
                                             onClick={() => {
                                                 onDone(
                                                     orderItems
@@ -235,7 +236,7 @@ export default function ListOrder({
                                                         {product.status ===
                                                             'ready' && (
                                                             <ButtonPrimary
-                                                                title="Served"
+                                                                title="Done"
                                                                 onClick={() => {
                                                                     onDone(
                                                                         orderItems
