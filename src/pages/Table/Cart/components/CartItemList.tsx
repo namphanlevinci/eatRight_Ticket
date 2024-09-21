@@ -495,13 +495,14 @@ export default function CartItemList({
                                                           style={{
                                                               fontSize: 16,
                                                               backgroundColor:
-                                                                  'transparent',
+                                                                  '#3498db',
                                                               border: '0.5px solid #ccc',
                                                               outline: 'none',
-                                                              color: '#0455BF',
+                                                              color: theme.nEUTRALPrimary,
                                                               fontWeight: 500,
                                                               borderRadius: 8,
                                                               paddingTop: 0,
+                                                              paddingBottom: 0,
                                                           }}
                                                           onClick={() => {
                                                               updateStatusItemServer(
