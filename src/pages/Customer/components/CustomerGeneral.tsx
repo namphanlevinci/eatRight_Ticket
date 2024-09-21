@@ -39,7 +39,7 @@ export default function CustomerGeneral({
         onUpdateCustomerInfomation({
             variables: {
                 id: customerId,
-                email: values?.email?.includes('gen') ? values?.email : '-',
+                email: values.email,
                 gender: values.gender,
                 date_of_birth: values.dob,
             },
@@ -79,7 +79,11 @@ export default function CustomerGeneral({
                                           ?.phone_number,
                                   ),
                         },
-                        email: res.data?.merchantGetCustomer?.email,
+                        email: !res.data?.merchantGetCustomer?.email?.includes(
+                            '.gen',
+                        )
+                            ? res.data?.merchantGetCustomer?.email
+                            : '-',
                         dob: dayjs(
                             res.data?.merchantGetCustomer?.date_of_birth,
                         ),
@@ -101,7 +105,6 @@ export default function CustomerGeneral({
     }, [customerId]);
     const openEditMode = () => {
         setIsEdit(true);
-        console.log(data);
         if (!data?.merchantGetCustomer?.date_of_birth) {
             form.setFieldValue('dob', dayjs('2000-01-01'));
         }

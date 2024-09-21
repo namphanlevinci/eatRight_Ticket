@@ -270,6 +270,7 @@ const RenderBillItem = ({
                 <TextDark style={{ marginTop: 10 }}>
                     Feedback/Contact us: {data?.feedback_url}
                 </TextDark>
+                <div style={{ height: 24 }} />
             </div>
         </div>
     );
