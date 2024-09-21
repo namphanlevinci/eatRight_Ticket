@@ -87,7 +87,7 @@ export default function CartItemList({
         navigation(`${BASE_ROUTER.TABLE_BILL}?${cartInfo}`);
     };
     const goOrderList = () => {
-        navigation(`${BASE_ROUTER.TABLE_Order}?${cartInfo}`);
+        navigation(`${BASE_ROUTER.TABLE_BILL}?${cartInfo}`);
     };
     const SendCart = () => {
         let CustomerName =
