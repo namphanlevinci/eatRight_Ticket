@@ -88,7 +88,7 @@ const LeadTimeContent = styled.div`
 
 const LeadTimeOptions = styled.div`
     display: flex;
-    width: 154px;
+    width: 262px;
     max-width: 100%;
     padding-right: 31px;
     flex-direction: column;

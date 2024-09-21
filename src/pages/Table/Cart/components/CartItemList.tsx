@@ -1,5 +1,5 @@
 import { CusTomRow, StyledCartBorder } from '../styled';
-import { App, Col, Divider, Row } from 'antd';
+import { App, Col, Divider, Row, Button as ButtonAnt } from 'antd';
 import { Text } from 'components/atom/Text';
 import UpDownNumber from 'components/UpdownNumber';
 import { Button } from 'components/atom/Button';
@@ -24,6 +24,7 @@ import { roundTo } from 'utils/number';
 import { useMutation } from '@apollo/client';
 import { CLEAN_UP_CART_TABLE } from 'graphql/table/cleanTable';
 import ModalInputNote from 'components/modal/ModalInputNote';
+import { useCartTable } from '../useGetCart';
 export default function CartItemList({
     data,
     cartInfo,
@@ -45,6 +46,13 @@ export default function CartItemList({
         InputNoteItemBundleFromCart,
         removeCartIndex,
     } = useCart();
+
+    const {
+        loading: loadingCardTable,
+        removeItemOnCartServer,
+        updateStatusItemServer,
+    } = useCartTable(false, false);
+
     const { addCart, loading, addMoreCart } = useAddCart();
     const navigation = useNavigate();
     const [isNewItem, setIsNewItem] = React.useState(false);
@@ -86,8 +94,8 @@ export default function CartItemList({
         }
         navigation(`${BASE_ROUTER.TABLE_BILL}?${cartInfo}`);
     };
-    const goOrderList = () => {
-        navigation(`${BASE_ROUTER.TABLE_BILL}?${cartInfo}`);
+    const goTableBill = () => {
+        navigation(`${BASE_ROUTER.TABLE_BILL}${window.location.search}`);
     };
     const SendCart = () => {
         let CustomerName =
@@ -362,7 +370,7 @@ export default function CartItemList({
                                         </Text>
                                         <Row
                                             style={{
-                                                width: 154,
+                                                minWidth: 222,
                                                 justifyContent:
                                                     !item?.bundle_options
                                                         ? 'space-between'
@@ -392,17 +400,90 @@ export default function CartItemList({
                                                     )}
                                                 </div>
                                             )}
-                                            <UpDownNumber
-                                                quantity={item.quantity}
-                                                setQuantity={(e: number) => {
-                                                    updateQuantityItemFromCart(
-                                                        index,
-                                                        e,
-                                                    );
-                                                }}
-                                                isSend={!item.isUnsend}
-                                                disableUp={!showMenu}
-                                            />
+                                            <div
+                                                style={{ marginRight: 'auto' }}
+                                            >
+                                                <UpDownNumber
+                                                    quantity={item.quantity}
+                                                    setQuantity={(
+                                                        e: number,
+                                                    ) => {
+                                                        updateQuantityItemFromCart(
+                                                            index,
+                                                            e,
+                                                        );
+                                                    }}
+                                                    isSend={!item.isUnsend}
+                                                    disableUp={!showMenu}
+                                                />
+                                            </div>
+                                            {item.status === 'sent' &&
+                                                data?.is_active && (
+                                                    <ButtonAnt
+                                                        disabled={
+                                                            loadingCardTable
+                                                        }
+                                                        style={{
+                                                            fontSize: 16,
+                                                            backgroundColor:
+                                                                'transparent',
+                                                            border: '0.5px solid #ccc',
+                                                            outline: 'none',
+                                                            color: '#ea4335',
+                                                            fontWeight: 500,
+                                                            borderRadius: 8,
+                                                            paddingTop: 0,
+                                                        }}
+                                                        onClick={() =>
+                                                            removeItemOnCartServer(
+                                                                {
+                                                                    cartId: data?.id,
+                                                                    cartItemId:
+                                                                        item?.id,
+                                                                },
+                                                            )
+                                                        }
+                                                    >
+                                                        Cancel
+                                                    </ButtonAnt>
+                                                )}
+                                            {orderItems
+                                                ? orderItems.serving_status ===
+                                                  'ready'
+                                                : item.status === 'ready' &&
+                                                  data?.is_active && (
+                                                      <ButtonAnt
+                                                          disabled={
+                                                              loadingCardTable
+                                                          }
+                                                          style={{
+                                                              fontSize: 16,
+                                                              backgroundColor:
+                                                                  'transparent',
+                                                              border: '0.5px solid #ccc',
+                                                              outline: 'none',
+                                                              color: '#0455BF',
+                                                              fontWeight: 500,
+                                                              borderRadius: 8,
+                                                              paddingTop: 0,
+                                                          }}
+                                                          onClick={() => {
+                                                              updateStatusItemServer(
+                                                                  {
+                                                                      cartId: orderItems
+                                                                          ? orderItems.id
+                                                                          : item.id,
+                                                                      itemType:
+                                                                          orderItems
+                                                                              ? 'ORDER'
+                                                                              : 'QUOTE',
+                                                                  },
+                                                              );
+                                                          }}
+                                                      >
+                                                          Serve
+                                                      </ButtonAnt>
+                                                  )}
                                         </Row>
                                     </Row>
                                 </Col>
@@ -811,7 +892,7 @@ export default function CartItemList({
                                     !cartItems[indexTable]?.carts[
                                         selectedCart
                                     ]?.firstname?.includes('Guest') &&
-                                    goOrderList()
+                                    goTableBill()
                                 }
                                 isDisable={cartItems[indexTable]?.carts[
                                     selectedCart
