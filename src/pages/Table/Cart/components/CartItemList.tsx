@@ -822,7 +822,7 @@ export default function CartItemList({
                                     background={theme.pRIMARY6Primary}
                                     color={theme.nEUTRALBase}
                                 >
-                                    View Bill
+                                    View Receipt
                                 </Button>
                             )}
                         </Col>
@@ -968,7 +968,7 @@ const ModalConfirmCancel = ({ isModalConfirm, onCancel, onSubmit }: IModal) => {
             isModalOpen={isModalConfirm}
             onCancel={onCancel}
             onSubmit={onSubmit}
-            title="Remove this item?"
+            title="Cancel this item?"
             content="Do you want to this item cancel?"
         />
     );
