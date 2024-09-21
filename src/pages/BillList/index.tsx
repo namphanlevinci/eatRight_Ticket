@@ -267,6 +267,14 @@ const BillList: React.FC = () => {
                             <StyledColumn
                                 style={{
                                     width: '100%',
+                                    color: theme.tEXTPrimary,
+                                }}
+                            >
+                                Method
+                            </StyledColumn>
+                            <StyledColumn
+                                style={{
+                                    width: '100%',
                                     justifyContent: 'center',
                                     color: theme.tEXTPrimary,
                                 }}
@@ -319,6 +327,14 @@ const BillList: React.FC = () => {
                                     }}
                                 >
                                     {convertStatus(dt.status)}
+                                </StyledColumn>
+                                <StyledColumn
+                                    style={{
+                                        width: '100%',
+                                        color: theme.tEXTPrimary,
+                                    }}
+                                >
+                                    {dt?.payment_method}
                                 </StyledColumn>
                                 <StyledColumn
                                     style={{

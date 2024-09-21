@@ -35,6 +35,7 @@ export const GET_ORDERS = gql`
                 }
                 status
                 table
+                payment_method
             }
         }
     }

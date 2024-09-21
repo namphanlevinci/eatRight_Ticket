@@ -280,19 +280,21 @@ export const DarkLayout = (props: Props) => {
                             <>
                                 {isMerchant && (
                                     <Row align={'middle'} style={{ gap: 30 }}>
-                                        <Button
-                                            type="primary"
-                                            onClick={() => openCashier()}
-                                        >
-                                            <Text
-                                                style={{
-                                                    color: theme.nEUTRALPrimary,
-                                                    fontWeight: '600',
-                                                }}
+                                        {!isMobile && (
+                                            <Button
+                                                type="primary"
+                                                onClick={() => openCashier()}
                                             >
-                                                Open Cashier
-                                            </Text>
-                                        </Button>
+                                                <Text
+                                                    style={{
+                                                        color: theme.nEUTRALPrimary,
+                                                        fontWeight: '600',
+                                                    }}
+                                                >
+                                                    Open Cashier
+                                                </Text>
+                                            </Button>
+                                        )}
                                         <SwitchContainer
                                             style={{
                                                 display: 'flex',

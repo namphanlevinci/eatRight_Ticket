@@ -6,8 +6,10 @@ import {
     StyledTableStatus,
     StyledLine,
     CountAvailable,
+    BellNeeded,
 } from '../styled';
 import { ColorsThemeType, useTheme } from 'context/themeContext';
+import bellAlarm from 'assets/alarm_8721062.gif';
 
 interface IItem {
     cartIds: {
@@ -19,6 +21,7 @@ interface IItem {
     name: string;
     size: number;
     status: string | number;
+    isNeedServe?: boolean;
     __typename: string;
 }
 
@@ -133,6 +136,11 @@ const Table = ({ item, onClick }: ITable) => {
                 >
                     <div>{item.cartIds.length}</div>
                 </CountAvailable>
+            )}
+            {item.isNeedServe && (
+                <BellNeeded>
+                    <img src={bellAlarm} style={{ height: 40, width: 40 }} />
+                </BellNeeded>
             )}
             <StyledLine background={getColorByStatus(item, theme)} />
         </StyledTable>
