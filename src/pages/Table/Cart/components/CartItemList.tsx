@@ -318,6 +318,7 @@ export default function CartItemList({
                     const orderItems = data?.order?.items?.find(
                         (i: any) => item.product.name == i.name,
                     );
+
                     return (
                         <div key={index}>
                             <Row align={'middle'} justify={'space-between'}>
@@ -483,44 +484,38 @@ export default function CartItemList({
                                                         Cancel
                                                     </ButtonAnt>
                                                 )}
-                                            {orderItems
+                                            {(orderItems
                                                 ? orderItems.serving_status ===
                                                   'ready'
-                                                : item.status === 'ready' &&
-                                                  data?.is_active && (
-                                                      <ButtonAnt
-                                                          disabled={
-                                                              loadingCardTable
-                                                          }
-                                                          style={{
-                                                              fontSize: 16,
-                                                              backgroundColor:
-                                                                  '#3498db',
-                                                              border: '0.5px solid #ccc',
-                                                              outline: 'none',
-                                                              color: theme.nEUTRALPrimary,
-                                                              fontWeight: 500,
-                                                              borderRadius: 8,
-                                                              paddingTop: 0,
-                                                              paddingBottom: 0,
-                                                          }}
-                                                          onClick={() => {
-                                                              updateStatusItemServer(
-                                                                  {
-                                                                      cartId: orderItems
-                                                                          ? orderItems.id
-                                                                          : item.id,
-                                                                      itemType:
-                                                                          orderItems
-                                                                              ? 'ORDER'
-                                                                              : 'QUOTE',
-                                                                  },
-                                                              );
-                                                          }}
-                                                      >
-                                                          Serve
-                                                      </ButtonAnt>
-                                                  )}
+                                                : item.status === 'ready') && (
+                                                <ButtonAnt
+                                                    disabled={loadingCardTable}
+                                                    style={{
+                                                        fontSize: 16,
+                                                        backgroundColor:
+                                                            '#3498db',
+                                                        border: '0.5px solid #ccc',
+                                                        outline: 'none',
+                                                        color: theme.nEUTRALPrimary,
+                                                        fontWeight: 500,
+                                                        borderRadius: 8,
+                                                        paddingTop: 0,
+                                                        paddingBottom: 0,
+                                                    }}
+                                                    onClick={() => {
+                                                        updateStatusItemServer({
+                                                            cartId: orderItems
+                                                                ? orderItems.id
+                                                                : item.id,
+                                                            itemType: orderItems
+                                                                ? 'ORDER'
+                                                                : 'QUOTE',
+                                                        });
+                                                    }}
+                                                >
+                                                    Serve
+                                                </ButtonAnt>
+                                            )}
                                         </Row>
                                     </Row>
                                 </Col>
