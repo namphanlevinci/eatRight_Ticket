@@ -98,28 +98,25 @@ export default function index() {
             emitter.off('arise_result');
         };
     }, [data?.orderDetail]);
+    const GetDataWithId = (orderId: string) => {
+        getOrderDetail({ variables: { id: orderId } }).then((res) => {
+            onGetInvoices({
+                variables: {
+                    OrderNumber: res.data?.orderDetail?.order_number,
+                },
+                fetchPolicy: 'no-cache',
+            });
+        });
+    };
     useEffect(() => {
         if (orderId !== null && orderId !== 'undefined') {
-            getOrderDetail({ variables: { id: atob(orderId) } }).then((res) => {
-                onGetInvoices({
-                    variables: {
-                        OrderNumber: res.data?.orderDetail?.order_number,
-                    },
-                    fetchPolicy: 'no-cache',
-                });
-            });
+            GetDataWithId(atob(orderId));
         }
     }, [orderId]);
+
     useEffect(() => {
         if (order_ID !== null && order_ID !== 'undefined') {
-            getOrderDetail({ variables: { id: order_ID } }).then((res) => {
-                onGetInvoices({
-                    variables: {
-                        OrderNumber: res.data?.orderDetail?.order_number,
-                    },
-                    fetchPolicy: 'no-cache',
-                });
-            });
+            GetDataWithId(order_ID);
         }
     }, [order_ID]);
     useEffect(() => {
@@ -410,6 +407,7 @@ export default function index() {
                                     message: 'Refund Success',
                                     description: 'Your money has been refunded',
                                 });
+                                GetDataWithId(selectDataShowbill?.id);
                             })
                             .catch((err) => {
                                 console.log(err);
@@ -425,6 +423,7 @@ export default function index() {
                                     message: 'Refund Success',
                                     description: 'Your money has been refunded',
                                 });
+                                GetDataWithId(selectDataShowbill?.id);
                             })
                             .catch((err) => {
                                 console.log(err);
@@ -443,6 +442,7 @@ export default function index() {
                                     message: 'Refund Success',
                                     description: 'Your money has been refunded',
                                 });
+                                GetDataWithId(data?.orderDetail?.id);
                             })
                             .catch((err) => {
                                 console.log(err);
@@ -450,7 +450,6 @@ export default function index() {
                     } else {
                         onRefundOrder({
                             variables: {
-                                reason: reason,
                                 order_number: data?.orderDetail?.order_number,
                             },
                         })
@@ -459,6 +458,7 @@ export default function index() {
                                     message: 'Refund Success',
                                     description: 'Your money has been refunded',
                                 });
+                                GetDataWithId(data?.orderDetail?.id);
                             })
                             .catch((err) => {
                                 console.log(err);
@@ -611,7 +611,7 @@ export default function index() {
                     onCash={() => modalConfirm('cashondelivery')}
                     onPOS={() => modalConfirm('pos')}
                 />
-                {!loading && (
+                {(!loading || data?.orderDetail) && (
                     <>
                         <RenderBill
                             data={data?.orderDetail}
@@ -640,16 +640,24 @@ export default function index() {
                                         />
                                     ) : selectDataShowbill?.can_refund ? (
                                         <ButtonBill
-                                            title="Refund"
+                                            title="Void"
                                             onPress={() => setModalRefund(true)}
                                         />
                                     ) : data?.orderDetail?.is_refunded ||
                                       selectDataShowbill?.is_refunded ? (
-                                        <ButtonPrimary
-                                            title="Voided"
-                                            onClick={() => console.log('123')}
-                                            isDisable
-                                        />
+                                        <div style={{ paddingInline: 8 }}>
+                                            <ButtonPrimary
+                                                title="Voided"
+                                                onClick={() =>
+                                                    console.log('123')
+                                                }
+                                                isDisable
+                                                width={
+                                                    isMobile ? '56px' : '160px'
+                                                }
+                                                marginTop="0px"
+                                            />
+                                        </div>
                                     ) : (
                                         <></>
                                     )}

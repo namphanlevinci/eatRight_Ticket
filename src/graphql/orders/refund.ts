@@ -18,15 +18,11 @@ export const API_REFUND_ORDER_POS = gql`
 
 export const API_REFUND_ORDER = gql`
     mutation ($order_number: String!) {
-        mutation {
-            merchantRefundOrder(order_number: $order_number)
-        }
+        merchantRefundOrder(order_number: $order_number)
     }
 `;
 export const API_REFUND_INVOICE = gql`
     mutation ($invoice_number: String!) {
-        mutation {
-            merchantRefundInvoice(invoice_number: $order_number)
-        }
+        merchantRefundInvoice(invoice_number: $invoice_number)
     }
 `;
