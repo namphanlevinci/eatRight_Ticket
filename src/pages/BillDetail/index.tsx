@@ -635,7 +635,7 @@ export default function index() {
                                     {data?.orderDetail?.can_refund &&
                                     !selectDataShowbill ? (
                                         <ButtonBill
-                                            title="Void"
+                                            title="Refund"
                                             onPress={() => setModalRefund(true)}
                                         />
                                     ) : selectDataShowbill?.can_refund ? (

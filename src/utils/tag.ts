@@ -31,8 +31,8 @@ export const getTagStyled = (status?: string, theme?: ColorsThemeType) => {
         case 'done':
             return {
                 text: 'Served',
-                background: theme.sUCCESS1BG,
-                textColor: theme.sUCCESS2Default,
+                background: theme.pRIMARY1,
+                textColor: '#3498db',
             };
         case 'New':
             return {

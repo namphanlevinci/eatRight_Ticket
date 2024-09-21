@@ -57,8 +57,19 @@ export default function OrderCart({ table }: { table: any }) {
             />
             <Row>
                 {listCart.map((item, index) => {
+                    const isCartNeedServed = cartItems[indexTable]?.carts[
+                        index
+                    ]?.items?.find((item) => item.status === 'ready');
+                    const isCartFormServerNeedServed = cartItems[
+                        indexTable
+                    ]?.carts[index]?.order?.items?.find(
+                        (item) => item.serving_status === 'ready',
+                    );
+                    const isBell =
+                        isCartFormServerNeedServed || isCartNeedServed;
                     return (
                         <RenderTab
+                            isBell={isBell ? true : false}
                             key={index}
                             id={item}
                             selected={selectedCart === index}

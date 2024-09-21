@@ -2,19 +2,21 @@ import PlusIcon from 'assets/icons/plusIcon';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import React from 'react';
-
+import bellAlarm from 'assets/alarm_8721062.gif';
 export default function RenderTab({
     id,
     selected,
     onClick,
     isAllowDelete,
     onRemoveItem,
+    isBell,
 }: {
     id?: string;
     selected?: boolean;
     onClick?: () => void;
     isAllowDelete?: boolean;
     onRemoveItem?: () => void;
+    isBell?: boolean;
 }) {
     const { theme } = useTheme();
     return (
@@ -41,6 +43,21 @@ export default function RenderTab({
             }}
             onClick={onClick}
         >
+            {isBell && (
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: 5,
+                        right: -10,
+                        height: 30,
+                        width: 30,
+                        borderRadius: 100,
+                        overflow: 'hidden',
+                    }}
+                >
+                    <img src={bellAlarm} style={{ height: 30, width: 30 }} />
+                </div>
+            )}
             {id ? (
                 <Text
                     style={{
