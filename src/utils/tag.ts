@@ -30,7 +30,7 @@ export const getTagStyled = (status?: string, theme?: ColorsThemeType) => {
             };
         case 'done':
             return {
-                text: 'Done',
+                text: 'Served',
                 background: theme.sUCCESS1BG,
                 textColor: theme.sUCCESS2Default,
             };

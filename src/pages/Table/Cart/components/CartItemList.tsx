@@ -76,14 +76,28 @@ export default function CartItemList({
             } else {
                 setIsNewItem(false);
             }
-            const itemNeedDone = data?.items.find(
-                (item: ItemType) => item.status !== 'done',
-            );
-            if (itemNeedDone) {
-                setIsAllDone(false);
+
+            if (data?.order_number) {
+                const itemNeedDone = data?.order?.items.find(
+                    (item: any) => item.serving_status !== 'done',
+                );
+                if (itemNeedDone) {
+                    setIsAllDone(false);
+                } else {
+                    setIsAllDone(true);
+                }
             } else {
-                setIsAllDone(true);
+                const itemNeedDone = data?.items.find(
+                    (item: ItemType) => item.status !== 'done',
+                );
+
+                if (itemNeedDone) {
+                    setIsAllDone(false);
+                } else {
+                    setIsAllDone(true);
+                }
             }
+            console.log('items', data);
         } else {
             setIsNewItem(false);
         }

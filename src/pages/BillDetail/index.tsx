@@ -385,37 +385,48 @@ export default function index() {
             content: 'This action cannot be undone',
             onOk: () => {
                 if (selectDataShowbill) {
-                    onRefundInvoice({
-                        variables: {
-                            reason: reason,
-                            invoice_number: selectDataShowbill?.number,
-                        },
-                    })
-                        .then(() => {
-                            notification.success({
-                                message: 'Refund Success',
-                                description: 'Your money has been refunded',
-                            });
+                    if (
+                        selectDataShowbill?.payment_methods &&
+                        selectDataShowbill?.payment_methods?.[0]?.type === 'pos'
+                    ) {
+                        onRefundInvoice({
+                            variables: {
+                                reason: reason,
+                                invoice_number: selectDataShowbill?.number,
+                            },
                         })
-                        .catch((err) => {
-                            console.log(err);
-                        });
+                            .then(() => {
+                                notification.success({
+                                    message: 'Refund Success',
+                                    description: 'Your money has been refunded',
+                                });
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    } else {
+                        console.log('run something else');
+                    }
                 } else {
-                    onRefundOrder({
-                        variables: {
-                            reason: reason,
-                            order_number: data?.orderDetail?.order_number,
-                        },
-                    })
-                        .then(() => {
-                            notification.success({
-                                message: 'Refund Success',
-                                description: 'Your money has been refunded',
-                            });
+                    if (data?.orderDetail?.payment_method_code === 'pos') {
+                        onRefundOrder({
+                            variables: {
+                                reason: reason,
+                                order_number: data?.orderDetail?.order_number,
+                            },
                         })
-                        .catch((err) => {
-                            console.log(err);
-                        });
+                            .then(() => {
+                                notification.success({
+                                    message: 'Refund Success',
+                                    description: 'Your money has been refunded',
+                                });
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    } else {
+                        console.log('anything else');
+                    }
                 }
             },
         });
