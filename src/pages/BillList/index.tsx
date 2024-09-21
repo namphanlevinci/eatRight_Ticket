@@ -334,7 +334,7 @@ const BillList: React.FC = () => {
                                         color: theme.tEXTPrimary,
                                     }}
                                 >
-                                    {dt?.payment_method}
+                                    {dt?.payment_methods?.[0]?.name}
                                 </StyledColumn>
                                 <StyledColumn
                                     style={{

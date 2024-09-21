@@ -30,7 +30,7 @@ export const getTagStyled = (status?: string, theme?: ColorsThemeType) => {
             };
         case 'done':
             return {
-                text: 'Done',
+                text: 'Served',
                 background: theme.sUCCESS1BG,
                 textColor: theme.sUCCESS2Default,
             };
@@ -48,7 +48,7 @@ export const getTagStyled = (status?: string, theme?: ColorsThemeType) => {
             };
         default:
             return {
-                text: 'Sent',
+                text: 'Confirmed',
                 background: theme.tERTIARY1BG,
                 textColor: theme.tERTIARY2Default,
             };
