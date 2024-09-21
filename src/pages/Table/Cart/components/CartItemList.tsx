@@ -97,11 +97,10 @@ export default function CartItemList({
                     setIsAllDone(true);
                 }
             }
-            console.log('items', data);
         } else {
             setIsNewItem(false);
         }
-    }, [data?.items?.length]);
+    }, [data]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
