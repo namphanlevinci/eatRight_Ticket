@@ -79,7 +79,11 @@ export default function CustomerGeneral({
                                           ?.phone_number,
                                   ),
                         },
-                        email: res.data?.merchantGetCustomer?.email,
+                        email: !res.data?.merchantGetCustomer?.email?.includes(
+                            '.gen',
+                        )
+                            ? res.data?.merchantGetCustomer?.email
+                            : '-',
                         dob: dayjs(
                             res.data?.merchantGetCustomer?.date_of_birth,
                         ),
@@ -101,7 +105,6 @@ export default function CustomerGeneral({
     }, [customerId]);
     const openEditMode = () => {
         setIsEdit(true);
-        console.log(data);
         if (!data?.merchantGetCustomer?.date_of_birth) {
             form.setFieldValue('dob', dayjs('2000-01-01'));
         }

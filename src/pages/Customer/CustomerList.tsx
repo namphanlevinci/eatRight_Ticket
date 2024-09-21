@@ -255,7 +255,7 @@ const CustomerList: React.FC = () => {
                                         color: theme.tEXTPrimary,
                                     }}
                                 >
-                                    {!dt.email.includes('generate')
+                                    {!dt.email.includes('.gen')
                                         ? dt.email
                                         : '-'}
                                 </StyledColumn>

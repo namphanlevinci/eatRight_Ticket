@@ -17,8 +17,15 @@ import { useTheme } from 'context/themeContext';
 import CustomerIcon from 'assets/icons/customerIcon';
 import SettingV2Icon from 'assets/icons/settingV2';
 import ReceiptBillV2Icon from 'assets/icons/receiptV2Bill';
-import StoreIcon from 'layouts/icons/storeIcon';
+import KitchenIcon from './icons/kitchenIcon';
+import {
+    HistoryOutlined,
+    PrinterOutlined,
+    SettingFilled,
+} from '@ant-design/icons';
+import BillIcon from './icons/receiptV2Bill';
 const MerchantURL = process.env.REACT_APP_MERCHANTURL;
+const urlKitchen = process.env.REACT_APP_KITCHENURL;
 const MenuMerchant = [
     // {
     //     title: 'Restaurant Manager',
@@ -26,9 +33,10 @@ const MenuMerchant = [
     //     to: BASE_ROUTER.RESTAURENT_MANAGER,
     // },
     {
-        title: 'Restaurant Manager',
-        icon: <StoreIcon />,
-        to: BASE_ROUTER.RESTAURENT_MANAGER,
+        title: 'Go Kitchen',
+        icon: <KitchenIcon />,
+        to: `${urlKitchen}/home?token=${localStorage.getItem('token')}`,
+        isGo: true,
     },
     {
         title: 'Menu Manager',
@@ -36,6 +44,39 @@ const MenuMerchant = [
         to: `${MerchantURL}/menu?token=${localStorage.getItem('token')}`,
         isGo: true,
     },
+    {
+        title: 'Order History',
+        icon: <HistoryOutlined style={{ fontSize: 34 }} />,
+        to: BASE_ROUTER.BILL,
+    },
+    {
+        title: 'Batch Settlements',
+        icon: <BillIcon />,
+        to: `${MerchantURL}/settle?token=${localStorage.getItem('token')}`,
+        isGo: true,
+    },
+    {
+        title: 'Customer Infomation',
+        icon: <CustomerIcon />,
+        to: BASE_ROUTER.CUSTOMER_LIST,
+    },
+    {
+        title: 'Printer Setting',
+        icon: <PrinterOutlined style={{ fontSize: 30 }} />,
+        to: BASE_ROUTER.SETTINGS_PRINTER,
+    },
+
+    {
+        title: 'Restaurent Manager',
+        icon: <SettingFilled style={{ fontSize: 36 }} />,
+        to: BASE_ROUTER.RESTAURENT_MANAGER,
+    },
+    {
+        title: 'Settings',
+        icon: <SettingV2Icon />,
+        to: BASE_ROUTER.SETTINGS,
+    },
+
     // {
     //     title: 'Promotions',
     //     icon: <PromotionsIcon />,
@@ -85,8 +126,7 @@ export default function DrawerMenu() {
     >(MenuList);
     useEffect(() => {
         if (isMerchant) {
-            const newData = [...MenuMerchant, ...MenuList];
-            setMenuData(newData);
+            setMenuData(MenuMerchant);
         } else {
             setMenuData(MenuList);
         }
