@@ -785,6 +785,20 @@ export default function CartItemList({
                                     Complete Service
                                 </Button>
                             )
+                        ) : !showMenu ? (
+                            <Button
+                                style={{
+                                    width: '100%',
+                                    height: 44,
+                                    border: 0,
+                                }}
+                                onClick={onCompleteService}
+                                isDisable={true}
+                                background={theme.pRIMARY6Primary}
+                                color={theme.nEUTRALBase}
+                            >
+                                Complete Service
+                            </Button>
                         ) : (
                             <Button
                                 style={{
