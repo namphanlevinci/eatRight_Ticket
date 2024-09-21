@@ -48,7 +48,7 @@ export const getTagStyled = (status?: string, theme?: ColorsThemeType) => {
             };
         default:
             return {
-                text: 'Sent',
+                text: 'Confirmed',
                 background: theme.tERTIARY1BG,
                 textColor: theme.tERTIARY2Default,
             };
