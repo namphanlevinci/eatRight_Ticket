@@ -31,9 +31,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const tableDataString = localStorage.getItem('tableData');
 
     useEffect(() => {
-        if (isLogged && !socketInitialized) {
+        if (isLogged && !socketInitialized && restaurant_id) {
             let tableData = JSON.parse(tableDataString || '{}');
-            if (!tableDataString) {
+            if (!tableDataString && restaurant_id) {
+                console.log('run 1');
                 onGetTable({
                     variables: {
                         storeId: restaurant_id,
@@ -48,7 +49,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                         console.log(err);
                     });
             }
-            console.log(tableData);
             const socketInstance = io(SocketURL);
 
             setSocket(socketInstance);
@@ -147,7 +147,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 setSocketInitialized(false);
             }
         }
-    }, [isLogged]);
+    }, [isLogged, restaurant_id]);
 
     // Truyền socket vào provider
     return (
