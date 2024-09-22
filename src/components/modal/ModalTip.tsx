@@ -25,7 +25,7 @@ export default function ModalTip({
     const inputRef = useRef<any>(null);
     const [value, setValue] = React.useState<string>('0');
     const [tips, setTips] = React.useState([10, 15, 20]);
-    const [selectTip, setSelectTip] = React.useState(10);
+    const [selectTip, setSelectTip] = React.useState(0);
     const [onGetTips, { data }] = useLazyQuery(GET_TIPS);
     useEffect(() => {
         onGetTips({
