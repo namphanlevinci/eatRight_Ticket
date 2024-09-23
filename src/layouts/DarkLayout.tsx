@@ -21,7 +21,11 @@ import { BASE_ROUTER } from 'constants/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { USER_INFO } from 'graphql/auth/login';
 import { useDispatch } from 'react-redux';
-import { updateCustomerInfo, updateFloor } from 'features/auth/authSlice';
+import {
+    changeModeTableView,
+    updateCustomerInfo,
+    updateFloor,
+} from 'features/auth/authSlice';
 import { GET_RESTAURANT } from 'graphql/auth/restaurent';
 import BellIcon from 'assets/icons/bell';
 import blackNoti from 'assets/icons/black-noti.png';
@@ -234,6 +238,7 @@ export const DarkLayout = (props: Props) => {
     };
     const navigation = useNavigate();
     const onToggleView = () => {
+        dispatch(changeModeTableView());
         navigation(BASE_ROUTER.MERCHANT_PAGE);
     };
     return (

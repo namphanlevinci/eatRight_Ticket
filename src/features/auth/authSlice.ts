@@ -14,6 +14,7 @@ export interface authStateType {
     }[];
     isMerchant: boolean;
     is_dine_in: boolean;
+    isTableView: boolean;
 }
 
 const initialState: authStateType = {
@@ -26,6 +27,7 @@ const initialState: authStateType = {
     floor: [],
     isMerchant: false,
     is_dine_in: false,
+    isTableView: true,
 };
 
 export const authSlice = createSlice({
@@ -38,6 +40,7 @@ export const authSlice = createSlice({
         updateStatusLoginForMerchant: (state) => {
             state.isLogged = true;
             state.isMerchant = true;
+            state.isTableView = false;
         },
         updateCustomerInfo: (state, action) => {
             state.firstname = action.payload.firstname;
@@ -68,6 +71,9 @@ export const authSlice = createSlice({
             state.floor = [];
             state.isMerchant = false;
         },
+        changeModeTableView: (state) => {
+            state.isTableView = !state.isTableView;
+        },
     },
 });
 
@@ -78,6 +84,7 @@ export const {
     updateFloor,
     updateStatusLoginForMerchant,
     clearStoreData,
+    changeModeTableView,
 } = authSlice.actions;
 
 export default authSlice.reducer;

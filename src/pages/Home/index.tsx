@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Layout, Row } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGetAllTable } from './useTable';
@@ -29,8 +29,14 @@ const HomePage: React.FC = () => {
     const { data, counterTable, floorActive, setFloorActive } = useGetAllTable({
         cache: false,
     });
-    const { floor: floors } = useSelector((state: RootState) => state.auth);
-
+    const { floor: floors, isTableView } = useSelector(
+        (state: RootState) => state.auth,
+    );
+    useEffect(() => {
+        if (!isTableView) {
+            navigation(BASE_ROUTER.MERCHANT_PAGE);
+        }
+    }, [isTableView]);
     const memoizedTables = useMemo(() => data, [data]);
     const { theme } = useTheme();
     const ismobile = useMediaQuery({

@@ -24,6 +24,8 @@ import { useMediaQuery } from 'react-responsive';
 import { OPEN_CASHIER } from 'graphql/printer';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_NOTIFICATION } from 'graphql/notification';
+import { changeModeTableView } from 'features/auth/authSlice';
+import { useDispatch } from 'react-redux';
 function Header(props) {
     const { setSearchValue } = props;
     const history = useNavigate();
@@ -219,6 +221,7 @@ function Header(props) {
             });
     };
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const dispatch = useDispatch();
     return (
         <>
             <div className="header">
@@ -277,6 +280,9 @@ function Header(props) {
                                                 defaultChecked={false}
                                                 onChange={() => {
                                                     history(BASE_ROUTER.HOME);
+                                                    dispatch(
+                                                        changeModeTableView(),
+                                                    );
                                                 }}
                                                 style={{
                                                     marginLeft: 5,
