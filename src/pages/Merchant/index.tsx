@@ -42,6 +42,7 @@ export default function MerchantPage() {
         isShowModalCancel,
         dataOrderModal,
         handleSubmitCompletePickUp,
+        pushNotificationLocal,
     } = useHomeScreen();
 
     const {
@@ -70,6 +71,9 @@ export default function MerchantPage() {
                     refundOrderList={refundOrderList}
                     setSearchValue={setSearchValue}
                 />
+                <button onClick={() => pushNotificationLocal({}, 'Hello 123')}>
+                    123
+                </button>
                 {renderList ? (
                     <div className="home-board">
                         <div className="container-box">

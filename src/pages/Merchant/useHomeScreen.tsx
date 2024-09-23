@@ -1,13 +1,19 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GET_LIST_ORDER_DINING } from '../../graphql/merchant/orderList';
 import { getRandomInt, statusConvert } from './constant';
 import { QuoteType, OrderType, RenderListType } from './IType';
-import { Modal, notification } from 'antd';
+import { message, Modal, notification } from 'antd';
 import {
     MERCHANT_COMPLETE_ORDER,
     MERCHANT_RECEIVE_ORDER,
 } from 'graphql/merchant/status';
+import io from 'socket.io-client';
+import { SOCKET } from 'graphql/socket/connect';
+import Notification from './components/Notification';
+import { playNotiSound } from 'utils';
+const SocketURL =
+    process.env.REACT_APP_SOCKETURL || 'https://fnb-socket.test88.info';
 export const useHomeScreen = () => {
     const [isLoadingApp, setIsLoadingApp] = useState(false);
     const [refundOrderList, setRefundOrderList] = useState([]);
@@ -24,7 +30,6 @@ export const useHomeScreen = () => {
             fetchPolicy: 'no-cache',
         }).then((res) => {
             if (res.data) {
-                console.log('res.data', res?.data?.merchantOrderDashboard);
                 setDiningQuoteList(res?.data?.merchantOrderDashboard?.quotes);
                 setDiningOrderList(res?.data?.merchantOrderDashboard?.orders);
             }
@@ -137,6 +142,91 @@ export const useHomeScreen = () => {
             });
     };
     const [dataOrderModal, setDataOrderModal] = useState();
+    const [onSocket] = useMutation(SOCKET);
+    const reloadOrderRef = React.useRef<any>();
+    useEffect(() => {
+        reloadOrderRef.current = setInterval(() => {
+            setReload();
+        }, 30000);
+
+        return () => {
+            clearInterval(reloadOrderRef.current);
+        };
+    }, []);
+    useEffect(() => {
+        // Kết nối tới máy chủ
+        const socketInstance = io(SocketURL);
+
+        // Thực hiện các xử lý khác khi kết nối thành công
+        socketInstance.on('connect', () => {
+            const socketId = socketInstance.id; //
+            onSocket({
+                variables: {
+                    socketId,
+                    type: 'merchant',
+                },
+            })
+                .then((res) => {
+                    if (res?.data?.receiveSocketId?.result) {
+                        console.log(
+                            'Kết nối thành công đến máy chủ socket với merchant role ',
+                            socketId,
+                        );
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        });
+
+        socketInstance.on('chat message', (msg) => {
+            try {
+                console.log(msg);
+                setReload();
+                if (msg?.message) {
+                    pushNotificationLocal(null, msg?.message);
+                } else {
+                    if (
+                        msg?.order?.status === 'received' ||
+                        msg?.order?.status === 'complete'
+                    ) {
+                        console.log(
+                            'Dont Show Notification',
+                            msg?.order?.status,
+                        );
+                    } else {
+                        pushNotificationLocal(msg?.order);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
+        return () => {
+            // Ngắt kết nối khi component unmount
+            if (socketInstance) {
+                socketInstance.disconnect();
+                socketInstance.off('client list');
+            }
+        };
+    }, []);
+    const pushNotificationLocal = (order: any, msg?: any) => {
+        const content =
+            order?.status == 'processing'
+                ? `You have received a new order ${order?.order_number}`
+                : `The order has just been updated to ${order?.status}`;
+        message.success({
+            className: 'notification-custom',
+            content: (
+                <Notification
+                    title={'Notification'}
+                    content={msg ? msg : content}
+                />
+            ),
+        });
+        playNotiSound();
+    };
     return {
         isLoadingApp,
         refundOrderList,
@@ -155,5 +245,6 @@ export const useHomeScreen = () => {
         setDataOrderModal,
         dataOrderModal,
         handleSubmitCompletePickUp,
+        pushNotificationLocal,
     };
 };
