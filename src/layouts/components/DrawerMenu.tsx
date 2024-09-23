@@ -56,7 +56,7 @@ const MenuMerchant = [
     {
         title: 'Batch Settlements',
         icon: <BillIcon />,
-        to: `${MerchantURL}/settle?token=${localStorage.getItem('token')}`,
+        to: BASE_ROUTER.BATCH_HISTORY,
         isGo: true,
     },
     {

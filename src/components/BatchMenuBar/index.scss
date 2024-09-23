@@ -1,0 +1,34 @@
+.header-bottom-right {
+    display: flex;
+    align-items: center;
+
+    &-item {
+        margin-left: 24px;
+        color: #4a505c;
+        font-size: 16px;
+        padding-bottom: 6px;
+        cursor: pointer;
+    }
+}
+.header-bottom-left {
+    display: flex;
+    p {
+        font-size: 16px;
+        color: #389e0d;
+        font-weight: 400 !important;
+        margin-left: auto;
+    }
+}
+
+.header-bottom-right {
+    display: flex;
+    align-items: center;
+
+    &-item {
+        margin-left: 24px;
+        color: #4a505c;
+        font-size: 16px;
+        padding-bottom: 6px;
+        cursor: pointer;
+    }
+}

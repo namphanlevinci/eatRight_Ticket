@@ -306,6 +306,14 @@ export const BaseRouter = () => {
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path={BASE_ROUTER.BATCH_HISTORY}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.BatchHistory />
+                        </PrivateRoute>
+                    }
+                />
                 <Route path={'*'} element={<Page404 />} />
             </Routes>
         </Suspense>
