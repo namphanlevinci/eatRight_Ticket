@@ -1,7 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
 import { GET_LIST_ORDER_COMPLETED } from 'graphql/merchant/orderList';
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const useOrderCompleted = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -38,6 +38,18 @@ export const useOrderCompleted = () => {
             page: currentPage,
         });
     }, [currentPage]);
+    const reloadOrderRef = React.useRef<any>();
+    useEffect(() => {
+        reloadOrderRef.current = setInterval(() => {
+            getListCompleteOrder({
+                page: 1,
+            });
+        }, 30000);
+
+        return () => {
+            clearInterval(reloadOrderRef.current);
+        };
+    }, []);
     return {
         currentPage,
         setCurrentPage,
