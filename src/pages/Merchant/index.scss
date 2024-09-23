@@ -5,6 +5,10 @@
   align-items: center;
   margin-bottom: 12px;
 }
+.scrollable::-webkit-scrollbar {
+  overflow-y: scroll;
+  display: none !important; /* Ẩn thanh cuộn trên các trình duyệt WebKit (Chrome, Safari) */
+}
 .home-page {
   background: var(--neutral-primary);
   font-family: "Montserrat";

@@ -162,7 +162,7 @@ export default function useOpenModal() {
     };
 }
 /**
- * @type {React.FC<{open: boolean, onClose: any, loading: boolean, data: OrderDetail | null , headerData: OrderDetail | null, handleSubmitRecievedOrder: any, handleCancel: any, handleSubmitCompletePickUp: any, invoiceData: any, setModalPrintBill: any, PrintBill: any, modalPrintBill: boolean}>}
+ * @type {React.FC<{open: boolean, onClose: any, loading: boolean, data: OrderDetail | null , headerData: OrderDetail | null, handleSubmitRecievedOrder: any, handleCancel: any, handleSubmitCompletePickUp: any, invoiceData: any, setModalPrintBill: any, PrintBill: any, modalPrintBill: boolean, isCompletedOrder: boolean}>}
  */
 const ModalDetail = React.memo(
     ({
@@ -178,6 +178,7 @@ const ModalDetail = React.memo(
         setModalPrintBill,
         PrintBill,
         modalPrintBill,
+        isCompletedOrder,
     }) => {
         const history = useNavigate();
         return (
@@ -476,69 +477,74 @@ const ModalDetail = React.memo(
 
                             {/* Render Button Action */}
 
-                            {headerData?.table ? (
-                                <ButtonAction
-                                    title={'Go to table'}
-                                    background={'--primary-6'}
-                                    textColor={'--primary-1'}
-                                    onPress={() => {
-                                        history(
-                                            `${BASE_ROUTER.TABLE}?tableId=${headerData?.table_id}`,
-                                        );
-                                    }}
-                                />
-                            ) : headerData?.status === 'pending' ? (
-                                <Row style={{ gap: 32 }} justify={'center'}>
+                            {!isCompletedOrder &&
+                                (headerData?.table ? (
                                     <ButtonAction
-                                        title={'Cancel'}
-                                        background={'--error-1-bg'}
-                                        textColor={'--error-2-default'}
-                                        width="45%"
-                                        onPress={() => {
-                                            handleCancel(data);
-                                        }}
-                                    />
-                                    <ButtonAction
-                                        title={'Receive'}
-                                        background={'--info-2-default'}
-                                        textColor={'--primary-1'}
-                                        width="45%"
-                                        onPress={() => {
-                                            handleSubmitRecievedOrder(data?.id);
-                                        }}
-                                    />
-                                </Row>
-                            ) : headerData?.status === 'ready_to_ship' ? (
-                                <Row style={{ gap: 32 }} justify={'center'}>
-                                    <ButtonAction
-                                        title={'Cancel'}
-                                        background={'--error-1-bg'}
-                                        textColor={'--error-2-default'}
-                                        width="45%"
-                                        onPress={() => {
-                                            handleCancel(data);
-                                        }}
-                                    />
-                                    <ButtonAction
-                                        title={'Complete'}
+                                        title={'Go to table'}
                                         background={'--primary-6'}
                                         textColor={'--primary-1'}
-                                        width="45%"
                                         onPress={() => {
-                                            handleSubmitCompletePickUp(data);
+                                            history(
+                                                `${BASE_ROUTER.TABLE}?tableId=${headerData?.table_id}`,
+                                            );
                                         }}
                                     />
-                                </Row>
-                            ) : (
-                                <ButtonAction
-                                    title={'Cancel'}
-                                    background={'--error-1-bg'}
-                                    textColor={'--error-2-default'}
-                                    onPress={() => {
-                                        handleCancel(data);
-                                    }}
-                                />
-                            )}
+                                ) : headerData?.status === 'pending' ? (
+                                    <Row style={{ gap: 32 }} justify={'center'}>
+                                        <ButtonAction
+                                            title={'Cancel'}
+                                            background={'--error-1-bg'}
+                                            textColor={'--error-2-default'}
+                                            width="45%"
+                                            onPress={() => {
+                                                handleCancel(data);
+                                            }}
+                                        />
+                                        <ButtonAction
+                                            title={'Receive'}
+                                            background={'--info-2-default'}
+                                            textColor={'--primary-1'}
+                                            width="45%"
+                                            onPress={() => {
+                                                handleSubmitRecievedOrder(
+                                                    data?.id,
+                                                );
+                                            }}
+                                        />
+                                    </Row>
+                                ) : headerData?.status === 'ready_to_ship' ? (
+                                    <Row style={{ gap: 32 }} justify={'center'}>
+                                        <ButtonAction
+                                            title={'Cancel'}
+                                            background={'--error-1-bg'}
+                                            textColor={'--error-2-default'}
+                                            width="45%"
+                                            onPress={() => {
+                                                handleCancel(data);
+                                            }}
+                                        />
+                                        <ButtonAction
+                                            title={'Complete'}
+                                            background={'--primary-6'}
+                                            textColor={'--primary-1'}
+                                            width="45%"
+                                            onPress={() => {
+                                                handleSubmitCompletePickUp(
+                                                    data,
+                                                );
+                                            }}
+                                        />
+                                    </Row>
+                                ) : (
+                                    <ButtonAction
+                                        title={'Cancel'}
+                                        background={'--error-1-bg'}
+                                        textColor={'--error-2-default'}
+                                        onPress={() => {
+                                            handleCancel(data);
+                                        }}
+                                    />
+                                ))}
                         </>
                     ) : (
                         <div

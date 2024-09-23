@@ -1,5 +1,6 @@
+/* eslint-disable curly */
 import { Spin } from 'antd';
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import Header from './Header';
 import { useHomeScreen } from './useHomeScreen';
@@ -9,6 +10,8 @@ import './index.scss';
 import Order from './Oders';
 import useOpenModal from './useOpenModal';
 import { RejectOrderModal } from './components/Modal/RejectOrderModal';
+import { useOrderCompleted } from './useOrderComplete';
+import { debounce } from 'lodash';
 export default function MerchantPage() {
     const handleDragEnd = async ({
         source,
@@ -58,6 +61,47 @@ export default function MerchantPage() {
         PrintBill,
         modalPrintBill,
     } = useOpenModal();
+
+    const {
+        currentPage,
+        listCompletedOrder,
+        loading2,
+        setCurrentPage,
+        totalComplete,
+    } = useOrderCompleted();
+    const scrollRef = useRef<any>(null);
+    const handleScroll = useCallback(
+        debounce(() => {
+            if (scrollRef.current) {
+                const { scrollTop, scrollHeight, clientHeight } =
+                    scrollRef.current;
+                if (scrollTop + clientHeight >= scrollHeight - 50) {
+                    if (scrollTop > 10) {
+                        if (loading2) return;
+                        setCurrentPage((prev) => prev + 1);
+                        scrollRef?.current?.scrollTo({
+                            top: scrollTop - 200, // Scroll lên 50px
+                            behavior: 'smooth', // Hiệu ứng cuộn mượt mà
+                        });
+                    }
+                }
+            }
+        }, 300),
+        [currentPage, loading2],
+    );
+    useEffect(() => {
+        const node = scrollRef.current;
+        if (node) {
+            node.addEventListener('scroll', handleScroll);
+        }
+
+        return () => {
+            if (node) {
+                node.removeEventListener('scroll', handleScroll);
+            }
+        };
+    }, [currentPage, loading2]);
+    const [isCompletedOrder, setIsCompletedOrder] = useState(false);
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             {/* Thêm nội dung cho DragDropContext ở đây */}
@@ -151,12 +195,15 @@ export default function MerchantPage() {
                                                             openModal={(
                                                                 status: any,
                                                                 order: any,
-                                                            ) =>
+                                                            ) => {
                                                                 handleOpen(
                                                                     status,
                                                                     order,
-                                                                )
-                                                            }
+                                                                );
+                                                                setIsCompletedOrder(
+                                                                    false,
+                                                                );
+                                                            }}
                                                             order={order}
                                                             id={i}
                                                         />
@@ -166,7 +213,12 @@ export default function MerchantPage() {
                                         </div>
                                     );
                                 })}
-                                <div className="board-columns">
+                                <div
+                                    ref={scrollRef}
+                                    className="scrollable board-columns"
+                                    key={'completed-6'}
+                                    style={{ overflowY: 'auto' }}
+                                >
                                     {/******************** RENER TITLE HEADER STATUS *********************/}
 
                                     {renderHeaderColumnByStatus(
@@ -174,19 +226,40 @@ export default function MerchantPage() {
                                             title: 'COMPLETED',
                                             status: 'complete',
                                         },
-                                        0,
+                                        totalComplete,
                                     )}
 
                                     {/******************** RENER LIST ORDER BY COLUMN STATUS *********************/}
                                     <div className="colums-wrapper">
-                                        {/* {list_order?.map((order, i) => {
-                                            return (
-                                                <div key={i}>
-                                                    {order?.order_number}
-                                                </div>
-                                            );
-                                        })} */}
+                                        {listCompletedOrder?.map(
+                                            (order: any, i: number) => {
+                                                return (
+                                                    <Order
+                                                        key={
+                                                            order?.order_number
+                                                        }
+                                                        openModal={(
+                                                            status: any,
+                                                            order: any,
+                                                        ) => {
+                                                            handleOpen(
+                                                                status,
+                                                                order,
+                                                            );
+                                                            setIsCompletedOrder(
+                                                                true,
+                                                            );
+                                                        }}
+                                                        order={order}
+                                                        id={i}
+                                                        isCompletedOrder={true}
+                                                    />
+                                                );
+                                            },
+                                        )}
                                     </div>
+
+                                    {loading2 && <Spin />}
                                 </div>
                             </div>
                         </div>
@@ -219,6 +292,7 @@ export default function MerchantPage() {
                     setModalPrintBill={setModalPrintBill}
                     PrintBill={PrintBill}
                     modalPrintBill={modalPrintBill}
+                    isCompletedOrder={isCompletedOrder}
                 />
                 <RejectOrderModal
                     reload={() => setReload()}
