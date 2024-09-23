@@ -25,11 +25,12 @@ export const RequestAccountPage: React.FC = () => {
                 firstname: values.firstname,
                 lastname: values.lastname,
                 email: values.email,
+                description: values.description,
                 phone_number: values.phonenumber,
             },
         }).then(() => {
             modal.success({
-                title: 'Request Account Success',
+                title: 'Request Support Success',
                 content: 'Please wait for admin contact you',
                 centered: true,
                 onOk: () => {
@@ -146,6 +147,17 @@ export const RequestAccountPage: React.FC = () => {
                         value={''}
                         enableSearch
                         theme={theme}
+                    />
+                </FormItem>
+                <FormItem
+                    theme={theme}
+                    label="Description"
+                    name="description"
+                    required={false}
+                >
+                    <DarkInput
+                        placeholder="Description"
+                        style={{ background: 'dark' }}
                     />
                 </FormItem>
 
