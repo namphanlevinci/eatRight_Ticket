@@ -88,7 +88,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const calcCanceled = (currentCart: CartItemType) => {
         {
             const Tax =
-                (currentCart?.prices?.applied_taxes?.[0]?.tax_percent || 10) /
+                (currentCart?.prices?.applied_taxes?.[0]?.tax_percent || 0) /
                 100;
             const itemsCanceled = currentCart.items.filter((item) => {
                 return item.status === 'cancel';
@@ -176,7 +176,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                         });
                     const Tax =
                         (currentCart?.prices?.applied_taxes?.[0]?.tax_percent ||
-                            10) / 100;
+                            0) / 100;
 
                     const total_itemsCanceled_without_tax =
                         itemsCanceled?.reduce((total, item) => {

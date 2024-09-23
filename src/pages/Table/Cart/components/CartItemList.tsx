@@ -97,11 +97,10 @@ export default function CartItemList({
                     setIsAllDone(true);
                 }
             }
-            console.log('items', data);
         } else {
             setIsNewItem(false);
         }
-    }, [data?.items?.length]);
+    }, [data]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -221,7 +220,7 @@ export default function CartItemList({
     );
 
     const Tax = useMemo(
-        () => (data?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100,
+        () => (data?.prices?.applied_taxes?.[0]?.tax_percent || 0) / 100,
         [data],
     );
 
@@ -318,6 +317,7 @@ export default function CartItemList({
                     const orderItems = data?.order?.items?.find(
                         (i: any) => item.product.name == i.name,
                     );
+
                     return (
                         <div key={index}>
                             <Row align={'middle'} justify={'space-between'}>
@@ -483,43 +483,38 @@ export default function CartItemList({
                                                         Cancel
                                                     </ButtonAnt>
                                                 )}
-                                            {orderItems
+                                            {(orderItems
                                                 ? orderItems.serving_status ===
                                                   'ready'
-                                                : item.status === 'ready' &&
-                                                  data?.is_active && (
-                                                      <ButtonAnt
-                                                          disabled={
-                                                              loadingCardTable
-                                                          }
-                                                          style={{
-                                                              fontSize: 16,
-                                                              backgroundColor:
-                                                                  'transparent',
-                                                              border: '0.5px solid #ccc',
-                                                              outline: 'none',
-                                                              color: '#0455BF',
-                                                              fontWeight: 500,
-                                                              borderRadius: 8,
-                                                              paddingTop: 0,
-                                                          }}
-                                                          onClick={() => {
-                                                              updateStatusItemServer(
-                                                                  {
-                                                                      cartId: orderItems
-                                                                          ? orderItems.id
-                                                                          : item.id,
-                                                                      itemType:
-                                                                          orderItems
-                                                                              ? 'ORDER'
-                                                                              : 'QUOTE',
-                                                                  },
-                                                              );
-                                                          }}
-                                                      >
-                                                          Serve
-                                                      </ButtonAnt>
-                                                  )}
+                                                : item.status === 'ready') && (
+                                                <ButtonAnt
+                                                    disabled={loadingCardTable}
+                                                    style={{
+                                                        fontSize: 16,
+                                                        backgroundColor:
+                                                            '#3498db',
+                                                        border: '0.5px solid #ccc',
+                                                        outline: 'none',
+                                                        color: theme.nEUTRALPrimary,
+                                                        fontWeight: 500,
+                                                        borderRadius: 8,
+                                                        paddingTop: 0,
+                                                        paddingBottom: 0,
+                                                    }}
+                                                    onClick={() => {
+                                                        updateStatusItemServer({
+                                                            cartId: orderItems
+                                                                ? orderItems.id
+                                                                : item.id,
+                                                            itemType: orderItems
+                                                                ? 'ORDER'
+                                                                : 'QUOTE',
+                                                        });
+                                                    }}
+                                                >
+                                                    Serve
+                                                </ButtonAnt>
+                                            )}
                                         </Row>
                                     </Row>
                                 </Col>
