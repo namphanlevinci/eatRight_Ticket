@@ -27,6 +27,8 @@ export const GET_INVOICES = gql`
                 id
                 number
                 state
+                can_refund
+                is_refunded
                 total {
                     tip_amount {
                         value

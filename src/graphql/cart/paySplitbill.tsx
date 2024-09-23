@@ -10,7 +10,13 @@ export const PAY_SPLIT_BILL_POS = gql`
         )
     }
 `;
-
+export const PAY_SPLIT_BILL_POS_DJV = gql`
+    mutation ($invoice_number: String!, $pos_id: Int!) {
+        posSaleInvoiceForMarchant(
+            input: { invoice_number: $invoice_number, pos_id: $pos_id }
+        )
+    }
+`;
 export const PAY_SPLITBILL = gql`
     mutation ($invoice_number: String!, $payment_method: String!) {
         merchantPayInvoice(

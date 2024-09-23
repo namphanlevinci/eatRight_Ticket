@@ -12,10 +12,12 @@ const ModalPosDevicesDJV = ({
     onPressOK,
     isVisibleModalPos,
     setVisibleMoalPos,
+    onCancel,
 }: {
     onPressOK: (item: any) => void;
     isVisibleModalPos: boolean;
     setVisibleMoalPos: (visible: boolean) => void;
+    onCancel: () => void;
 }) => {
     const [selectedOption, setSelectedOption] = useState<any>(null);
     const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST_DJV);
@@ -25,6 +27,14 @@ const ModalPosDevicesDJV = ({
             setPosDeviceList(res?.data?.getPosDevices?.items ?? []);
         });
     }, []);
+    useEffect(() => {
+        if (isVisibleModalPos && posDeviceList) {
+            if (posDeviceList && posDeviceList?.length === 1) {
+                onPressOK(posDeviceList[0].entity_id);
+                setVisibleMoalPos(false);
+            }
+        }
+    }, [isVisibleModalPos, posDeviceList]);
     const handleOk = (): void => {
         if (selectedOption) {
             onPressOK(selectedOption?.entity_id);
@@ -34,11 +44,14 @@ const ModalPosDevicesDJV = ({
 
     const handleCancel = (): void => {
         setVisibleMoalPos(false);
+        onCancel();
     };
 
     const handleChange = (item: any): void => {
         setSelectedOption(item);
     };
+
+    console.log(selectedOption);
 
     const { theme } = useTheme();
     return (
@@ -70,7 +83,7 @@ const ModalPosDevicesDJV = ({
                             marginBottom: 24,
                         }}
                     >
-                        POS Device List
+                        Terminals
                     </p>
                     {posDeviceList?.map?.((pos: any) => (
                         <Button
@@ -105,7 +118,11 @@ const ModalPosDevicesDJV = ({
                         </Button>
                     ))}
 
-                    <ButtonSubmit title="Pay" onClick={handleOk} />
+                    <ButtonSubmit
+                        title="Pay"
+                        onClick={handleOk}
+                        disabled={!selectedOption}
+                    />
                 </div>
             </Modal>
         </>

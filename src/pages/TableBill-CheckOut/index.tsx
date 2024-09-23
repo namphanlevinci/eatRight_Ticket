@@ -9,7 +9,11 @@ import { InvoiceWithSplit, MerchantSplitOrderOutput } from './IType';
 import { RenderGuest } from './components/renderGuest';
 import { RenderCart } from './components/renderCart';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { PAY_SPLIT_BILL_POS, PAY_SPLITBILL } from 'graphql/cart/paySplitbill';
+import {
+    PAY_SPLIT_BILL_POS,
+    PAY_SPLIT_BILL_POS_DJV,
+    PAY_SPLITBILL,
+} from 'graphql/cart/paySplitbill';
 import { useNavigate } from 'react-router';
 import { BASE_ROUTER } from 'constants/router';
 import { useTheme } from 'context/themeContext';
@@ -18,12 +22,15 @@ import ModalPosDevices from 'pages/TableBill/components/ModalPosDevices';
 import { emitter } from 'graphql/client';
 import { GET_INVOICES } from 'graphql/cart/splitBill';
 import LoadingModalPayment from 'components/modal/loadingModalPayment';
+import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
 
 export default function TableSplitBillCheckOut() {
     const dataStorage = localStorage.getItem('split_bill_data');
     const [onPaymentWithCash] = useMutation(PAY_SPLITBILL);
     const [onPaymentWithPOS] = useMutation(PAY_SPLIT_BILL_POS);
+    const [onPaymentWithPOSDJV] = useMutation(PAY_SPLIT_BILL_POS_DJV);
     const [showPosModal, setShowPosModal] = useState(false);
+    const [showPosModalDJV, setShowPosModalDJV] = useState(false);
     const [data, setData] = useState<MerchantSplitOrderOutput>(
         JSON.parse(dataStorage || '{}'),
     );
@@ -36,7 +43,7 @@ export default function TableSplitBillCheckOut() {
         const selectGuestIndex = dataTmp.invoice.findIndex(
             (value: InvoiceWithSplit) => value.state === 'UNPAID',
         );
-        if (selectGuestIndex) {
+        if (selectGuestIndex > -1) {
             setSelectGuest({
                 ...dataTmp.invoice[selectGuestIndex],
                 index: selectGuestIndex,
@@ -47,7 +54,7 @@ export default function TableSplitBillCheckOut() {
                 index: 0,
             });
         }
-    }, []);
+    }, [data]);
     let intervalId: any = null;
     useEffect(() => {
         if (loadingPosResult) {
@@ -90,6 +97,7 @@ export default function TableSplitBillCheckOut() {
                             'split_bill_data',
                             JSON.stringify(newData),
                         );
+                        SkipSelectGuest({ newData });
                     }
                 })
                 .catch((err) => {
@@ -116,10 +124,11 @@ export default function TableSplitBillCheckOut() {
                             'split_bill_data',
                             JSON.stringify(newData),
                         );
+                        SkipSelectGuest({ newData });
                     }
                 });
         } else if (paymentMethod === 'pos') {
-            setShowPosModal(true);
+            setShowPosModalDJV(true);
         }
     };
     const handlePaymentWithPOS = (id: string) => {
@@ -130,7 +139,28 @@ export default function TableSplitBillCheckOut() {
                 invoice_number: selectGuest?.number,
                 terminal_id: id,
             },
-        });
+        }).catch((err) => {
+            console.log(err);
+        }).catch;
+    };
+    const handlePaymentWithPOSDJV = (id: any) => {
+        setLoading(true);
+        setLoadingPosResult(true);
+        onPaymentWithPOSDJV({
+            variables: {
+                invoice_number: selectGuest?.number,
+                pos_id: id,
+            },
+        })
+            .then(() => {
+                showModalSuccess();
+                ReloadInvoice();
+            })
+            .catch((err) => {
+                console.log(err);
+                setLoading(false);
+                setLoadingPosResult(false);
+            });
     };
     const [onGetInvoices] = useLazyQuery(GET_INVOICES);
     useEffect(() => {
@@ -175,6 +205,7 @@ export default function TableSplitBillCheckOut() {
                     setLoadingPosResult(false);
                     setLoading(false);
                 }
+
                 if (
                     selectGuestIndex &&
                     selectGuestIndex !== selectGuest?.index
@@ -192,6 +223,20 @@ export default function TableSplitBillCheckOut() {
             .finally(() => {
                 setLoading(false);
             });
+    };
+    const SkipSelectGuest = ({ newData }: any) => {
+        const selectGuestIndex = newData.invoice.findIndex(
+            (value: InvoiceWithSplit) => value.state === 'UNPAID',
+        );
+        if (!selectGuestIndex) {
+            return;
+        }
+        if (selectGuestIndex && selectGuestIndex !== selectGuest?.index) {
+            setSelectGuest({
+                ...newData.invoice[selectGuestIndex],
+                index: selectGuestIndex,
+            });
+        }
     };
     const showModalSuccess = () => {
         modal.success({
@@ -239,6 +284,14 @@ export default function TableSplitBillCheckOut() {
                 setVisibleMoalPos={setShowPosModal}
                 onPressOK={handlePaymentWithPOS}
             />
+            {showPosModalDJV && (
+                <ModalPosDevicesDJV
+                    isVisibleModalPos={showPosModalDJV}
+                    setVisibleMoalPos={setShowPosModalDJV}
+                    onPressOK={handlePaymentWithPOSDJV}
+                    onCancel={() => setShowPosModalDJV(false)}
+                />
+            )}
             <RenderHeader />
             <CartInfo data={data} />
             <div style={{ marginTop: 20 }} />
@@ -274,7 +327,12 @@ export default function TableSplitBillCheckOut() {
                 </ColumnGuestList>
                 <ColumnCart style={isMobile ? { marginLeft: 0 } : {}}>
                     {selectGuest && <RenderCart cart={selectGuest} />}
-                    {!isMobile && <PaymentOptions onPayment={handlePayment} />}
+                    {!isMobile && (
+                        <PaymentOptions
+                            onPayment={handlePayment}
+                            isPaid={selectGuest?.state === 'PAID'}
+                        />
+                    )}
                 </ColumnCart>
                 {isMobile && (
                     <ColumnGuestList style={isMobile ? { width: '100%' } : {}}>
@@ -306,7 +364,12 @@ export default function TableSplitBillCheckOut() {
                         })}
                     </ColumnGuestList>
                 )}
-                {isMobile && <PaymentOptions onPayment={handlePayment} />}
+                {isMobile && (
+                    <PaymentOptions
+                        onPayment={handlePayment}
+                        isPaid={selectGuest?.state === 'PAID'}
+                    />
+                )}
             </Container>
         </Layout>
     );

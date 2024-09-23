@@ -24,6 +24,21 @@ export const containers = {
     ListCustomer: lazy(() => import('containers/Customer/ListCustomer')),
     CustomerDetail: lazy(() => import('containers/Customer/CustomerDetail')),
     MerchantPage: lazy(() => import('pages/Merchant/index')),
+    RestaurentReservation: lazy(
+        () => import('containers/RestaurentManagement/Reservation'),
+    ),
+    KitchenStationReservation: lazy(
+        () => import('containers/RestaurentManagement/KitchenStation'),
+    ),
+    KitchenStationDetailReservation: lazy(
+        () => import('containers/RestaurentManagement/KitchenStationDetail'),
+    ),
+    Terminal: lazy(
+        () => import('containers/RestaurentManagement/TerminalSetting'),
+    ),
+    TerminalDetail: lazy(
+        () => import('containers/RestaurentManagement/TerminalDetailSetting'),
+    ),
 };
 
 export default containers;

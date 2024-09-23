@@ -50,7 +50,7 @@ export const useTableBill = (isGoBack = true) => {
     const [onPosPayment] = useMutation(POS_PAYMENT);
     const [onPosDJV, { loading: djv_Loading }] =
         useMutation(POS_PAYMENT_WITH_DJV);
-    const [onSetTips, { loading: tips_Loading }] = useMutation(SET_TIPS);
+    const [onSetTips, { data, loading: tips_Loading }] = useMutation(SET_TIPS);
     const navigation = useNavigate();
     const [pos_Loading, setPos_Loading] = React.useState<boolean>(false);
     useEffect(() => {
@@ -75,15 +75,15 @@ export const useTableBill = (isGoBack = true) => {
             emitter.off('arise_result');
         };
     }, [orderInfo]);
-    const showConfirm = () => {
-        modal.confirm({
-            title: 'Do you want to check out?',
-            centered: true,
-            onOk: () => {
-                handleCheckOut();
-            },
-        });
-    };
+    // const showConfirm = () => {
+    //     modal.confirm({
+    //         title: 'Do you want to check out?',
+    //         centered: true,
+    //         onOk: () => {
+    //             handleCheckOut();
+    //         },
+    //     });
+    // };
     const showError = (msg: string, order_id: string) => {
         modal.error({
             title: msg,
@@ -97,9 +97,9 @@ export const useTableBill = (isGoBack = true) => {
         setPos_Loading(false);
         navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${orderInfo?.order_id}`);
     };
-    const showModalSuccess = (order_id: string) => {
+    const showModalSuccess = (order_id: string, isGoToTable = true) => {
         modal.success({
-            title: 'Check Out Success',
+            title: !isGoToTable ? 'Payment Success' : 'Check Out Success',
             centered: true,
             onOk: () => {
                 navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${order_id}`);
@@ -108,10 +108,25 @@ export const useTableBill = (isGoBack = true) => {
             onCancel: () => {
                 goTable();
             },
-            okCancel: true,
+            okCancel: isGoToTable,
 
             cancelText: 'Go back to table',
-            okText: 'Go bill',
+            okText: isGoToTable ? 'Go bill' : 'Ok',
+        });
+    };
+    const showModalErrorPayment = (order_id?: string) => {
+        modal.error({
+            title: 'Payment Failed',
+            content: 'Please try again',
+            centered: true,
+            onOk: () => {
+                // navigation(
+                //     `${BASE_ROUTER.BILL_DETAIL}?orderId=${
+                //         order_id ? order_id : orderInfo?.order_id
+                //     }`,
+                // );
+                console.log('error payment', order_id);
+            },
         });
     };
     const goTable = () => {
@@ -155,9 +170,10 @@ export const useTableBill = (isGoBack = true) => {
         })
             .then((res) => {
                 if (paymentMethod === 'cashondelivery') {
-                    showModalSuccess(
-                        res.data.createMerchantOrder.order.order_id,
+                    navigation(
+                        `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data.createMerchantOrder.order.order_id}`,
                     );
+                    emitter.emit('REPAYMENT_SUCCESS');
                 } else if (paymentMethod === 'pos') {
                     setVisibleMoalPos(true);
                     setOrderInfo(res.data.createMerchantOrder.order);
@@ -180,7 +196,12 @@ export const useTableBill = (isGoBack = true) => {
             order_number: number;
             order_id: any;
         },
+        isGoToTable = true,
     ) => {
+        setPos_Loading(true);
+        if (orderDetail) {
+            setOrderInfo(orderDetail);
+        }
         onPosDJV({
             variables: {
                 orderId: orderDetail?.order_number
@@ -192,12 +213,26 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
-                        `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                        `${
+                            orderDetail?.order_id
+                                ? orderDetail?.order_id
+                                : orderInfo?.order_id
+                        }`,
+                        isGoToTable,
                     );
                 }
             })
-            .catch((err) => {
-                console.log(err);
+            .catch(() => {
+                showModalErrorPayment(
+                    `${
+                        orderDetail?.order_id
+                            ? orderDetail?.order_id
+                            : orderInfo?.order_id
+                    }`,
+                );
+            })
+            .finally(() => {
+                setPos_Loading(false);
             });
     };
     const handlePOSPayment = (
@@ -222,12 +257,26 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
-                        `${orderDetail?.order_id ? orderDetail?.order_id : orderInfo?.order_id}`,
+                        `${
+                            orderDetail?.order_id
+                                ? orderDetail?.order_id
+                                : orderInfo?.order_id
+                        }`,
                     );
                 }
             })
             .catch((err) => {
                 console.log(err);
+                showModalErrorPayment(
+                    `${
+                        orderDetail?.order_id
+                            ? orderDetail?.order_id
+                            : orderInfo?.order_id
+                    }`,
+                );
+            })
+            .finally(() => {
+                setPos_Loading(false);
             });
     };
     useEffect(() => {
@@ -315,7 +364,7 @@ export const useTableBill = (isGoBack = true) => {
                             });
                         const Tax =
                             (res.data.merchantCart.prices?.applied_taxes?.[0]
-                                ?.tax_percent || 10) / 100;
+                                ?.tax_percent || 0) / 100;
                         const newCart = {
                             ...res.data.merchantCart,
                             prices: {
@@ -354,7 +403,7 @@ export const useTableBill = (isGoBack = true) => {
         cart,
         total,
         count,
-        handleCheckOut: showConfirm,
+        handleCheckOut,
         loading:
             loading ||
             split_even_loading ||
@@ -365,6 +414,8 @@ export const useTableBill = (isGoBack = true) => {
         pos_Loading,
         contextHolder,
         paymentMethod,
+        cartItems,
+        hasGivenTip: data?.setTipToCart?.success,
         setPaymentMethod,
         setListItems,
         listItems,
@@ -383,5 +434,6 @@ export const useTableBill = (isGoBack = true) => {
         setPos_Loading,
         showModalSuccess,
         showError,
+        showModalErrorPayment,
     };
 };

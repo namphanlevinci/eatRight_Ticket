@@ -11,6 +11,15 @@ export const ButtonBill = ({
 }) => {
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const Icon = (title: string) => {
+        return title === 'Print' ? (
+            <PrintIcon />
+        ) : title === 'Sms' ? (
+            <SMSIcon />
+        ) : title === 'Email' ? (
+            <EmailIcon />
+        ) : null;
+    };
     return (
         <Button
             style={{
@@ -22,30 +31,26 @@ export const ButtonBill = ({
                 padding: isMobile ? 0 : '16px',
                 paddingInline: isMobile ? 10 : 0,
                 flexDirection: isMobile ? 'column' : 'row',
-                gap: 0,
+                gap: isMobile ? 0 : 10,
             }}
             onClick={onPress}
             background={theme.pRIMARY6Primary}
         >
-            {!isMobile ? (
-                <></>
-            ) : title === 'Print' ? (
-                <PrintIcon />
-            ) : title === 'Sms' ? (
-                <SMSIcon />
-            ) : (
-                <EmailIcon />
+            {Icon(title) && (
+                <div style={{ height: 24, width: 24 }}>{Icon(title)}</div>
             )}
-            <TextDark
-                style={{
-                    color: theme.pRIMARY1,
-                    fontWeight: isMobile ? '400' : '600',
-                    fontSize: isMobile ? 14 : 16,
-                    lineHeight: isMobile ? '14px' : '20px',
-                }}
-            >
-                {title}
-            </TextDark>
+            <div style={{ width: 50 }}>
+                <TextDark
+                    style={{
+                        color: theme.pRIMARY1,
+                        fontWeight: isMobile ? '400' : '600',
+                        fontSize: isMobile ? 14 : 16,
+                        lineHeight: isMobile ? '14px' : '20px',
+                    }}
+                >
+                    {title}
+                </TextDark>
+            </div>
         </Button>
     );
 };

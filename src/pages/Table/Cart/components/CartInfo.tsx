@@ -16,6 +16,7 @@ export default function CartInfo({ table }: { table?: any }) {
     const { setCustomerName, cartItems, indexTable } = useCart();
     const [customerName, setName] = React.useState<any>();
     const [numberOfCustomer, setNoC] = React.useState<number>(1);
+    const [phoneNumber, setPhone] = React.useState<string>();
     const [searchParams] = useSearchParams();
     const selectedCart = parseInt(searchParams.get('cartIndex') || '0');
     const [onUpdateCustomerInfo] = useMutation(UPDATE_CUSTOMER);
@@ -25,14 +26,17 @@ export default function CartInfo({ table }: { table?: any }) {
             setNoC(
                 cartItems[indexTable]?.carts[selectedCart]?.numberOfCustomer,
             );
+            setPhone(cartItems[indexTable]?.carts[selectedCart]?.phonenumber);
         }
     }, [selectedCart, cartItems, indexTable]);
     const updateCustomerInfo = ({
         name,
         number,
+        phoneNumber,
     }: {
         name?: string;
         number?: number;
+        phoneNumber?: string;
     }) => {
         if (!isCartIdFromLocal(cartItems[indexTable]?.carts[selectedCart].id)) {
             onUpdateCustomerInfo({
@@ -40,6 +44,7 @@ export default function CartInfo({ table }: { table?: any }) {
                     cart_id: cartItems[indexTable]?.carts[selectedCart].id,
                     firstname: name ? name : customerName,
                     numberOfCustomer: number ? number : numberOfCustomer,
+                    phone_number: phoneNumber,
                 },
             }).catch((e) => console.log(e));
         }
@@ -67,33 +72,41 @@ export default function CartInfo({ table }: { table?: any }) {
                 flexWrap: 'wrap',
             }}
         >
-            <InfoCartModal
-                isModalOpen={showModal}
-                onCancel={() => setShowModal(false)}
-                onSubmit={(e: {
-                    username: string;
-                    numberOfCustomer: number;
-                }) => {
-                    setName(e.username);
-                    setNoC(e.numberOfCustomer);
-                    setCustomerName(
-                        e.username,
-                        selectedCart,
-                        indexTable,
-                        e.numberOfCustomer,
-                    );
-                    setShowModal(false);
-                    updateCustomerInfo({
-                        name: e.username,
-                        number: e.numberOfCustomer,
-                    });
-                }}
-                table={table}
-                value={{
-                    name: customerName,
-                    number: numberOfCustomer,
-                }}
-            />
+            {showModal && (
+                <InfoCartModal
+                    isModalOpen={showModal}
+                    onCancel={() => setShowModal(false)}
+                    onSubmit={(e: {
+                        username: string;
+                        numberOfCustomer: number;
+                        phoneNumber?: string;
+                    }) => {
+                        setName(e.username);
+                        setNoC(e.numberOfCustomer);
+                        setPhone(e.phoneNumber);
+                        setCustomerName(
+                            e.username,
+                            selectedCart,
+                            indexTable,
+                            e.numberOfCustomer,
+                        );
+                        setShowModal(false);
+                        updateCustomerInfo({
+                            name: e.username,
+                            number: e.numberOfCustomer,
+                            phoneNumber: e.phoneNumber,
+                        });
+                    }}
+                    table={table}
+                    value={{
+                        name: customerName.includes('Guest')
+                            ? customerName.replace('Guest', 'Diner')
+                            : customerName,
+                        number: numberOfCustomer,
+                        phoneNumber: phoneNumber,
+                    }}
+                />
+            )}
             <Col
                 style={{
                     minWidth: isMobile ? '100%' : 300,

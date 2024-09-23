@@ -70,7 +70,7 @@ const ModalPosDevices = ({
                             marginBottom: 24,
                         }}
                     >
-                        POS Device List
+                        Terminals
                     </p>
                     {posDeviceList?.map?.((pos: any) => (
                         <Button
@@ -104,7 +104,11 @@ const ModalPosDevices = ({
                         </Button>
                     ))}
 
-                    <ButtonSubmit title="Pay" onClick={handleOk} />
+                    <ButtonSubmit
+                        title="Pay"
+                        onClick={handleOk}
+                        disabled={!selectedOption}
+                    />
                 </div>
             </Modal>
         </>

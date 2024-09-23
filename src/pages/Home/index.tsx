@@ -47,7 +47,7 @@ const HomePage: React.FC = () => {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                marginRight: 20,
+                                marginRight: 10,
                                 width: 70,
                             }}
                         >
@@ -72,8 +72,8 @@ const HomePage: React.FC = () => {
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'center',
-                                    marginRight: 20,
-                                    width: 70,
+                                    marginRight: 10,
+                                    width: 120,
                                 }}
                             >
                                 <StyledFloor
@@ -112,12 +112,12 @@ const HomePage: React.FC = () => {
                                     background={theme.pRIMARY6Primary}
                                 >
                                     {/* <h3 style={{ color: theme.tEXTPrimary }}>
-                                        Take Out
+                                        Quick Order
                                     </h3> */}
                                     <h2
                                         style={{ color: theme.pRIMARY6Primary }}
                                     >
-                                        Take Out
+                                        Quick Order
                                     </h2>
                                     <div />
                                 </CounterTakeAway>
@@ -137,12 +137,12 @@ const HomePage: React.FC = () => {
                                     background={theme.pRIMARY6Primary}
                                 >
                                     {/* <h3 style={{ color: theme.tEXTPrimary }}>
-                                        Take Out
+                                        Quick Order
                                     </h3> */}
                                     <h2
                                         style={{ color: theme.pRIMARY6Primary }}
                                     >
-                                        Take Out
+                                        Quick Order
                                     </h2>
                                     <div />
                                 </CounterTakeAway>

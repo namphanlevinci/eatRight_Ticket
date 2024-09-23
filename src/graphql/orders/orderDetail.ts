@@ -20,6 +20,8 @@ export const GET_ORDER_DETAIL = gql`
             restaurant_name
             restaurant_phone
             customer_comment
+            can_refund
+            is_refunded
             items {
                 name
                 qty

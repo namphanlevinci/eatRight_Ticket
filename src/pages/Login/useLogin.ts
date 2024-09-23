@@ -15,6 +15,7 @@ export const useLogin = () => {
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [remember, setRemember] = useState(false);
     const handleLogin = async ({
         username,
         password,
@@ -38,8 +39,17 @@ export const useLogin = () => {
                     res.data.generateMerchantToken.account_type === 'merchant'
                 ) {
                     dispatch(updateStatusLoginForMerchant());
-                } else {
+                } else if (
+                    res.data.generateMerchantToken.account_type === 'waiter'
+                ) {
                     dispatch(updateStatusLogin());
+                } else {
+                    notification.open({
+                        message: 'Login Failed',
+                        description: 'Your account type is not valid',
+                        type: 'error',
+                    });
+                    return;
                 }
 
                 navigate(BASE_ROUTER.HOME);
@@ -53,10 +63,19 @@ export const useLogin = () => {
             })
             .finally(() => {
                 setLoading(false);
+                if (remember) {
+                    localStorage.setItem('us-923', btoa(username));
+                    localStorage.setItem('pw-155', btoa(password));
+                } else {
+                    localStorage.removeItem('us-923');
+                    localStorage.removeItem('pw-155');
+                }
             });
     };
     return {
         handleLogin,
         loading,
+        remember,
+        setRemember,
     };
 };

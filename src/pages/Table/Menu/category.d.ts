@@ -26,6 +26,7 @@ type BundleProduct = {
         __typename: string;
         regularPrice: Price;
     };
+    display_platforms?: string[];
 };
 
 type SimpleProduct = {
@@ -39,6 +40,7 @@ type SimpleProduct = {
         __typename: string;
         regularPrice: Price;
     };
+    display_platforms?: string[];
 };
 
 type ConfigurableProduct = {
@@ -52,6 +54,7 @@ type ConfigurableProduct = {
         __typename: string;
         regularPrice: Price;
     };
+    display_platforms?: string[];
 };
 
 type CategoryProducts = {

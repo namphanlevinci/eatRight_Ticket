@@ -22,6 +22,8 @@ import _ from 'lodash';
 import { formatPhoneNumber } from 'utils/number';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import ListCustomerForMobile from './listCustomerForMobile';
+import { formatPhoneNumberByUSA } from 'utils/format';
+import dayjs from 'dayjs';
 
 // import ListBillForMobile from './listForMobile';
 
@@ -29,7 +31,9 @@ const { Content } = Layout;
 
 const CustomerList: React.FC = () => {
     const navigation = useNavigate();
+    const { theme } = useTheme();
     const {
+        isMerchant,
         listOrders,
         pageSize,
         setPageSize,
@@ -39,7 +43,6 @@ const CustomerList: React.FC = () => {
         loading,
         setSearch,
     } = useCustomerList();
-    const { theme } = useTheme();
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
     });
@@ -218,7 +221,9 @@ const CustomerList: React.FC = () => {
                                     }}
                                 >
                                     {dt?.date_of_birth
-                                        ? dt?.date_of_birth
+                                        ? dayjs(dt?.date_of_birth).format(
+                                              'YYYY-MM-DD',
+                                          )
                                         : '-'}
                                 </StyledColumn>
                                 <StyledColumn
@@ -238,7 +243,11 @@ const CustomerList: React.FC = () => {
                                         color: theme.tEXTPrimary,
                                     }}
                                 >
-                                    {formatPhoneNumber(dt.phone_number)}
+                                    {isMerchant
+                                        ? formatPhoneNumberByUSA(
+                                              dt.phone_number,
+                                          )
+                                        : formatPhoneNumber(dt.phone_number)}
                                 </StyledColumn>
                                 <StyledColumn
                                     style={{
@@ -246,7 +255,9 @@ const CustomerList: React.FC = () => {
                                         color: theme.tEXTPrimary,
                                     }}
                                 >
-                                    {dt.email}
+                                    {!dt.email.includes('.gen')
+                                        ? dt.email
+                                        : '-'}
                                 </StyledColumn>
                                 <StyledColumn
                                     style={{

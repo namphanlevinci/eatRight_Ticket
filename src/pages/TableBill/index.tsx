@@ -10,7 +10,10 @@ import SplitBillModal from 'components/modal/SplitBill/splitBillModal';
 import { useTheme } from 'context/themeContext';
 import ModalOffSplitBill from 'components/modal/ModalOffSplitBill';
 import { useMediaQuery } from 'react-responsive';
+import { useCartTable } from 'pages/Table/Cart/useGetCart';
+import LoadingModal from 'components/modal/loadingModal';
 export default function TableBill() {
+    const { loading } = useCartTable(false, false);
     const {
         cart,
         total,
@@ -41,6 +44,7 @@ export default function TableBill() {
                     paddingInline: 20,
                 }}
             >
+                <LoadingModal showLoading={loading} />
                 <div
                     onClick={() => navigation(-1)}
                     style={{ display: 'flex ', alignItems: 'center' }}
@@ -54,10 +58,7 @@ export default function TableBill() {
                         marginLeft: 20,
                     }}
                 >
-                    <span style={{ color: theme.pRIMARY6Primary }}>
-                        Order Id
-                    </span>{' '}
-                    / Bill Number
+                    Bill Information
                 </Text>
             </Header>
         );
@@ -122,9 +123,6 @@ export default function TableBill() {
             <RenderHeader />
             <div style={{ flex: 1, padding: 16 }}>
                 <Row justify={'space-between'} align={'middle'}>
-                    <Text style={{ fontSize: 20, fontWeight: '400' }}>
-                        Order summary
-                    </Text>
                     {!isMobile && <SplitBillButton />}
                 </Row>
                 <Row style={{ marginTop: 16 }}>

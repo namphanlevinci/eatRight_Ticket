@@ -36,10 +36,10 @@ export const CREATE_CUSTOMER = gql`
     mutation (
         $firstname: String!
         $lastname: String!
-        $email: String!
+        $email: String
         $calling_code: String!
         $gender: Int!
-        $date_of_birth: String!
+        $date_of_birth: String
         $status: Int!
         $phone_number: String!
         $group_id: Int!
@@ -109,7 +109,6 @@ export const GET_CUSTOMER_DETAIL = gql`
                     grand_total
                     status
                     order_date
-
                     shipping_method
                     payment_methods {
                         name
@@ -137,6 +136,7 @@ export const GET_CUSTOMER_DETAIL = gql`
             email
             phone_number
             created_at
+            status
             addresses {
                 firstname
                 lastname

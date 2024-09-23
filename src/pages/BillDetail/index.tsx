@@ -1,5 +1,5 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import { App, Row, Spin } from 'antd';
+import { App, Modal, notification, Row, Spin } from 'antd';
 import { Button } from 'components/atom/Button';
 import { TextDark } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
@@ -8,8 +8,6 @@ import { GET_ORDER_DETAIL } from 'graphql/orders/orderDetail';
 import { ButtonContainer, ButtonLeftContainer, Container } from './styled';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
-import { usePrinter } from 'context/printerContext';
-import { PrinterContextType } from 'context/printerType';
 import ModalPaymentPending from 'components/modal/ModalPaymentPending';
 import { GET_RE_PAYMENT_URL } from 'graphql/orders/repayment';
 import LazyLoadedScripts from 'LazyLoadedScripts';
@@ -32,6 +30,14 @@ import { ButtonBill } from './components/ButtonBill';
 import { ButtonSelectBill } from './components/ButtonSelectBill';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
+import { PRINT_BILL } from 'graphql/printer';
+import {
+    API_REFUND_INVOICE,
+    API_REFUND_INVOICE_POS,
+    API_REFUND_ORDER,
+    API_REFUND_ORDER_POS,
+} from 'graphql/orders/refund';
+import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 export default function index() {
     const [getOrderDetail, { data, loading, refetch }] = useLazyQuery(
         GET_ORDER_DETAIL,
@@ -39,7 +45,12 @@ export default function index() {
             fetchPolicy: 'cache-and-network',
         },
     );
-    const [onGetInvoices, { data: dataSplitBill }] = useLazyQuery(GET_INVOICES);
+    const [onGetInvoices, { data: dataSplitBill }] = useLazyQuery(
+        GET_INVOICES,
+        {
+            fetchPolicy: 'cache-and-network',
+        },
+    );
     const [searchParams] = useSearchParams();
     const [showPendingPayment, setShowPendingPayment] = React.useState(false);
     const orderId = searchParams.get('orderId');
@@ -87,27 +98,25 @@ export default function index() {
             emitter.off('arise_result');
         };
     }, [data?.orderDetail]);
+    const GetDataWithId = (orderId: string) => {
+        getOrderDetail({ variables: { id: orderId } }).then((res) => {
+            onGetInvoices({
+                variables: {
+                    OrderNumber: res.data?.orderDetail?.order_number,
+                },
+                fetchPolicy: 'no-cache',
+            });
+        });
+    };
     useEffect(() => {
         if (orderId !== null && orderId !== 'undefined') {
-            getOrderDetail({ variables: { id: atob(orderId) } }).then((res) => {
-                onGetInvoices({
-                    variables: {
-                        OrderNumber: res.data?.orderDetail?.order_number,
-                    },
-                    fetchPolicy: 'no-cache',
-                });
-            });
+            GetDataWithId(atob(orderId));
         }
     }, [orderId]);
+
     useEffect(() => {
         if (order_ID !== null && order_ID !== 'undefined') {
-            getOrderDetail({ variables: { id: order_ID } }).then((res) => {
-                onGetInvoices({
-                    variables: {
-                        OrderNumber: res.data?.orderDetail?.order_number,
-                    },
-                });
-            });
+            GetDataWithId(order_ID);
         }
     }, [order_ID]);
     useEffect(() => {
@@ -175,27 +184,92 @@ export default function index() {
     };
     const navigation = useNavigate();
     const { modal } = App.useApp();
-    const { print, connectionStatus }: PrinterContextType = usePrinter();
-    const PrintBill = () => {
-        if (connectionStatus === 'Connected') {
-            print();
-            modal.success({
-                title: 'Print bill Success',
-                content: 'Please go to printer to take the bill!',
-                centered: true,
-                onOk: () => {
-                    navigation(BASE_ROUTER.HOME);
+    // const { print, connectionStatus }: PrinterContextType = usePrinter();
+    // const PrintBill = () => {
+    //     if (connectionStatus === 'Connected') {
+    //         print();
+    //         modal.success({
+    //             title: 'Print bill Success',
+    //             content: 'Please go to printer to take the bill!',
+    //             centered: true,
+    //             onOk: () => {
+    //                 navigation(BASE_ROUTER.HOME);
+    //             },
+    //         });
+    //     } else {
+    //         modal.error({
+    //             title: 'Print bill Failed',
+    //             content: 'Please set up printer then try again!',
+    //             centered: true,
+    //             onOk: () => {
+    //                 navigation(BASE_ROUTER.SETTINGS_PRINTER);
+    //             },
+    //         });
+    //     }
+    // };
+    const [onPrintBill] = useMutation(PRINT_BILL);
+    const PrintBillApi = () => {
+        if (childBill.length) {
+            onPrintBill({
+                variables: {
+                    invoice_number: selectDataShowbill.number,
                 },
-            });
+            })
+                .then(() => {
+                    modal.success({
+                        title: 'Send request print bill Success',
+                        content: 'Please go to printer to take the bill!',
+                        centered: true,
+                    });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
         } else {
-            modal.error({
-                title: 'Print bill Failed',
-                content: 'Please set up printer then try again!',
-                centered: true,
-                onOk: () => {
-                    navigation(BASE_ROUTER.SETTINGS_PRINTER);
+            if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length === 0) {
+                onGetInvoices({
+                    variables: {
+                        OrderNumber: data?.orderDetail?.order_number,
+                    },
+                    fetchPolicy: 'no-cache',
+                }).then((res) => {
+                    const newData = res?.data?.merchantGetOrderInvoices;
+                    onPrintBill({
+                        variables: {
+                            invoice_number: newData.invoice[0]?.number,
+                        },
+                    })
+                        .then(() => {
+                            modal.success({
+                                title: 'Send request print bill Success',
+                                content:
+                                    'Please go to printer to take the bill!',
+                                centered: true,
+                            });
+                        })
+                        .catch((e) => {
+                            console.log(e);
+                        });
+                });
+                return;
+            }
+            onPrintBill({
+                variables: {
+                    invoice_number:
+                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                            ?.number,
                 },
-            });
+            })
+                .then(() => {
+                    modal.success({
+                        title: 'Send request print bill Success',
+                        content: 'Please go to printer to take the bill!',
+                        centered: true,
+                    });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
         }
     };
     const showSuccess = ({
@@ -232,6 +306,7 @@ export default function index() {
         setPos_Loading,
         showModalSuccess,
         showError,
+        showModalErrorPayment,
     } = useTableBill(false);
     const modalConfirm = (paymentMethod = 'cashondelivery') => {
         modal.confirm({
@@ -300,9 +375,113 @@ export default function index() {
     const isMobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
+    const [onRefundInvoicePos, { loading: refundLoading }] = useMutation(
+        API_REFUND_INVOICE_POS,
+    );
+    const [onRefundOrderPos, { loading: refund2Loading }] =
+        useMutation(API_REFUND_ORDER_POS);
+    const [onRefundInvoice, { loading: refund3Loading }] =
+        useMutation(API_REFUND_INVOICE);
+    const [onRefundOrder, { loading: refund4Loading }] =
+        useMutation(API_REFUND_ORDER);
+    const [modalRefund, setModalRefund] = useState(false);
+    const onRefund = ({ reason }: { reason: string }) => {
+        Modal.confirm({
+            title: 'Are you sure refund money?',
+            centered: true,
+            content: 'This action cannot be undone',
+            onOk: () => {
+                if (selectDataShowbill) {
+                    if (
+                        selectDataShowbill?.payment_methods &&
+                        selectDataShowbill?.payment_methods?.[0]?.type === 'pos'
+                    ) {
+                        onRefundInvoicePos({
+                            variables: {
+                                reason: reason,
+                                invoice_number: selectDataShowbill?.number,
+                            },
+                        })
+                            .then(() => {
+                                notification.success({
+                                    message: 'Refund Success',
+                                    description: 'Your money has been refunded',
+                                });
+                                GetDataWithId(selectDataShowbill?.id);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    } else {
+                        onRefundInvoice({
+                            variables: {
+                                invoice_number: selectDataShowbill?.number,
+                            },
+                        })
+                            .then(() => {
+                                notification.success({
+                                    message: 'Refund Success',
+                                    description: 'Your money has been refunded',
+                                });
+                                GetDataWithId(selectDataShowbill?.id);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    }
+                } else {
+                    if (data?.orderDetail?.payment_method_code === 'pos') {
+                        onRefundOrderPos({
+                            variables: {
+                                reason: reason,
+                                order_number: data?.orderDetail?.order_number,
+                            },
+                        })
+                            .then(() => {
+                                notification.success({
+                                    message: 'Refund Success',
+                                    description: 'Your money has been refunded',
+                                });
+                                GetDataWithId(data?.orderDetail?.id);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    } else {
+                        onRefundOrder({
+                            variables: {
+                                order_number: data?.orderDetail?.order_number,
+                            },
+                        })
+                            .then(() => {
+                                notification.success({
+                                    message: 'Refund Success',
+                                    description: 'Your money has been refunded',
+                                });
+                                GetDataWithId(data?.orderDetail?.id);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    }
+                }
+            },
+        });
+    };
     return (
         <div>
             {' '}
+            <ModalInput
+                isModalOpen={modalRefund}
+                title="Input reason refund money : "
+                onSubmit={(value: string) => {
+                    onRefund({ reason: value });
+                    setModalRefund(false);
+                }}
+                onCancel={() => {
+                    setModalRefund(false);
+                }}
+            />
             <ModalInput
                 isModalOpen={modalInputEmail}
                 title="Input customer e-mail"
@@ -350,12 +529,8 @@ export default function index() {
                 </Link>
                 <ArrowRightIcon />
                 <Link to={BASE_ROUTER.BILL}>
-                    <BreadCrum>Bill</BreadCrum>
+                    <BreadCrum>Receipts</BreadCrum>
                 </Link>
-                <ArrowRightIcon />
-                <BreadCrum isSelected>
-                    Order {data?.orderDetail?.order_number}
-                </BreadCrum>
             </Row>
             <Container
                 style={{
@@ -389,22 +564,43 @@ export default function index() {
                         });
                     }}
                 />
-                <ModalPosDevicesDJV
-                    isVisibleModalPos={isVisibleModalPosDJV}
-                    setVisibleMoalPos={setVisibleMoalPosDJV}
-                    onPressOK={(pos_id: number) => {
-                        handlePOSPaymentWithDJV(pos_id, {
-                            order_number: data?.orderDetail?.order_number,
-                            order_id: orderId ? orderId : btoa(order_ID || ''),
-                        });
-                    }}
-                />
+                {isVisibleModalPosDJV && (
+                    <ModalPosDevicesDJV
+                        isVisibleModalPos={isVisibleModalPosDJV}
+                        setVisibleMoalPos={setVisibleMoalPosDJV}
+                        onPressOK={(pos_id: number) => {
+                            handlePOSPaymentWithDJV(
+                                pos_id,
+                                {
+                                    order_number:
+                                        data?.orderDetail?.order_number,
+                                    order_id: orderId
+                                        ? orderId
+                                        : btoa(order_ID || ''),
+                                },
+                                false,
+                            );
+                        }}
+                        onCancel={() => {
+                            showModalErrorPayment(orderId || '');
+                        }}
+                    />
+                )}
                 <LoadingModalPayment
                     showLoading={pos_Loading}
-                    title="POS Payment Processing ..."
+                    title="Processing ..."
                     onClose={() => setPos_Loading(false)}
                 />
-                <LoadingModal showLoading={sendLoading1 || sendLoading2} />
+                <LoadingModal
+                    showLoading={
+                        sendLoading1 ||
+                        sendLoading2 ||
+                        refundLoading ||
+                        refund2Loading ||
+                        refund3Loading ||
+                        refund4Loading
+                    }
+                />
                 <LazyLoadedScripts />
                 <ModalPaymentPending
                     title="Payment in progress"
@@ -415,25 +611,61 @@ export default function index() {
                     onCash={() => modalConfirm('cashondelivery')}
                     onPOS={() => modalConfirm('pos')}
                 />
-                {!loading && (
+                {(!loading || data?.orderDetail) && (
                     <>
                         <RenderBill
                             data={data?.orderDetail}
                             selectDataShowbill={selectDataShowbill}
+                            dataInvoice={
+                                dataSplitBill?.merchantGetOrderInvoices?.invoice
+                            }
                         />
 
                         <ButtonContainer>
-                            <ButtonBill title="Print" onPress={PrintBill} />
                             {(childBill.length === 0 || selectDataShowbill) && (
                                 <>
+                                    <ButtonBill
+                                        title="Print"
+                                        onPress={PrintBillApi}
+                                    />
                                     <ButtonBill
                                         title="Email"
                                         onPress={() => setModalInputEmail(true)}
                                     />
-                                    <ButtonBill
+                                    {data?.orderDetail?.can_refund &&
+                                    !selectDataShowbill ? (
+                                        <ButtonBill
+                                            title="Refund"
+                                            onPress={() => setModalRefund(true)}
+                                        />
+                                    ) : selectDataShowbill?.can_refund ? (
+                                        <ButtonBill
+                                            title="Void"
+                                            onPress={() => setModalRefund(true)}
+                                        />
+                                    ) : data?.orderDetail?.is_refunded ||
+                                      selectDataShowbill?.is_refunded ? (
+                                        <div style={{ paddingInline: 8 }}>
+                                            <ButtonPrimary
+                                                title="Voided"
+                                                onClick={() =>
+                                                    console.log('123')
+                                                }
+                                                isDisable
+                                                width={
+                                                    isMobile ? '56px' : '160px'
+                                                }
+                                                marginTop="0px"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <></>
+                                    )}
+
+                                    {/* <ButtonBill
                                         title="Sms"
                                         onPress={() => setModalInputPhone(true)}
-                                    />
+                                    /> */}
                                 </>
                             )}
                             <Button
@@ -453,7 +685,7 @@ export default function index() {
                                         fontWeight: '600',
                                     }}
                                 >
-                                    No receipt
+                                    Close
                                 </TextDark>
                             </Button>
                         </ButtonContainer>

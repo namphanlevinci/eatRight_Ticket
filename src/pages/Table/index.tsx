@@ -97,7 +97,11 @@ export const TablePage: React.FC = () => {
                         <BreadCrum>Home</BreadCrum>
                     </Link>
                     <ArrowRightIcon />
-                    <BreadCrum isSelected>Table {table?.name}</BreadCrum>
+                    <BreadCrum isSelected>
+                        {table?.name === 'Counter'
+                            ? 'Quick Order'
+                            : `Table ${table?.name}`}
+                    </BreadCrum>
                     {!(table && table?.numberOfCustomer > 0) && (
                         <div
                             style={{
@@ -144,7 +148,11 @@ export const TablePage: React.FC = () => {
                     }}
                 >
                     <OrderCart table={table} />
-                    <div ref={targetRef}>{showMenu && <Menu />}</div>
+                    <div ref={targetRef}>
+                        {showMenu && (
+                            <Menu isEatOut={table?.name === 'Counter'} />
+                        )}
+                    </div>
                 </MenuContext.Provider>
             </Content>
         </Layout>

@@ -1,11 +1,10 @@
 import { CusTomRow, StyledCartBorder } from '../styled';
-import { App, Col, Divider, Row } from 'antd';
+import { App, Col, Divider, Row, Button as ButtonAnt } from 'antd';
 import { Text } from 'components/atom/Text';
 import UpDownNumber from 'components/UpdownNumber';
 import { Button } from 'components/atom/Button';
 import { formatNumberWithCommas } from 'utils/format';
 import { useCart } from 'context/cartContext';
-import CartIcon from 'assets/icons/cartIcon';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import { useMediaQuery } from 'react-responsive';
@@ -15,7 +14,6 @@ import LoadingModal from 'components/modal/loadingModal';
 import { isCartIdFromLocal } from 'utils/isNumericId';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useMenuContext } from 'pages/Table/context/MenuContext';
-import InfoCartModal from 'components/modal/infoCartModal';
 import NoteIcon from 'assets/icons/noteIcon';
 import CustomTag from 'components/atom/Tag/CustomTag';
 import { getTagStyled } from 'utils/tag';
@@ -26,6 +24,8 @@ import { roundTo } from 'utils/number';
 import { useMutation } from '@apollo/client';
 import { CLEAN_UP_CART_TABLE } from 'graphql/table/cleanTable';
 import ModalInputNote from 'components/modal/ModalInputNote';
+import { useCartTable } from '../useGetCart';
+import ModalConfirm from 'components/modal/ModalConfirm';
 export default function CartItemList({
     data,
     cartInfo,
@@ -47,6 +47,19 @@ export default function CartItemList({
         InputNoteItemBundleFromCart,
         removeCartIndex,
     } = useCart();
+
+    const {
+        loading: loadingCardTable,
+        removeItemOnCartServer,
+        updateStatusItemServer,
+    } = useCartTable(false, false);
+
+    const [isOpenModalCancel, setIsOpenModalCancel] = useState(false);
+    const [itemSelected, setItemSelected] = useState<{
+        cartId: string;
+        cartItemId: string;
+    }>();
+
     const { addCart, loading, addMoreCart } = useAddCart();
     const navigation = useNavigate();
     const [isNewItem, setIsNewItem] = React.useState(false);
@@ -63,18 +76,31 @@ export default function CartItemList({
             } else {
                 setIsNewItem(false);
             }
-            const itemNeedDone = data?.items.find(
-                (item: ItemType) => item.status !== 'done',
-            );
-            if (itemNeedDone) {
-                setIsAllDone(false);
+
+            if (data?.order_number) {
+                const itemNeedDone = data?.order?.items.find(
+                    (item: any) => item.serving_status !== 'done',
+                );
+                if (itemNeedDone) {
+                    setIsAllDone(false);
+                } else {
+                    setIsAllDone(true);
+                }
             } else {
-                setIsAllDone(true);
+                const itemNeedDone = data?.items.find(
+                    (item: ItemType) => item.status !== 'done',
+                );
+
+                if (itemNeedDone) {
+                    setIsAllDone(false);
+                } else {
+                    setIsAllDone(true);
+                }
             }
         } else {
             setIsNewItem(false);
         }
-    }, [data?.items?.length]);
+    }, [data]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -88,14 +114,17 @@ export default function CartItemList({
         }
         navigation(`${BASE_ROUTER.TABLE_BILL}?${cartInfo}`);
     };
-    const goOrderList = () => {
-        navigation(`${BASE_ROUTER.TABLE_Order}?${cartInfo}`);
+    const goTableBill = () => {
+        navigation(`${BASE_ROUTER.TABLE_BILL}${window.location.search}`);
     };
     const SendCart = () => {
         let CustomerName =
             cartItems[indexTable]?.carts[selectedCart]?.firstname;
         if (CustomerName?.includes('Guest')) {
-            setIsModalOpen(true);
+            createCart({
+                username: 'Diner ' + (selectedCart + 1),
+                numberOfCustomer: 1,
+            });
         } else {
             setCustomerName(CustomerName, selectedCart, indexTable);
             createCart({
@@ -103,6 +132,8 @@ export default function CartItemList({
                 numberOfCustomer:
                     cartItems[indexTable]?.carts[selectedCart]
                         ?.numberOfCustomer,
+                phoneNumber:
+                    cartItems[indexTable]?.carts[selectedCart]?.phonenumber,
             });
         }
         setIsNewItem(false);
@@ -110,14 +141,12 @@ export default function CartItemList({
     const createCart = ({
         username,
         numberOfCustomer = 1,
+        phoneNumber,
     }: {
         username?: string;
         numberOfCustomer?: number;
+        phoneNumber?: string;
     }) => {
-        if (username) {
-            setIsModalOpen(false);
-        }
-
         const items: ItemType[] = data?.items.filter(
             (item: ItemType) => item.isUnsend,
         );
@@ -173,23 +202,25 @@ export default function CartItemList({
                 username || '',
                 numberOfCustomer,
                 table?.name?.toLowerCase()?.includes('counter') ? true : false,
+                phoneNumber,
             );
         } else {
             addMoreCart(data.id, carts);
         }
     };
     const { setUpdate, targetRef, showMenu } = useMenuContext();
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const { theme } = useTheme();
     const total = useMemo(
         () =>
             (data?.prices?.subtotal_excluding_tax?.value || 0) -
-            (data?.prices?.total_canceled_without_tax?.value || 0),
+            (data?.order_number
+                ? 0
+                : data?.prices?.total_canceled_without_tax?.value || 0),
         [data],
     );
 
     const Tax = useMemo(
-        () => (data?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100,
+        () => (data?.prices?.applied_taxes?.[0]?.tax_percent || 0) / 100,
         [data],
     );
 
@@ -252,6 +283,8 @@ export default function CartItemList({
     const goTable = () => {
         removeCartIndex(selectedCart);
     };
+    const [noteSelectValue, setNoteSelectValue] = useState('');
+
     return data ? (
         <StyledCartBorder
             style={{
@@ -262,30 +295,29 @@ export default function CartItemList({
             }}
         >
             <LoadingModal showLoading={loading || loadingClean} />
-            <InfoCartModal
-                isModalOpen={isModalOpen}
-                onCancel={() => setIsModalOpen(!isModalOpen)}
-                onSubmit={(e: { username: string; numberOfCustomer: number }) =>
-                    createCart(e)
-                }
-                table={table}
-            />
-            <ModalInputNote
-                title="Add note"
-                isModalOpen={showNoteModal.show}
-                onCancel={() =>
-                    setShowNoteModalState({ ...showNoteModal, show: false })
-                }
-                onSubmit={(e: any) => {
-                    setShowNoteModalState({ ...showNoteModal, show: false });
-                    InputNoteItemFromCart(showNoteModal.index, e);
-                }}
-            />
+            {showNoteModal.show && (
+                <ModalInputNote
+                    title="Add note"
+                    isModalOpen={showNoteModal.show}
+                    onCancel={() =>
+                        setShowNoteModalState({ ...showNoteModal, show: false })
+                    }
+                    onSubmit={(e: any) => {
+                        setShowNoteModalState({
+                            ...showNoteModal,
+                            show: false,
+                        });
+                        InputNoteItemFromCart(showNoteModal.index, e);
+                    }}
+                    inputValue={noteSelectValue}
+                />
+            )}
             <div style={{ minHeight: 200 }}>
                 {data?.items?.map((item: any, index: any) => {
                     const orderItems = data?.order?.items?.find(
                         (i: any) => item.product.name == i.name,
                     );
+
                     return (
                         <div key={index}>
                             <Row align={'middle'} justify={'space-between'}>
@@ -360,7 +392,7 @@ export default function CartItemList({
                                         </Text>
                                         <Row
                                             style={{
-                                                width: 154,
+                                                minWidth: 222,
                                                 justifyContent:
                                                     !item?.bundle_options
                                                         ? 'space-between'
@@ -380,6 +412,9 @@ export default function CartItemList({
                                                             index: index,
                                                             show: true,
                                                         });
+                                                        setNoteSelectValue(
+                                                            item.note,
+                                                        );
                                                     }}
                                                 >
                                                     {item.isUnsend && (
@@ -387,17 +422,99 @@ export default function CartItemList({
                                                     )}
                                                 </div>
                                             )}
-                                            <UpDownNumber
-                                                quantity={item.quantity}
-                                                setQuantity={(e: number) => {
-                                                    updateQuantityItemFromCart(
-                                                        index,
-                                                        e,
-                                                    );
-                                                }}
-                                                isSend={!item.isUnsend}
-                                                disableUp={!showMenu}
-                                            />
+                                            <div
+                                                style={{ marginRight: 'auto' }}
+                                            >
+                                                <UpDownNumber
+                                                    quantity={item.quantity}
+                                                    setQuantity={(
+                                                        e: number,
+                                                    ) => {
+                                                        updateQuantityItemFromCart(
+                                                            index,
+                                                            e,
+                                                        );
+                                                    }}
+                                                    isSend={!item.isUnsend}
+                                                    disableUp={!showMenu}
+                                                />
+                                            </div>
+                                            {((item.status === 'sent' &&
+                                                data?.is_active) ||
+                                                !item.status) &&
+                                                !item?.isUnsend && (
+                                                    <ButtonAnt
+                                                        disabled={
+                                                            loadingCardTable
+                                                        }
+                                                        style={{
+                                                            fontSize: 16,
+                                                            backgroundColor:
+                                                                'transparent',
+                                                            border: '0.5px solid #ccc',
+                                                            outline: 'none',
+                                                            color: '#ea4335',
+                                                            fontWeight: 500,
+                                                            borderRadius: 8,
+                                                            paddingTop: 0,
+                                                        }}
+                                                        onClick={
+                                                            () => {
+                                                                setIsOpenModalCancel(
+                                                                    true,
+                                                                );
+                                                                setItemSelected(
+                                                                    {
+                                                                        cartId: data?.id,
+                                                                        cartItemId:
+                                                                            item?.id,
+                                                                    },
+                                                                );
+                                                            }
+                                                            // removeItemOnCartServer(
+                                                            //     {
+                                                            //         cartId: data?.id,
+                                                            //         cartItemId:
+                                                            //             item?.id,
+                                                            //     },
+                                                            // )
+                                                        }
+                                                    >
+                                                        Cancel
+                                                    </ButtonAnt>
+                                                )}
+                                            {(orderItems
+                                                ? orderItems.serving_status ===
+                                                  'ready'
+                                                : item.status === 'ready') && (
+                                                <ButtonAnt
+                                                    disabled={loadingCardTable}
+                                                    style={{
+                                                        fontSize: 16,
+                                                        backgroundColor:
+                                                            '#3498db',
+                                                        border: '0.5px solid #ccc',
+                                                        outline: 'none',
+                                                        color: theme.nEUTRALPrimary,
+                                                        fontWeight: 500,
+                                                        borderRadius: 8,
+                                                        paddingTop: 0,
+                                                        paddingBottom: 0,
+                                                    }}
+                                                    onClick={() => {
+                                                        updateStatusItemServer({
+                                                            cartId: orderItems
+                                                                ? orderItems.id
+                                                                : item.id,
+                                                            itemType: orderItems
+                                                                ? 'ORDER'
+                                                                : 'QUOTE',
+                                                        });
+                                                    }}
+                                                >
+                                                    Serve
+                                                </ButtonAnt>
+                                            )}
                                         </Row>
                                     </Row>
                                 </Col>
@@ -687,8 +804,7 @@ export default function CartItemList({
                                     background={theme.pRIMARY6Primary}
                                     color={theme.nEUTRALBase}
                                 >
-                                    <CartIcon isDisabled={!isNewItem} />
-                                    Send
+                                    Confirm
                                 </Button>
                             ) : (
                                 <Button
@@ -701,7 +817,7 @@ export default function CartItemList({
                                     background={theme.pRIMARY6Primary}
                                     color={theme.nEUTRALBase}
                                 >
-                                    View Bill
+                                    View Receipt
                                 </Button>
                             )}
                         </Col>
@@ -781,6 +897,20 @@ export default function CartItemList({
                                     Complete Service
                                 </Button>
                             )
+                        ) : !showMenu ? (
+                            <Button
+                                style={{
+                                    width: '100%',
+                                    height: 44,
+                                    border: 0,
+                                }}
+                                onClick={onCompleteService}
+                                isDisable={true}
+                                background={theme.pRIMARY6Primary}
+                                color={theme.nEUTRALBase}
+                            >
+                                Complete Service
+                            </Button>
                         ) : (
                             <Button
                                 style={{
@@ -793,20 +923,48 @@ export default function CartItemList({
                                     !cartItems[indexTable]?.carts[
                                         selectedCart
                                     ]?.firstname?.includes('Guest') &&
-                                    goOrderList()
+                                    goTableBill()
                                 }
                                 isDisable={cartItems[indexTable]?.carts[
                                     selectedCart
                                 ]?.firstname?.includes('Guest')}
                             >
-                                Order List
+                                Checkout
                             </Button>
                         )}
                     </Row>
                 </Col>
             </CusTomRow>
+            {isOpenModalCancel && (
+                <ModalConfirmCancel
+                    isModalConfirm={isOpenModalCancel}
+                    onCancel={() => setIsOpenModalCancel(false)}
+                    onSubmit={() => {
+                        itemSelected && removeItemOnCartServer(itemSelected);
+                        setIsOpenModalCancel(false);
+                    }}
+                />
+            )}
         </StyledCartBorder>
     ) : (
         <></>
     );
 }
+
+interface IModal {
+    isModalConfirm: boolean;
+    onCancel: () => void;
+    onSubmit: () => void;
+}
+
+const ModalConfirmCancel = ({ isModalConfirm, onCancel, onSubmit }: IModal) => {
+    return (
+        <ModalConfirm
+            isModalOpen={isModalConfirm}
+            onCancel={onCancel}
+            onSubmit={onSubmit}
+            title="Cancel this item?"
+            content="Do you want to this item cancel?"
+        />
+    );
+};

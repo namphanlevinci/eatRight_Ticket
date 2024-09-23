@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { App, Col, Modal, Row, Tag } from 'antd';
+import { App, Col, Modal, Row, Spin, Tag } from 'antd';
 import { RadioSelected } from 'assets/icons/radioSelected';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { Text } from 'components/atom/Text';
@@ -22,7 +22,7 @@ export default function ChangeTableModal({
     modalChangeTable: boolean;
     setModalChangeTableOpen: any;
 }) {
-    const { tables } = useGetAllTable({ cache: true });
+    const { tables, loading: loadingTable } = useGetAllTable({ cache: true });
     const [indexSelected, setIndex] = React.useState(0);
     const [searchParams] = useSearchParams();
     const tableId = searchParams.get('tableId');
@@ -87,6 +87,11 @@ export default function ChangeTableModal({
                         border: `2px solid ${theme.nEUTRALLine}`,
                     },
                 }}
+                // onClose={() => setModalChangeTableOpen(false)}
+                onCancel={() => setModalChangeTableOpen(false)}
+                maskClosable
+                closable={false}
+                closeIcon={null}
             >
                 <Row justify={'center'}>
                     <Text style={{ fontSize: 20 }}>Change Table</Text>
@@ -98,48 +103,54 @@ export default function ChangeTableModal({
                     />
                 </Row>
                 <div style={{ height: 300, overflow: 'scroll' }}>
-                    {tables
-                        ?.filter((table: any) =>
-                            table?.name
-                                ?.toLowerCase()
-                                .includes(searchText.toLowerCase()),
-                        )
-                        .map((item: any, index: number) => {
-                            return (
-                                <Button
-                                    key={index}
-                                    onClick={() => setIndex(index)}
-                                    style={{
-                                        background: theme.pRIMARY2,
-                                    }}
-                                >
-                                    <Row>
-                                        {item.cartIds.length > 0 ? (
-                                            <TagStyled color="#f50">
-                                                Dining
-                                            </TagStyled>
-                                        ) : (
-                                            <TagStyled color="#87d068">
-                                                Available
-                                            </TagStyled>
-                                        )}
-                                        <Text style={{ marginLeft: 20 }}>
-                                            {item.name}
-                                        </Text>
-                                    </Row>
-                                    <Row align={'middle'}>
-                                        {indexSelected === index && (
-                                            <RadioSelected />
-                                        )}
-                                        <Text style={{ marginLeft: 20 }}>
-                                            {`${item.numberOfCustomer || 0}/${
-                                                item.size
-                                            }`}
-                                        </Text>
-                                    </Row>
-                                </Button>
-                            );
-                        })}
+                    {loadingTable ? (
+                        <Spin />
+                    ) : (
+                        tables
+                            ?.filter((table: any) =>
+                                table?.name
+                                    ?.toLowerCase()
+                                    .includes(searchText.toLowerCase()),
+                            )
+                            .map((item: any, index: number) => {
+                                return (
+                                    <Button
+                                        key={index}
+                                        onClick={() => setIndex(index)}
+                                        style={{
+                                            background: theme.pRIMARY1,
+                                        }}
+                                    >
+                                        <Row>
+                                            {item.cartIds.length > 0 ? (
+                                                <TagStyled color="#f50">
+                                                    Dining
+                                                </TagStyled>
+                                            ) : (
+                                                <TagStyled color="#87d068">
+                                                    Available
+                                                </TagStyled>
+                                            )}
+                                            <Text style={{ marginLeft: 20 }}>
+                                                {item.name}
+                                            </Text>
+                                        </Row>
+                                        <Row align={'middle'}>
+                                            {indexSelected === index && (
+                                                <RadioSelected
+                                                    color={theme.tEXTPrimary}
+                                                />
+                                            )}
+                                            <Text style={{ marginLeft: 20 }}>
+                                                {`${item.numberOfCustomer || 0}/${
+                                                    item.size
+                                                }`}
+                                            </Text>
+                                        </Row>
+                                    </Button>
+                                );
+                            })
+                    )}
                 </div>
                 <Row justify={'space-around'}>
                     <Col span={10}>

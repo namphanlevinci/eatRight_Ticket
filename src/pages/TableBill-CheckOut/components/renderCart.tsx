@@ -27,31 +27,31 @@ export const RenderCart = ({ cart }: { cart: InvoiceWithSplit }) => {
                 <DividedSolid color={theme.nEUTRALLine} />
                 <RenderText
                     title="Subtotal"
-                    value={`$${cart.total.subtotal.value}`}
+                    value={`$${cart?.total?.subtotal?.value}`}
                 />
                 {/* <RenderText title='Service fee' value={`$${cart.total}`}/> */}
-                {cart.total.discounts.length > 0 && (
+                {cart?.total?.discounts?.length > 0 && (
                     <RenderText
                         title="Discount"
-                        value={`- $${cart.total.discounts[0].amount.value}`}
+                        value={`- $${cart?.total?.discounts[0]?.amount?.value}`}
                     />
                 )}
                 <RenderText
                     title="Tax"
-                    value={`$${cart?.total?.taxes[0]?.amount?.value?.toFixed(2)}`}
+                    value={`$${(cart?.total?.taxes[0]?.amount?.value || 0).toFixed(2)}`}
                 />
                 <RenderText
                     title="Total"
-                    value={`$${(cart.total.base_grand_total.value - (cart?.total?.tip_amount?.value || 0)).toFixed(2)}`}
+                    value={`$${(cart?.total?.base_grand_total?.value - (cart?.total?.tip_amount?.value || 0)).toFixed(2)}`}
                 />
                 <DividedSolid color={theme.nEUTRALLine} />
                 <RenderText
                     title="Tip"
-                    value={`$${(cart?.total?.tip_amount?.value || 0).toFixed(2)}`}
+                    value={`$${(cart?.total?.tip_amount?.value || 0)?.toFixed(2)}`}
                 />
                 <RenderText
                     title="Grand Total"
-                    value={`$${cart.total.grand_total.value.toFixed(2)}`}
+                    value={`$${cart?.total?.grand_total?.value?.toFixed(2)}`}
                 />
             </div>
         </div>
@@ -65,15 +65,15 @@ const RenderItem = ({ item }: { item: any }) => {
                 <Row>
                     <Col>
                         <Text style={{ marginRight: 8 }}>
-                            {item.quantity_invoiced}X
+                            {item?.quantity_invoiced}X
                         </Text>
                     </Col>
                     <Col style={{ flex: 1 }}>
-                        <Text>{item.product_name}</Text>
+                        <Text>{item?.product_name}</Text>
                     </Col>
                 </Row>
             </Col>
-            <Text>$ {item.product_sale_price.value}</Text>
+            <Text>$ {item?.product_sale_price?.value}</Text>
         </Row>
     );
 };

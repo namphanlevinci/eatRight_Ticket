@@ -13,7 +13,6 @@ export default function ModalPaymentPending({
     onSkip,
     onCash,
     onPOS_DJV,
-    onPOS,
 }: {
     showLoading: boolean;
     data?: any;
@@ -123,7 +122,7 @@ export default function ModalPaymentPending({
                         {currentcy} {formatNumberWithCommas(data?.grand_total)}
                     </Text>
                 </Row>
-                <Button
+                {/* <Button
                     style={{
                         marginTop: 30,
                         marginInline: 0,
@@ -134,6 +133,18 @@ export default function ModalPaymentPending({
                     color={theme.pRIMARY1}
                 >
                     POS Payment (ARISE)
+                </Button> */}
+                <Button
+                    style={{
+                        marginTop: 10,
+                        marginInline: 0,
+                        border: 'none',
+                    }}
+                    onClick={onCash}
+                    background={theme.pRIMARY6Primary}
+                    color={theme.pRIMARY1}
+                >
+                    Cash
                 </Button>
                 <Button
                     style={{
@@ -145,19 +156,7 @@ export default function ModalPaymentPending({
                     background={theme.pRIMARY6Primary}
                     color={theme.pRIMARY1}
                 >
-                    POS Payment (DJV)
-                </Button>
-                <Button
-                    style={{
-                        marginTop: 10,
-                        marginInline: 0,
-                        border: 'none',
-                    }}
-                    onClick={onCash}
-                    background={theme.pRIMARY6Primary}
-                    color={theme.pRIMARY1}
-                >
-                    Use Cash
+                    Credit Card
                 </Button>
 
                 <Button

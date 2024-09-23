@@ -23,9 +23,9 @@ export default function ModalTip({
     totalWithoutTax: number;
 }) {
     const inputRef = useRef<any>(null);
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState<string>('0');
     const [tips, setTips] = React.useState([10, 15, 20]);
-    const [selectTip, setSelectTip] = React.useState(10);
+    const [selectTip, setSelectTip] = React.useState(0);
     const [onGetTips, { data }] = useLazyQuery(GET_TIPS);
     useEffect(() => {
         onGetTips({
@@ -34,7 +34,6 @@ export default function ModalTip({
     }, []);
     useEffect(() => {
         if (data) {
-            console.log(data);
             const tip_option = data?.tipRestaurant?.tip_option;
             const tip_percent = tip_option?.find(
                 (item: any) => item?.type === 'percent',
@@ -54,14 +53,14 @@ export default function ModalTip({
     useEffect(() => {
         if (selectTip !== 0 && total !== 0) {
             if (data?.tipRestaurant?.include_tax_in_tip) {
-                setValue(roundTo((total * selectTip) / 100, 3));
+                setValue(`${roundTo((total * selectTip) / 100, 3)}`);
             } else {
-                setValue(roundTo((totalWithoutTax * selectTip) / 100, 3));
+                setValue(`${roundTo((totalWithoutTax * selectTip) / 100, 3)}`);
             }
         }
     }, [selectTip, total]);
     const onFinish = () => {
-        onSubmit(value);
+        onSubmit(parseFloat(value));
     };
     const { theme } = useTheme();
     const isMobile = useMediaQuery({
@@ -98,34 +97,42 @@ export default function ModalTip({
             <Text style={{ marginBlock: 16 }}>
                 Total bill {`(Include Tax)`}: $ {total.toFixed(2)}
             </Text>
-            <Input
-                ref={inputRef}
-                value={value}
-                onChange={(e) => {
-                    setValue(parseFloat(e.target.value || '0'));
-                    setSelectTip(0);
-                }}
-                style={{
-                    flex: 1,
-                    height: 56,
-                    backgroundColor: theme.nEUTRALBase,
-                    color: theme.tEXTPrimary,
-                    border: `1px solid ${theme.nEUTRALLine}`,
-                }}
-                itemType="number"
-                prefix="$"
-                allowClear={false}
-                suffix={
-                    <div
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                            setValue(0), setSelectTip(0);
-                        }}
-                    >
-                        <ClearIcon />
-                    </div>
-                }
-            />
+            <Row align={'middle'}>
+                <Text style={{ marginRight: 16 }}>Tip amount</Text>
+                <Input
+                    ref={inputRef}
+                    value={value}
+                    onChange={(e) => {
+                        const inputValue = e.target.value;
+                        // Kiểm tra xem giá trị có phải là số thập phân hợp lệ không
+                        if (/^\d*\.?\d*$/.test(inputValue)) {
+                            setValue(inputValue); // Cập nhật giá trị nếu hợp lệ
+                        }
+                        setSelectTip(0);
+                    }}
+                    style={{
+                        flex: 1,
+                        height: 56,
+                        backgroundColor: theme.nEUTRALBase,
+                        color: theme.tEXTPrimary,
+                        border: `1px solid ${theme.nEUTRALLine}`,
+                    }}
+                    type="text" // Đổi thành type="text"
+                    prefix="$"
+                    allowClear={false}
+                    suffix={
+                        <div
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                                setValue('0'); // Đặt lại giá trị về 0
+                                setSelectTip(0);
+                            }}
+                        >
+                            <ClearIcon />
+                        </div>
+                    }
+                />
+            </Row>
             <Text style={{ marginBlock: 16 }}>Or pick predefined amount</Text>
 
             <Row justify={'space-between'}>
@@ -167,7 +174,9 @@ export default function ModalTip({
                 Grand Total{' '}
                 <span style={{ fontSize: 18, fontWeight: '600' }}>
                     {' '}
-                    ${roundTo(total + value, 3)?.toFixed(2)}{' '}
+                    ${roundTo(total + parseFloat(value || '0'), 3)?.toFixed(
+                        2,
+                    )}{' '}
                 </span>
             </Text>
             <ButtonPrimary

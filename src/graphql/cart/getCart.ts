@@ -9,6 +9,7 @@ export const GET_CART_BY_ID = gql`
             id
             email
             firstname
+            phonenumber
             lastname
             numberOfCustomer
             items {

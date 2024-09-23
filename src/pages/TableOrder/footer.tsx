@@ -1,5 +1,4 @@
 import { App, Col, Divider, Row } from 'antd';
-import { Text } from 'components/atom/Text';
 import React, { useEffect, useMemo } from 'react';
 import { Colors } from 'themes/colors';
 import { CartItemType } from 'context/cartType';
@@ -88,7 +87,7 @@ export default function OrderFooter({
     );
 
     const Tax = useMemo(
-        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100,
+        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 0) / 100,
         [cart],
     );
 
@@ -140,7 +139,6 @@ export default function OrderFooter({
                 style={{ paddingInline: 20 }}
             >
                 <div>
-                    <Text style={{ fontSize: 20 }}>Billing Information</Text>
                     <RenderBillInfomationRow
                         title="Total"
                         value={`$ ${formatNumberWithCommas(totalMoney)}`}
@@ -199,7 +197,7 @@ export default function OrderFooter({
                     )}
                     {cart?.is_active ? (
                         <ButtonSubmit
-                            title="Go Bill"
+                            title="Next"
                             onClick={() => goTableBill()}
                         />
                     ) : (

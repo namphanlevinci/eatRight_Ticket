@@ -47,6 +47,7 @@ export default function ColRight({
     const [customerName, setCustomerName] = React.useState<any>(
         cart?.firstname,
     );
+
     const {
         handleCheckOut,
         loading,
@@ -59,11 +60,13 @@ export default function ColRight({
         setVisibleMoalPos,
         handlePOSPayment,
         pos_Loading,
+        hasGivenTip,
         handleSetTip,
         isVisibleModalPosDJV,
         setVisibleMoalPosDJV,
         handlePOSPaymentWithDJV,
         onCloseProcessingPayment,
+        showModalErrorPayment,
     } = useTableBill();
 
     useEffect(() => {
@@ -76,11 +79,46 @@ export default function ColRight({
     const { handleAddCoupon } = useCouponCart();
     const { theme } = useTheme();
 
+    const handleProceed = () => {
+        if (tip === undefined) {
+            setModalTip(true);
+            return;
+        }
+        if (isSplitBill) {
+            if (numbersSplit && numbersSplit > 1) {
+                handleSplitEven(numbersSplit);
+            } else {
+                const newData = listItems?.map((item) => {
+                    return {
+                        guestId: item.guestId,
+                        items: item.items.map((data) => {
+                            return {
+                                quantity: data.quantity,
+                                sku: data.product.sku,
+                            };
+                        }),
+                    };
+                });
+
+                handleSplitByItem(newData);
+            }
+        } else {
+            handleCheckOut();
+        }
+    };
+
     useEffect(() => {
         if (cart?.tip_amount) {
             setTip(cart?.tip_amount);
         }
     }, [cart?.tip_amount]);
+
+    useEffect(() => {
+        if (hasGivenTip) {
+            handleProceed();
+        }
+    }, [hasGivenTip]);
+
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
     });
@@ -92,7 +130,7 @@ export default function ColRight({
     );
 
     const Tax = useMemo(
-        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100,
+        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 0) / 100,
         [cart],
     );
 
@@ -146,14 +184,16 @@ export default function ColRight({
                 onCancel={() => {
                     setModalTip(false);
                 }}
-                onSubmit={(values: any) => {
-                    handleSetTip(values);
+                onSubmit={async (values: any) => {
                     setTip(values);
                     setTipPercent(
                         values /
                             ((cart?.prices.grand_total.value || 0) -
                                 (cart?.prices?.total_canceled?.value || 0)),
                     );
+
+                    await handleSetTip(values);
+                    handleProceed();
                     setModalTip(false);
                 }}
                 total={(totalMoney + totalDiscount) * (Tax + 1)}
@@ -175,22 +215,21 @@ export default function ColRight({
                 onPressOK={(pos_id: number) => {
                     handlePOSPaymentWithDJV(pos_id);
                 }}
+                onCancel={() => {
+                    showModalErrorPayment();
+                }}
             />
             {contextHolder}
             <LoadingModal showLoading={loading} />
             <LoadingModalPayment
                 showLoading={pos_Loading}
-                title="POS Payment Processing ..."
+                title="Processing ..."
                 onClose={onCloseProcessingPayment}
             />
             {isMobile && (
                 <Row justify={'end'} style={{ marginTop: 20 }}>
                     <SplitBillButton />
                 </Row>
-            )}
-
-            {!isMobile && (
-                <Text style={{ fontSize: 20 }}>Customer Information</Text>
             )}
 
             <InputInfoCart
@@ -207,19 +246,18 @@ export default function ColRight({
             /> */}
 
             <div style={{ marginTop: isMobile ? 20 : 56 }}>
-                <Text style={{ fontSize: 20 }}>Billing Information</Text>
                 <RenderBillInfomationRow
-                    title="Sub total"
+                    title="Subtotal"
                     value={`$ ${formatNumberWithCommas(totalMoney)}`}
                 />
 
                 {cart?.prices?.discounts && (
                     <RenderDiscountRow
-                        title="Discounted"
+                        title="Discount"
                         value={
                             cart?.prices?.discounts.length > 0
                                 ? cart?.prices?.discounts[0].label
-                                : 'ADD CODE'
+                                : 'Add Code'
                         }
                         textRightStyle={{
                             color:
@@ -259,7 +297,9 @@ export default function ColRight({
                 cart?.prices?.applied_taxes[0]?.amount ? (
                     <RenderBillInfomationRow
                         title="Tax"
-                        value={`$ ${formatNumberWithCommas((totalMoney + totalDiscount) * Tax)}`}
+                        value={`$ ${formatNumberWithCommas(
+                            (totalMoney + totalDiscount) * Tax,
+                        )}`}
                     />
                 ) : (
                     <></>
@@ -280,7 +320,26 @@ export default function ColRight({
             </div>
             {isSplitBill ? (
                 <div>
-                    <Text style={{ fontSize: 20 }}>Checks</Text>
+                    <div
+                        style={{
+                            display: 'flex',
+                            cursor: 'pointer',
+                        }}
+                        onClick={openModalSplitBill}
+                    >
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                fontWeight: '600',
+                                color: theme.pRIMARY6Primary,
+                            }}
+                        >
+                            Split Bills
+                        </Text>
+                        <div style={{ marginLeft: 'auto', marginTop: 4 }}>
+                            <ArrowRightIcon />
+                        </div>
+                    </div>
                     {listItems?.length === 0 && numbersSplit && numbersSplit > 1
                         ? Array.from({ length: numbersSplit }, (_, index) => (
                               <RenderSplitBillGuest
@@ -322,7 +381,7 @@ export default function ColRight({
             ) : (
                 <div style={{ marginTop: 56 }}>
                     <Text style={{ fontSize: 20, marginBottom: 16 }}>
-                        Payment options
+                        Payment method
                     </Text>
 
                     <ButtonOptions
@@ -332,49 +391,20 @@ export default function ColRight({
                     />
                     <div style={{ marginTop: 15 }} />
                     <ButtonOptions
-                        title="POS (DJV)"
+                        title="Credit Card"
                         isSelected={paymentMethod === 'pos_djv'}
                         onClick={() => setPaymentMethod('pos_djv')}
                     />
                     <div style={{ marginTop: 15 }} />
-                    <ButtonOptions
+                    {/* <ButtonOptions
                         title="POS (ARISE)"
                         isSelected={paymentMethod === 'pos'}
                         onClick={() => setPaymentMethod('pos')}
-                    />
+                    /> */}
                 </div>
             )}
             <div style={{ marginTop: 40 }}>
-                <ButtonSubmit
-                    title="Proceed Payment"
-                    onClick={() => {
-                        if (tip === undefined) {
-                            setModalTip(true);
-                            return;
-                        }
-                        if (isSplitBill) {
-                            if (numbersSplit && numbersSplit > 1) {
-                                handleSplitEven(numbersSplit);
-                            } else {
-                                const newData = listItems?.map((item) => {
-                                    return {
-                                        guestId: item.guestId,
-                                        items: item.items.map((data) => {
-                                            return {
-                                                quantity: data.quantity,
-                                                sku: data.product.sku,
-                                            };
-                                        }),
-                                    };
-                                });
-
-                                handleSplitByItem(newData);
-                            }
-                        } else {
-                            handleCheckOut();
-                        }
-                    }}
-                />
+                <ButtonSubmit title="Proceed Payment" onClick={handleProceed} />
             </div>
         </ColStyled>
     );
@@ -401,7 +431,6 @@ const RenderSplitBillGuest = ({
                 <Text style={{ fontWeight: '400' }}>
                     ${formatNumberWithCommas(total)}
                 </Text>
-                <ArrowRightIcon />
             </Row>
         </Row>
     );

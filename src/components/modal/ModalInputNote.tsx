@@ -11,15 +11,22 @@ export default function ModalInputNote({
     onSubmit,
     title,
     type,
+    inputValue,
 }: {
     isModalOpen: boolean;
     onCancel: any;
     onSubmit: any;
     title: string;
     type?: 'tel' | 'email';
+    inputValue?: string;
 }) {
     const inputRef = useRef<any>(null);
     const [value, setValue] = React.useState('');
+    useEffect(() => {
+        if (inputValue) {
+            setValue(inputValue);
+        }
+    }, [inputValue]);
     useEffect(() => {
         // Kiểm tra xem modal có mở không
         if (isModalOpen && inputRef.current) {
@@ -120,6 +127,8 @@ export default function ModalInputNote({
                         fontSize: 17,
                     }}
                     inputMode={type}
+                    maxLength={60}
+                    allowClear
                 />
             </Row>
             <Row
@@ -130,7 +139,8 @@ export default function ModalInputNote({
                 <ButtonPrimary
                     title="Cancel"
                     onClick={onCancel}
-                    width="162px"
+                    maxWidth="162px"
+                    width="45%"
                     marginTop="0px"
                     isCancel
                     borderColor={theme.tEXTPrimary}
@@ -140,7 +150,8 @@ export default function ModalInputNote({
                 <ButtonPrimary
                     title="Send"
                     onClick={onFinish}
-                    width="166px"
+                    maxWidth="166px"
+                    width="45%"
                     marginTop="0px"
                     height="56px"
                 />

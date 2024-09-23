@@ -1,24 +1,25 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { Col } from 'antd';
 import { TextDark } from 'components/atom/Text';
-import Barcode from 'react-barcode';
 
 import { CURRENTCY } from 'constants/currency';
 import {
     DividedDashed,
     RowStyled,
     text24,
-    BarCodeContainer,
     text16,
     text16W,
     BoldText,
 } from '../styled';
-export const RenderBill = ({
+import React from 'react';
+const RenderBillItem = ({
     data,
     selectDataShowbill,
+    dataInvoice,
 }: {
     data: any;
     selectDataShowbill: any;
+    dataInvoice: any;
 }) => {
     const totalDiscount = selectDataShowbill
         ? selectDataShowbill?.total?.discounts.reduce(
@@ -83,7 +84,9 @@ export const RenderBill = ({
                         <BoldText>Bill: </BoldText>
                         {selectDataShowbill
                             ? selectDataShowbill?.number
-                            : data?.order_number}
+                            : dataInvoice?.length === 1
+                              ? dataInvoice[0]?.number
+                              : data?.order_number}
                     </TextDark>
                 </RowStyled>
                 {data?.table ? (
@@ -142,18 +145,21 @@ export const RenderBill = ({
                         - {CURRENTCY} {totalDiscount.toFixed(2)}
                     </TextDark>
                 </RowStyled>
-                {data?.total?.total_tax?.value && (
+                {data?.total?.total_tax?.value ? (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>Tax</TextDark>
                         <TextDark>
                             {CURRENTCY}{' '}
-                            {selectDataShowbill
+                            {(selectDataShowbill
                                 ? selectDataShowbill?.total?.total_tax?.value?.toFixed(
                                       2,
                                   )
-                                : data?.total?.total_tax?.value?.toFixed(2)}
+                                : data?.total?.total_tax?.value?.toFixed(2)) ||
+                                0}
                         </TextDark>
                     </RowStyled>
+                ) : (
+                    <></>
                 )}
 
                 {data?.total?.service_charge_amount?.value && (
@@ -232,20 +238,12 @@ export const RenderBill = ({
                 {data?.payment_methods &&
                     data?.payment_methods[0]?.additional_data[1]?.value && (
                         <RowStyled align={'middle'}>
-                            <TextDark style={text16}>Cart Type:</TextDark>
-                            <TextDark>
+                            <TextDark style={text16}>
                                 {
                                     data?.payment_methods[0]?.additional_data[1]
                                         ?.value
                                 }
-                            </TextDark>
-                        </RowStyled>
-                    )}
-                {data?.payment_methods &&
-                    data?.payment_methods[0]?.additional_data[0]?.value && (
-                        <RowStyled align={'middle'}>
-                            <TextDark style={text16}>Last 4 Digits:</TextDark>
-                            <TextDark>
+                                {'  '}
                                 {
                                     data?.payment_methods[0]?.additional_data[0]
                                         ?.value
@@ -253,12 +251,7 @@ export const RenderBill = ({
                             </TextDark>
                         </RowStyled>
                     )}
-                <DividedDashed />
-                <TextDark>
-                    <TextDark style={text16}>
-                        Signature:_________________________
-                    </TextDark>
-                </TextDark>
+
                 <DividedDashed />
                 <TextDark
                     style={{
@@ -274,15 +267,12 @@ export const RenderBill = ({
                 <TextDark style={{ marginTop: 10 }}>
                     Feedback/Contact us: {data?.feedback_url}
                 </TextDark>
-
-                <BarCodeContainer>
-                    <Barcode value={data?.order_number} />
-                </BarCodeContainer>
+                <div style={{ height: 24 }} />
             </div>
         </div>
     );
 };
-
+export const RenderBill = React.memo(RenderBillItem);
 const RenderItem = ({ data }: { data: any }) => {
     return data?.items?.map((item: any, index: number) => {
         return (
@@ -294,7 +284,7 @@ const RenderItem = ({ data }: { data: any }) => {
                     <Col style={{ flex: 1 }}> {item?.name}</Col>
                     <Col style={{ textAlign: 'end', width: 50 }}>
                         {CURRENTCY}
-                        {item?.price.toFixed(2)}
+                        {(item?.qty * item?.price).toFixed(2)}
                     </Col>
                 </RowStyled>
                 {item?.options?.map((option: any, idx: number) => {
@@ -323,7 +313,10 @@ const RenderItem2 = ({ data }: { data: any }) => {
                     <Col style={{ flex: 1 }}> {item?.product_name}</Col>
                     <Col style={{ textAlign: 'end', width: 50 }}>
                         {CURRENTCY}
-                        {item?.product_sale_price?.value?.toFixed(2)}
+                        {(
+                            item?.quantity_invoiced *
+                            item?.product_sale_price?.value
+                        )?.toFixed(2)}
                     </Col>
                 </RowStyled>
             </>

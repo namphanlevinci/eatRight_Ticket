@@ -6,6 +6,7 @@ import React, { useEffect, useRef } from 'react';
 type FieldType = {
     username?: string;
     numberOfCustomer?: string;
+    phoneNumber?: string;
 };
 export default function InfoCartModal({
     isModalOpen,
@@ -20,6 +21,7 @@ export default function InfoCartModal({
     value?: {
         name: string;
         number: number;
+        phoneNumber?: string;
     };
 }) {
     const inputRef = useRef<any>(null);
@@ -46,6 +48,24 @@ export default function InfoCartModal({
         }
     };
     const { theme } = useTheme();
+    const names = [
+        'Liam',
+        'Emma',
+        'Noah',
+        'Olly',
+        'Zara',
+        'Finn',
+        'Lila',
+        'Eli',
+        'Mila',
+        'Jade',
+    ];
+
+    function generateRandomName() {
+        const randomIndex = Math.floor(Math.random() * names.length);
+        return names[randomIndex];
+    }
+
     return (
         <Modal
             title="Basic Modal"
@@ -64,15 +84,17 @@ export default function InfoCartModal({
             closeIcon={<></>}
             centered
             width={380}
+            closable={false}
         >
             <Form
                 name="basic"
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 initialValues={{
-                    username: value?.name, // Giá trị mặc định cho trường username
-                    numberOfCustomer: value?.number,
+                    username: value?.name || generateRandomName(), // Giá trị mặc định cho trường username
+                    numberOfCustomer: value?.number || 1,
                     remember: true,
+                    phoneNumber: value?.phoneNumber || '',
                 }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -135,7 +157,36 @@ export default function InfoCartModal({
                         }}
                     />
                 </Form.Item>
-
+                <Form.Item<FieldType>
+                    label="Phone number"
+                    name="phoneNumber"
+                    rules={[
+                        {
+                            required: false,
+                        },
+                        {
+                            pattern: /^\d{10,15}$/, // Định dạng số điện thoại có độ dài từ 10-15 chữ số
+                            message: 'Please enter a valid phone number!',
+                        },
+                    ]}
+                >
+                    <Input
+                        size="large"
+                        autoFocus={true}
+                        ref={inputRef}
+                        placeholder="Phone Number"
+                        allowClear
+                        style={{
+                            flex: 1,
+                            height: 56,
+                            backgroundColor: theme.nEUTRALBase,
+                            color: theme.tEXTPrimary,
+                            border: `1px solid ${theme.nEUTRALLine}`,
+                        }}
+                        inputMode="tel"
+                        maxLength={15}
+                    />
+                </Form.Item>
                 <Form.Item<FieldType>
                     label="Number of guests"
                     name="numberOfCustomer"

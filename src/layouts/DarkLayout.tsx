@@ -1,15 +1,24 @@
-import { Col, Layout, Popover, Row, Spin, Switch } from 'antd';
+import {
+    Button,
+    Col,
+    Layout,
+    notification,
+    Popover,
+    Row,
+    Spin,
+    Switch,
+} from 'antd';
 import { Text } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { Colors } from 'themes/colors';
 import Logo from 'assets/logos/logo.png';
-import LogoMerchant from 'assets/logos/logo_merchant.png';
+import LogoMerchant from 'assets/logos/merchantLogo.png';
 // import HelpIcon from 'assets/icons/help';
 import { Link } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { USER_INFO } from 'graphql/auth/login';
 import { useDispatch } from 'react-redux';
 import { updateCustomerInfo, updateFloor } from 'features/auth/authSlice';
@@ -28,11 +37,13 @@ import {
 import DrawerMenu from './components/DrawerMenu';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
+import { OPEN_CASHIER } from 'graphql/printer';
 
 type Props = {
     children: React.ReactNode;
 };
 
+const MERCHANTURL = process.env.REACT_APP_MERCHANTURL;
 export const DarkLayout = (props: Props) => {
     const { children } = props;
     const {
@@ -46,7 +57,7 @@ export const DarkLayout = (props: Props) => {
     const [onGetInfo] = useLazyQuery(USER_INFO);
     const [onGetRestaurent] = useLazyQuery(GET_RESTAURANT);
     const [getNotification] = useLazyQuery(GET_NOTIFICATION);
-
+    const [onOpenCashier] = useMutation(OPEN_CASHIER);
     const dispatch = useDispatch();
 
     const { Header, Footer } = Layout;
@@ -207,6 +218,21 @@ export const DarkLayout = (props: Props) => {
 
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const openCashier = () => {
+        onOpenCashier()
+            .then((res) => {
+                if (res) {
+                    notification.success({
+                        message: 'Open Cashier Successful',
+                        description:
+                            'Please wait for few seconds to open Cashier',
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
     return (
         <Layout
             style={{
@@ -253,35 +279,54 @@ export const DarkLayout = (props: Props) => {
                         {isLogged && (
                             <>
                                 {isMerchant && (
-                                    <SwitchContainer
-                                        style={{
-                                            display: 'flex',
-                                            marginRight: 16,
-                                            alignItems: 'center',
-                                        }}
-                                    >
+                                    <Row align={'middle'} style={{ gap: 30 }}>
                                         {!isMobile && (
-                                            <>
-                                                <Text style={{ fontSize: 18 }}>
-                                                    Table View
-                                                </Text>
-
-                                                <Switch
-                                                    defaultChecked
-                                                    onChange={() => {
-                                                        const url = `https://staging-merchant.eatrightpos.com/home?token=${localStorage.getItem('token')}`;
-                                                        window.location.href =
-                                                            url;
-                                                    }}
+                                            <Button
+                                                type="primary"
+                                                onClick={() => openCashier()}
+                                            >
+                                                <Text
                                                     style={{
-                                                        marginLeft: 5,
-                                                        height: 32,
-                                                        width: 72,
+                                                        color: theme.nEUTRALPrimary,
+                                                        fontWeight: '600',
                                                     }}
-                                                />
-                                            </>
+                                                >
+                                                    Open Cashier
+                                                </Text>
+                                            </Button>
                                         )}
-                                    </SwitchContainer>
+                                        <SwitchContainer
+                                            style={{
+                                                display: 'flex',
+                                                marginRight: 16,
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            {!isMobile && (
+                                                <>
+                                                    <Text
+                                                        style={{ fontSize: 18 }}
+                                                    >
+                                                        Table View
+                                                    </Text>
+
+                                                    <Switch
+                                                        defaultChecked
+                                                        onChange={() => {
+                                                            const url = `${MERCHANTURL}/home?token=${localStorage.getItem('token')}`;
+                                                            window.location.href =
+                                                                url;
+                                                        }}
+                                                        style={{
+                                                            marginLeft: 5,
+                                                            height: 32,
+                                                            width: 72,
+                                                        }}
+                                                    />
+                                                </>
+                                            )}
+                                        </SwitchContainer>
+                                    </Row>
                                 )}
                                 <Popover
                                     content={noti}

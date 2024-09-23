@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import { CREATE_CUSTOMER } from 'graphql/customer';
 import React from 'react';
 import { useNavigate } from 'react-router';
-const calling_code = '+84';
+const calling_code = '+1';
 export default function AddNewCustomer() {
     const { theme } = useTheme();
     const [onCreateCustomer, { loading }] = useMutation(CREATE_CUSTOMER);
@@ -24,13 +24,18 @@ export default function AddNewCustomer() {
             variables: {
                 firstname: values.firstname,
                 lastname: values.lastname,
-                email: values.email,
                 calling_code: calling_code,
                 gender: values.gender,
-                date_of_birth: dayjs(values.dob).format('YYYY-MM-DD'),
-                phone_number: `${calling_code}${values.phoneNumber.phoneNumber.replace(/\s/g, '')}`,
-                status: values.status,
-                group_id: values.group_id,
+                phone_number: `${calling_code}${values.phoneNumber.phoneNumber.replace(
+                    /\s/g,
+                    '',
+                )}`,
+                status: 1,
+                group_id: 2,
+                ...(values?.email && { email: values.email }),
+                ...(values?.dob && {
+                    date_of_birth: dayjs(values.dob).format('YYYY-MM-DD'),
+                }),
             },
         })
             .then((res) => {
@@ -108,11 +113,11 @@ export default function AddNewCustomer() {
                         <InputForm
                             label="Last Name"
                             name="lastname"
-                            placeholder="First Name"
+                            placeholder="Last Name"
                         />
                     </ColContainer>
                 </Row>
-                <Row>
+                {/* <Row>
                     <ColContainer>
                         <SelectForm
                             label="Customer group"
@@ -147,7 +152,7 @@ export default function AddNewCustomer() {
                             ]}
                         />
                     </ColContainer>
-                </Row>
+                </Row> */}
                 <Text
                     style={{ fontSize: 20, fontWeight: '600', paddingLeft: 16 }}
                 >
@@ -168,7 +173,9 @@ export default function AddNewCustomer() {
                             placeholder="example@gmail.com"
                             required={false}
                             inputMode="email"
-                            rule={[{ type: 'email' }]}
+                            rule={[
+                                { type: 'email', message: 'Email is invalid' },
+                            ]}
                         />
                     </ColContainer>
                 </Row>

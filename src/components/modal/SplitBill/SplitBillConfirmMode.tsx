@@ -37,7 +37,7 @@ export default function SplitBillConfirmMode({
     const groupedData = useMemo(() => {
         const grouped = listItems.reduce(
             (acc, item) => {
-                const guestId = item.guestId || 'Guest N'; // Gán 'Guest N' nếu không có guestId
+                const guestId = item.guestId || `Guest ${listItems.length}`;
                 if (!acc[guestId]) {
                     acc[guestId] = [];
                 }
@@ -65,7 +65,7 @@ export default function SplitBillConfirmMode({
     );
 
     const Tax = useMemo(
-        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100,
+        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 0) / 100,
         [cart],
     );
 

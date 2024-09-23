@@ -17,6 +17,7 @@ export const useAddCart = () => {
         firstname: string,
         numberOfCustomer: number,
         is_counter: boolean,
+        phoneNumber?: string,
     ) => {
         await onAddCart({
             variables: {
@@ -25,6 +26,7 @@ export const useAddCart = () => {
                 cartItems,
                 numberOfCustomer,
                 is_counter: is_counter,
+                phonenumber: phoneNumber || '',
             },
         })
             .then((res) => {

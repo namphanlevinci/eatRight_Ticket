@@ -25,7 +25,7 @@ export default function InputForm({
                         ? rule
                         : [
                               {
-                                  required: true,
+                                  required: true, message: `Field is required`
                               },
                           ]
                 }
@@ -34,7 +34,7 @@ export default function InputForm({
                 <DarkInput
                     {...props}
                     placeholder={placeholder}
-                    style={{ paddingRight: 50 }}
+                    style={{ paddingRight: 50, ...props.style }}
                 />
             </FormItem>
         </div>
