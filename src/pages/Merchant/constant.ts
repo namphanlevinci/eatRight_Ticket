@@ -40,23 +40,66 @@ export function getRandomInt(min: number, max: number) {
 
 export const STATUS_COLUMNS = [
     {
-        title: 'New',
+        title: 'NEW',
         status: 'pending',
     },
     {
-        title: 'received',
+        title: 'RECEIVED',
         status: 'received',
     },
     {
-        title: 'cooking',
+        title: 'COOKING',
         status: 'cooking',
     },
     {
-        title: 'ready_to_ship',
+        title: 'READY',
         status: 'ready_to_ship',
     },
     {
-        title: 'Serving',
+        title: 'SERVING',
         status: 'serving',
     },
 ];
+
+export const colorsData = {
+    pending: {
+        background: '--tertiary-1-bg',
+        borderColor: '--tertiary-2-default',
+    },
+    received: {
+        background: '--info-1-bg',
+        borderColor: '--info-2-default',
+    },
+    cooking: {
+        background: '--secondary-1-Light',
+        borderColor: '--secondary-2-default',
+    },
+    ready_to_ship: {
+        background: '--primary-1',
+        borderColor: '--primary-6',
+    },
+    done: {
+        background: '--success-1-bg',
+        borderColor: '--success-2-default',
+    },
+    paid: {
+        background: '--primary-1',
+        borderColor: '--primary-6',
+    },
+    canceled: {
+        background: '--error-1-bg',
+        borderColor: '--error-2-default',
+    },
+    cancel: {
+        background: '--error-1-bg',
+        borderColor: '--error-2-default',
+    },
+    serving: {
+        background: '--success-1-bg',
+        borderColor: '--success-2-default',
+    },
+    ready: {
+        background: '--primary-1',
+        borderColor: '--primary-6',
+    },
+};

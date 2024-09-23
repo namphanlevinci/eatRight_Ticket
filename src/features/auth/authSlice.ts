@@ -13,6 +13,7 @@ export interface authStateType {
         status: string;
     }[];
     isMerchant: boolean;
+    is_dine_in: boolean;
 }
 
 const initialState: authStateType = {
@@ -24,6 +25,7 @@ const initialState: authStateType = {
     restaurant_id: '',
     floor: [],
     isMerchant: false,
+    is_dine_in: false,
 };
 
 export const authSlice = createSlice({
@@ -43,6 +45,7 @@ export const authSlice = createSlice({
             state.restaurant_name = action.payload.restaurant_name;
             state.restaurant_address = action.payload.restaurant_address;
             state.restaurant_id = action.payload.restaurant_id;
+            state.is_dine_in = action.payload.is_dine_in;
         },
         updateFloor: (state, action) => {
             state.floor = action.payload;

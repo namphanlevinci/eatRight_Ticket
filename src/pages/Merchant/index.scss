@@ -15,9 +15,10 @@
   justify-content: space-between;
   overflow-x: scroll;
   // flex-wrap: nowrap;
+  
   .board-columns {
-    max-width: 19%;
-    flex: 0 0 19%;
+    max-width: 16%;
+    flex: 0 0 16%;
     background-color: var(--error-2-default);
     height: calc(100vh - 135px);
     background-color: var(--neutral-primary);
@@ -68,19 +69,23 @@
       }
     }
     &:nth-child(1) .columns-header {
-      background-color: var(--tertiary-2-default);
+      background-color: $yallow-color;
     }
     &:nth-child(2) .columns-header {
-      background-color: var(--info-2-default);
+      background-color: $green-color-1;
     }
     &:nth-child(3) .columns-header {
-      background-color: var(--secondary-3-hover);
+      background-color: var( --secondary-2-default);
     }
     &:nth-child(4) .columns-header {
-      background-color: var(--primary-6);
+      background-color: var(--info-4-pressed);
     }
     &:nth-child(5) .columns-header {
-      background-color: var(--success-2-default);
+      background-color: var(--secondary-4-pressed);
+    }
+    &:nth-child(6) .columns-header {
+      background-color: var(--primary-6);
+     
     }
     .colums-wrapper {
       padding-top: 12px;
@@ -98,6 +103,76 @@
       background: var(--neutral-primary);
     }
   }
+  
+}
+@media only screen and (max-width: 1300px) and (min-width: 993px) {
+  .board-wrapper{
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    .board-columns{
+      max-width:24%;
+      flex: 0 0 24%;
+      margin-right: 12px;
+      &:last-child{
+        margin-right: 0;
+      }
+    }
+  }
+  .btn-print-order{
+    width: auto;
+    font-size: 12px !important;
+  }
+  .button-readyship {
+    width: 270px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  html {
+    font-size: 60%;
+  }
+  .board-wrapper{
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    .board-columns{
+      max-width:32%;
+      flex: 0 0 32%;
+      margin-right: 12px;
+      &:last-child{
+        margin-right: 0;
+      }
+    }
+  }
+  .btn-print-order{
+    width: auto;
+    font-size: 10px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html {
+    font-size: 55%;
+  }
+  .board-wrapper{
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    .board-columns{
+      max-width:100%;
+      flex: 0 0 100%;
+      margin-right: 12px;
+      &:last-child{
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 479px) {
+  html {
+    font-size: 45%;
+  }
+
+ 
 }
 
 .loading_container {

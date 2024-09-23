@@ -16,7 +16,7 @@ import { Colors } from 'themes/colors';
 import Logo from 'assets/logos/logo.png';
 import LogoMerchant from 'assets/logos/merchantLogo.png';
 // import HelpIcon from 'assets/icons/help';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { USER_INFO } from 'graphql/auth/login';
@@ -43,7 +43,6 @@ type Props = {
     children: React.ReactNode;
 };
 
-const MERCHANTURL = process.env.REACT_APP_MERCHANTURL;
 export const DarkLayout = (props: Props) => {
     const { children } = props;
     const {
@@ -233,6 +232,10 @@ export const DarkLayout = (props: Props) => {
                 console.log(err);
             });
     };
+    const navigation = useNavigate();
+    const onToggleView = () => {
+        navigation(BASE_ROUTER.MERCHANT_PAGE);
+    };
     return (
         <Layout
             style={{
@@ -313,9 +316,7 @@ export const DarkLayout = (props: Props) => {
                                                     <Switch
                                                         defaultChecked
                                                         onChange={() => {
-                                                            const url = `${MERCHANTURL}/home?token=${localStorage.getItem('token')}`;
-                                                            window.location.href =
-                                                                url;
+                                                            onToggleView();
                                                         }}
                                                         style={{
                                                             marginLeft: 5,

@@ -1,11 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_NOTIFICATION = gql`
-    query ($pageSize: Int!, $currentPage: Int!) {
-        getMerchantNotificationList(
-            pageSize: $pageSize
-            currentPage: $currentPage
-        ) {
+    query ($currentPage: Int!) {
+        getMerchantNotificationList(pageSize: 20, currentPage: $currentPage) {
             items {
                 notification_id
                 type

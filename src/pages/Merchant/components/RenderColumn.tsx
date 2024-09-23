@@ -12,23 +12,21 @@ export const renderHeaderColumnByStatus = (
     return (
         <div className="columns-header">
             <div className="columns-header-left">
-                {renderImageTitle(item?.status)}
                 <span className="columns-header-title">{item?.title}</span>
-                {countOrderByStatus > 0 && (
-                    <span className="columns-header-count">
-                        {`${countOrderByStatus}`}
-                    </span>
-                )}
             </div>
 
             <div className="colums-header-right">
-                {/* {item?.status === "received" && (
-                                <>
-                                  <button className="btn-print-order">
-                                    In hoá đơn
-                                  </button>
-                                </>
-                              )} */}
+                <span
+                    className="columns-header-count"
+                    style={{
+                        fontFamily: 'Montserrat',
+                        fontSize: 32,
+                        fontWeight: 'bold',
+                        color: 'var(--secondary-1-light)',
+                    }}
+                >
+                    {`${countOrderByStatus}`}
+                </span>
             </div>
         </div>
     );

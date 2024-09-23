@@ -1,11 +1,14 @@
 import { Spin } from 'antd';
-import React, { useState } from 'react';
-import { Droppable, DragDropContext } from 'react-beautiful-dnd';
+import React from 'react';
+import { DragDropContext } from 'react-beautiful-dnd';
 import Header from './Header';
 import { useHomeScreen } from './useHomeScreen';
 import { STATUS_COLUMNS } from './constant';
 import { renderHeaderColumnByStatus } from './components/RenderColumn';
 import './index.scss';
+import Order from './Oders';
+import useOpenModal from './useOpenModal';
+import { RejectOrderModal } from './components/Modal/RejectOrderModal';
 export default function MerchantPage() {
     const handleDragEnd = async ({
         source,
@@ -27,18 +30,33 @@ export default function MerchantPage() {
 
     const {
         isLoadingApp,
-        reload,
         refundOrderList,
         searchValue,
         setSearchValue,
-        setReload,
-        setRefundOrderList,
-        diningQuoteList,
-        diningOrderList,
         renderList,
+        handleSubmitRecievedOrder,
+        setIsLoadingApp,
+        setShowModalCancel,
+        setDataOrderModal,
+        setReload,
+        isShowModalCancel,
+        dataOrderModal,
+        handleSubmitCompletePickUp,
     } = useHomeScreen();
 
-    console.log(renderList);
+    const {
+        ModalDetail,
+        orderDetails,
+        handleOpen,
+        open,
+        loading,
+        setOpen,
+        headerData,
+        invoiceData,
+        setModalPrintBill,
+        PrintBill,
+        modalPrintBill,
+    } = useOpenModal();
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             {/* Thêm nội dung cho DragDropContext ở đây */}
@@ -49,7 +67,6 @@ export default function MerchantPage() {
                     </div>
                 )}
                 <Header
-                    reload={reload}
                     refundOrderList={refundOrderList}
                     setSearchValue={setSearchValue}
                 />
@@ -108,62 +125,65 @@ export default function MerchantPage() {
                                         list_order?.length ?? 0;
 
                                     return (
-                                        <Droppable
-                                            droppableId={item?.status}
+                                        <div
+                                            className="board-columns"
                                             key={index}
                                         >
-                                            {(provided, _snapshot) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    className="board-columns"
-                                                    key={index}
-                                                >
-                                                    {/******************** RENER TITLE HEADER STATUS *********************/}
+                                            {/******************** RENER TITLE HEADER STATUS *********************/}
 
-                                                    {renderHeaderColumnByStatus(
-                                                        item,
-                                                        countOrderByStatus,
-                                                    )}
-
-                                                    {/******************** RENER LIST ORDER BY COLUMN STATUS *********************/}
-                                                    <div className="colums-wrapper">
-                                                        {list_order?.map(
-                                                            (order, i) => {
-                                                                return (
-                                                                    // <Order
-                                                                    //   key={order?.order_number}
-                                                                    //   handleSubmitBom={handleSubmitBom}
-                                                                    //   openModal={(status, order) =>
-                                                                    //     handleOpen(status, order)
-                                                                    //   }
-                                                                    //   order={order}
-                                                                    //   id={i}
-                                                                    //   playSound={playSoundNotResponse}
-                                                                    //   saveOrderListNotResponse={
-                                                                    //     saveOrderListNotResponse
-                                                                    //   }
-                                                                    //   orderListNotResponse={orderListNotResponse}
-                                                                    //   playOrderNOtResponseAgain={
-                                                                    //     playOrderNOtResponseAgain
-                                                                    //   }
-                                                                    //   turnOffAppSound={turnOffAppSound}
-                                                                    // />
-                                                                    <div
-                                                                        key={i}
-                                                                    >
-                                                                        {
-                                                                            order?.order_number
-                                                                        }
-                                                                    </div>
-                                                                );
-                                                            },
-                                                        )}
-                                                    </div>
-                                                </div>
+                                            {renderHeaderColumnByStatus(
+                                                item,
+                                                countOrderByStatus,
                                             )}
-                                        </Droppable>
+
+                                            {/******************** RENER LIST ORDER BY COLUMN STATUS *********************/}
+                                            <div className="colums-wrapper">
+                                                {list_order?.map((order, i) => {
+                                                    return (
+                                                        <Order
+                                                            key={
+                                                                order?.order_number
+                                                            }
+                                                            openModal={(
+                                                                status: any,
+                                                                order: any,
+                                                            ) =>
+                                                                handleOpen(
+                                                                    status,
+                                                                    order,
+                                                                )
+                                                            }
+                                                            order={order}
+                                                            id={i}
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
                                     );
                                 })}
+                                <div className="board-columns">
+                                    {/******************** RENER TITLE HEADER STATUS *********************/}
+
+                                    {renderHeaderColumnByStatus(
+                                        {
+                                            title: 'COMPLETED',
+                                            status: 'complete',
+                                        },
+                                        0,
+                                    )}
+
+                                    {/******************** RENER LIST ORDER BY COLUMN STATUS *********************/}
+                                    <div className="colums-wrapper">
+                                        {/* {list_order?.map((order, i) => {
+                                            return (
+                                                <div key={i}>
+                                                    {order?.order_number}
+                                                </div>
+                                            );
+                                        })} */}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -172,6 +192,41 @@ export default function MerchantPage() {
                         <Spin />
                     </div>
                 )}
+                <ModalDetail
+                    open={open}
+                    loading={loading}
+                    data={orderDetails}
+                    onClose={() => setOpen(false)}
+                    headerData={headerData}
+                    handleSubmitRecievedOrder={async (orderId: any) => {
+                        await handleSubmitRecievedOrder(orderId);
+                        setIsLoadingApp(false);
+                        setOpen(false);
+                    }}
+                    handleCancel={(data: any) => {
+                        setDataOrderModal(data);
+                        setShowModalCancel(true);
+                    }}
+                    handleSubmitCompletePickUp={(data: any) => {
+                        handleSubmitCompletePickUp(data);
+                        setOpen(false);
+                    }}
+                    invoiceData={invoiceData}
+                    setModalPrintBill={setModalPrintBill}
+                    PrintBill={PrintBill}
+                    modalPrintBill={modalPrintBill}
+                />
+                <RejectOrderModal
+                    reload={() => setReload()}
+                    dataOrder={dataOrderModal}
+                    isShowModalRejectOrder={isShowModalCancel}
+                    closeModalRejectOrder={() => setShowModalCancel(false)}
+                    submitRejectOrder={() => {
+                        setShowModalCancel(false);
+                        setOpen(!open);
+                        setReload();
+                    }}
+                />
             </div>
         </DragDropContext>
     );

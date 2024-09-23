@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { CheckOutlined } from '@ant-design/icons';
-import { Badge, Popover, Row, Col, Switch } from 'antd';
+import { Badge, Popover, Row, Col, Switch, Button } from 'antd';
 
 import moment from 'dayjs';
 import React, { useState, useEffect } from 'react';
@@ -13,26 +13,26 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { Spin } from 'antd';
 
 import './index.scss';
-// import {
-//     apiGetNotificationList,
-//     apiMakeReadAllNotification,
-// } from '../../apis/Notification';
-// import { apiGetListOrderRefund, apiGetMerchantInfo } from "apis/Order";
 import InputSearch from './SearchInput';
-import DrawerMenu from '../DrawerMenu';
-const urlWaiter = process.env.REACT_APP_WAITER_URL;
+import DrawerMenu from 'layouts/components/DrawerMenu';
+import { useSelector } from 'react-redux';
+import { BASE_ROUTER } from 'constants/router';
+import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
+import { SwitchContainer } from 'layouts/styled';
+import { useMediaQuery } from 'react-responsive';
+import { OPEN_CASHIER } from 'graphql/printer';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { GET_NOTIFICATION } from 'graphql/notification';
 function Header(props) {
-    const { reload, setSearchValue } = props;
+    const { setSearchValue } = props;
     const history = useNavigate();
-    const [isShowConfirmLogout, setIsShowConfirmLogout] = useState(false);
-    // const [refundOrderList, setRefundOrderList] = useState([]);
     const [listNotifications, setListNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoadMore, setLoadMore] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
     const [totalUnread, setTotalUnread] = useState(0);
-    const [merchantInfo, setMerchantInfo] = useState();
-
+    const { is_dine_in } = useSelector((state) => state.auth);
     const calTime = (created_date) => {
         return moment(created_date).format('h:mm A, DD/MM/yyyy');
     };
@@ -98,26 +98,29 @@ function Header(props) {
             marginRight: 20,
         };
     };
-
-    // const getMoreNoties = (page) => {
-    //     apiGetNotificationList({
-    //         type: 'merchant',
-    //         currentPage: page,
-    //     }).then((res) => {
-    //         if (res.data && !res.errors) {
-    //             const moreNoties =
-    //                 res?.data?.getMerchantNotificationList?.items || [];
-    //             setListNotifications(listNotifications.concat(moreNoties));
-    //             setTotalPages(
-    //                 res?.data?.getMerchantNotificationList?.page_info
-    //                     ?.total_pages,
-    //             );
-    //             // setTotalUnread(res?.data?.notifications?.total_unread);
-    //         }
-    //         setLoadMore(false);
-    //     });
-    // };
-
+    const [apiGetNotificationList] = useLazyQuery(GET_NOTIFICATION);
+    const getMoreNoties = (page) => {
+        apiGetNotificationList({
+            variables: {
+                type: 'merchant',
+                currentPage: page,
+            },
+        }).then((res) => {
+            if (res.data && !res.errors) {
+                const moreNoties =
+                    res?.data?.getMerchantNotificationList?.items || [];
+                setListNotifications(listNotifications.concat(moreNoties));
+                setTotalPages(
+                    res?.data?.getMerchantNotificationList?.page_info
+                        ?.total_pages,
+                );
+            }
+            setLoadMore(false);
+        });
+    };
+    useEffect(() => {
+        getMoreNoties(currentPage);
+    }, []);
     const loadMore = () => {
         if (currentPage < totalPages && !isLoadMore) {
             setLoadMore(true);
@@ -127,62 +130,61 @@ function Header(props) {
     };
 
     const noti = () => (
-        // <InfiniteScroll
-        //     dataLength={listNotifications?.length}
-        //     next={loadMore}
-        //     hasMore={true}
-        //     height={500}
-        //     loader={
-        //         isLoadMore ? (
-        //             <div style={{ textAlign: 'center', marginTop: 20 }}>
-        //                 <Spin size="small" style={{ color: 'pink' }} />
-        //             </div>
-        //         ) : (
-        //             <></>
-        //         )
-        //     }
-        // >
-        //     {listNotifications?.map?.((item, idx) => (
-        //         <div
-        //             key={idx}
-        //             style={styleNotificationItem(item.is_read)}
-        //             onClick={() => {}}
-        //         >
-        //             <div style={iconStyle(item.is_read)}>
-        //                 <img
-        //                     style={{
-        //                         cursor: 'pointer',
-        //                         width: '40px',
-        //                         height: '40px',
-        //                     }}
-        //                     src={blackNoti}
-        //                     alt=""
-        //                 />
-        //             </div>
-        //             <div className="content-right" style={{ width: 330 }}>
-        //                 <span
-        //                     style={{
-        //                         display: 'inline-block',
-        //                         whiteSpace: 'break-spaces',
-        //                         overflow: 'visible',
-        //                         color: '#000',
-        //                     }}
-        //                 >
-        //                     {item.content}
-        //                 </span>
-        //                 <p style={{ color: '#ccc' }}>
-        //                     {calTime(item.created_date)}
-        //                 </p>
-        //             </div>
-        //         </div>
-        //     ))}
-        // </InfiniteScroll>
-        <></>
+        <InfiniteScroll
+            dataLength={listNotifications?.length}
+            next={loadMore}
+            hasMore={true}
+            height={500}
+            loader={
+                isLoadMore ? (
+                    <div style={{ textAlign: 'center', marginTop: 20 }}>
+                        <Spin size="small" style={{ color: 'pink' }} />
+                    </div>
+                ) : (
+                    <></>
+                )
+            }
+        >
+            {listNotifications?.map?.((item, idx) => (
+                <div
+                    key={idx}
+                    style={styleNotificationItem(item.is_read)}
+                    onClick={() => {
+                        console.log('123');
+                    }}
+                >
+                    <div style={iconStyle(item.is_read)}>
+                        <img
+                            style={{
+                                cursor: 'pointer',
+                                width: '40px',
+                                height: '40px',
+                            }}
+                            src={blackNoti}
+                            alt=""
+                        />
+                    </div>
+                    <div className="content-right" style={{ width: 330 }}>
+                        <span
+                            style={{
+                                display: 'inline-block',
+                                whiteSpace: 'break-spaces',
+                                overflow: 'visible',
+                                color: '#000',
+                            }}
+                        >
+                            {item.content}
+                        </span>
+                        <p style={{ color: '#ccc' }}>
+                            {calTime(item.created_date)}
+                        </p>
+                    </div>
+                </div>
+            ))}
+        </InfiniteScroll>
     );
-    const handleSignOut = () => {
-        setIsShowConfirmLogout(true);
-    };
 
+    const { theme } = useTheme();
     const title = (
         <Row>
             <Col flex="auto">
@@ -200,56 +202,95 @@ function Header(props) {
             </Col>
         </Row>
     );
-    const setLanguage = (lang) => {
-        i18n.changeLanguage(lang);
-        localStorage.setItem('i18nextLng', lang);
-        getListNotifications();
+    const [onOpenCashier] = useMutation(OPEN_CASHIER);
+    const openCashier = () => {
+        onOpenCashier()
+            .then((res) => {
+                if (res) {
+                    notification.success({
+                        message: 'Open Cashier Successful',
+                        description:
+                            'Please wait for few seconds to open Cashier',
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
+    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <>
             <div className="header">
-                <div className="container-box header-inner">
+                <Row
+                    align={'middle'}
+                    justify={'space-between'}
+                    style={{ width: '100%', paddingInline: 16 }}
+                >
                     <div className="header-left">
                         <img
                             style={{ cursor: 'pointer' }}
                             className="header-logo"
                             src={logo}
                             alt={'logo'}
-                            onClick={() => history.push('/')}
+                            onClick={() => history(BASE_ROUTER.MERCHANT_PAGE)}
                         />
                     </div>
-                    <div className="header-right">
+                    <div className="header-right" style={{ gap: 10 }}>
                         <InputSearch
                             onChangeText={setSearchValue}
                             placeholder={
-                                merchantInfo?.is_dine_in
+                                is_dine_in
                                     ? 'Order Number Or Table'
                                     : 'Order Number'
                             }
                         />
-                        {merchantInfo?.is_dine_in ? (
-                            <div style={{ display: 'flex', marginRight: 16 }}>
-                                <div>Table View</div>
-                                <Switch
-                                    onChange={() => {
-                                        const url = `${urlWaiter}?token=${localStorage.getItem(
-                                            'access_token',
-                                        )}&from=merchant`;
-                                        window.location.href = url;
+                        <Row style={{ gap: 30 }}>
+                            <Button
+                                type="primary"
+                                onClick={() => openCashier()}
+                            >
+                                <Text
+                                    style={{
+                                        color: theme.nEUTRALPrimary,
+                                        fontWeight: '600',
                                     }}
-                                    style={{ marginLeft: 5 }}
-                                />
-                            </div>
-                        ) : (
-                            <></>
-                        )}
-                        <button
-                            style={{ marginRight: 25 }}
-                            className="header-btn"
-                            onClick={() => history.push('/history')}
-                        >
-                            Order History
-                        </button>
+                                >
+                                    Open Cashier
+                                </Text>
+                            </Button>
+                            {is_dine_in ? (
+                                <SwitchContainer
+                                    style={{
+                                        display: 'flex',
+                                        marginRight: 16,
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    {!isMobile && (
+                                        <>
+                                            <Text style={{ fontSize: 18 }}>
+                                                Table View
+                                            </Text>
+
+                                            <Switch
+                                                defaultChecked={false}
+                                                onChange={() => {
+                                                    history(BASE_ROUTER.HOME);
+                                                }}
+                                                style={{
+                                                    marginLeft: 5,
+                                                    height: 32,
+                                                    width: 72,
+                                                }}
+                                            />
+                                        </>
+                                    )}
+                                </SwitchContainer>
+                            ) : (
+                                <></>
+                            )}
+                        </Row>
                         {/* <button
               style={{ marginRight: 25 }}
               className="header-btn"
@@ -284,7 +325,7 @@ function Header(props) {
                         </Popover>
                         <DrawerMenu />
                     </div>
-                </div>
+                </Row>
             </div>
             {/* <ConfirmLogoutModal
                 isShowConfirmLogout={isShowConfirmLogout}
