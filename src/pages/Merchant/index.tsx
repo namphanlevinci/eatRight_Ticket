@@ -1,7 +1,6 @@
 /* eslint-disable curly */
 import { Spin } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
 import Header from './Header';
 import { useHomeScreen } from './useHomeScreen';
 import { STATUS_COLUMNS } from './constant';
@@ -13,23 +12,15 @@ import { RejectOrderModal } from './components/Modal/RejectOrderModal';
 import { useOrderCompleted } from './useOrderComplete';
 import { debounce } from 'lodash';
 export default function MerchantPage() {
-    const handleDragEnd = async ({
-        source,
-        destination,
-    }: {
-        source: any;
-        destination: any;
-    }) => {
-        const orderId = source?.index;
-
-        if (!destination || !orderId) {
-            return;
+    useEffect(() => {
+        document.title = 'EatRight Merchant';
+        const link = document.querySelector(
+            "link[rel='icon']",
+        ) as HTMLLinkElement;
+        if (link) {
+            link.href = '/merchant.ico';
         }
-
-        // const nextStatus = destination?.droppableId;
-
-        console.log(source, destination);
-    };
+    }, []);
 
     const {
         isLoadingApp,
@@ -45,7 +36,6 @@ export default function MerchantPage() {
         isShowModalCancel,
         dataOrderModal,
         handleSubmitCompletePickUp,
-        pushNotificationLocal,
     } = useHomeScreen();
 
     const {
@@ -103,7 +93,7 @@ export default function MerchantPage() {
     }, [currentPage, loading2]);
     const [isCompletedOrder, setIsCompletedOrder] = useState(false);
     return (
-        <DragDropContext onDragEnd={handleDragEnd}>
+        <div onDragEnd={(e) => console.log(e)}>
             {/* Thêm nội dung cho DragDropContext ở đây */}
             <div className="home-page" style={{ position: 'relative' }}>
                 {isLoadingApp && (
@@ -115,9 +105,6 @@ export default function MerchantPage() {
                     refundOrderList={refundOrderList}
                     setSearchValue={setSearchValue}
                 />
-                <button onClick={() => pushNotificationLocal({}, 'Hello 123')}>
-                    123
-                </button>
                 {renderList ? (
                     <div className="home-board">
                         <div className="container-box">
@@ -231,8 +218,27 @@ export default function MerchantPage() {
 
                                     {/******************** RENER LIST ORDER BY COLUMN STATUS *********************/}
                                     <div className="colums-wrapper">
-                                        {listCompletedOrder?.map(
-                                            (order: any, i: number) => {
+                                        {listCompletedOrder
+                                            ?.filter(
+                                                (order: any) =>
+                                                    order?.order_number?.includes?.(
+                                                        searchValue,
+                                                    ) ||
+                                                    order?.table
+                                                        ?.toLowerCase()
+                                                        ?.includes?.(
+                                                            searchValue?.toLowerCase(),
+                                                        ) ||
+                                                    order?.first_name
+                                                        ?.toLowerCase()
+                                                        ?.includes?.(
+                                                            searchValue?.toLowerCase(),
+                                                        ) ||
+                                                    order?.phone_number?.includes?.(
+                                                        searchValue,
+                                                    ),
+                                            )
+                                            .map((order: any, i: number) => {
                                                 return (
                                                     <Order
                                                         key={
@@ -255,8 +261,7 @@ export default function MerchantPage() {
                                                         isCompletedOrder={true}
                                                     />
                                                 );
-                                            },
-                                        )}
+                                            })}
                                     </div>
 
                                     {loading2 && <Spin />}
@@ -306,6 +311,6 @@ export default function MerchantPage() {
                     }}
                 />
             </div>
-        </DragDropContext>
+        </div>
     );
 }

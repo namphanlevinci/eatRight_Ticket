@@ -241,7 +241,9 @@ function Header(props) {
                     </div>
                     <div className="header-right" style={{ gap: 10 }}>
                         <InputSearch
-                            onChangeText={setSearchValue}
+                            onChange={(e) => {
+                                setSearchValue(e.target.value);
+                            }}
                             placeholder={
                                 is_dine_in
                                     ? 'Order Number Or Table'

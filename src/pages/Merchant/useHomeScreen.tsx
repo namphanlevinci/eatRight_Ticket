@@ -224,6 +224,7 @@ export const useHomeScreen = () => {
                     content={msg ? msg : content}
                 />
             ),
+            icon: <></>,
         });
         playNotiSound();
     };
