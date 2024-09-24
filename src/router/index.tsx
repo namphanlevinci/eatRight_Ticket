@@ -314,6 +314,14 @@ export const BaseRouter = () => {
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path={BASE_ROUTER.SETTLE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.Settle />
+                        </PrivateRoute>
+                    }
+                />
                 <Route path={'*'} element={<Page404 />} />
             </Routes>
         </Suspense>

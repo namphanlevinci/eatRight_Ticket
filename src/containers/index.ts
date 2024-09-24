@@ -27,6 +27,9 @@ export const containers = {
     BatchHistory: lazy(
         () => import('pages/BatchSettlements/BatchHistory/index'),
     ),
+    Settle: lazy(
+        () => import('pages/BatchSettlements/Settle/index'),
+    ),
     RestaurentReservation: lazy(
         () => import('containers/RestaurentManagement/Reservation'),
     ),
