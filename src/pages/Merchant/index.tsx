@@ -227,8 +227,27 @@ export default function MerchantPage() {
 
                                     {/******************** RENER LIST ORDER BY COLUMN STATUS *********************/}
                                     <div className="colums-wrapper">
-                                        {listCompletedOrder?.map(
-                                            (order: any, i: number) => {
+                                        {listCompletedOrder
+                                            ?.filter(
+                                                (order: any) =>
+                                                    order?.order_number?.includes?.(
+                                                        searchValue,
+                                                    ) ||
+                                                    order?.table
+                                                        ?.toLowerCase()
+                                                        ?.includes?.(
+                                                            searchValue?.toLowerCase(),
+                                                        ) ||
+                                                    order?.first_name
+                                                        ?.toLowerCase()
+                                                        ?.includes?.(
+                                                            searchValue?.toLowerCase(),
+                                                        ) ||
+                                                    order?.phone_number?.includes?.(
+                                                        searchValue,
+                                                    ),
+                                            )
+                                            .map((order: any, i: number) => {
                                                 return (
                                                     <Order
                                                         key={
@@ -251,8 +270,7 @@ export default function MerchantPage() {
                                                         isCompletedOrder={true}
                                                     />
                                                 );
-                                            },
-                                        )}
+                                            })}
                                     </div>
 
                                     {loading2 && <Spin />}
