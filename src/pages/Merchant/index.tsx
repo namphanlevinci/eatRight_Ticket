@@ -1,7 +1,6 @@
 /* eslint-disable curly */
 import { Spin } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
 import Header from './Header';
 import { useHomeScreen } from './useHomeScreen';
 import { STATUS_COLUMNS } from './constant';
@@ -13,23 +12,15 @@ import { RejectOrderModal } from './components/Modal/RejectOrderModal';
 import { useOrderCompleted } from './useOrderComplete';
 import { debounce } from 'lodash';
 export default function MerchantPage() {
-    const handleDragEnd = async ({
-        source,
-        destination,
-    }: {
-        source: any;
-        destination: any;
-    }) => {
-        const orderId = source?.index;
-
-        if (!destination || !orderId) {
-            return;
+    useEffect(() => {
+        document.title = 'EatRight Merchant';
+        const link = document.querySelector(
+            "link[rel='icon']",
+        ) as HTMLLinkElement;
+        if (link) {
+            link.href = '/merchant.ico';
         }
-
-        // const nextStatus = destination?.droppableId;
-
-        console.log(source, destination);
-    };
+    }, []);
 
     const {
         isLoadingApp,
@@ -102,7 +93,7 @@ export default function MerchantPage() {
     }, [currentPage, loading2]);
     const [isCompletedOrder, setIsCompletedOrder] = useState(false);
     return (
-        <DragDropContext onDragEnd={handleDragEnd}>
+        <div onDragEnd={(e) => console.log(e)}>
             {/* Thêm nội dung cho DragDropContext ở đây */}
             <div className="home-page" style={{ position: 'relative' }}>
                 {isLoadingApp && (
@@ -320,6 +311,6 @@ export default function MerchantPage() {
                     }}
                 />
             </div>
-        </DragDropContext>
+        </div>
     );
 }
