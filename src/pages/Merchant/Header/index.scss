@@ -1,0 +1,189 @@
+
+.header {
+  height: 56px;
+  background-color: var(--neutral-primary);
+  display: flex;
+  align-items: center;
+  .header-inner {
+   
+    width: 100%;
+    display: flex;
+    padding: 0 16px;
+  }
+  .header-left {
+   
+
+    .header-title {
+      h3 {
+        font: normal normal bold 16px/24px SVN-Merge;
+        letter-spacing: 0.16px;
+        color: var(--success-2-default);
+        font-weight: 800;
+        font-size: 24px;
+        margin-left: 16px;
+      }
+      h5 {
+        font: normal normal normal 14px/17px Roboto;
+        letter-spacing: 0.14px;
+        color: #ffffff;
+        font-weight: normal;
+      }
+    }
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+    button {
+      margin-left: 25px;
+      font: normal normal bold 14px/21px SVN-Merge;
+      letter-spacing: 0.14px;
+    }
+    .header-btn{
+      margin:0 5px;
+      border: 1px solid;
+      border-radius: 5px;
+      font-size: 14px;
+      background-color: transparent;
+      letter-spacing: 0.14px;
+      color: var(--primary-6);
+      height: 40px;
+      padding: 10px 20px;
+      align-items: center;
+      font-weight: 800 !important;
+    }
+    .refund-noti{
+      margin-right: 20px;
+    }
+  }
+}
+
+// =========================/@ant-popover
+.ant-popover {
+  .ant-popover-title {
+    padding: 10px;
+    padding-left: 20px;
+    font-weight: bold;
+  }
+  .ant-menu-title-content {
+    display: flex;
+    align-items: center;
+  }
+  .ant-popover-inner-content {
+    padding: 0 !important;
+    .ant-menu {
+      background: #fff !important;
+      max-height: 450px !important;
+      // max-width: 350px;
+      overflow-y: auto !important;
+      .ant-menu-item {
+        background: #fff !important;
+        // padding: 0;
+        padding-left: 8px;
+        margin: 0;
+        height: 85px;
+        padding-right: 0;
+        line-height: 25px;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        // justify-content: space-around;
+        &:last-child {
+          border-bottom: none;
+        }
+        &:hover {
+          background: #e6f7ff !important;
+          color: rgba(0, 0, 0, 0.65);
+        }
+        &:hover span {
+          // color: #303c40 !important;
+        }
+        .icon-left {
+          padding-left: 15px;
+          span {
+            margin-right: 0;
+            width: 40px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+          }
+        }
+        .content-right {
+          width: 100%;
+          padding: 0 10px;
+          padding-left: 20px;
+          color: white;
+          span {
+            word-break: break-all;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 2 !important;
+            -webkit-box-orient: vertical !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis;
+            word-break: break-word;
+          }
+          p {
+            margin-bottom: 0px;
+          }
+        }
+        span {
+          width: 100%;
+        }
+        p {
+        }
+      }
+      &::-webkit-scrollbar {
+        width: 20px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: #a8bbbf;
+        border-radius: 20px;
+        border: 6px solid transparent;
+        background-clip: content-box;
+      }
+    }
+  }
+}
+.view-all {
+  text-align: center;
+  padding: 10px 0;
+  margin-top: -3px;
+  border-top: 1px solid #f0f0f0;
+  box-shadow: inset 0px 4px 3px rgba(251, 251, 251, 75%);
+  span {
+    cursor: pointer;
+    &:hover {
+      color: #000000;
+    }
+  }
+}
+.notification-title {
+  top: 90px;
+  left: 1476px;
+  width: 124px;
+  height: 30px;
+  /* UI Properties */
+  color: var(--unnamed-color-e31837);
+  text-align: left;
+  font: normal normal bold 21px/32px SVN-Merge;
+  letter-spacing: 0.21px;
+  color: #e31837;
+  opacity: 1;
+}
+
+.ant-menu-item-selected, .ant-menu-item-selected a, .ant-menu-item-selected a:hover {
+  color: #868181 !important;
+}
+
+.ant-popover-inner {
+  border-radius: 10px !important;
+}
+.button-primary{
+  background-color: var(--primary-6) !important;
+}
+.header-logo{
+  height: 36px;
+}

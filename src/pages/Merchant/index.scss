@@ -1,0 +1,192 @@
+@import "./styles/index.scss";
+.detail-payment-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.scrollable::-webkit-scrollbar {
+  overflow-y: scroll;
+  display: none !important; /* Ẩn thanh cuộn trên các trình duyệt WebKit (Chrome, Safari) */
+}
+.home-page {
+  background: var(--neutral-primary);
+  font-family: "Montserrat";
+}
+.board-wrapper {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  overflow-x: scroll;
+  // flex-wrap: nowrap;
+  
+  .board-columns {
+    max-width: 16%;
+    flex: 0 0 16%;
+    background-color: var(--error-2-default);
+    height: calc(100vh - 135px);
+    background-color: var(--neutral-primary);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    overflow: hidden;
+    .columns-header {
+      height: 50px;
+      padding: 12px 9px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .columns-header-left {
+        display: flex;
+        align-items: center;
+
+        .columns-header-title {
+          font: normal normal bold 16px/24px SVN-Merge;
+          letter-spacing: 0.14px;
+          color:var(--neutral-primary);
+          font-weight: 800;
+          padding: 0 10px;
+        }
+        .columns-header-count {
+          width: 20px;
+          height: 20px;
+          display: inline-block;
+          text-align: center;
+          line-height: 20px;
+          background-color: var(--neutral-primary);
+          font-size: 14px;
+          color: var(--text-primary);
+          border-radius: 100%;
+          font-weight: 700;
+        }
+      }
+      .colums-header-right {
+        .btn-print-order {
+          border: 1px solid #ffffff;
+          border-radius: 6px;
+          padding: 3px 10px;
+          // width: 73px;
+          // height: 25px;
+          font-size: 14px;
+          color: var(--neutral-primary);
+          background: transparent;
+        }
+      }
+    }
+    &:nth-child(1) .columns-header {
+      background-color: $yallow-color;
+    }
+    &:nth-child(2) .columns-header {
+      background-color: $green-color-1;
+    }
+    &:nth-child(3) .columns-header {
+      background-color: var( --secondary-2-default);
+    }
+    &:nth-child(4) .columns-header {
+      background-color: var(--info-4-pressed);
+    }
+    &:nth-child(5) .columns-header {
+      background-color: var(--secondary-4-pressed);
+    }
+    &:nth-child(6) .columns-header {
+      background-color: var(--primary-6);
+     
+    }
+    .colums-wrapper {
+      padding-top: 12px;
+      height: 100%;
+      overflow-y: auto;
+      padding-bottom: 50px;
+      &::-webkit-scrollbar {
+        width: 0px;
+      }
+      &::-webkit-scrollbar-thumb {
+        border-radius: 20px;
+        background-color: transparent;
+        background-clip: content-box;
+      }
+      background: var(--neutral-primary);
+    }
+  }
+  
+}
+@media only screen and (max-width: 1300px) and (min-width: 993px) {
+  .board-wrapper{
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    .board-columns{
+      max-width:24%;
+      flex: 0 0 24%;
+      margin-right: 12px;
+      &:last-child{
+        margin-right: 0;
+      }
+    }
+  }
+  .btn-print-order{
+    width: auto;
+    font-size: 12px !important;
+  }
+  .button-readyship {
+    width: 270px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  html {
+    font-size: 60%;
+  }
+  .board-wrapper{
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    .board-columns{
+      max-width:32%;
+      flex: 0 0 32%;
+      margin-right: 12px;
+      &:last-child{
+        margin-right: 0;
+      }
+    }
+  }
+  .btn-print-order{
+    width: auto;
+    font-size: 10px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html {
+    font-size: 55%;
+  }
+  .board-wrapper{
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    .board-columns{
+      max-width:100%;
+      flex: 0 0 100%;
+      margin-right: 12px;
+      &:last-child{
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 479px) {
+  html {
+    font-size: 45%;
+  }
+
+ 
+}
+
+.loading_container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.4);
+}

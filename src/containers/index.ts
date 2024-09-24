@@ -23,6 +23,7 @@ export const containers = {
     NewCustomer: lazy(() => import('containers/Customer/AddNewCustomer')),
     ListCustomer: lazy(() => import('containers/Customer/ListCustomer')),
     CustomerDetail: lazy(() => import('containers/Customer/CustomerDetail')),
+    MerchantPage: lazy(() => import('pages/Merchant/index')),
     RestaurentReservation: lazy(
         () => import('containers/RestaurentManagement/Reservation'),
     ),

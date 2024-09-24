@@ -16,12 +16,16 @@ import { Colors } from 'themes/colors';
 import Logo from 'assets/logos/logo.png';
 import LogoMerchant from 'assets/logos/merchantLogo.png';
 // import HelpIcon from 'assets/icons/help';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { USER_INFO } from 'graphql/auth/login';
 import { useDispatch } from 'react-redux';
-import { updateCustomerInfo, updateFloor } from 'features/auth/authSlice';
+import {
+    changeModeTableView,
+    updateCustomerInfo,
+    updateFloor,
+} from 'features/auth/authSlice';
 import { GET_RESTAURANT } from 'graphql/auth/restaurent';
 import BellIcon from 'assets/icons/bell';
 import blackNoti from 'assets/icons/black-noti.png';
@@ -43,7 +47,6 @@ type Props = {
     children: React.ReactNode;
 };
 
-const MERCHANTURL = process.env.REACT_APP_MERCHANTURL;
 export const DarkLayout = (props: Props) => {
     const { children } = props;
     const {
@@ -233,6 +236,11 @@ export const DarkLayout = (props: Props) => {
                 console.log(err);
             });
     };
+    const navigation = useNavigate();
+    const onToggleView = () => {
+        dispatch(changeModeTableView());
+        navigation(BASE_ROUTER.MERCHANT_PAGE);
+    };
     return (
         <Layout
             style={{
@@ -313,9 +321,7 @@ export const DarkLayout = (props: Props) => {
                                                     <Switch
                                                         defaultChecked
                                                         onChange={() => {
-                                                            const url = `${MERCHANTURL}/home?token=${localStorage.getItem('token')}`;
-                                                            window.location.href =
-                                                                url;
+                                                            onToggleView();
                                                         }}
                                                         style={{
                                                             marginLeft: 5,

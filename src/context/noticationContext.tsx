@@ -21,7 +21,7 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [onSocket] = useMutation(SOCKET);
-    const { isLogged, restaurant_id } = useSelector(
+    const { isLogged, restaurant_id, isTableView } = useSelector(
         (state: RootState) => state.auth,
     );
     const [socketInitialized, setSocketInitialized] = useState(false);
@@ -31,7 +31,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const tableDataString = localStorage.getItem('tableData');
 
     useEffect(() => {
-        if (isLogged && !socketInitialized && restaurant_id) {
+        if (isLogged && !socketInitialized && restaurant_id && isTableView) {
             let tableData = JSON.parse(tableDataString || '{}');
             if (!tableDataString && restaurant_id) {
                 console.log('run 1');
@@ -145,9 +145,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 socket.disconnect();
                 setSocket(null);
                 setSocketInitialized(false);
+                console.log('Socket Disconnect to waiter');
             }
         }
-    }, [isLogged, restaurant_id]);
+    }, [isLogged, restaurant_id, isTableView]);
 
     // Truyền socket vào provider
     return (
