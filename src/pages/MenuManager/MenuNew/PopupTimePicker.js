@@ -3,7 +3,7 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { Modal } from 'antd';
 import TimeKeeper from 'react-timekeeper';
-import './index.scss';
+import '../index.scss';
 import CustomButton from '../Components/CustomButton';
 /**
  * @type {React.FC<{

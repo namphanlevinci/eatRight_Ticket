@@ -368,6 +368,38 @@ export const BaseRouter = () => {
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path={BASE_ROUTER.CATEGORY_PAGE_NEW}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.CategoryPage_DETAIL />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.CATEGORY_PAGE_EDIT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.CategoryPage_DETAIL />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.ITEM_PAGE_EDIT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ItemPage_DETAIL />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.ITEM_PAGE_NEW}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ItemPage_DETAIL />
+                        </PrivateRoute>
+                    }
+                />
                 <Route path={'*'} element={<Page404 />} />
             </Routes>
         </Suspense>

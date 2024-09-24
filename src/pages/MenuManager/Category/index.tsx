@@ -12,6 +12,7 @@ import SearchInput from 'pages/Merchant/Header/SearchInput';
 import CustomButton from '../Components/CustomButton';
 import { useLazyQuery } from '@apollo/client';
 import { GET_CATEGORY_LIST } from 'graphql/category';
+import { BASE_ROUTER } from 'constants/router';
 
 const Index = () => {
     const history = useNavigate();
@@ -95,7 +96,7 @@ const Index = () => {
                         style={{ marginLeft: 16 }}
                         leftIcon={icon_plus}
                         title="New category"
-                        onClick={() => history('new_category')}
+                        onClick={() => history(BASE_ROUTER.CATEGORY_PAGE_NEW)}
                     />
                 </div>
                 <div style={{ flex: 1 }}>
@@ -107,7 +108,9 @@ const Index = () => {
                         className="table-menu"
                         onRow={(record: any) => ({
                             onClick: () => {
-                                history(`edit_category/${record?.id}`);
+                                history(
+                                    `/menuManager/edit_category/${record?.id}`,
+                                );
                             },
                         })}
                         scroll={{ y: windowHeight - 300 }}

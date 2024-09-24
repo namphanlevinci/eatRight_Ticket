@@ -12,6 +12,7 @@ import SearchInput from 'pages/Merchant/Header/SearchInput';
 import CustomButton from '../Components/CustomButton';
 import { GET_PRODUCT_LIST } from 'graphql/product';
 import { useLazyQuery } from '@apollo/client';
+import { BASE_ROUTER } from 'constants/router';
 const Index = () => {
     const history = useNavigate();
     const [productList, setMenuList] = useState<any>([]);
@@ -69,6 +70,7 @@ const Index = () => {
                 pageSize: pageSize || 10,
                 sort: objectReturn(field || 'entity_id', position || 'DESC'),
             },
+            fetchPolicy: 'cache-and-network',
         })
             .then((res) => {
                 setMenuList(res?.data?.merchantProducts?.items ?? []);
@@ -110,7 +112,18 @@ const Index = () => {
             // position: "ASC",
         });
     }, []);
+    const handleRowClick = (record: any) => {
+        console.log(record);
 
+        // Gọi hàm bạn muốn ở đây
+        history(`/menuManager/edit_item/${record.id}`);
+    };
+    const [pending, setPending] = useState(false);
+    useEffect(() => {
+        if (pending) {
+            console.log('pending');
+        }
+    }, [pending]);
     return (
         <div style={{ padding: 16 }}>
             <Header />
@@ -132,7 +145,7 @@ const Index = () => {
                         style={{ marginLeft: 16 }}
                         leftIcon={icon_plus}
                         title="New Item"
-                        onClick={() => history('new_item')}
+                        onClick={() => history(BASE_ROUTER.ITEM_PAGE_NEW)}
                     />
                 </div>
                 <div style={{ flex: 1 }}>
@@ -151,6 +164,11 @@ const Index = () => {
                             total: pageInfo?.totalPage,
                             showSizeChanger: true,
                         }}
+                        onRow={(record) => ({
+                            onClick: () => {
+                                handleRowClick(record);
+                            },
+                        })}
                         onChange={handleTableChange}
                     />
                 </div>

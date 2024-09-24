@@ -20,13 +20,18 @@ export const ColumnsItem: ColumnType<any>[] = [
         key: 'thumbnail',
         align: 'center', // Center align the image column
         render: (thumbnail) => (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
+                className="thumbnail-column"
+                style={{ display: 'flex', justifyContent: 'center' }}
+            >
                 <Image
                     src={
                         thumbnail?.url ||
                         'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
                     }
                     style={{ borderRadius: 8 }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="clickable-image"
                 />
             </div>
         ),

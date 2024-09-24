@@ -1,175 +1,151 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, { useState, useRef } from 'react';
-import { Form, Input, Button, Switch, Spin } from 'antd';
-import TimePicker from './TimePicker';
-import PopupTimePicker from './PopupTimePicker';
-import moment from 'moment';
+import { useState, useRef, useEffect } from 'react';
+import { Form, Input, Button, Switch, Checkbox, Spin, Select } from 'antd';
 import { useLocation } from 'react-router-dom';
-import PopupAction from '../Components/PopupAction';
-
 import { useParams, useNavigate } from 'react-router-dom';
 import { AlertContext } from 'context/alertContext';
 import { useContext } from 'react';
+import PopupAction from '../Components/PopupAction';
 import '../index.scss';
 import Header from 'pages/Merchant/Header';
 import MenuBar from '../Components/MenuBar';
 import CustomButton from '../Components/CustomButton';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { CREATE_MENU } from 'graphql/menu/create';
-import { GET_DETAIL_MENU } from 'graphql/menu';
-import { DELETE_MENU } from 'graphql/menu/delete';
-import { UPDATE_MENU } from 'graphql/menu/update';
+import {
+    CREATE_CATEGORY,
+    DELETE_CATEGORY,
+    GET_CATEGORY_DETAIL,
+    UPDATE_CATEGORY,
+} from 'graphql/category/CRUD';
+import { GET_MENU_LIST } from 'graphql/menu';
+import { GET_LIST_KITCHEN_STATION } from 'containers/Kitchen/printer';
 import { BASE_ROUTER } from 'constants/router';
 
 const Index = () => {
-    const [apiMerchantCreateMenu] = useMutation(CREATE_MENU);
-    const [apiMerchantUpdateMenu] = useMutation(UPDATE_MENU);
-    const [apiMerchantDeleteMenu] = useMutation(DELETE_MENU);
-    const [apiGetMenuDetail] = useLazyQuery(GET_DETAIL_MENU);
-    const [form] = Form.useForm();
-
+    const [apiMerchantCreateCategory] = useMutation(CREATE_CATEGORY);
+    const [apiMerchantUpdateCategory] = useMutation(UPDATE_CATEGORY);
+    const [apiMerchantDeleteCategory] = useMutation(DELETE_CATEGORY);
+    const [apiGetCategoryDetail] = useLazyQuery(GET_CATEGORY_DETAIL);
+    const [apiGetMenu] = useLazyQuery(GET_MENU_LIST);
+    const [apiGetKitchenStation] = useLazyQuery(GET_LIST_KITCHEN_STATION);
     const [isToggled, setIsToggled] = useState(false);
-
-    const [startTime, setStartTime] = useState(moment().format('hh:mm A'));
-    const [endTime, setEndTime] = useState(moment().format('hh:mm A'));
-    const [activeDays, setActiveDays] = useState<any[]>([]);
-    const [isLoading, setLoading] = React.useState(false);
+    const [menuList, setMenuList] = useState<any>([]);
+    const [isLoading, setLoading] = useState(false);
     const history = useNavigate();
+    const { id: categoryId } = useParams();
+    const [form] = Form.useForm();
     const { openModal } = useContext(AlertContext);
-
-    const timePickerModalRef = useRef<any>(null);
-    const refPopupDelete = useRef<any>();
-    const refPopupEdit = useRef<any>();
+    const [stations, setStations] = useState([]);
 
     const location = useLocation();
     const pathname = location?.pathname;
+    const refPopupDelete = useRef<any>();
+    const refPopupEdit = useRef<any>();
 
-    const { id: menuId } = useParams();
+    const handleToggle = (checked: any) => {
+        setIsToggled(checked);
+    };
 
-    React.useEffect(() => {
-        if (menuId) {
+    const onFinish = (values: any) => {
+        const payload = {
+            ...values,
+            is_active: isToggled ? true : false,
+        };
+
+        setLoading(true);
+        if (categoryId) {
+            apiMerchantUpdateCategory({
+                variables: {
+                    ...payload,
+                    id: parseInt(categoryId),
+                },
+            }).then((res) => {
+                setLoading(false);
+                if (res?.errors && res?.errors?.length > 0) {
+                    openModal(res?.errors?.[0]?.message);
+                    return;
+                }
+                history(BASE_ROUTER.CATEGORY_PAGE);
+            });
+        } else {
+            apiMerchantCreateCategory({ variables: payload }).then((res) => {
+                setLoading(false);
+                if (res?.errors && res?.errors?.length > 0) {
+                    openModal(res?.errors?.[0]?.message);
+                    return;
+                }
+                history(BASE_ROUTER.CATEGORY_PAGE);
+            });
+        }
+    };
+    const deleteCategory = () => {
+        setLoading(true);
+        apiMerchantDeleteCategory({ variables: { id: categoryId } }).then(
+            (res) => {
+                setLoading(false);
+                if (res?.errors && res?.errors?.length > 0) {
+                    openModal(res?.errors?.[0]?.message);
+                    return;
+                }
+                history(BASE_ROUTER.CATEGORY_PAGE);
+            },
+        );
+    };
+
+    useEffect(() => {
+        if (categoryId) {
             setLoading(true);
-            apiGetMenuDetail({ variables: { id: parseInt(menuId) } }).then(
-                (res: { data: { merchantMenu: any } }) => {
-                    const detail = res?.data?.merchantMenu;
-                    const dayMap: any = {
-                        mon_active: 'Mon',
-                        tue_active: 'Tue',
-                        wed_active: 'Wed',
-                        thu_active: 'Thu',
-                        fri_active: 'Fri',
-                        sat_active: 'Sat',
-                        sun_active: 'Sun',
-                    };
-
-                    const _activeDays = Object.keys(detail)
-                        .filter((key) => key.endsWith('_active') && detail[key])
-                        .map((key) => dayMap[key]);
-                    setActiveDays(_activeDays);
-
+            apiGetCategoryDetail({ variables: { id: parseInt(categoryId) } })
+                .then((res) => {
+                    const detail = res?.data?.merchantCategory;
                     form.setFieldsValue({
                         name: detail?.name,
                         description: detail?.description,
                         is_active: detail?.is_active,
+                        menu_ids: detail?.menus?.map?.(
+                            (m: any) => m?.entity_id,
+                        ),
+                        kitchen_station: detail?.kitchen_station,
                     });
-                    setStartTime(detail?.start_time);
-                    setEndTime(detail?.end_time);
                     setIsToggled(detail?.is_active);
                     setLoading(false);
-                },
-            );
+                })
+                .catch((err) => {
+                    openModal(err.message);
+                });
         }
-    }, [menuId]);
-
-    const clickActiveDay = (day: any) => {
-        const foundDay = activeDays.find((d) => d == day);
-        if (!foundDay) {
-            setActiveDays([...activeDays, day]);
-        } else {
-            setActiveDays([...activeDays].filter((d) => d !== foundDay));
-        }
+    }, [categoryId, menuList]);
+    const getKitchenStation = () => {
+        apiGetKitchenStation()
+            .then((res) => {
+                setStations(res?.data?.getKitchenStations ?? []);
+            })
+            .catch((err) => {
+                openModal(err.message);
+            });
     };
 
-    const clickStartTime = () => {
-        timePickerModalRef.current?.openStartTime?.();
-    };
-
-    const clickEndTime = () => {
-        timePickerModalRef.current?.openEndTime?.();
-    };
-
-    const handleToggle = (
-        checked: boolean | ((prevState: boolean) => boolean),
-    ) => {
-        setIsToggled(checked);
-    };
-
-    const onDoneEndTime = (time: any) => {
-        setEndTime(time);
-    };
-    const onDoneStartTime = (time: any) => {
-        setStartTime(time);
-    };
-
-    function convertTimeFormat(time: string) {
-        const [timePart, modifier] = time.split(' ');
-        let [hours, minutes] = timePart.split(':');
-        hours = ('0' + hours).slice(-2);
-        return `${hours}:${minutes} ${modifier}`;
-    }
-
-    const onFinish = (values: any) => {
-        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        const payload = days.reduce(
-            (acc: any, day: any) => ({
-                ...acc,
-                [`${day.toLowerCase()}_active`]: activeDays.includes(day),
-            }),
-            {
-                ...values,
-                start_time: convertTimeFormat(startTime?.toUpperCase()),
-                end_time: convertTimeFormat(endTime?.toUpperCase()),
-                is_active: isToggled,
+    useEffect(() => {
+        getKitchenStation();
+        apiGetMenu({
+            variables: {
+                search: '',
+                currentPage: 1,
+                field: 'entity_id',
+                position: 'DESC',
+                pageSize: 30,
             },
-        );
-        setLoading(true);
-        if (menuId) {
-            apiMerchantUpdateMenu({
-                variables: {
-                    ...payload,
-                    id: parseInt(menuId),
-                },
-            }).then((res) => {
+        })
+            .then((res) => {
                 setLoading(false);
-                if (res?.errors) {
-                    openModal(res?.errors?.[0]?.message);
-                    return;
-                }
-                history(BASE_ROUTER.MENU_PAGE);
-            });
-        } else {
-            apiMerchantCreateMenu({ variables: payload }).then((res) => {
-                setLoading(false);
-                if (res?.errors) {
-                    openModal(res?.errors?.[0]?.message);
-                    return;
-                }
-                history(BASE_ROUTER.MENU_PAGE);
-            });
-        }
-    };
-    const deleteMenu = () => {
-        setLoading(true);
-        apiMerchantDeleteMenu({ variables: { id: menuId } }).then((res) => {
-            setLoading(false);
-            if (res?.errors) {
-                openModal(res?.errors?.[0]?.message);
-                return;
-            }
-            history(BASE_ROUTER.MENU_PAGE);
-        });
-    };
 
+                setMenuList(res?.data?.merchantMenus?.items ?? []);
+            })
+            .catch((err) => {
+                openModal(err.message);
+            });
+    }, []);
+    const { Option } = Select;
     return (
         <div style={{ padding: 16 }}>
             {isLoading && (
@@ -181,9 +157,9 @@ const Index = () => {
             <div className="container-box body_history">
                 <MenuBar
                     title={
-                        pathname?.includes?.('edit_menu')
-                            ? 'Menu Management / Menus / Edit Menu'
-                            : 'Menu Management / Menus / Create News Menu'
+                        pathname?.includes?.('edit_category')
+                            ? 'Menu Management / Categories / Edit Category'
+                            : 'Menu Management / Categories / Create New Category'
                     }
                 />
                 <Form
@@ -191,12 +167,10 @@ const Index = () => {
                     layout="vertical"
                     onFinish={onFinish}
                     initialValues={{
-                        name: '',
-                        description: '',
                         status: isToggled,
                     }}
                 >
-                    {pathname?.includes?.('edit_menu') ? (
+                    {pathname?.includes?.('edit_category') ? (
                         <div
                             style={{
                                 display: 'flex',
@@ -233,7 +207,8 @@ const Index = () => {
                                     background: 'var(--primary-6)',
                                     color: '#fff',
                                     marginLeft: 16,
-                                    height: 36,
+                                    borderRadius: 8,
+                                    height: 35,
                                     width: 70,
                                     fontWeight: '600',
                                 }}
@@ -256,7 +231,9 @@ const Index = () => {
                                     color: 'var(--error-2-default)',
                                 }}
                                 title="Cancel"
-                                onClick={() => history(BASE_ROUTER.MENU_PAGE)}
+                                onClick={() =>
+                                    history(BASE_ROUTER.CATEGORY_PAGE)
+                                }
                             />
                             <Button
                                 type="primary"
@@ -274,7 +251,6 @@ const Index = () => {
                             </Button>
                         </div>
                     )}
-
                     <div className="menu_new">
                         <p className="menu_new_name">Name</p>
                         <Form.Item
@@ -286,7 +262,7 @@ const Index = () => {
                                 },
                             ]}
                         >
-                            <Input placeholder="New menu name" />
+                            <Input placeholder="Category name..." />
                         </Form.Item>
 
                         <p className="menu_new_name">Status</p>
@@ -309,42 +285,77 @@ const Index = () => {
 
                         <p className="menu_new_name">Description (optional)</p>
                         <Form.Item name="description">
-                            <Input placeholder="Description of menu" />
+                            <Input placeholder="Description of category..." />
                         </Form.Item>
 
-                        <TimePicker
-                            clickEndTime={clickEndTime}
-                            clickStartTime={clickStartTime}
-                            startTime={startTime}
-                            endTime={endTime}
-                            clickActiveDay={clickActiveDay}
-                            activeDays={activeDays}
-                        />
+                        <p className="menu_new_name">Menu</p>
+                        <Form.Item
+                            className="custom-form-item"
+                            name="menu_ids"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please select at least 1 option',
+                                },
+                            ]}
+                        >
+                            <Checkbox.Group>
+                                {menuList?.map?.((menu: any) => (
+                                    <Checkbox
+                                        className="custom-checkbox"
+                                        key={menu?.entity_id}
+                                        value={menu?.entity_id}
+                                    >
+                                        {menu?.name}
+                                    </Checkbox>
+                                ))}
+                            </Checkbox.Group>
+                        </Form.Item>
+
+                        <p className="menu_new_name">Kitchen Station</p>
+                        <Form.Item
+                            name="kitchen_station"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please select an kitchen station',
+                                },
+                            ]}
+                        >
+                            <Select
+                                className="custom-select"
+                                style={{ border: 'none', boxShadow: 'none' }}
+                            >
+                                {stations?.map?.((m: any) => (
+                                    <Option
+                                        key={m?.printer_id}
+                                        value={m?.printer_id}
+                                    >
+                                        {m?.name}
+                                    </Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
                     </div>
                 </Form>
 
                 <PopupAction
-                    title="Delete this menu?"
-                    content={'Once deleted it, cannot be undone'}
-                    onConfirm={deleteMenu}
+                    title="Delete this category?"
+                    content={'Once deleted, it cannot be undone'}
+                    onConfirm={deleteCategory}
                     onCancel={() => {}}
                     ref={refPopupDelete}
                 />
                 <PopupAction
-                    title="Canel editing?"
-                    content={"Your change won't be saved"}
+                    title="Cancel editing?"
+                    content={"Your changes won't be saved"}
                     onConfirm={() => {
-                        history(BASE_ROUTER.MENU_PAGE);
+                        history(BASE_ROUTER.CATEGORY_PAGE);
                     }}
                     onCancel={() => {}}
                     ref={refPopupEdit}
                     titleActionLeft="Keep editing"
                     titleActionRight="Confirm cancel"
-                />
-                <PopupTimePicker
-                    ref={timePickerModalRef}
-                    onDoneStartTime={onDoneStartTime}
-                    onDoneEndTime={onDoneEndTime}
                 />
             </div>
         </div>
