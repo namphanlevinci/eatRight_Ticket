@@ -33,5 +33,6 @@ export const BASE_ROUTER = {
     RESTAURENT_TERMINAL: '/restaurent/terminal',
     RESTAURENT_TERMINAL_DETAIL: '/restaurent/terminal/Detail',
     BATCH_HISTORY: "/batch-history",
-    SETTLE: "/settle"
+    SETTLE: "/settle",
+    TRANSACTIONS: "/transactions"
 };

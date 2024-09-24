@@ -1,14 +1,16 @@
-import { Button, DatePicker, Table, Layout, Input } from 'antd';
+import { Button, DatePicker, Table, Layout, Input, Select } from 'antd';
 import { BatchMenuBar } from 'components/BatchMenuBar';
-import { Columns } from './Column_v2';
-import useBatchHistory from './useBatchHistory';
+import { Columns } from './Columns';
+import useTransaction, { STATUS_TRANSACTIONS } from './useTransaction';
 import { useTheme } from 'context/themeContext';
 import Header from 'pages/Merchant/Header';
 const { RangePicker } = DatePicker;
 
 const windowHeight = window.innerHeight;
 
-export default function BatchHistory() {
+import './index.scss';
+
+export default function Transactions() {
     const { theme } = useTheme();
 
     const {
@@ -17,9 +19,10 @@ export default function BatchHistory() {
         searchText,
         handleDateChange,
         handleSearch,
+        handleChangeSelect,
         handleTableChange,
         handleTextChange,
-    } = useBatchHistory();
+    } = useTransaction();
 
     return (
         <Layout
@@ -56,6 +59,13 @@ export default function BatchHistory() {
                             fontSize: 16,
                         }}
                     />
+                    <Select
+                        style={{ width: 120 }}
+                        onChange={handleChangeSelect}
+                        placeholder="Status"
+                        options={STATUS_TRANSACTIONS}
+                        size="large"
+                    />
 
                     <Input
                         value={searchText}
@@ -77,7 +87,7 @@ export default function BatchHistory() {
                             fontSize: 16,
                             height: 44,
                             backgroundColor: theme.pRIMARY6Primary,
-                            color: "white"
+                            color: 'white',
                         }}
                     >
                         Search
@@ -86,9 +96,10 @@ export default function BatchHistory() {
                 <div style={{ flex: 1 }}>
                     <Table
                         loading={loading}
-                        rowKey="order_number"
+                        key="transactionKey"
+                        rowKey="transactionRowKey"
                         columns={Columns()}
-                        dataSource={data?.merchantGetBatchSettles.items}
+                        dataSource={data?.merchantGetTransactions.items}
                         className="table-menu"
                         rowClassName={'row-table-menu'}
                         scroll={{ y: windowHeight - 300 }}

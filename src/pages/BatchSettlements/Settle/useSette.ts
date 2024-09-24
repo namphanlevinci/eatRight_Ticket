@@ -57,25 +57,22 @@ const useSette = () => {
     const getReportPaymentMethods = async () => {
         try {
             const result = await getReportByPaymentMethodsAPI();
-            if (result?.data?.merchantReportByPaymentMethods) {
-                const total =
-                    result?.data?.merchantReportByPaymentMethods?.total_amount
-                        ?.value;
-
-                const objPaymentMethods =
-                    result?.data?.merchantReportByPaymentMethods?.items;
-                const arrayPeymenMethods = Object.keys(objPaymentMethods)
-                    .map((key: string) => {
-                        return {
-                            payments: key,
-                            amount: objPaymentMethods[key as EPaymentMethod]
-                                .value,
-                        };
-                    })
-                    ?.filter((value) => value.payments !== '__typename');
-
-                setReportPaymentMethods({ data: arrayPeymenMethods, total });
+            const data = result?.data?.merchantReportByPaymentMethods;
+            if (!data) {
+                return message.error('Something went wrong');
             }
+            const total = data?.total_amount?.value;
+            const objPaymentMethods = data?.items;
+            const arrayPeymenMethods = Object.keys(objPaymentMethods)
+                .map((key: string) => {
+                    return {
+                        payments: key,
+                        amount: objPaymentMethods[key as EPaymentMethod].value,
+                    };
+                })
+                ?.filter((value) => value.payments !== '__typename');
+
+            setReportPaymentMethods({ data: arrayPeymenMethods, total });
         } catch (error) {
             message.error('Something went wrong');
         }
@@ -90,35 +87,36 @@ const useSette = () => {
                 },
             });
             const data = result?.data?.merchantGetBatchInvoices;
-            if (data) {
-                const totalSales = data?.total_subtotal_amount?.value;
-                const totalTip = data?.total_tip_amount?.value;
-                const totalTax = data?.total_tax_amount?.value;
-                const batchInvoices = data.items?.map((item) => {
-                    return {
-                        invoice_number: item?.invoice_number,
-                        subtotal: item?.total?.subtotal?.value,
-                        total_tax: item?.total?.total_tax?.value,
-                        tip_amount: item?.total?.tip_amount?.value,
-                        grand_total: item?.total?.grand_total?.value,
-                    };
-                });
-                batchInvoices?.push();
-                setFinalTotal([
-                    {
-                        subtotal: totalSales,
-                        totalTax,
-                        totalTip,
-                        totalSales: data?.total_amount?.value,
-                    },
-                ]);
-
-                setBatchInvoices({
-                    data: batchInvoices,
-                    total: data?.total_amount?.value,
-                    lastSettleDate: data?.last_settle_date,
-                });
+            if (!data) {
+                return message.error('Something went wrong');
             }
+            const totalSales = data?.total_subtotal_amount?.value;
+            const totalTip = data?.total_tip_amount?.value;
+            const totalTax = data?.total_tax_amount?.value;
+            const batchInvoices = data.items?.map((item) => {
+                return {
+                    invoice_number: item?.invoice_number,
+                    subtotal: item?.total?.subtotal?.value,
+                    total_tax: item?.total?.total_tax?.value,
+                    tip_amount: item?.total?.tip_amount?.value,
+                    grand_total: item?.total?.grand_total?.value,
+                };
+            });
+            batchInvoices?.push();
+            setFinalTotal([
+                {
+                    subtotal: totalSales,
+                    totalTax,
+                    totalTip,
+                    totalSales: data?.total_amount?.value,
+                },
+            ]);
+
+            setBatchInvoices({
+                data: batchInvoices,
+                total: data?.total_amount?.value,
+                lastSettleDate: data?.last_settle_date,
+            });
             return result;
         } catch (error) {
             message.error('Something went wrong');
@@ -129,8 +127,10 @@ const useSette = () => {
         try {
             const response = await confirmSettlesAPI();
             if (response?.data?.posSettleMerchant) {
-                message.success('Settlement completed successfully.');
+                message.success('Settlement completed successfully');
                 getInit();
+            } else {
+                message.error('Something went wrong');
             }
         } catch (error) {
             message.error('Something went wrong');
