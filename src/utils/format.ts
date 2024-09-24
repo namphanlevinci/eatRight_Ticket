@@ -39,3 +39,15 @@ export const formatPhoneNumberByUSA = (phoneNumberString: string) => {
     }
     return null;
 };
+
+export const formatMoney = (currency: string) => {
+    if (currency === undefined || currency === '' || currency === null) {
+        return '';
+    }
+    const money = currency.toString().replace(/[^0-9.-]+/g, '');
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    });
+    return money ? formatter.format(Number(money)) : '';
+};

@@ -11,17 +11,17 @@ const MenuBar = ({ title = '' }) => {
 
     const menuBar = [
         {
-            key: 'menu',
+            key: 'menuManager/menu',
             title: 'Menus',
             path: BASE_ROUTER.MENU_PAGE,
         },
         {
-            key: 'category',
+            key: 'menuManager/category',
             title: 'Categories',
             path: BASE_ROUTER.CATEGORY_PAGE,
         },
         {
-            key: 'item',
+            key: 'menuManager/item',
             title: 'Items',
             path: BASE_ROUTER.ITEM_PAGE,
         },
