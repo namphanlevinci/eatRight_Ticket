@@ -284,7 +284,6 @@ export default function CartItemList({
         removeCartIndex(selectedCart);
     };
     const [noteSelectValue, setNoteSelectValue] = useState('');
-
     return data ? (
         <StyledCartBorder
             style={{
@@ -925,9 +924,14 @@ export default function CartItemList({
                                     ]?.firstname?.includes('Guest') &&
                                     goTableBill()
                                 }
-                                isDisable={cartItems[indexTable]?.carts[
-                                    selectedCart
-                                ]?.firstname?.includes('Guest')}
+                                isDisable={
+                                    data?.items?.filter(
+                                        (item: any) => item?.isUnsend,
+                                    )?.length > 0 ||
+                                    cartItems[indexTable]?.carts[
+                                        selectedCart
+                                    ]?.firstname?.includes('Guest')
+                                }
                             >
                                 Checkout
                             </Button>
