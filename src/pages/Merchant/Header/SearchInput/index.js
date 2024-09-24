@@ -2,7 +2,7 @@ import React from 'react';
 import icon_search from '../../assets/icon/icon_search.svg';
 import './index.scss';
 
-const Index = ({ placeholder = '', ...props }) => {
+const SearchInput = ({ placeholder = '', ...props }) => {
     return (
         <div className="search">
             <input
@@ -15,4 +15,4 @@ const Index = ({ placeholder = '', ...props }) => {
     );
 };
 
-export default Index;
+export default SearchInput;

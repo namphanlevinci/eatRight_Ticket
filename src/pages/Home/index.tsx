@@ -25,15 +25,6 @@ import { useMediaQuery } from 'react-responsive';
 const { Content } = Layout;
 
 const HomePage: React.FC = () => {
-    useEffect(() => {
-        document.title = 'EatRight Waiter';
-        const link = document.querySelector(
-            "link[rel='icon']",
-        ) as HTMLLinkElement;
-        if (link) {
-            link.href = '/favicon.ico';
-        }
-    }, []);
     const navigation = useNavigate();
     const { data, counterTable, floorActive, setFloorActive } = useGetAllTable({
         cache: false,

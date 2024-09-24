@@ -28,10 +28,32 @@ export const BaseRouter = () => {
     const { error } = Modal;
     const [needLogout, setNeedLogout] = useState(false);
     const [noStore, setNoStore] = useState(false);
-    const { isLogged } = useSelector((state: RootState) => state.auth);
+    const { isLogged, isMerchant } = useSelector(
+        (state: RootState) => state.auth,
+    );
     const [urlParams] = useSearchParams();
     const navigate = useNavigate();
     const location = useLocation();
+    useEffect(() => {
+        if (isMerchant) {
+            document.title = 'EatRight Merchant';
+            const link = document.querySelector(
+                "link[rel='icon']",
+            ) as HTMLLinkElement;
+            if (link) {
+                link.href = '/merchant.ico';
+            }
+        } else {
+            document.title = 'EatRight Waiter';
+            const link = document.querySelector(
+                "link[rel='icon']",
+            ) as HTMLLinkElement;
+            if (link) {
+                link.href = '/favicon.ico';
+            }
+        }
+    }, [isMerchant]);
+
     // get token on params
     useEffect(() => {
         const token = urlParams.get('token');
@@ -303,6 +325,46 @@ export const BaseRouter = () => {
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
                             <Container.MerchantPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.MENU_PAGE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.MenuPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.CATEGORY_PAGE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.CategoryPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.ITEM_PAGE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ItemPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.MENU_PAGE_NEW}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.Menu_Detail_Page />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.MENU_PAGE_EDIT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.Menu_Detail_Page />
                         </PrivateRoute>
                     }
                 />

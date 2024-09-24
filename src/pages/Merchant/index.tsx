@@ -12,16 +12,6 @@ import { RejectOrderModal } from './components/Modal/RejectOrderModal';
 import { useOrderCompleted } from './useOrderComplete';
 import { debounce } from 'lodash';
 export default function MerchantPage() {
-    useEffect(() => {
-        document.title = 'EatRight Merchant';
-        const link = document.querySelector(
-            "link[rel='icon']",
-        ) as HTMLLinkElement;
-        if (link) {
-            link.href = '/merchant.ico';
-        }
-    }, []);
-
     const {
         isLoadingApp,
         refundOrderList,
@@ -104,6 +94,7 @@ export default function MerchantPage() {
                 <Header
                     refundOrderList={refundOrderList}
                     setSearchValue={setSearchValue}
+                    isSearch={true}
                 />
                 {renderList ? (
                     <div className="home-board">

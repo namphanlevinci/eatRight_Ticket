@@ -45,8 +45,7 @@ const MenuMerchant = [
     {
         title: 'Menu Manager',
         icon: <MenuManagerIcon />,
-        to: `${MerchantURL}/menu?token=${localStorage.getItem('token')}`,
-        isGo: true,
+        to: BASE_ROUTER.MENU_PAGE,
     },
     {
         title: 'Order History',
