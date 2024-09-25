@@ -21,6 +21,7 @@ interface CartContextType {
         cartIndex: number,
         indexTable: number,
         numberOfCustomer?: number,
+        phonenumber?: string,
     ) => void;
     updateCartIndex: (cart: CartItemType) => void;
     removeCartIndex: (index?: number) => void;
@@ -430,10 +431,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         selectedCart: number,
         indexTable: number,
         numberOfCustomer = 1,
+        phonenumber?: string
     ) => {
         const newCartItems = [...cartItems[indexTable].carts];
         newCartItems[selectedCart].firstname = name;
         newCartItems[selectedCart].numberOfCustomer = numberOfCustomer;
+        newCartItems[selectedCart].phonenumber = phonenumber;
         const newCartTable = [...cartItems];
         newCartTable[indexTable].carts = newCartItems;
         setCartItems(newCartTable);

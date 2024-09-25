@@ -42,7 +42,6 @@ export default function CartItemList({
         cartItems,
         indexTable,
         setCustomerName,
-
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
         removeCartIndex,
