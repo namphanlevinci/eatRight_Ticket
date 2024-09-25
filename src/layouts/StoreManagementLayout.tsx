@@ -176,12 +176,8 @@ export default function RestaurentManagementLayout(props: Props) {
             >
                 <Layout
                     style={{
-                        background: theme.pRIMARY1,
                         maxWidth: '100%',
                         minHeight: '80vh',
-                        borderRadius: 8,
-                        boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.08)',
-                        border: `1px solid ${theme.pRIMARY2}`,
                     }}
                 >
                     <Row
@@ -217,7 +213,17 @@ export default function RestaurentManagementLayout(props: Props) {
                                 ))}
                             </div>
                         </Col>
-                        <Col style={{ paddingLeft: 30, flex: 1 }}>
+                        <Col
+                            style={{
+                                padding: 20,
+                                flex: 1,
+                                background: theme.pRIMARY1,
+                                border: `1px solid ${theme.pRIMARY2}`,
+                                borderRadius: 8,
+                                boxShadow:
+                                    '0px 4px 8px 0px rgba(0, 0, 0, 0.08)',
+                            }}
+                        >
                             {children}
                         </Col>
                     </Row>
