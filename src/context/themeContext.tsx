@@ -191,6 +191,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         if (isMerchant) {
             setTheme(MerchantTheme);
+        } else {
+            setTheme(themeMode.lightTheme);
         }
     }, [isMerchant]);
     return (
