@@ -21,7 +21,6 @@ const Index = () => {
     const [currentPage, setCurrentPage] = React.useState(1);
     const [search, setSearch] = React.useState();
     const [apiGetMenu] = useLazyQuery(GET_MENU_LIST);
-    // const { openModal } = useContext(AlertContext);
 
     const windowHeight = window.innerHeight;
 
@@ -61,11 +60,15 @@ const Index = () => {
                 pageSize: 10,
             },
             fetchPolicy: 'cache-and-network',
-        }).then((res) => {
-            setMenuList(res?.data?.merchantMenus?.items ?? []);
-            setTotalPage(res?.data?.merchantMenus?.page_info?.total_pages);
-            setLoading(false);
-        });
+        })
+            .then((res) => {
+                setMenuList(res?.data?.merchantMenus?.items ?? []);
+                setTotalPage(res?.data?.merchantMenus?.page_info?.total_pages);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.log('openModal', err);
+            });
     };
     const searchData = () => {
         getMenus({ search, page: 1 });

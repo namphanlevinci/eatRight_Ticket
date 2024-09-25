@@ -49,35 +49,36 @@ const Index = () => {
     React.useEffect(() => {
         if (menuId) {
             setLoading(true);
-            apiGetMenuDetail({ variables: { id: parseInt(menuId) } }).then(
-                (res: { data: { merchantMenu: any } }) => {
-                    const detail = res?.data?.merchantMenu;
-                    const dayMap: any = {
-                        mon_active: 'Mon',
-                        tue_active: 'Tue',
-                        wed_active: 'Wed',
-                        thu_active: 'Thu',
-                        fri_active: 'Fri',
-                        sat_active: 'Sat',
-                        sun_active: 'Sun',
-                    };
+            apiGetMenuDetail({
+                variables: { id: parseInt(menuId) },
+                fetchPolicy: 'cache-and-network',
+            }).then((res: { data: { merchantMenu: any } }) => {
+                const detail = res?.data?.merchantMenu;
+                const dayMap: any = {
+                    mon_active: 'Mon',
+                    tue_active: 'Tue',
+                    wed_active: 'Wed',
+                    thu_active: 'Thu',
+                    fri_active: 'Fri',
+                    sat_active: 'Sat',
+                    sun_active: 'Sun',
+                };
 
-                    const _activeDays = Object.keys(detail)
-                        .filter((key) => key.endsWith('_active') && detail[key])
-                        .map((key) => dayMap[key]);
-                    setActiveDays(_activeDays);
+                const _activeDays = Object.keys(detail)
+                    .filter((key) => key.endsWith('_active') && detail[key])
+                    .map((key) => dayMap[key]);
+                setActiveDays(_activeDays);
 
-                    form.setFieldsValue({
-                        name: detail?.name,
-                        description: detail?.description,
-                        is_active: detail?.is_active,
-                    });
-                    setStartTime(detail?.start_time);
-                    setEndTime(detail?.end_time);
-                    setIsToggled(detail?.is_active);
-                    setLoading(false);
-                },
-            );
+                form.setFieldsValue({
+                    name: detail?.name,
+                    description: detail?.description,
+                    is_active: detail?.is_active,
+                });
+                setStartTime(detail?.start_time);
+                setEndTime(detail?.end_time);
+                setIsToggled(detail?.is_active);
+                setLoading(false);
+            });
         }
     }, [menuId]);
 

@@ -113,17 +113,9 @@ const Index = () => {
         });
     }, []);
     const handleRowClick = (record: any) => {
-        console.log(record);
-
         // Gọi hàm bạn muốn ở đây
         history(`/menuManager/edit_item/${record.id}`);
     };
-    const [pending, setPending] = useState(false);
-    useEffect(() => {
-        if (pending) {
-            console.log('pending');
-        }
-    }, [pending]);
     return (
         <div style={{ padding: 16 }}>
             <Header />

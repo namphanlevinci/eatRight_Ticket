@@ -103,6 +103,7 @@ const Index = () => {
             status: values?.status ? 1 : 2,
             open_price: false,
             media_gallery_entries,
+            quantity: formatPrice(values?.qty),
         };
         setLoading(true);
 
@@ -142,7 +143,9 @@ const Index = () => {
     };
 
     const getKitchenStation = () => {
-        apiGetKitchenStation()
+        apiGetKitchenStation({
+            fetchPolicy: 'cache-and-network',
+        })
             .then((res) => {
                 setStations(res?.data?.getKitchenStations ?? []);
             })
@@ -160,6 +163,7 @@ const Index = () => {
                 field: 'id',
                 position: 'DESC',
             },
+            fetchPolicy: 'cache-and-network',
         })
             .then((res) => {
                 setMenuList(res?.data?.merchantCategories?.items ?? []);
@@ -174,7 +178,10 @@ const Index = () => {
         if (!productId) return;
         const getDetail = () => {
             setLoading(true);
-            apiGetProductDetail({ variables: { id: parseInt(productId) } })
+            apiGetProductDetail({
+                variables: { id: parseInt(productId) },
+                fetchPolicy: 'cache-and-network',
+            })
                 .then(async (res) => {
                     const detail = res?.data?.merchantProduct;
 
@@ -248,6 +255,7 @@ const Index = () => {
                         status: isToggled,
                         channels: ['Dine-in'],
                         stock_status: 'in_stock',
+                        quantity: 10000,
                     }}
                 >
                     {pathname?.includes?.('edit_item') ? (
@@ -455,6 +463,14 @@ const Index = () => {
                                     decimalScale={2}
                                     placeholder="Item price"
                                     fixedDecimalScale
+                                    style={{
+                                        height: 30,
+                                        paddingInline: 12,
+                                    }}
+                                    onValueChange={(values) => {
+                                        const { value } = values;
+                                        form.setFieldsValue({ price: value }); // Cập nhật giá trị không định dạng vào form
+                                    }}
                                 />
                             </Form.Item>
                             {/* <div style={{ marginTop: -24, marginLeft: 50 }}>
@@ -493,6 +509,7 @@ const Index = () => {
                                     decimalScale={0}
                                     placeholder="Quantity..."
                                     fixedDecimalScale
+                                    style={{ height: 30, paddingInline: 12 }}
                                 />
                             </Form.Item>
                             {/* <div style={{ marginTop: -24, marginLeft: 50 }}>
@@ -535,6 +552,7 @@ const Index = () => {
                             <Select
                                 className="custom-select"
                                 style={{ border: 'none', boxShadow: 'none' }}
+                                placeholder="Select kitchen station"
                             >
                                 {stations?.map?.((m: any) => (
                                     <Option
