@@ -62,21 +62,12 @@ export default function CartItemList({
 
     const { addCart, loading, addMoreCart } = useAddCart();
     const navigation = useNavigate();
-    const [isNewItem, setIsNewItem] = React.useState(false);
     const [isAllDone, setIsAllDone] = useState(false);
     const [searchParams] = useSearchParams();
     const selectedCart = parseInt(searchParams.get('cartIndex') || '0');
+    const isNewItem = data?.items?.find((item: ItemType) => item.isUnsend);
     useEffect(() => {
         if (data?.items?.length > 0) {
-            const items: ItemType[] = data?.items?.filter(
-                (item: ItemType) => item.isUnsend,
-            );
-            if (items.length > 0) {
-                setIsNewItem(true);
-            } else {
-                setIsNewItem(false);
-            }
-
             if (data?.order_number) {
                 const itemNeedDone = data?.order?.items.find(
                     (item: any) => item.serving_status !== 'done',
@@ -97,8 +88,6 @@ export default function CartItemList({
                     setIsAllDone(true);
                 }
             }
-        } else {
-            setIsNewItem(false);
         }
     }, [data.items]);
     const ismobile = useMediaQuery({
@@ -136,7 +125,6 @@ export default function CartItemList({
                     cartItems[indexTable]?.carts[selectedCart]?.phonenumber,
             });
         }
-        setIsNewItem(false);
     };
     const createCart = ({
         username,
@@ -430,9 +418,6 @@ export default function CartItemList({
                                                     setQuantity={(
                                                         e: number,
                                                     ) => {
-                                                        if (e > 0) {
-                                                            setIsNewItem(true);
-                                                        }
                                                         updateQuantityItemFromCart(
                                                             index,
                                                             e,
