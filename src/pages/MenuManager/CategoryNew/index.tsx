@@ -270,6 +270,7 @@ const Index = () => {
                             className="custom-form-item"
                             name="is_active"
                             valuePropName="checked"
+                            style={{ background: 'transparent' }}
                         >
                             <Switch
                                 checked={isToggled}
@@ -325,6 +326,7 @@ const Index = () => {
                             <Select
                                 className="custom-select"
                                 style={{ border: 'none', boxShadow: 'none' }}
+                                placeholder="Select kitchen station..."
                             >
                                 {stations?.map?.((m: any) => (
                                     <Option

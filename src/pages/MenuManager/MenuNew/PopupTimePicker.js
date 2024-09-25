@@ -36,6 +36,7 @@ const CustomModal = forwardRef(
                 onDoneEndTime(time);
             }
             setVisible(false);
+            setProcessStartTime(false), setProcessEndTime(false);
         };
 
         useImperativeHandle(ref, () => ({
@@ -47,7 +48,11 @@ const CustomModal = forwardRef(
                 setVisible(true);
                 setProcessEndTime(true);
             },
-            close: () => setVisible(false),
+            close: () => {
+                setVisible(false),
+                    setProcessStartTime(false),
+                    setProcessEndTime(false);
+            },
         }));
 
         return (

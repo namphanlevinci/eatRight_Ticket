@@ -51,3 +51,8 @@ export const formatMoney = (currency: string) => {
     });
     return money ? formatter.format(Number(money)) : '';
 };
+
+export const formatPrice = (value: string) => {
+    // Chuyển đổi giá trị định dạng thành số
+    return parseFloat(value.replace(/[$,]/g, '')) || 0; // loại bỏ ký hiệu $ và dấu ,
+};

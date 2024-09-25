@@ -118,3 +118,12 @@
   border: none !important;
   border-radius: 5px !important ;
 }
+.ant-select-selector{
+  border: none !important;
+  background-color: transparent !important;
+}
+.custom-form-item{
+  .ant-form-item-control-input-content{
+    background-color: transparent !important;
+  }
+}

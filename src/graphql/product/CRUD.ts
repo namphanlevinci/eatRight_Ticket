@@ -110,7 +110,6 @@ export const CREATE_PRODUCT = gql`
 
 export const UPDATE_PRODUCT = gql`
     mutation (
-        $id: Int!
         $name: String!
         $description: String
         $open_price: Boolean!
@@ -143,10 +142,8 @@ export const UPDATE_PRODUCT = gql`
                     stock_item: { is_in_stock: $is_in_stock, qty: $quantity }
                 }
                 kitchen_station: $kitchen_station
-                id: $id
             }
         ) {
-            id
             sku
             name
             status
