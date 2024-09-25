@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import io from 'socket.io-client';
 import { RootState } from 'store';
+import { playNotiSound } from 'utils';
 // Khởi tạo một context mới
 const SocketContext = createContext<Socket | null>(null);
 const SocketURL =
@@ -74,18 +75,19 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                     });
             });
             socketInstance.on('chat message', (msg) => {
-                console.log('socket', msg);
                 // Xử lý tin nhắn từ socket
                 if (msg?.additional_data?.payment_method === 'arise_pos') {
                     emitter.emit('arise_result', msg);
                 }
+                if (msg?.message?.toString?.()?.toLowerCase?.().includes?.("dish ready")) {
+                    playNotiSound();
+                }
                 if (msg?.item_type === 'QUOTE') {
                     notification.success({
-                        message: `Table ${
-                            tableData?.find(
-                                (item: any) => item?.id == msg?.quote?.table_id,
-                            )?.name
-                        }`,
+                        message: `Table ${tableData?.find(
+                            (item: any) => item?.id == msg?.quote?.table_id,
+                        )?.name
+                            }`,
                         description: msg?.message,
                         onClick: () => {
                             if (msg?.quote?.table_id) {
@@ -102,11 +104,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 }
                 if (msg?.item_type === 'ORDER') {
                     notification.success({
-                        message: `Table ${
-                            tableData?.find(
-                                (item: any) => item?.id == msg?.table_id,
-                            )?.name
-                        }`,
+                        message: `Table ${tableData?.find(
+                            (item: any) => item?.id == msg?.table_id,
+                        )?.name
+                            }`,
                         description: msg?.message,
                         onClick: () => {
                             if (msg?.quote?.table_id) {
