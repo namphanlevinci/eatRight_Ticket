@@ -376,7 +376,37 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                 total +=
                     newCartItems[cartIndex].items[index].prices.price.value;
             }
-            if (!newCartItems[cartIndex]?.items[index]?.isUnsend) {
+            console.log(
+                newCartItems[cartIndex]?.items?.filter(
+                    (item) =>
+                        item.id === newCartItems[cartIndex]?.items[index].id &&
+                        item.isUnsend,
+                ),
+            );
+            const prevCartItem = newCartItems[cartIndex]?.items?.filter(
+                (item) =>
+                    item.id === newCartItems[cartIndex]?.items[index].id &&
+                    item.isUnsend,
+            )?.[0];
+            if (prevCartItem) {
+                newCartItems[cartIndex].items = newCartItems[
+                    cartIndex
+                ].items?.map((item) => {
+                    console.log({ item });
+                    if (
+                        item.id === prevCartItem.id &&
+                        (item?.isUnsend || item?.status === 'new')
+                    ) {
+                        console.log(item.id, quantity, prevCartItem.quantity);
+                        return {
+                            ...item,
+                            quantity: prevCartItem.quantity + 1,
+                        };
+                    }
+                    return item;
+                });
+            } else if (!newCartItems[cartIndex]?.items[index]?.isUnsend) {
+                console.log('isUnsend');
                 newCartItems[cartIndex].items.push({
                     ...newCartItems[cartIndex].items[index],
                     isUnsend: true,
@@ -384,6 +414,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     status: 'new',
                 });
             } else {
+                console.log('else isUnsend');
                 newCartItems[cartIndex].items[index].quantity = quantity;
             }
         }

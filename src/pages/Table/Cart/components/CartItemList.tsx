@@ -284,7 +284,7 @@ export default function CartItemList({
         removeCartIndex(selectedCart);
     };
     const [noteSelectValue, setNoteSelectValue] = useState('');
-
+console.log(data)
     return data ? (
         <StyledCartBorder
             style={{
@@ -293,7 +293,7 @@ export default function CartItemList({
                 backgroundColor: theme.nEUTRALBase,
                 border: `1px solid ${theme.nEUTRALLine}`,
             }}
-        >
+        >DUyyyyyyyyyyyyyyyyyyyyyy
             <LoadingModal showLoading={loading || loadingClean} />
             {showNoteModal.show && (
                 <ModalInputNote
