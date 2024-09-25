@@ -31,6 +31,14 @@ export const containers = {
     Transactions: lazy(
         () => import('pages/BatchSettlements/Transactions/index'),
     ),
+    MenuPage: lazy(() => import('pages/MenuManager/Menu/index')),
+    Menu_Detail_Page: lazy(() => import('pages/MenuManager/MenuNew/index')),
+    CategoryPage: lazy(() => import('pages/MenuManager/Category/index')),
+    CategoryPage_DETAIL: lazy(
+        () => import('pages/MenuManager/CategoryNew/index'),
+    ),
+    ItemPage_DETAIL: lazy(() => import('pages/MenuManager/ItemNew/index')),
+    ItemPage: lazy(() => import('pages/MenuManager/Item/index')),
     RestaurentReservation: lazy(
         () => import('containers/RestaurentManagement/Reservation'),
     ),

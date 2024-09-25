@@ -27,7 +27,7 @@ import { GET_NOTIFICATION } from 'graphql/notification';
 import { changeModeTableView } from 'features/auth/authSlice';
 import { useDispatch } from 'react-redux';
 function Header(props) {
-    const { setSearchValue } = props;
+    const { setSearchValue, isSearch } = props;
     const history = useNavigate();
     const [listNotifications, setListNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -240,14 +240,18 @@ function Header(props) {
                         />
                     </div>
                     <div className="header-right" style={{ gap: 10 }}>
-                        <InputSearch
-                            onChangeText={setSearchValue}
-                            placeholder={
-                                is_dine_in
-                                    ? 'Order Number Or Table'
-                                    : 'Order Number'
-                            }
-                        />
+                        {isSearch && (
+                            <InputSearch
+                                onChange={(e) => {
+                                    setSearchValue(e.target.value);
+                                }}
+                                placeholder={
+                                    is_dine_in
+                                        ? 'Order Number Or Table'
+                                        : 'Order Number'
+                                }
+                            />
+                        )}
                         <Row style={{ gap: 30 }}>
                             <Button
                                 type="primary"

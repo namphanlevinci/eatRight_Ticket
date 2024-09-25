@@ -39,3 +39,20 @@ export const formatPhoneNumberByUSA = (phoneNumberString: string) => {
     }
     return null;
 };
+
+export const formatMoney = (currency: string) => {
+    if (currency === undefined || currency === '' || currency === null) {
+        return '';
+    }
+    const money = currency.toString().replace(/[^0-9.-]+/g, '');
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    });
+    return money ? formatter.format(Number(money)) : '';
+};
+
+export const formatPrice = (value: string) => {
+    // Chuyển đổi giá trị định dạng thành số
+    return parseFloat(value.replace(/[$,]/g, '')) || 0; // loại bỏ ký hiệu $ và dấu ,
+};

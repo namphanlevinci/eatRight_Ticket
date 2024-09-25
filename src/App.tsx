@@ -8,9 +8,9 @@ import './reset.css';
 import { CartProvider } from 'context/cartContext';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { App as AppProvider } from 'antd';
-import { PrinterProvider } from 'context/printerContext';
 import { SocketProvider } from 'context/noticationContext';
 import { ThemeProvider } from 'context/themeContext';
+import { AlertProvider } from 'context/alertContext';
 function App() {
     const client = setupGraphQlClient();
     return (
@@ -22,9 +22,9 @@ function App() {
                             <ThemeProvider>
                                 <CartProvider>
                                     <SocketProvider>
-                                        <PrinterProvider>
+                                        <AlertProvider>
                                             <BaseRouter />
-                                        </PrinterProvider>
+                                        </AlertProvider>
                                     </SocketProvider>
                                 </CartProvider>
                             </ThemeProvider>

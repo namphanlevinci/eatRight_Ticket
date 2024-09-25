@@ -5,6 +5,7 @@ export const REQUEST_ACCOUNT = gql`
         $firstname: String!
         $lastname: String!
         $email: String!
+        $description: String
         $phone_number: String!
     ) {
         requestMerchantAccount(
@@ -12,6 +13,7 @@ export const REQUEST_ACCOUNT = gql`
                 firstname: $firstname
                 lastname: $lastname
                 email: $email
+                description: $description
                 phone_number: $phone_number
             }
         ) {
