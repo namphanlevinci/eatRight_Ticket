@@ -349,7 +349,6 @@ export const BaseRouter = () => {
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
                             <Container.Transactions />
-                            path={BASE_ROUTER.ITEM_PAGE}
                         </PrivateRoute>
                     }
                 />
