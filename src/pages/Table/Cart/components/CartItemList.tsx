@@ -100,7 +100,7 @@ export default function CartItemList({
         } else {
             setIsNewItem(false);
         }
-    }, [data]);
+    }, [data.items]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -430,6 +430,9 @@ export default function CartItemList({
                                                     setQuantity={(
                                                         e: number,
                                                     ) => {
+                                                        if (e > 0) {
+                                                            setIsNewItem(true);
+                                                        }
                                                         updateQuantityItemFromCart(
                                                             index,
                                                             e,
@@ -456,7 +459,6 @@ export default function CartItemList({
                                                             color: '#ea4335',
                                                             fontWeight: 500,
                                                             borderRadius: 8,
-                                                            paddingTop: 0,
                                                         }}
                                                         onClick={
                                                             () => {
