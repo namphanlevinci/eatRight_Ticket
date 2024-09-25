@@ -24,6 +24,13 @@ export const containers = {
     ListCustomer: lazy(() => import('containers/Customer/ListCustomer')),
     CustomerDetail: lazy(() => import('containers/Customer/CustomerDetail')),
     MerchantPage: lazy(() => import('pages/Merchant/index')),
+    BatchHistory: lazy(
+        () => import('pages/BatchSettlements/BatchHistory/index'),
+    ),
+    Settle: lazy(() => import('pages/BatchSettlements/Settle/index')),
+    Transactions: lazy(
+        () => import('pages/BatchSettlements/Transactions/index'),
+    ),
     MenuPage: lazy(() => import('pages/MenuManager/Menu/index')),
     Menu_Detail_Page: lazy(() => import('pages/MenuManager/MenuNew/index')),
     CategoryPage: lazy(() => import('pages/MenuManager/Category/index')),

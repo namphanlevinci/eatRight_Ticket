@@ -329,26 +329,26 @@ export const BaseRouter = () => {
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.MENU_PAGE}
+                    path={BASE_ROUTER.BATCH_HISTORY}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.MenuPage />
+                            <Container.BatchHistory />
                         </PrivateRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.CATEGORY_PAGE}
+                    path={BASE_ROUTER.SETTLE}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.CategoryPage />
+                            <Container.Settle />
                         </PrivateRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.ITEM_PAGE}
+                    path={BASE_ROUTER.TRANSACTIONS}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.ItemPage />
+                            <Container.Transactions />
                         </PrivateRoute>
                     }
                 />
@@ -389,6 +389,30 @@ export const BaseRouter = () => {
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
                             <Container.ItemPage_DETAIL />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.MENU_PAGE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.MenuPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.CATEGORY_PAGE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.CategoryPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.ITEM_PAGE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ItemPage />
                         </PrivateRoute>
                     }
                 />
