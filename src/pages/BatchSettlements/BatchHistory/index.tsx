@@ -4,6 +4,7 @@ import { Columns } from './Column_v2';
 import useBatchHistory from './useBatchHistory';
 import { useTheme } from 'context/themeContext';
 import Header from 'pages/Merchant/Header';
+import '../Settle/index.scss';
 const { RangePicker } = DatePicker;
 
 const windowHeight = window.innerHeight;

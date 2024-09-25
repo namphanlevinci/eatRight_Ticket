@@ -34,7 +34,7 @@ function Header(props) {
     const [isLoadMore, setLoadMore] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
     const [totalUnread, setTotalUnread] = useState(0);
-    const { is_dine_in } = useSelector((state) => state.auth);
+    const { is_dine_in, isTableView } = useSelector((state) => state.auth);
     const calTime = (created_date) => {
         return moment(created_date).format('h:mm A, DD/MM/yyyy');
     };
@@ -236,7 +236,11 @@ function Header(props) {
                             className="header-logo"
                             src={logo}
                             alt={'logo'}
-                            onClick={() => history(BASE_ROUTER.MERCHANT_PAGE)}
+                            onClick={() =>
+                                isTableView
+                                    ? history(BASE_ROUTER.HOME)
+                                    : history(BASE_ROUTER.MERCHANT_PAGE)
+                            }
                         />
                     </div>
                     <div className="header-right" style={{ gap: 10 }}>
@@ -281,7 +285,7 @@ function Header(props) {
                                             </Text>
 
                                             <Switch
-                                                defaultChecked={false}
+                                                defaultChecked={isTableView}
                                                 onChange={() => {
                                                     history(BASE_ROUTER.HOME);
                                                     dispatch(
