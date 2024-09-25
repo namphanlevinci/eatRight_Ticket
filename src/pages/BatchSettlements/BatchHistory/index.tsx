@@ -1,4 +1,4 @@
-import { Button, DatePicker, Table, Layout, Input } from 'antd';
+import { Button, DatePicker, Table, Input, Spin } from 'antd';
 import { BatchMenuBar } from 'components/BatchMenuBar';
 import { Columns } from './Column_v2';
 import useBatchHistory from './useBatchHistory';
@@ -22,13 +22,7 @@ export default function BatchHistory() {
     } = useBatchHistory();
 
     return (
-        <Layout
-            style={{
-                backgroundColor: theme.nEUTRALPrimary,
-                minHeight: '100vh',
-                margin: '0 32px',
-            }}
-        >
+        <Spin spinning={loading}>
             <Header />
             <div className="container-box body_history">
                 <BatchMenuBar title="Batch Settlements / Batch History" />
@@ -77,7 +71,7 @@ export default function BatchHistory() {
                             fontSize: 16,
                             height: 44,
                             backgroundColor: theme.pRIMARY6Primary,
-                            color: "white"
+                            color: 'white',
                         }}
                     >
                         Search
@@ -99,6 +93,6 @@ export default function BatchHistory() {
                     />
                 </div>
             </div>
-        </Layout>
+        </Spin>
     );
 }

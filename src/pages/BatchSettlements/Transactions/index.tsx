@@ -1,4 +1,4 @@
-import { Button, DatePicker, Table, Layout, Input, Select } from 'antd';
+import { Button, DatePicker, Table, Input, Select, Spin } from 'antd';
 import { BatchMenuBar } from 'components/BatchMenuBar';
 import { Columns } from './Columns';
 import useTransaction, { STATUS_TRANSACTIONS } from './useTransaction';
@@ -25,13 +25,7 @@ export default function Transactions() {
     } = useTransaction();
 
     return (
-        <Layout
-            style={{
-                backgroundColor: theme.nEUTRALPrimary,
-                minHeight: '100vh',
-                margin: '0 32px',
-            }}
-        >
+        <Spin spinning={loading}>
             <Header />
             <div className="container-box body_history">
                 <BatchMenuBar title="Batch Settlements / Batch History" />
@@ -110,6 +104,6 @@ export default function Transactions() {
                     />
                 </div>
             </div>
-        </Layout>
+        </Spin>
     );
 }

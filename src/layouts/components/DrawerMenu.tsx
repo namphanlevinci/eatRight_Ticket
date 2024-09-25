@@ -28,7 +28,6 @@ import { Text } from 'components/atom/Text';
 import { useMediaQuery } from 'react-responsive';
 import { OPEN_CASHIER } from 'graphql/printer';
 import { useMutation } from '@apollo/client';
-const MerchantURL = process.env.REACT_APP_MERCHANTURL;
 const urlKitchen = process.env.REACT_APP_KITCHENURL;
 const MenuMerchant = [
     // {

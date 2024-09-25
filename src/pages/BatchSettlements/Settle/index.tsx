@@ -1,4 +1,4 @@
-import { Spin, Table, message } from 'antd';
+import { Spin, Table } from 'antd';
 import dayjs from 'dayjs';
 import Header from 'pages/Merchant/Header';
 import { BatchMenuBar } from 'components/BatchMenuBar';
