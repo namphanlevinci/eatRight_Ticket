@@ -15,6 +15,7 @@ export const useOrderCompleted = () => {
             variables: {
                 currentPage: page,
             },
+            fetchPolicy: 'cache-and-network',
         })
             .then((res: any) => {
                 if (!res.errors && res.data) {
