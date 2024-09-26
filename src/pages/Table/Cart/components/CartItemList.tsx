@@ -89,7 +89,7 @@ export default function CartItemList({
                 }
             }
         }
-    }, [data.items]);
+    }, [data]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -302,7 +302,10 @@ export default function CartItemList({
             )}
             <div style={{ minHeight: 200 }}>
                 {data?.items?.map((item: any, index: any) => {
-                    const orderItems = data?.order?.items[index];
+                    const orderItems =
+                        data?.order?.items?.length > index
+                            ? data?.order?.items[index]
+                            : undefined;
 
                     return (
                         <div key={index}>
