@@ -302,9 +302,7 @@ export default function CartItemList({
             )}
             <div style={{ minHeight: 200 }}>
                 {data?.items?.map((item: any, index: any) => {
-                    const orderItems = data?.order?.items?.find(
-                        (i: any) => item.product.name == i.name,
-                    );
+                    const orderItems = data?.order?.items[index];
 
                     return (
                         <div key={index}>
@@ -321,7 +319,7 @@ export default function CartItemList({
                                                     item.isUnsend
                                                         ? 'New'
                                                         : orderItems
-                                                          ? orderItems.serving_status
+                                                          ? orderItems?.serving_status
                                                           : item?.status,
                                                     theme,
                                                 )}
