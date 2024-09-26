@@ -12,7 +12,10 @@ interface CartContextType {
     cartItems: CartTableType[];
     addCart: (item: any) => void;
     addToCart(item: ItemType): void;
-    updateQuantityItemFromCart: (index: number, quantity: number) => void;
+    updateQuantityItemFromCart: (
+        index: number,
+        type: 'decrea' | 'increa',
+    ) => void;
     // clearCart: () => void;
     setSelectedCart: any;
     selectedCart: number;
@@ -360,34 +363,33 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
             setCartItems(newCartTable);
         }
     };
-    const updateQuantityItemFromCart = (index: number, quantity: number) => {
+    const updateQuantityItemFromCart = (
+        index: number,
+        type: 'increa' | 'decrea',
+    ) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems[indexTable].carts];
         let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
-
-        if (quantity === 0) {
+        const prevCartItem = newCartItems[cartIndex]?.items?.filter(
+            (item) =>
+                item.id === newCartItems[cartIndex]?.items[index].id &&
+                item.isUnsend,
+        )?.[0];
+console.log(prevCartItem)
+        if (type === 'decrea' && prevCartItem.quantity === 1) {
             onRemoveItem(index);
             return;
         } else {
-            if (newCartItems[cartIndex].items[index].quantity > quantity) {
+            // Total prices
+            if (type === 'decrea') {
+                console.log(total);
                 total -=
                     newCartItems[cartIndex].items[index].prices.price.value;
             } else {
                 total +=
                     newCartItems[cartIndex].items[index].prices.price.value;
             }
-            console.log(
-                newCartItems[cartIndex]?.items?.filter(
-                    (item) =>
-                        item.id === newCartItems[cartIndex]?.items[index].id &&
-                        item.isUnsend,
-                ),
-            );
-            const prevCartItem = newCartItems[cartIndex]?.items?.filter(
-                (item) =>
-                    item.id === newCartItems[cartIndex]?.items[index].id &&
-                    item.isUnsend,
-            )?.[0];
+            // Total quantity
             if (prevCartItem) {
                 newCartItems[cartIndex].items = newCartItems[
                     cartIndex
@@ -397,10 +399,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                         item.id === prevCartItem.id &&
                         (item?.isUnsend || item?.status === 'new')
                     ) {
-                        console.log(item.id, quantity, prevCartItem.quantity);
+                        console.log(item.id, type, prevCartItem.quantity);
                         return {
                             ...item,
-                            quantity: prevCartItem.quantity + 1,
+                            quantity:
+                                type === 'decrea'
+                                    ? prevCartItem.quantity - 1
+                                    : prevCartItem.quantity + 1,
                         };
                     }
                     return item;
@@ -413,10 +418,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     quantity: 1,
                     status: 'new',
                 });
-            } else {
-                console.log('else isUnsend');
-                newCartItems[cartIndex].items[index].quantity = quantity;
             }
+            //  else {
+            //     console.log('else isUnsend');
+            //     newCartItems[cartIndex].items[index].quantity = quantity;
+            // }
         }
         newCartItems[cartIndex].prices = {
             ...newCartItems[cartIndex].prices,

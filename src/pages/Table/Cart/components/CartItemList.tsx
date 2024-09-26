@@ -429,10 +429,11 @@ console.log(data)
                                                     quantity={item.quantity}
                                                     setQuantity={(
                                                         e: number,
+                                                        type: 'decrea' | 'increa'
                                                     ) => {
                                                         updateQuantityItemFromCart(
                                                             index,
-                                                            e,
+                                                            type,
                                                         );
                                                     }}
                                                     isSend={!item.isUnsend}
