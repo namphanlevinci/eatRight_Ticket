@@ -103,43 +103,57 @@ const Index = () => {
             status: values?.status ? 1 : 2,
             open_price: false,
             media_gallery_entries,
-            quantity: formatPrice(values?.qty),
+            quantity: formatPrice(values?.qty) || 10000,
+            kitchen_station: values?.kitchen_station || null,
         };
         setLoading(true);
 
         if (productId) {
-            apiMerchantUpdateProduct({ variables: payload }).then((res) => {
-                setLoading(false);
-                if (res?.errors) {
-                    openModal(res?.errors?.[0]?.message);
-                    return;
-                }
-                history(BASE_ROUTER.ITEM_PAGE);
-            });
+            apiMerchantUpdateProduct({ variables: payload })
+                .then((res) => {
+                    setLoading(false);
+                    if (res?.errors) {
+                        openModal(res?.errors?.[0]?.message);
+                        return;
+                    }
+                    history(BASE_ROUTER.ITEM_PAGE);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         } else {
-            apiMerchantCreateProduct({ variables: payload }).then((res) => {
-                setLoading(false);
-                if (res?.errors) {
-                    openModal(res?.errors?.[0]?.message);
-                    return;
-                }
-                history(BASE_ROUTER.ITEM_PAGE);
-            });
+            apiMerchantCreateProduct({ variables: payload })
+                .then((res) => {
+                    setLoading(false);
+                    if (res?.errors) {
+                        openModal(res?.errors?.[0]?.message);
+                        return;
+                    }
+                    history(BASE_ROUTER.ITEM_PAGE);
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
         }
     };
 
     const deleteProduct = () => {
         setLoading(true);
-        apiMerchantDeleteProduct({ variables: { id: productId } }).then(
-            (res) => {
+        apiMerchantDeleteProduct({ variables: { id: productId } })
+            .then((res) => {
                 setLoading(false);
                 if (res?.errors) {
                     openModal(res?.errors?.[0]?.message);
                     return;
                 }
                 history(BASE_ROUTER.ITEM_PAGE);
-            },
-        );
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     const getKitchenStation = () => {
