@@ -216,10 +216,9 @@ export default function index() {
                 },
             })
                 .then(() => {
-                    modal.success({
-                        title: 'Send request print bill Success',
-                        content: 'Please go to printer to take the bill!',
-                        centered: true,
+                    notification.success({
+                        message: 'Send request print bill Success',
+                        description: 'Please go to printer to take the bill!',
                     });
                 })
                 .catch((e) => {
@@ -240,11 +239,10 @@ export default function index() {
                         },
                     })
                         .then(() => {
-                            modal.success({
-                                title: 'Send request print bill Success',
-                                content:
+                            notification.success({
+                                message: 'Send request print bill Success',
+                                description:
                                     'Please go to printer to take the bill!',
-                                centered: true,
                             });
                         })
                         .catch((e) => {
@@ -261,10 +259,9 @@ export default function index() {
                 },
             })
                 .then(() => {
-                    modal.success({
-                        title: 'Send request print bill Success',
-                        content: 'Please go to printer to take the bill!',
-                        centered: true,
+                    notification.success({
+                        message: 'Send request print bill Success',
+                        description: 'Please go to printer to take the bill!',
                     });
                 })
                 .catch((e) => {
@@ -279,10 +276,9 @@ export default function index() {
         title: string;
         content: string;
     }) => {
-        modal.success({
-            title: title,
-            content: content,
-            centered: true,
+        notification.success({
+            message: title,
+            description: content,
         });
     };
     useEffect(() => {
