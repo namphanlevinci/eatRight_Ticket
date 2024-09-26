@@ -82,6 +82,7 @@ export const BaseRouter = () => {
                 message: 'Error',
                 description: error,
                 placement: 'topRight',
+                duration: 8,
             });
         }, 500);
 

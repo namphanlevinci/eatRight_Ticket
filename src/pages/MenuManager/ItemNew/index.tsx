@@ -43,7 +43,7 @@ const Index = () => {
     const [is_in_stock, setIsInStock] = useState(true);
     const [isLoading, setLoading] = React.useState(false);
     const [menuList, setMenuList] = useState([]);
-    const [stations, setStations] = useState([]);
+    const [stations, setStations] = useState<any>([]);
 
     const dineInRef = useRef<any>();
     const takeAwayRef = useRef<any>();
@@ -103,7 +103,7 @@ const Index = () => {
             status: values?.status ? 1 : 2,
             open_price: false,
             media_gallery_entries,
-            quantity: formatPrice(values?.qty) || 10000,
+            quantity: values?.quantity?.replaceAll(',', ''),
             kitchen_station: values?.kitchen_station || null,
         };
         setLoading(true);
@@ -189,7 +189,9 @@ const Index = () => {
     }, []);
 
     useEffect(() => {
-        if (!productId) return;
+        if (!productId) {
+            return;
+        }
         const getDetail = () => {
             setLoading(true);
             apiGetProductDetail({
@@ -248,7 +250,6 @@ const Index = () => {
         getDetail();
         setLoading(false);
     }, [productId, menuList]);
-
     return (
         <div style={{ padding: 16 }}>
             <Loading loading={isLoading} />
