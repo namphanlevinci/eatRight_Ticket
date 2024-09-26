@@ -29,13 +29,6 @@ export default function RenderList() {
     };
     return (
         <>
-            <Row>
-                <Col span={16}>
-                    <Text style={{ fontSize: 17, fontWeight: '700' }}>
-                        Payment Terminals
-                    </Text>
-                </Col>
-            </Row>
             {loading ? (
                 <Spin />
             ) : (

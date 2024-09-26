@@ -5,14 +5,10 @@ import { useNavigate } from 'react-router';
 import './index.scss';
 import RenderList from './components/RenderList';
 import { BASE_ROUTER } from 'constants/router';
-export default function KitchenStationPage() {
+export default function TerminalSetupPage() {
     const navigation = useNavigate();
     return (
-        <div
-            style={{
-                paddingInline: 16,
-            }}
-        >
+        <div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <CustomButton
                     style={{ marginLeft: 16 }}
