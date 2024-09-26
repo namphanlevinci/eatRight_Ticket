@@ -68,7 +68,7 @@ export default function CartItemList({
     const selectedCart = parseInt(searchParams.get('cartIndex') || '0');
     useEffect(() => {
         if (data?.items?.length > 0) {
-            const items: ItemType[] = data?.items?.filter(
+            const items = data?.items?.filter(
                 (item: ItemType) => item.isUnsend,
             );
             if (items.length > 0) {
@@ -100,7 +100,7 @@ export default function CartItemList({
         } else {
             setIsNewItem(false);
         }
-    }, [data]);
+    }, [data, data?.items, data?.items?.[data?.items?.length - 1]]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -284,7 +284,6 @@ export default function CartItemList({
         removeCartIndex(selectedCart);
     };
     const [noteSelectValue, setNoteSelectValue] = useState('');
-console.log(data)
     return data ? (
         <StyledCartBorder
             style={{
@@ -293,7 +292,7 @@ console.log(data)
                 backgroundColor: theme.nEUTRALBase,
                 border: `1px solid ${theme.nEUTRALLine}`,
             }}
-        >DUyyyyyyyyyyyyyyyyyyyyyy
+        >
             <LoadingModal showLoading={loading || loadingClean} />
             {showNoteModal.show && (
                 <ModalInputNote
@@ -429,7 +428,9 @@ console.log(data)
                                                     quantity={item.quantity}
                                                     setQuantity={(
                                                         e: number,
-                                                        type: 'decrea' | 'increa'
+                                                        type:
+                                                            | 'decrea'
+                                                            | 'increa',
                                                     ) => {
                                                         updateQuantityItemFromCart(
                                                             index,

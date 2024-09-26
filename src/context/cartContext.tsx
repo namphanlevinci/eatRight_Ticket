@@ -78,7 +78,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     carts: newCart,
                 });
             } else {
-                console.log('run update cart');
                 const newCart = item.map((currentCart) =>
                     calcCanceled(currentCart),
                 );
@@ -370,19 +369,17 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems[indexTable].carts];
         let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
-        const prevCartItem = newCartItems[cartIndex]?.items?.filter(
+        const cartItemExisted = newCartItems[cartIndex]?.items?.filter(
             (item) =>
                 item.id === newCartItems[cartIndex]?.items[index].id &&
                 item.isUnsend,
         )?.[0];
-console.log(prevCartItem)
-        if (type === 'decrea' && prevCartItem.quantity === 1) {
+        if (type === 'decrea' && cartItemExisted.quantity === 1) {
             onRemoveItem(index);
             return;
         } else {
             // Total prices
             if (type === 'decrea') {
-                console.log(total);
                 total -=
                     newCartItems[cartIndex].items[index].prices.price.value;
             } else {
@@ -390,28 +387,26 @@ console.log(prevCartItem)
                     newCartItems[cartIndex].items[index].prices.price.value;
             }
             // Total quantity
-            if (prevCartItem) {
-                newCartItems[cartIndex].items = newCartItems[
-                    cartIndex
-                ].items?.map((item) => {
-                    console.log({ item });
-                    if (
-                        item.id === prevCartItem.id &&
-                        (item?.isUnsend || item?.status === 'new')
-                    ) {
-                        console.log(item.id, type, prevCartItem.quantity);
-                        return {
-                            ...item,
-                            quantity:
-                                type === 'decrea'
-                                    ? prevCartItem.quantity - 1
-                                    : prevCartItem.quantity + 1,
-                        };
-                    }
-                    return item;
-                });
-            } else if (!newCartItems[cartIndex]?.items[index]?.isUnsend) {
-                console.log('isUnsend');
+            if (cartItemExisted) {
+                const _newCartItems = newCartItems[cartIndex].items?.map(
+                    (item) => {
+                        if (
+                            item.id === cartItemExisted.id &&
+                            (item?.isUnsend || item?.status === 'new')
+                        ) {
+                            return {
+                                ...item,
+                                quantity:
+                                    type === 'decrea'
+                                        ? cartItemExisted.quantity - 1
+                                        : cartItemExisted.quantity + 1,
+                            };
+                        }
+                        return item;
+                    },
+                );
+                newCartItems[cartIndex].items = _newCartItems;
+            } else {
                 newCartItems[cartIndex].items.push({
                     ...newCartItems[cartIndex].items[index],
                     isUnsend: true,
@@ -419,10 +414,6 @@ console.log(prevCartItem)
                     status: 'new',
                 });
             }
-            //  else {
-            //     console.log('else isUnsend');
-            //     newCartItems[cartIndex].items[index].quantity = quantity;
-            // }
         }
         newCartItems[cartIndex].prices = {
             ...newCartItems[cartIndex].prices,
@@ -432,7 +423,7 @@ console.log(prevCartItem)
         };
         const newCartTable = [...cartItems];
         newCartTable[indexTable].carts = newCartItems;
-        setCartItems(newCartTable);
+        setCartItems([...newCartTable]);
     };
 
     // const clearCart = async () => {
