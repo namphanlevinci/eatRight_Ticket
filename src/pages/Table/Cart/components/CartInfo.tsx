@@ -44,7 +44,7 @@ export default function CartInfo({ table }: { table?: any }) {
                     cart_id: cartItems[indexTable]?.carts[selectedCart].id,
                     firstname: name ? name : customerName,
                     numberOfCustomer: number ? number : numberOfCustomer,
-                    phone_number: phoneNumber,
+                    phoneNumber,
                 },
             }).catch((e) => console.log(e));
         }
@@ -89,6 +89,7 @@ export default function CartInfo({ table }: { table?: any }) {
                             selectedCart,
                             indexTable,
                             e.numberOfCustomer,
+                            e.phoneNumber,
                         );
                         setShowModal(false);
                         updateCustomerInfo({
@@ -99,11 +100,11 @@ export default function CartInfo({ table }: { table?: any }) {
                     }}
                     table={table}
                     value={{
-                        name: customerName.includes('Guest')
-                            ? customerName.replace('Guest', 'Diner')
+                        name: customerName?.includes('Guest')
+                            ? customerName?.replace('Guest', 'Diner')
                             : customerName,
                         number: numberOfCustomer,
-                        phoneNumber: phoneNumber,
+                        phoneNumber,
                     }}
                 />
             )}
