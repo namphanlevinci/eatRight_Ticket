@@ -62,21 +62,12 @@ export default function CartItemList({
 
     const { addCart, loading, addMoreCart } = useAddCart();
     const navigation = useNavigate();
-    const [isNewItem, setIsNewItem] = React.useState(false);
     const [isAllDone, setIsAllDone] = useState(false);
     const [searchParams] = useSearchParams();
     const selectedCart = parseInt(searchParams.get('cartIndex') || '0');
+    const isNewItem = data?.items?.find((item: ItemType) => item.isUnsend);
     useEffect(() => {
         if (data?.items?.length > 0) {
-            const items: ItemType[] = data?.items?.filter(
-                (item: ItemType) => item.isUnsend,
-            );
-            if (items.length > 0) {
-                setIsNewItem(true);
-            } else {
-                setIsNewItem(false);
-            }
-
             if (data?.order_number) {
                 const itemNeedDone = data?.order?.items.find(
                     (item: any) => item.serving_status !== 'done',
@@ -97,8 +88,6 @@ export default function CartItemList({
                     setIsAllDone(true);
                 }
             }
-        } else {
-            setIsNewItem(false);
         }
     }, [data]);
     const ismobile = useMediaQuery({
@@ -136,7 +125,6 @@ export default function CartItemList({
                     cartItems[indexTable]?.carts[selectedCart]?.phonenumber,
             });
         }
-        setIsNewItem(false);
     };
     const createCart = ({
         username,
@@ -314,9 +302,10 @@ export default function CartItemList({
             )}
             <div style={{ minHeight: 200 }}>
                 {data?.items?.map((item: any, index: any) => {
-                    const orderItems = data?.order?.items?.find(
-                        (i: any) => item.product.name == i.name,
-                    );
+                    const orderItems =
+                        data?.order?.items?.length > index
+                            ? data?.order?.items[index]
+                            : undefined;
 
                     return (
                         <div key={index}>
@@ -333,7 +322,7 @@ export default function CartItemList({
                                                     item.isUnsend
                                                         ? 'New'
                                                         : orderItems
-                                                          ? orderItems.serving_status
+                                                          ? orderItems?.serving_status
                                                           : item?.status,
                                                     theme,
                                                 )}
@@ -456,7 +445,6 @@ export default function CartItemList({
                                                             color: '#ea4335',
                                                             fontWeight: 500,
                                                             borderRadius: 8,
-                                                            paddingTop: 0,
                                                         }}
                                                         onClick={
                                                             () => {
@@ -925,9 +913,10 @@ export default function CartItemList({
                                     ]?.firstname?.includes('Guest') &&
                                     goTableBill()
                                 }
-                                isDisable={cartItems[indexTable]?.carts[
-                                    selectedCart
-                                ]?.firstname?.includes('Guest')}
+                                isDisable={isCartIdFromLocal(
+                                    cartItems[indexTable]?.carts[selectedCart]
+                                        .id,
+                                )}
                             >
                                 Checkout
                             </Button>

@@ -45,5 +45,6 @@ export const SwitchContainer = styled.div`
         .ant-switch-handle {
             inset-inline-start: calc(100% - 30px);
         }
+        background-color: var(--primary-6) !important;
     }
 `;

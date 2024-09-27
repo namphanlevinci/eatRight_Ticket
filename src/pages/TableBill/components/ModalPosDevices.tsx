@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Modal } from 'antd';
-import RadioBtnSelected from 'assets/icons/radioBtnSelected';
-import { Button } from 'antd';
-import { Text } from 'components/atom/Text';
+// import RadioBtnSelected from 'assets/icons/radioBtnSelected';
+// import { Button } from 'antd';
+// import { Text } from 'components/atom/Text';
 import ButtonSubmit from '../components/buttonSubmit';
-import { useLazyQuery } from '@apollo/client';
-import { POS_DEVICE_LIST } from 'graphql/orders/paymentMethod';
+// import { useLazyQuery } from '@apollo/client';
+// import { POS_DEVICE_LIST } from 'graphql/orders/paymentMethod';
 import { useTheme } from 'context/themeContext';
 
 const ModalPosDevices = ({
@@ -17,14 +17,14 @@ const ModalPosDevices = ({
     isVisibleModalPos: boolean;
     setVisibleMoalPos: (visible: boolean) => void;
 }) => {
-    const [selectedOption, setSelectedOption] = useState<any>(null);
-    const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST);
-    const [posDeviceList, setPosDeviceList] = useState<any>([]);
-    useEffect(() => {
-        onGetPosDeviceList({ fetchPolicy: 'no-cache' }).then((res: any) => {
-            setPosDeviceList(res?.data?.merchantGetTerminalList?.items ?? []);
-        });
-    }, []);
+    const [selectedOption] = useState<any>(null);
+    // const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST);
+    // const [posDeviceList, setPosDeviceList] = useState<any>([]);
+    // useEffect(() => {
+    //     onGetPosDeviceList({ fetchPolicy: 'no-cache' }).then((res: any) => {
+    //         setPosDeviceList(res?.data?.merchantGetTerminalList?.items ?? []);
+    //     });
+    // }, []);
     const handleOk = (): void => {
         if (selectedOption) {
             onPressOK(selectedOption?.id);
@@ -36,9 +36,9 @@ const ModalPosDevices = ({
         setVisibleMoalPos(false);
     };
 
-    const handleChange = (item: any): void => {
-        setSelectedOption(item);
-    };
+    // const handleChange = (item: any): void => {
+    //     setSelectedOption(item);
+    // };
 
     const { theme } = useTheme();
     return (
@@ -72,7 +72,7 @@ const ModalPosDevices = ({
                     >
                         Terminals
                     </p>
-                    {posDeviceList?.map?.((pos: any) => (
+                    {/* {posDeviceList?.map?.((pos: any) => (
                         <Button
                             key={`pos ${pos?.id}`}
                             style={{
@@ -102,7 +102,7 @@ const ModalPosDevices = ({
                             </div>
                             <Text>{pos?.serialNumber}</Text>
                         </Button>
-                    ))}
+                    ))} */}
 
                     <ButtonSubmit
                         title="Pay"

@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import io from 'socket.io-client';
 import { RootState } from 'store';
+import { playNotiSound } from 'utils';
 // Khởi tạo một context mới
 const SocketContext = createContext<Socket | null>(null);
 const SocketURL =
@@ -21,7 +22,7 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [onSocket] = useMutation(SOCKET);
-    const { isLogged, restaurant_id } = useSelector(
+    const { isLogged, restaurant_id, isTableView } = useSelector(
         (state: RootState) => state.auth,
     );
     const [socketInitialized, setSocketInitialized] = useState(false);
@@ -31,7 +32,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const tableDataString = localStorage.getItem('tableData');
 
     useEffect(() => {
-        if (isLogged && !socketInitialized && restaurant_id) {
+        if (isLogged && !socketInitialized && restaurant_id && isTableView) {
             let tableData = JSON.parse(tableDataString || '{}');
             if (!tableDataString && restaurant_id) {
                 console.log('run 1');
@@ -74,18 +75,19 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                     });
             });
             socketInstance.on('chat message', (msg) => {
-                console.log('socket', msg);
                 // Xử lý tin nhắn từ socket
                 if (msg?.additional_data?.payment_method === 'arise_pos') {
                     emitter.emit('arise_result', msg);
                 }
+                if (msg?.message?.toString?.()?.toLowerCase?.().includes?.("dish ready")) {
+                    playNotiSound();
+                }
                 if (msg?.item_type === 'QUOTE') {
                     notification.success({
-                        message: `Table ${
-                            tableData?.find(
-                                (item: any) => item?.id == msg?.quote?.table_id,
-                            )?.name
-                        }`,
+                        message: `Table ${tableData?.find(
+                            (item: any) => item?.id == msg?.quote?.table_id,
+                        )?.name
+                            }`,
                         description: msg?.message,
                         onClick: () => {
                             if (msg?.quote?.table_id) {
@@ -102,11 +104,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 }
                 if (msg?.item_type === 'ORDER') {
                     notification.success({
-                        message: `Table ${
-                            tableData?.find(
-                                (item: any) => item?.id == msg?.table_id,
-                            )?.name
-                        }`,
+                        message: `Table ${tableData?.find(
+                            (item: any) => item?.id == msg?.table_id,
+                        )?.name
+                            }`,
                         description: msg?.message,
                         onClick: () => {
                             if (msg?.quote?.table_id) {
@@ -145,9 +146,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 socket.disconnect();
                 setSocket(null);
                 setSocketInitialized(false);
+                console.log('Socket Disconnect to waiter');
             }
         }
-    }, [isLogged, restaurant_id]);
+    }, [isLogged, restaurant_id, isTableView]);
 
     // Truyền socket vào provider
     return (

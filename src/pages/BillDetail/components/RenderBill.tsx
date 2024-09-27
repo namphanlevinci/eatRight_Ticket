@@ -181,7 +181,7 @@ const RenderBillItem = ({
                     </RowStyled>
                 )}
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Total:</TextDark>
+                    <TextDark style={text16}>Base total:</TextDark>
                     <TextDark>
                         {CURRENTCY}{' '}
                         {selectDataShowbill
@@ -214,6 +214,37 @@ const RenderBillItem = ({
                             : data?.tip_amount?.value?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
+                {dataInvoice?.non_cash_amount && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>
+                            Non-Cash Adjustment :
+                        </TextDark>
+                        <TextDark>
+                            {CURRENTCY} {dataInvoice?.non_cash_amount}
+                        </TextDark>
+                    </RowStyled>
+                )}
+                {dataInvoice?.non_cash_amount && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>Total:</TextDark>
+                        <TextDark>
+                            {CURRENTCY}{' '}
+                            {(selectDataShowbill
+                                ? (
+                                      selectDataShowbill?.total?.subtotal
+                                          ?.value -
+                                      totalDiscount +
+                                      selectDataShowbill?.total?.total_tax
+                                          ?.value
+                                  )?.toFixed(2)
+                                : data?.total?.subtotal?.value -
+                                  totalDiscount +
+                                  data?.total?.total_tax?.value +
+                                  dataInvoice?.non_cash_amount
+                            )?.toFixed(2)}
+                        </TextDark>
+                    </RowStyled>
+                )}
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Grand Total:</TextDark>
                     <TextDark>
