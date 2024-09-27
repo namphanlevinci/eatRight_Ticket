@@ -85,7 +85,7 @@ export const RequestAccountPage: React.FC = () => {
                             message: 'Please input your fullname!',
                         },
                     ]}
-                    required={false}
+                    required={true}
                     theme={theme}
                 >
                     <DarkInput
@@ -103,7 +103,7 @@ export const RequestAccountPage: React.FC = () => {
                             message: 'Please input your fullname!',
                         },
                     ]}
-                    required={false}
+                    required={true}
                 >
                     <DarkInput
                         placeholder="Last Name"
@@ -122,7 +122,7 @@ export const RequestAccountPage: React.FC = () => {
                                 message: 'Please input your email!',
                             },
                         ]}
-                        required={false}
+                        required={true}
                     >
                         <DarkInput
                             placeholder="Email"
@@ -140,7 +140,7 @@ export const RequestAccountPage: React.FC = () => {
                             message: 'Please input your phone number!',
                         },
                     ]}
-                    required={false}
+                    required={true}
                 >
                     <PhoneInputCustom
                         country={'us'}
@@ -153,7 +153,13 @@ export const RequestAccountPage: React.FC = () => {
                     theme={theme}
                     label="Description"
                     name="description"
-                    required={false}
+                    required={true}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input description!',
+                        },
+                    ]}
                 >
                     <DarkInput
                         placeholder="Description"
