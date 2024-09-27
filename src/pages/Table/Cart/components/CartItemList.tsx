@@ -272,7 +272,6 @@ export default function CartItemList({
         removeCartIndex(selectedCart);
     };
     const [noteSelectValue, setNoteSelectValue] = useState('');
-
     return data ? (
         <StyledCartBorder
             style={{
