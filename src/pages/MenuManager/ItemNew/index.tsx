@@ -94,7 +94,11 @@ const Index = () => {
                 },
             };
         });
-
+        let quantity = values?.quantity;
+        console.log('quantity', quantity);
+        if (quantity && typeof quantity === 'string') {
+            quantity = quantity?.replaceAll(',', '');
+        }
         const payload = {
             ...values,
             display_platforms,
@@ -103,7 +107,7 @@ const Index = () => {
             status: values?.status ? 1 : 2,
             open_price: false,
             media_gallery_entries,
-            quantity: values?.quantity?.replaceAll(',', ''),
+            quantity: quantity,
             kitchen_station: values?.kitchen_station || null,
         };
         setLoading(true);
