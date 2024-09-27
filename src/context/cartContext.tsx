@@ -3,7 +3,6 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { CartItemType, CartTableType, ItemType } from './cartType';
 import { useSearchParams } from 'react-router-dom';
 import ModalConfirm from 'components/modal/ModalConfirm';
-import { isCartIdFromLocal } from 'utils/isNumericId';
 
 // Định nghĩa loại dữ liệu cho sản phẩm trong giỏ hàng
 
