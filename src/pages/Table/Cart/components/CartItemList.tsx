@@ -913,9 +913,10 @@ export default function CartItemList({
                                     ]?.firstname?.includes('Guest') &&
                                     goTableBill()
                                 }
-                                isDisable={cartItems[indexTable]?.carts[
-                                    selectedCart
-                                ]?.firstname?.includes('Guest')}
+                                isDisable={isCartIdFromLocal(
+                                    cartItems[indexTable]?.carts[selectedCart]
+                                        .id,
+                                )}
                             >
                                 Checkout
                             </Button>

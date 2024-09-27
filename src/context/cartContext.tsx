@@ -79,6 +79,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                 const newCart = item.map((currentCart) =>
                     calcCanceled(currentCart),
                 );
+                console.log('newCart', newCart);
                 updateCart(newCart, indexTable);
             }
 
@@ -128,6 +129,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
     const updateCartIndex = (cart: CartItemType) => {
+        console.log('updateCartIndex');
         const getIndexTable = cartItems.findIndex(
             (item) => item.tableId == tableId,
         );
