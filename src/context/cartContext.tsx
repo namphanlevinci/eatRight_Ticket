@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { CartItemType, CartTableType, ItemType } from './cartType';
 import { useSearchParams } from 'react-router-dom';
 import ModalConfirm from 'components/modal/ModalConfirm';
+import { isCartIdFromLocal } from 'utils/isNumericId';
 
 // Định nghĩa loại dữ liệu cho sản phẩm trong giỏ hàng
 
@@ -136,7 +137,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems];
         newCartItems[getIndexTable].carts[cartIndex] = cart;
-        updateCart(newCartItems[getIndexTable].carts, getIndexTable);
+        updateCart(newCartItems[getIndexTable].carts, getIndexTable, true);
     };
     const removeCartIndex = (index?: number) => {
         const getIndexTable = cartItems.findIndex(
@@ -158,7 +159,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
             setCartItems(newCartItems);
         }
     };
-    const updateCart = (cartItemNew: CartItemType[], indexTable: number) => {
+    const updateCart = (
+        cartItemNew: CartItemType[],
+        indexTable: number,
+        isUpdate?: boolean,
+    ) => {
         setCartItems((prevCartItems) => {
             const currentCartItems = [...prevCartItems];
             const result = currentCartItems[indexTable].carts.map(
@@ -203,7 +208,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                         if (newCarts?.items && newCarts?.items.length > 0) {
                             return {
                                 ...newCarts,
-                                items: [...newCarts.items, ...itemsIsUnSend],
+                                items: isUpdate
+                                    ? newCarts.items
+                                    : [...newCarts.items, ...itemsIsUnSend],
                                 prices: {
                                     ...newCarts.prices,
                                     grand_total: {
