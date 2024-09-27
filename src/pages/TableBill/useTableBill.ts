@@ -297,7 +297,9 @@ export const useTableBill = (isGoBack = true) => {
                 setTotal(tmp_total);
                 setCount(tmp_count);
             } else {
-                navigation(BASE_ROUTER.HOME);
+                navigation(
+                    `${BASE_ROUTER.TABLE}?tableId=${tableId}&cartIndex=${cartIndex}`,
+                );
             }
         }
     }, [cartItems, isGoBack]);
@@ -318,6 +320,10 @@ export const useTableBill = (isGoBack = true) => {
                     'split_bill_data',
                     JSON.stringify(res.data.merchantCreateOrderWithSplitEvenly),
                 );
+                localStorage.setItem(
+                    'split_bill_can_go_back',
+                    `${cartItems[indexTable].carts[cartIndex].id}`,
+                );
                 navigate(BASE_ROUTER.TABLE_BILL_CHECKOUT);
             })
             .catch(() => {
@@ -336,6 +342,10 @@ export const useTableBill = (isGoBack = true) => {
                     'split_bill_data',
                     JSON.stringify(res.data.merchantCreateOrderWithSplitItems),
                 );
+                localStorage.setItem(
+                    'split_bill_can_go_back',
+                    `${cartItems[indexTable].carts[cartIndex].id}`,
+                );
                 navigate(BASE_ROUTER.TABLE_BILL_CHECKOUT);
             })
             .catch(() => {
@@ -351,51 +361,55 @@ export const useTableBill = (isGoBack = true) => {
             fetchPolicy: 'no-cache',
         }).then(() => {
             if (cart) {
-                onGetCart({
-                    variables: {
-                        cartId: cartItems[indexTable].carts[cartIndex].id,
-                    },
-                    fetchPolicy: 'no-cache',
-                })
-                    .then((res) => {
-                        const itemsCanceled =
-                            res.data.merchantCart.items.filter((item: any) => {
-                                return item.status === 'cancel';
-                            });
-                        const Tax =
-                            (res.data.merchantCart.prices?.applied_taxes?.[0]
-                                ?.tax_percent || 0) / 100;
-                        const newCart = {
-                            ...res.data.merchantCart,
-                            prices: {
-                                ...res.data.merchantCart.prices,
-                                total_canceled: {
-                                    value:
-                                        itemsCanceled.reduce(
-                                            (total: any, item: any) => {
-                                                return (
-                                                    total +
-                                                    (item.prices.price.value *
-                                                        item.quantity -
-                                                        (item.prices
-                                                            ?.total_item_discount
-                                                            ?.value || 0) *
-                                                            item.quantity)
-                                                );
-                                            },
-                                            0,
-                                        ) *
-                                        (Tax + 1),
-                                },
-                            },
-                        };
-                        updateCartIndex(newCart);
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
+                getCart(cartItems[indexTable].carts[cartIndex].id);
             }
         });
+    };
+    const getCart = (cartId: string) => {
+        onGetCart({
+            variables: {
+                cartId: cartId,
+            },
+            fetchPolicy: 'no-cache',
+        })
+            .then((res) => {
+                const itemsCanceled = res.data.merchantCart.items.filter(
+                    (item: any) => {
+                        return item.status === 'cancel';
+                    },
+                );
+                const Tax =
+                    (res.data.merchantCart.prices?.applied_taxes?.[0]
+                        ?.tax_percent || 0) / 100;
+                const newCart = {
+                    ...res.data.merchantCart,
+                    prices: {
+                        ...res.data.merchantCart.prices,
+                        total_canceled: {
+                            value:
+                                itemsCanceled.reduce(
+                                    (total: any, item: any) => {
+                                        return (
+                                            total +
+                                            (item.prices.price.value *
+                                                item.quantity -
+                                                (item.prices
+                                                    ?.total_item_discount
+                                                    ?.value || 0) *
+                                                    item.quantity)
+                                        );
+                                    },
+                                    0,
+                                ) *
+                                (Tax + 1),
+                        },
+                    },
+                };
+                updateCartIndex(newCart);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
     return {
         handleSplitEven,

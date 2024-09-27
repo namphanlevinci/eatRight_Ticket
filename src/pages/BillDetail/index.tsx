@@ -134,6 +134,7 @@ export default function index() {
                         'split_bill_data',
                         JSON.stringify(dataSplitBill?.merchantGetOrderInvoices),
                     );
+                    localStorage.setItem('split_bill_can_go_back', 'false');
                     navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
                 }
             }
