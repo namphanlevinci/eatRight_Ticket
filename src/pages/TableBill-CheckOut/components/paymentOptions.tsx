@@ -29,6 +29,10 @@ export default function PaymentOptions({
                 id: 'pos',
                 title: 'Credit Card',
             },
+            {
+                id: 'other',
+                title: 'Other',
+            },
             // {
             //     id: 'debit_card',
             //     title: 'Debit Card',

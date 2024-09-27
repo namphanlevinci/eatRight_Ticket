@@ -22,6 +22,7 @@ import { useTheme } from 'context/themeContext';
 import RenderDiscountRow from './components/renderDiscountRow';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from './components/ModalPosDevicesDJV';
+import ModalOtherMethod from './components/ModalOtherMethod';
 
 export default function ColRight({
     cart,
@@ -67,6 +68,9 @@ export default function ColRight({
         handlePOSPaymentWithDJV,
         onCloseProcessingPayment,
         showModalErrorPayment,
+        isVisibleModalOtherMethod,
+        setVisibleModalOtherMethod,
+        handleOtherPayment,
     } = useTableBill();
 
     useEffect(() => {
@@ -103,6 +107,10 @@ export default function ColRight({
                 handleSplitByItem(newData);
             }
         } else {
+            if (paymentMethod === 'other') {
+                setVisibleModalOtherMethod(true);
+                return;
+            } 
             handleCheckOut();
         }
     };
@@ -138,7 +146,7 @@ export default function ColRight({
         () =>
             roundTo(
                 (cart?.prices?.discount?.amount?.value || 0) +
-                    (cart?.prices?.total_items_canceled_discount?.value || 0),
+                (cart?.prices?.total_items_canceled_discount?.value || 0),
                 2,
             ),
         [cart],
@@ -188,8 +196,8 @@ export default function ColRight({
                     setTip(values);
                     setTipPercent(
                         values /
-                            ((cart?.prices.grand_total.value || 0) -
-                                (cart?.prices?.total_canceled?.value || 0)),
+                        ((cart?.prices.grand_total.value || 0) -
+                            (cart?.prices?.total_canceled?.value || 0)),
                     );
 
                     await handleSetTip(values);
@@ -207,6 +215,13 @@ export default function ColRight({
                 setVisibleMoalPos={setVisibleMoalPos}
                 onPressOK={(pos_id: string) => {
                     handlePOSPayment(pos_id);
+                }}
+            />
+            <ModalOtherMethod
+                isVisible={isVisibleModalOtherMethod}
+                setVisible={setVisibleModalOtherMethod}
+                onPressOK={(value: string) => {
+                    handleOtherPayment(value);
                 }}
             />
             <ModalPosDevicesDJV
@@ -294,7 +309,7 @@ export default function ColRight({
                 )}
 
                 {cart?.prices?.applied_taxes &&
-                cart?.prices?.applied_taxes[0]?.amount ? (
+                    cart?.prices?.applied_taxes[0]?.amount ? (
                     <RenderBillInfomationRow
                         title="Tax"
                         value={`$ ${formatNumberWithCommas(
@@ -342,41 +357,41 @@ export default function ColRight({
                     </div>
                     {listItems?.length === 0 && numbersSplit && numbersSplit > 1
                         ? Array.from({ length: numbersSplit }, (_, index) => (
-                              <RenderSplitBillGuest
-                                  key={index}
-                                  title={`Guest ${index + 1}`}
-                                  total={grandTotal / numbersSplit}
-                                  onPress={openModalSplitBill}
-                              />
-                          ))
+                            <RenderSplitBillGuest
+                                key={index}
+                                title={`Guest ${index + 1}`}
+                                total={grandTotal / numbersSplit}
+                                onPress={openModalSplitBill}
+                            />
+                        ))
                         : listItems?.map(({ guestId, items }) => {
-                              const total = items.reduce((acc, item) => {
-                                  const price =
-                                      (item.prices.price.value * item.quantity -
-                                          (item.prices?.total_item_discount
-                                              ?.value || 0)) *
-                                      (1 + Tax);
-                                  return (
-                                      acc +
-                                      (item.status === 'cancel'
-                                          ? 0
-                                          : price + tipPercent * price)
-                                  );
-                              }, 0);
-                              return (
-                                  total > 0 && (
-                                      <RenderSplitBillGuest
-                                          key={guestId}
-                                          title={guestId}
-                                          total={roundTo(
-                                              total * isNewPriceForListItems,
-                                              2,
-                                          )}
-                                          onPress={openModalSplitBill}
-                                      />
-                                  )
-                              );
-                          })}
+                            const total = items.reduce((acc, item) => {
+                                const price =
+                                    (item.prices.price.value * item.quantity -
+                                        (item.prices?.total_item_discount
+                                            ?.value || 0)) *
+                                    (1 + Tax);
+                                return (
+                                    acc +
+                                    (item.status === 'cancel'
+                                        ? 0
+                                        : price + tipPercent * price)
+                                );
+                            }, 0);
+                            return (
+                                total > 0 && (
+                                    <RenderSplitBillGuest
+                                        key={guestId}
+                                        title={guestId}
+                                        total={roundTo(
+                                            total * isNewPriceForListItems,
+                                            2,
+                                        )}
+                                        onPress={openModalSplitBill}
+                                    />
+                                )
+                            );
+                        })}
                 </div>
             ) : (
                 <div style={{ marginTop: 56 }}>
@@ -396,6 +411,11 @@ export default function ColRight({
                         onClick={() => setPaymentMethod('pos_djv')}
                     />
                     <div style={{ marginTop: 15 }} />
+                    <ButtonOptions
+                        title="Other"
+                        isSelected={paymentMethod === 'other'}
+                        onClick={() => setPaymentMethod('other')}
+                    />
                     {/* <ButtonOptions
                         title="POS (ARISE)"
                         isSelected={paymentMethod === 'pos'}

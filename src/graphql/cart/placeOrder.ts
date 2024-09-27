@@ -1,9 +1,9 @@
 import { gql } from '@apollo/client';
 
 export const PLACE_ORDER = gql`
-    mutation ($cartId: String!, $paymentMethod: String!) {
+    mutation ($cartId: String!, $paymentMethod: String!, $po_number: String) {
         createMerchantOrder(
-            input: { cart_id: $cartId, payment_method: $paymentMethod }
+            input: { cart_id: $cartId, payment_method: $paymentMethod, po_number: $po_number  }
         ) {
             order {
                 order_number
