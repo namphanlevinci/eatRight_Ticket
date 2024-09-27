@@ -354,6 +354,22 @@ export const BaseRouter = () => {
                     }
                 />
                 <Route
+                    path={BASE_ROUTER.SALES_REPORT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.Report />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.REPORT_BY_PAYMENT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ReportByPayment />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
                     path={BASE_ROUTER.MENU_PAGE_NEW}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
