@@ -12,7 +12,10 @@ interface CartContextType {
     cartItems: CartTableType[];
     addCart: (item: any) => void;
     addToCart(item: ItemType): void;
-    updateQuantityItemFromCart: (index: number, quantity: number) => void;
+    updateQuantityItemFromCart: (
+        index: number,
+        type: 'decrea' | 'increa',
+    ) => void;
     // clearCart: () => void;
     setSelectedCart: any;
     selectedCart: number;
@@ -76,7 +79,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                     carts: newCart,
                 });
             } else {
-                console.log('run update cart');
                 const newCart = item.map((currentCart) =>
                     calcCanceled(currentCart),
                 );
@@ -369,31 +371,57 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
             setCartItems(newCartTable);
         }
     };
-    const updateQuantityItemFromCart = (index: number, quantity: number) => {
+    const updateQuantityItemFromCart = (
+        index: number,
+        type: 'increa' | 'decrea',
+    ) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems[indexTable].carts];
         let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
-
-        if (quantity === 0) {
+        const cartItemExisted = newCartItems[cartIndex]?.items?.filter(
+            (item) =>
+                item.id === newCartItems[cartIndex]?.items[index].id &&
+                item.isUnsend,
+        )?.[0];
+        if (type === 'decrea' && cartItemExisted.quantity === 1) {
             onRemoveItem(index);
             return;
         } else {
-            if (newCartItems[cartIndex].items[index].quantity > quantity) {
+            // Total prices
+            if (type === 'decrea') {
                 total -=
                     newCartItems[cartIndex].items[index].prices.price.value;
             } else {
                 total +=
                     newCartItems[cartIndex].items[index].prices.price.value;
             }
-            if (!newCartItems[cartIndex]?.items[index]?.isUnsend) {
+            // Total quantity
+            if (cartItemExisted) {
+                const _newCartItems = newCartItems[cartIndex].items?.map(
+                    (item) => {
+                        if (
+                            item.id === cartItemExisted.id &&
+                            (item?.isUnsend || item?.status === 'new')
+                        ) {
+                            return {
+                                ...item,
+                                quantity:
+                                    type === 'decrea'
+                                        ? cartItemExisted.quantity - 1
+                                        : cartItemExisted.quantity + 1,
+                            };
+                        }
+                        return item;
+                    },
+                );
+                newCartItems[cartIndex].items = _newCartItems;
+            } else {
                 newCartItems[cartIndex].items.push({
                     ...newCartItems[cartIndex].items[index],
                     isUnsend: true,
                     quantity: 1,
                     status: 'new',
                 });
-            } else {
-                newCartItems[cartIndex].items[index].quantity = quantity;
             }
         }
         newCartItems[cartIndex].prices = {
@@ -404,7 +432,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         };
         const newCartTable = [...cartItems];
         newCartTable[indexTable].carts = newCartItems;
-        setCartItems(newCartTable);
+        setCartItems([...newCartTable]);
     };
 
     // const clearCart = async () => {

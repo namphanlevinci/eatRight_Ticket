@@ -88,7 +88,7 @@ export default function CartItemList({
                 }
             }
         }
-    }, [data]);
+    }, [data, data?.items, data?.items?.[data?.items?.length - 1]]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -416,10 +416,13 @@ export default function CartItemList({
                                                     quantity={item.quantity}
                                                     setQuantity={(
                                                         e: number,
+                                                        type:
+                                                            | 'decrea'
+                                                            | 'increa',
                                                     ) => {
                                                         updateQuantityItemFromCart(
                                                             index,
-                                                            e,
+                                                            type,
                                                         );
                                                     }}
                                                     isSend={!item.isUnsend}
