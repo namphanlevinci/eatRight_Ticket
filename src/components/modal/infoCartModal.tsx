@@ -170,7 +170,7 @@ export default function InfoCartModal({
                             color: theme.tEXTPrimary,
                             padding: '0 10px',
                             border: `1px solid ${theme.nEUTRALLine}`,
-                            width: 'calc(100% - 25px)',
+                            width: '100%',
                             borderRadius: 8,
                             outline: 'none',
                             fontSize: 15,
