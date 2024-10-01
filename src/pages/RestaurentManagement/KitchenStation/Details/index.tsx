@@ -25,10 +25,12 @@ export default function KitchenStationDetailPage() {
     const name = searchParams.get('name');
     const printer_id = searchParams.get('printer_id');
     useEffect(() => {
-        form.setFieldsValue({
-            name: name,
-            printer: parseInt(printer_id || '0'),
-        });
+        if (printer_id) {
+            form.setFieldsValue({
+                name: name,
+                printer: `${printer_id}`,
+            });
+        }
     }, [id, name, printer_id]);
     const handleCreateSubmit = (values: any) => {
         setLoading(true);
@@ -100,7 +102,7 @@ export default function KitchenStationDetailPage() {
     useEffect(() => {
         if (printer_id && listPrinter.length > 0) {
             form.setFieldsValue({
-                printer: parseInt(printer_id),
+                printer: `${printer_id}`,
             });
         }
     }, [listPrinter, printer_id]);
