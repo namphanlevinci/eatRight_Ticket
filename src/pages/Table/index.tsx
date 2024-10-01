@@ -27,6 +27,7 @@ type TableType = {
     size: number;
     numberOfCustomer: number;
     cartIds: string[];
+    is_counter: number | boolean | string;
 };
 
 export const TablePage: React.FC = () => {
@@ -98,7 +99,7 @@ export const TablePage: React.FC = () => {
                     </Link>
                     <ArrowRightIcon />
                     <BreadCrum isSelected>
-                        {table?.name === 'Counter'
+                        {table?.is_counter == '1'
                             ? 'Quick Order'
                             : `Table ${table?.name}`}
                     </BreadCrum>
@@ -150,7 +151,7 @@ export const TablePage: React.FC = () => {
                     <OrderCart table={table} />
                     <div ref={targetRef}>
                         {showMenu && (
-                            <Menu isEatOut={table?.name === 'Counter'} />
+                            <Menu isEatOut={table?.is_counter == '1'} />
                         )}
                     </div>
                 </MenuContext.Provider>

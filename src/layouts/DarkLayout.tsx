@@ -196,14 +196,14 @@ export const DarkLayout = (props: Props) => {
                                 display: 'inline-block',
                                 whiteSpace: 'break-spaces',
                                 overflow: 'visible',
-                                color: 'white',
+                                color: '#384052',
                             }}
                         >
                             Table {item?.title} - {item?.content}
                         </span>
                         <p
                             style={{
-                                color: '#fafafa',
+                                color: '#384052',
                                 fontSize: 13,
                                 marginTop: 3,
                             }}
@@ -341,7 +341,7 @@ export const DarkLayout = (props: Props) => {
                                     open={isOpenNoti}
                                     onOpenChange={handleOpenChangeNoti}
                                     overlayInnerStyle={{
-                                        background: '#4B3718',
+                                        background: '#fff',
                                     }}
                                     placement="bottomRight"
                                 >

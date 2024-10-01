@@ -1,8 +1,9 @@
 import { Button, Form, Input, Modal, Row } from 'antd';
+import { PatternFormat } from 'react-number-format';
 import CloseXIcon from 'assets/icons/closeIcon';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 type FieldType = {
     username?: string;
     numberOfCustomer?: string;
@@ -157,34 +158,23 @@ export default function InfoCartModal({
                         }}
                     />
                 </Form.Item>
-                <Form.Item<FieldType>
-                    label="Phone number"
-                    name="phoneNumber"
-                    rules={[
-                        {
-                            required: false,
-                        },
-                        {
-                            pattern: /^\d{10,15}$/, // Định dạng số điện thoại có độ dài từ 10-15 chữ số
-                            message: 'Please enter a valid phone number!',
-                        },
-                    ]}
-                >
-                    <Input
-                        size="large"
-                        autoFocus={true}
-                        ref={inputRef}
-                        placeholder="Phone Number"
-                        allowClear
+                <Form.Item<FieldType> label="Phone number" name="phoneNumber">
+                    <PatternFormat
+                        placeholder="Phone number"
+                        name="phoneNumber"
+                        format="(###) ### ####"
                         style={{
                             flex: 1,
                             height: 56,
                             backgroundColor: theme.nEUTRALBase,
                             color: theme.tEXTPrimary,
+                            padding: '0 10px',
                             border: `1px solid ${theme.nEUTRALLine}`,
+                            width: '100%',
+                            borderRadius: 8,
+                            outline: 'none',
+                            fontSize: 15,
                         }}
-                        inputMode="tel"
-                        maxLength={15}
                     />
                 </Form.Item>
                 <Form.Item<FieldType>

@@ -31,6 +31,9 @@ export const containers = {
     Transactions: lazy(
         () => import('pages/BatchSettlements/Transactions/index'),
     ),
+
+    Report: lazy(() => import('pages/Report')),
+    ReportByPayment: lazy(() => import('pages/ReportByPayment')),
     MenuPage: lazy(() => import('pages/MenuManager/Menu/index')),
     Menu_Detail_Page: lazy(() => import('pages/MenuManager/MenuNew/index')),
     CategoryPage: lazy(() => import('pages/MenuManager/Category/index')),

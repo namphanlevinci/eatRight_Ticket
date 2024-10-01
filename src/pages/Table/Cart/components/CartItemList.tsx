@@ -43,7 +43,6 @@ export default function CartItemList({
         cartItems,
         indexTable,
         setCustomerName,
-
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
         removeCartIndex,
@@ -90,7 +89,7 @@ export default function CartItemList({
                 }
             }
         }
-    }, [data]);
+    }, [data, data?.items, data?.items?.[data?.items?.length - 1]]);
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -190,7 +189,7 @@ export default function CartItemList({
                 carts,
                 username || '',
                 numberOfCustomer,
-                table?.name?.toLowerCase()?.includes('counter') ? true : false,
+                table?.is_counter == 1 ? true : false,
                 phoneNumber,
             );
         } else {
@@ -439,10 +438,13 @@ export default function CartItemList({
                                                     quantity={item.quantity}
                                                     setQuantity={(
                                                         e: number,
+                                                        type:
+                                                            | 'decrea'
+                                                            | 'increa',
                                                     ) => {
                                                         updateQuantityItemFromCart(
                                                             index,
-                                                            e,
+                                                            type,
                                                         );
                                                     }}
                                                     isSend={!item.isUnsend}

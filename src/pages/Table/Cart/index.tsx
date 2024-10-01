@@ -119,7 +119,7 @@ export default function OrderCart({ table }: { table: any }) {
                     }}
                 />
             </Row>
-            <CartInfo table={table} />
+            <CartInfo table={{ ...table }} />
             {indexTable !== -1 && (
                 <CartItemList
                     data={
