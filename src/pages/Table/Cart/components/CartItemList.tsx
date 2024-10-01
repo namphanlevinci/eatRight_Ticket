@@ -188,7 +188,7 @@ export default function CartItemList({
                 carts,
                 username || '',
                 numberOfCustomer,
-                table?.name?.toLowerCase()?.includes('counter') ? true : false,
+                table?.is_counter == 1 ? true : false,
                 phoneNumber,
             );
         } else {
