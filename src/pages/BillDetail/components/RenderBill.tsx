@@ -214,17 +214,17 @@ const RenderBillItem = ({
                             : data?.tip_amount?.value?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
-                {dataInvoice?.non_cash_amount && (
+                {dataInvoice?.length > 0 && dataInvoice[0]?.non_cash_amount && (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>
                             Non-Cash Adjustment :
                         </TextDark>
                         <TextDark>
-                            {CURRENTCY} {dataInvoice?.non_cash_amount}
+                            {CURRENTCY} {dataInvoice[0]?.non_cash_amount}
                         </TextDark>
                     </RowStyled>
                 )}
-                {dataInvoice?.non_cash_amount && (
+                {dataInvoice?.length > 0 && dataInvoice[0]?.non_cash_amount ? (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>Total:</TextDark>
                         <TextDark>
@@ -240,22 +240,24 @@ const RenderBillItem = ({
                                 : data?.total?.subtotal?.value -
                                   totalDiscount +
                                   data?.total?.total_tax?.value +
-                                  dataInvoice?.non_cash_amount
+                                  parseFloat(dataInvoice[0]?.non_cash_amount)
                             )?.toFixed(2)}
                         </TextDark>
                     </RowStyled>
+                ) : (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>Grand Total:</TextDark>
+                        <TextDark>
+                            {CURRENTCY}{' '}
+                            {selectDataShowbill
+                                ? selectDataShowbill?.total?.grand_total?.value?.toFixed(
+                                      2,
+                                  )
+                                : data?.grand_total?.toFixed(2)}
+                        </TextDark>
+                    </RowStyled>
                 )}
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Grand Total:</TextDark>
-                    <TextDark>
-                        {CURRENTCY}{' '}
-                        {selectDataShowbill
-                            ? selectDataShowbill?.total?.grand_total?.value?.toFixed(
-                                  2,
-                              )
-                            : data?.grand_total?.toFixed(2)}
-                    </TextDark>
-                </RowStyled>
+
                 <DividedDashed />
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Payment Method:</TextDark>
