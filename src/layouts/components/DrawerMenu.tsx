@@ -18,6 +18,7 @@ import CustomerIcon from 'assets/icons/customerIcon';
 import SettingV2Icon from 'assets/icons/settingV2';
 import ReceiptBillV2Icon from 'assets/icons/receiptV2Bill';
 import KitchenIcon from './icons/kitchenIcon';
+import ReportIcon from './icons/ReportIcon';
 import {
     HistoryOutlined,
     PrinterOutlined,
@@ -55,6 +56,12 @@ const MenuMerchant = [
         title: 'Batch Settlements',
         icon: <BillIcon />,
         to: BASE_ROUTER.BATCH_HISTORY,
+        isGo: true,
+    },
+    {
+        title: 'Report',
+        icon: <ReportIcon />,
+        to: BASE_ROUTER.SALES_REPORT,
         isGo: true,
     },
     {
