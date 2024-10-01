@@ -210,7 +210,7 @@ const Index = () => {
                         description: detail?.description_plain_text,
                         status: detail?.status == 1 ? true : false,
                         price: detail?.price?.regularPrice?.amount?.value,
-                        kitchen_station: detail?.kitchen_station,
+                        kitchen_station: `${detail?.kitchen_station}`,
                         sku: detail?.sku,
                         category_id: detail?.categories?.[0]?.id,
                         quantity: detail?.qty,
@@ -574,10 +574,7 @@ const Index = () => {
                                 placeholder="Select kitchen station"
                             >
                                 {stations?.map?.((m: any) => (
-                                    <Option
-                                        key={m?.printer_id}
-                                        value={m?.printer_id}
-                                    >
+                                    <Option key={m?.id} value={m?.id}>
                                         {m?.name}
                                     </Option>
                                 ))}
