@@ -235,6 +235,8 @@ export default function KitchenStationDetailPage() {
                     placeholder="Linked printer"
                     options={listPrinter}
                     style={{ width: '60%', minWidth: 600 }}
+                    required={false}
+                    rule={[{ required: false }]}
                 />
             </div>
         </Form>
