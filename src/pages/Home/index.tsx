@@ -99,62 +99,70 @@ const HomePage: React.FC = () => {
                             </div>
                         ))}
                     </StyledFloors>
-                    <Link
-                        to={`${BASE_ROUTER.TABLE}?tableId=${counterTable?.id}`}
-                    >
-                        <div style={{ position: 'relative' }}>
-                            <CountAvailable
-                                style={{
-                                    background: theme.pRIMARY6Primary,
-                                    color: theme.pRIMARY2,
-                                    top: ismobile ? 0 : -20,
-                                }}
-                            >
-                                <div>{counterTable?.cartIds?.length || 0}</div>
-                            </CountAvailable>
-                            {!ismobile && (
-                                <CounterTakeAway
-                                    style={{ background: theme.pRIMARY3 }}
-                                    background={theme.pRIMARY6Primary}
+                    {counterTable && (
+                        <Link
+                            to={`${BASE_ROUTER.TABLE}?tableId=${counterTable?.id}`}
+                        >
+                            <div style={{ position: 'relative' }}>
+                                <CountAvailable
+                                    style={{
+                                        background: theme.pRIMARY6Primary,
+                                        color: theme.pRIMARY2,
+                                        top: ismobile ? 0 : -20,
+                                    }}
                                 >
-                                    {/* <h3 style={{ color: theme.tEXTPrimary }}>
+                                    <div>
+                                        {counterTable?.cartIds?.length || 0}
+                                    </div>
+                                </CountAvailable>
+                                {!ismobile && (
+                                    <CounterTakeAway
+                                        style={{ background: theme.pRIMARY3 }}
+                                        background={theme.pRIMARY6Primary}
+                                    >
+                                        {/* <h3 style={{ color: theme.tEXTPrimary }}>
                                         Quick Order
                                     </h3> */}
-                                    <h2
-                                        style={{ color: theme.pRIMARY6Primary }}
-                                    >
-                                        Quick Order
-                                    </h2>
-                                    <div />
-                                </CounterTakeAway>
-                            )}
-                        </div>
-                        {ismobile && (
-                            <div
-                                style={{
-                                    marginTop: 16,
-                                    width: 'calc(100vw - 64px)',
-                                    display: 'flex',
-                                    justifyContent: 'flex-end',
-                                }}
-                            >
-                                <CounterTakeAway
-                                    style={{ background: theme.pRIMARY3 }}
-                                    background={theme.pRIMARY6Primary}
-                                >
-                                    {/* <h3 style={{ color: theme.tEXTPrimary }}>
-                                        Quick Order
-                                    </h3> */}
-                                    <h2
-                                        style={{ color: theme.pRIMARY6Primary }}
-                                    >
-                                        Quick Order
-                                    </h2>
-                                    <div />
-                                </CounterTakeAway>
+                                        <h2
+                                            style={{
+                                                color: theme.pRIMARY6Primary,
+                                            }}
+                                        >
+                                            Quick Order
+                                        </h2>
+                                        <div />
+                                    </CounterTakeAway>
+                                )}
                             </div>
-                        )}
-                    </Link>
+                            {ismobile && (
+                                <div
+                                    style={{
+                                        marginTop: 16,
+                                        width: 'calc(100vw - 64px)',
+                                        display: 'flex',
+                                        justifyContent: 'flex-end',
+                                    }}
+                                >
+                                    <CounterTakeAway
+                                        style={{ background: theme.pRIMARY3 }}
+                                        background={theme.pRIMARY6Primary}
+                                    >
+                                        {/* <h3 style={{ color: theme.tEXTPrimary }}>
+                                        Quick Order
+                                    </h3> */}
+                                        <h2
+                                            style={{
+                                                color: theme.pRIMARY6Primary,
+                                            }}
+                                        >
+                                            Quick Order
+                                        </h2>
+                                        <div />
+                                    </CounterTakeAway>
+                                </div>
+                            )}
+                        </Link>
+                    )}
                 </ContainerTableHeader>
                 {/* <SearchTable onChangeText={(e: string) => setSearchText(e)} /> */}
                 <ContainerTableBody>

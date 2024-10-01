@@ -76,10 +76,10 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
         }
         if (tableData && Array.isArray(tableData)) {
             const counterTable = tableData?.find(
-                (data: any) => data?.name === 'Counter',
+                (data: any) => data?.is_counter == 1,
             );
             const tableNormal = tableData?.filter(
-                (data: any) => data?.name !== 'Counter',
+                (data: any) => data?.is_counter != 1,
             );
             let tableList = tableNormal;
             if (searchText) {
