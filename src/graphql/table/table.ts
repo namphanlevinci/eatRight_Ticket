@@ -8,6 +8,7 @@ export const GET_ALL_TABLE_Floor = gql`
             status
             size
             hasReadyItem
+            is_counter
             numberOfCustomer
             cartIds {
                 cartId
@@ -23,6 +24,7 @@ export const GET_ALL_TABLE = gql`
             status
             size
             hasReadyItem
+            is_counter
             numberOfCustomer
             cartIds {
                 cartId
