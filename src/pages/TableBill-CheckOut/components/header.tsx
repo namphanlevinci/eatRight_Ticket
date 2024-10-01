@@ -25,22 +25,26 @@ export const RenderHeader = () => {
         }
     }, [cartId]);
     const handleOnCancelCheck = () => {
-        onCancelCheckout({
-            variables: {
-                cart_id: cartId,
-            },
-        })
-            .then((res) => {
-                navigation(-1);
-                console.log(res);
-                notification.success({
-                    message: 'Success',
-                    description: 'Cancel Check out successfully',
-                });
+        if (cartId) {
+            onCancelCheckout({
+                variables: {
+                    cart_id: cartId,
+                },
             })
-            .catch((err) => {
-                console.log(err);
-            });
+                .then((res) => {
+                    navigation(-1);
+                    console.log(res);
+                    notification.success({
+                        message: 'Success',
+                        description: 'Cancel Check out successfully',
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        } else {
+            navigation(-1);
+        }
     };
     return (
         <Header

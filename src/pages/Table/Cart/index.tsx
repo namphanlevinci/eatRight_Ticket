@@ -80,10 +80,13 @@ export default function OrderCart({ table }: { table: any }) {
                     ]?.carts[index]?.order?.items?.find(
                         (item) => item.serving_status === 'ready',
                     );
+                    const isPayment =
+                        cartItems[indexTable]?.carts[index]?.is_paid;
                     const isBell =
                         isCartFormServerNeedServed || isCartNeedServed;
                     return (
                         <RenderTab
+                            isPaid={isPayment ? true : false}
                             isBell={isBell ? true : false}
                             key={index}
                             id={item}

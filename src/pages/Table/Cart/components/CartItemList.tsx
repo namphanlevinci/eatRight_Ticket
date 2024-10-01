@@ -21,11 +21,12 @@ import RenderNote from './RenderNote';
 import { useTheme } from 'context/themeContext';
 import { DividedDashed } from 'pages/BillDetail/styled';
 import { roundTo } from 'utils/number';
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { CLEAN_UP_CART_TABLE } from 'graphql/table/cleanTable';
 import ModalInputNote from 'components/modal/ModalInputNote';
 import { useCartTable } from '../useGetCart';
 import ModalConfirm from 'components/modal/ModalConfirm';
+import { GET_INVOICES } from 'graphql/cart/splitBill';
 export default function CartItemList({
     data,
     cartInfo,
@@ -273,6 +274,26 @@ export default function CartItemList({
     };
     const [noteSelectValue, setNoteSelectValue] = useState('');
 
+    const [onGetInvoices] = useLazyQuery(GET_INVOICES, {
+        fetchPolicy: 'cache-and-network',
+    });
+    const goFinishPayment = (order_number: string) => {
+        onGetInvoices({
+            variables: {
+                OrderNumber: order_number,
+            },
+        })
+            .then((res) => {
+                localStorage.setItem(
+                    'split_bill_data',
+                    JSON.stringify(res.data?.merchantGetOrderInvoices),
+                );
+                navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+            })
+            .catch(() => {
+                console.log('error');
+            });
+    };
     return data ? (
         <StyledCartBorder
             style={{
@@ -778,36 +799,34 @@ export default function CartItemList({
                 <Col style={ismobile ? { width: '100%' } : {}}>
                     <Row justify={'space-between'}>
                         <Col>
-                            {showMenu ? (
-                                <Button
-                                    style={{
-                                        width: 154,
-                                        height: 44,
-                                        gap: 10,
-                                        border: `0px solid ${theme.pRIMARY6Primary}`,
-                                    }}
-                                    onClick={() => isNewItem && SendCart()}
-                                    isDisable={!isNewItem}
-                                    disabled={!isNewItem}
-                                    background={theme.pRIMARY6Primary}
-                                    color={theme.nEUTRALBase}
-                                >
-                                    Confirm
-                                </Button>
-                            ) : (
-                                <Button
-                                    style={{
-                                        width: 154,
-                                        height: 44,
-                                        border: `0px solid ${theme.pRIMARY6Primary}`,
-                                    }}
-                                    onClick={() => goViewBill(data?.order_id)}
-                                    background={theme.pRIMARY6Primary}
-                                    color={theme.nEUTRALBase}
-                                >
-                                    View Receipt
-                                </Button>
-                            )}
+                            <Button
+                                style={{
+                                    width: 154,
+                                    height: 44,
+                                    gap: 10,
+                                    border: `0px solid ${theme.pRIMARY6Primary}`,
+                                }}
+                                onClick={() => isNewItem && SendCart()}
+                                isDisable={!isNewItem}
+                                disabled={!isNewItem}
+                                background={theme.pRIMARY6Primary}
+                                color={theme.nEUTRALBase}
+                            >
+                                Confirm
+                            </Button>
+
+                            {/* <Button
+                                style={{
+                                    width: 154,
+                                    height: 44,
+                                    border: `0px solid ${theme.pRIMARY6Primary}`,
+                                }}
+                                onClick={() => goViewBill(data?.order_id)}
+                                background={theme.pRIMARY6Primary}
+                                color={theme.nEUTRALBase}
+                            >
+                                View Receipt
+                            </Button> */}
                         </Col>
                         <Col>
                             {!isNewItem && data?.items?.length > 0 ? (
@@ -851,22 +870,22 @@ export default function CartItemList({
                         </Col>
                     </Row>
                     <Row>
+                        {/* Show menu có nghĩa là chưa thanh toán  */}
                         {isAllDone ? (
                             showMenu ? (
                                 <Button
                                     style={{
                                         width: '100%',
                                         height: 44,
+                                        background: theme.sUCCESS2Default,
                                         border: 0,
                                     }}
                                     onClick={goBill}
                                     isDisable={
                                         isNewItem || data?.items?.length === 0
                                     }
-                                    background={theme.pRIMARY6Primary}
-                                    color={theme.nEUTRALBase}
                                 >
-                                    Bill
+                                    Checkout
                                 </Button>
                             ) : (
                                 <Button
@@ -886,19 +905,35 @@ export default function CartItemList({
                                 </Button>
                             )
                         ) : !showMenu ? (
-                            <Button
-                                style={{
-                                    width: '100%',
-                                    height: 44,
-                                    border: 0,
-                                }}
-                                onClick={onCompleteService}
-                                isDisable={true}
-                                background={theme.pRIMARY6Primary}
-                                color={theme.nEUTRALBase}
-                            >
-                                Complete Service
-                            </Button>
+                            data?.is_paid ? (
+                                <Button
+                                    style={{
+                                        width: '100%',
+                                        height: 44,
+                                        border: `1px solid ${theme.pRIMARY6Primary}`,
+                                    }}
+                                    onClick={() => goViewBill(data?.order_id)}
+                                    background={theme.pRIMARY1}
+                                    color={theme.pRIMARY6Primary}
+                                >
+                                    View Receipt
+                                </Button>
+                            ) : (
+                                <Button
+                                    style={{
+                                        width: '100%',
+                                        height: 44,
+                                        border: `0px solid ${theme.pRIMARY6Primary}`,
+                                    }}
+                                    onClick={() =>
+                                        goFinishPayment(data?.order_number)
+                                    }
+                                    background={theme.pRIMARY6Primary}
+                                    color={theme.nEUTRALBase}
+                                >
+                                    Finish Payment
+                                </Button>
+                            )
                         ) : (
                             <Button
                                 style={{

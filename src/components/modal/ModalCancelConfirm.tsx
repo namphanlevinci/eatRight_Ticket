@@ -69,7 +69,7 @@ export default function ModalCancelConfirm({
                         top: 10,
                         right: 20,
                     }}
-                    onClick={onSubmit}
+                    onClick={onCancel}
                 >
                     <CloseXIcon />
                 </div>

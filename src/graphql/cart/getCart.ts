@@ -12,6 +12,7 @@ export const GET_CART_BY_ID = gql`
             phonenumber
             lastname
             numberOfCustomer
+            is_paid
             items {
                 uid
                 prices {
