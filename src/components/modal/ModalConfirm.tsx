@@ -10,12 +10,16 @@ export default function ModalConfirm({
     onSubmit,
     title,
     content,
+    okText = 'Ok',
+    cancelText = 'Cancel',
 }: {
     isModalOpen: boolean;
     onCancel: any;
     onSubmit: any;
     title: string;
     content: string;
+    okText?: string;
+    cancelText?: string;
 }) {
     const inputRef = useRef<any>(null);
     useEffect(() => {
@@ -84,11 +88,11 @@ export default function ModalConfirm({
                             fontWeight: '600',
                         }}
                     >
-                        Cancel
+                        {cancelText}
                     </Text>
                 </Button>
                 <ButtonPrimary
-                    title="Ok"
+                    title={okText}
                     onClick={onSubmit}
                     width="45%"
                     marginTop="0px"

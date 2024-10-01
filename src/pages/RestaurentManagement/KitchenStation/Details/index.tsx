@@ -43,7 +43,7 @@ export default function KitchenStationDetailPage() {
             .then(() => {
                 notification.success({
                     message: 'Success',
-                    description: 'Created successfully',
+                    description: `Station "${values.name}" has been created!`,
                 });
                 navigation(BASE_ROUTER.RESTAURENT_KITCHEN_STATION);
             })
@@ -66,7 +66,7 @@ export default function KitchenStationDetailPage() {
             .then(() => {
                 notification.success({
                     message: 'Success',
-                    description: 'Update successfully',
+                    description: `Changes have been saved!`,
                 });
                 navigation(BASE_ROUTER.RESTAURENT_KITCHEN_STATION);
             })
@@ -140,7 +140,7 @@ export default function KitchenStationDetailPage() {
                         .then(() => {
                             notification.success({
                                 message: 'Success',
-                                description: 'Deleted successfully',
+                                description: `"${name}" has been deleted!`,
                             });
                             navigation(BASE_ROUTER.RESTAURENT_KITCHEN_STATION);
                         })
@@ -152,6 +152,7 @@ export default function KitchenStationDetailPage() {
                         });
                     setShowModalDelete(false);
                 }}
+                okText="Delete"
             />
             <ModalConfirm
                 content="You will lost all of your changes!"
