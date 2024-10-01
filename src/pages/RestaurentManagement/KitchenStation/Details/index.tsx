@@ -107,6 +107,7 @@ export default function KitchenStationDetailPage() {
         }
     }, [listPrinter, printer_id]);
     const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showModalCancel, setShowModalCancel] = useState(false);
     return (
         <Form
             name="basic"
@@ -152,6 +153,16 @@ export default function KitchenStationDetailPage() {
                     setShowModalDelete(false);
                 }}
             />
+            <ModalConfirm
+                content="You will lost all of your changes!"
+                title={'Cancel editing?'}
+                isModalOpen={showModalCancel}
+                onCancel={() => setShowModalCancel(false)}
+                onSubmit={() => {
+                    navigation(-1);
+                    setShowModalCancel(false);
+                }}
+            />
             <LoadingModal showLoading={loading} />
             <div
                 style={{
@@ -184,7 +195,9 @@ export default function KitchenStationDetailPage() {
                                 <ButtonPrimary
                                     isCancel
                                     title="Cancel"
-                                    onClick={() => navigation(-1)}
+                                    onClick={() => {
+                                        setShowModalCancel(true);
+                                    }}
                                     width="100px"
                                     height="48px"
                                 />
@@ -193,7 +206,7 @@ export default function KitchenStationDetailPage() {
                             <ButtonPrimary
                                 isCancel
                                 title="Cancel"
-                                onClick={() => navigation(-1)}
+                                onClick={() => setShowModalCancel(true)}
                                 width="100px"
                                 backgroundColor={theme.eRROR1BG}
                                 color={theme.eRROR2Default}
