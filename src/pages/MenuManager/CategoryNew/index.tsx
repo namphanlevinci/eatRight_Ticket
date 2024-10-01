@@ -105,7 +105,7 @@ const Index = () => {
                         menu_ids: detail?.menus?.map?.(
                             (m: any) => m?.entity_id,
                         ),
-                        kitchen_station: detail?.kitchen_station,
+                        kitchen_station: `${detail?.kitchen_station ?? ''}`,
                     });
                     setIsToggled(detail?.is_active);
                     setLoading(false);
@@ -318,7 +318,7 @@ const Index = () => {
                             name="kitchen_station"
                             rules={[
                                 {
-                                    required: true,
+                                    required: false,
                                     message: 'Please select an kitchen station',
                                 },
                             ]}
