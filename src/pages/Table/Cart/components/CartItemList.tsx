@@ -846,6 +846,7 @@ export default function CartItemList({
                                     <Text
                                         style={{
                                             color: theme.pRIMARY6Primary,
+                                            fontWeight: '600',
                                         }}
                                     >
                                         Change table
@@ -910,10 +911,10 @@ export default function CartItemList({
                                     style={{
                                         width: '100%',
                                         height: 44,
-                                        border: `1px solid ${theme.pRIMARY6Primary}`,
+                                        border: `2px solid ${theme.pRIMARY6Primary}`,
                                     }}
                                     onClick={() => goViewBill(data?.order_id)}
-                                    background={theme.pRIMARY1}
+                                    background={theme.nEUTRALBase}
                                     color={theme.pRIMARY6Primary}
                                 >
                                     View Receipt
