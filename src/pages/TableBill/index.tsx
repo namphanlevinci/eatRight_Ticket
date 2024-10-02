@@ -12,7 +12,6 @@ import ModalOffSplitBill from 'components/modal/ModalOffSplitBill';
 import { useMediaQuery } from 'react-responsive';
 import { useCartTable } from 'pages/Table/Cart/useGetCart';
 import LoadingModal from 'components/modal/loadingModal';
-import ChangeModal from 'components/modal/ChangeModal';
 export default function TableBill() {
     const { loading } = useCartTable(false, false);
     const {
@@ -111,13 +110,6 @@ export default function TableBill() {
                     cart={cart}
                 />
             )}
-            <ChangeModal
-                isModalOpen={true}
-                grandTotal={199}
-                onSubmit={() => {
-                    console.log('SUbmited');
-                }}
-            />
             <ModalOffSplitBill
                 isModalOpen={openModalConfirmCloseSplitBill}
                 onCancel={() => {
