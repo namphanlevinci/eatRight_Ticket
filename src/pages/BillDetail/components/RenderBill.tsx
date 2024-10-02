@@ -255,16 +255,20 @@ const RenderBillItem = ({
                             ? (
                                   selectDataShowbill?.total?.grand_total
                                       ?.value +
-                                      parseFloat(
-                                          dataInvoice[0]?.non_cash_amount,
-                                      ) || '0'
-                              ).toFixed(2)
+                                  parseFloat(
+                                      dataInvoice?.length > 0
+                                          ? dataInvoice[0]?.non_cash_amount
+                                          : '0',
+                                  )
+                              )?.toFixed(2)
                             : (
                                   data?.grand_total +
-                                      parseFloat(
-                                          dataInvoice[0]?.non_cash_amount,
-                                      ) || '0'
-                              ).toFixed(2)}
+                                  parseFloat(
+                                      dataInvoice?.length > 0
+                                          ? dataInvoice[0]?.non_cash_amount
+                                          : '0',
+                                  )
+                              )?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
