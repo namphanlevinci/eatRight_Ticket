@@ -111,7 +111,13 @@ export default function TableBill() {
                     cart={cart}
                 />
             )}
-            <ChangeModal isModalOpen onSumit={() => {console.log("SUbmited")}} received='199' />
+            <ChangeModal
+                isModalOpen={true}
+                grandTotal={199}
+                onSubmit={() => {
+                    console.log('SUbmited');
+                }}
+            />
             <ModalOffSplitBill
                 isModalOpen={openModalConfirmCloseSplitBill}
                 onCancel={() => {
