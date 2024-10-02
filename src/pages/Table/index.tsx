@@ -204,23 +204,29 @@ export const TablePage: React.FC = () => {
                                     </Text>
                                 )}
                             </Button>
-                            {table?.status == '2' && (
-                                <Row
-                                    align={'middle'}
-                                    onClick={() => setShowInputNote(true)}
+
+                            <Row
+                                align={'middle'}
+                                onClick={() =>
+                                    table?.status == '2' &&
+                                    setShowInputNote(true)
+                                }
+                            >
+                                <NoteTableIcon />
+                                <Text
+                                    style={{
+                                        marginLeft: 8,
+                                        color: '#6C707A',
+                                        paddingTop: 4,
+                                    }}
                                 >
-                                    <NoteTableIcon />
-                                    <Text
-                                        style={{
-                                            marginLeft: 8,
-                                            color: '#6C707A',
-                                            paddingTop: 4,
-                                        }}
-                                    >
-                                        {note ? note : 'Add Note'}
-                                    </Text>
-                                </Row>
-                            )}
+                                    {note
+                                        ? note
+                                        : table?.status == '2'
+                                          ? 'Add Note'
+                                          : ''}
+                                </Text>
+                            </Row>
                         </>
                     </Row>
 
