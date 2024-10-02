@@ -56,6 +56,7 @@ export const DarkLayout = (props: Props) => {
         restaurant_address,
         restaurant_name,
         isMerchant,
+        isTableView,
     } = useSelector((state: RootState) => state.auth);
     const [onGetInfo] = useLazyQuery(USER_INFO);
     const [onGetRestaurent] = useLazyQuery(GET_RESTAURANT);
@@ -319,7 +320,9 @@ export const DarkLayout = (props: Props) => {
                                                     </Text>
 
                                                     <Switch
-                                                        defaultChecked
+                                                        defaultChecked={
+                                                            isTableView
+                                                        }
                                                         onChange={() => {
                                                             onToggleView();
                                                         }}
