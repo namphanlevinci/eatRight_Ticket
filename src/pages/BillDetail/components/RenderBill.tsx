@@ -198,22 +198,7 @@ const RenderBillItem = ({
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Tip:</TextDark>
-                    <TextDark>
-                        {CURRENTCY}{' '}
-                        {selectDataShowbill
-                            ? (
-                                  selectDataShowbill?.total?.grand_total
-                                      ?.value -
-                                  (selectDataShowbill?.total?.subtotal?.value -
-                                      totalDiscount +
-                                      selectDataShowbill?.total?.total_tax
-                                          ?.value)
-                              ).toFixed(2)
-                            : data?.tip_amount?.value?.toFixed(2)}
-                    </TextDark>
-                </RowStyled>
+
                 {dataInvoice?.length > 0 && dataInvoice[0]?.non_cash_amount && (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>
@@ -224,7 +209,7 @@ const RenderBillItem = ({
                         </TextDark>
                     </RowStyled>
                 )}
-                {dataInvoice?.length > 0 && dataInvoice[0]?.non_cash_amount ? (
+                {dataInvoice?.length > 0 && dataInvoice[0]?.non_cash_amount && (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>Total:</TextDark>
                         <TextDark>
@@ -244,20 +229,44 @@ const RenderBillItem = ({
                             )?.toFixed(2)}
                         </TextDark>
                     </RowStyled>
-                ) : (
-                    <RowStyled align={'middle'}>
-                        <TextDark style={text16}>Grand Total:</TextDark>
-                        <TextDark>
-                            {CURRENTCY}{' '}
-                            {selectDataShowbill
-                                ? selectDataShowbill?.total?.grand_total?.value?.toFixed(
-                                      2,
-                                  )
-                                : data?.grand_total?.toFixed(2)}
-                        </TextDark>
-                    </RowStyled>
                 )}
 
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Tip:</TextDark>
+                    <TextDark>
+                        {CURRENTCY}{' '}
+                        {selectDataShowbill
+                            ? (
+                                  selectDataShowbill?.total?.grand_total
+                                      ?.value -
+                                  (selectDataShowbill?.total?.subtotal?.value -
+                                      totalDiscount +
+                                      selectDataShowbill?.total?.total_tax
+                                          ?.value)
+                              ).toFixed(2)
+                            : data?.tip_amount?.value?.toFixed(2)}
+                    </TextDark>
+                </RowStyled>
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Grand Total:</TextDark>
+                    <TextDark>
+                        {CURRENTCY}{' '}
+                        {selectDataShowbill
+                            ? (
+                                  selectDataShowbill?.total?.grand_total
+                                      ?.value +
+                                      parseFloat(
+                                          dataInvoice[0]?.non_cash_amount,
+                                      ) || '0'
+                              ).toFixed(2)
+                            : (
+                                  data?.grand_total +
+                                      parseFloat(
+                                          dataInvoice[0]?.non_cash_amount,
+                                      ) || '0'
+                              ).toFixed(2)}
+                    </TextDark>
+                </RowStyled>
                 <DividedDashed />
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Payment Method:</TextDark>
