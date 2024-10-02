@@ -211,7 +211,13 @@ export const TablePage: React.FC = () => {
                                     setShowInputNote(true)
                                 }
                             >
-                                <NoteTableIcon />
+                                {note ? (
+                                    note
+                                ) : table?.status == '2' ? (
+                                    <NoteTableIcon />
+                                ) : (
+                                    ''
+                                )}
                                 <Text
                                     style={{
                                         marginLeft: 8,
