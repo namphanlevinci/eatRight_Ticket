@@ -82,6 +82,11 @@ export default function ColRight({
     const [modalTip, setModalTip] = useState(false);
     const { handleAddCoupon } = useCouponCart();
     const { theme } = useTheme();
+    const [value, setValue] = React.useState('');
+    const handleChange = (e: any) => {
+        setValue(e?.target.value);
+    };
+
 
     const handleProceed = () => {
         if (tip === undefined) {
@@ -108,7 +113,7 @@ export default function ColRight({
             }
         } else {
             if (paymentMethod === 'other') {
-                setVisibleModalOtherMethod(true);
+                handleOtherPayment(value);
                 return;
             } 
             handleCheckOut();
@@ -403,18 +408,27 @@ export default function ColRight({
                         title="Cash"
                         isSelected={paymentMethod === 'cashondelivery'}
                         onClick={() => setPaymentMethod('cashondelivery')}
+                        selectedPaymentMethod={paymentMethod}
+                        note={value}
+                        onChangeNote={handleChange}
                     />
                     <div style={{ marginTop: 15 }} />
                     <ButtonOptions
                         title="Credit Card"
                         isSelected={paymentMethod === 'pos_djv'}
                         onClick={() => setPaymentMethod('pos_djv')}
+                        selectedPaymentMethod={paymentMethod}
+                        note={value}
+                        onChangeNote={handleChange}
                     />
                     <div style={{ marginTop: 15 }} />
                     <ButtonOptions
                         title="Other"
                         isSelected={paymentMethod === 'other'}
                         onClick={() => setPaymentMethod('other')}
+                        selectedPaymentMethod={paymentMethod}
+                        note={value}
+                        onChangeNote={handleChange}
                     />
                     {/* <ButtonOptions
                         title="POS (ARISE)"

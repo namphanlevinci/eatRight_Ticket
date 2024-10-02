@@ -29,7 +29,6 @@ export default function ButtonOptions({
             background: theme.nEUTRALBase,
             borderRadius: 8,
             border: `1px solid ${theme.nEUTRALLine}`,
-
         }}>
             <Button
                 style={{
@@ -64,12 +63,12 @@ export default function ButtonOptions({
             </Button>
             {
                 selectedPaymentMethod == "other" && title == "Other" &&
-                <div style={{ width: "100%", paddingBottom: 8}}>
+                <div style={{ width: "100%", paddingBottom: 8, display: "flex", paddingRight: 24}}>
                     <Input
                         placeholder="Note here)"
                         value={note}
                         onChange={onChangeNote}
-                        style={{ height: 50, width: "87%", marginLeft: 40 }}
+                        style={{ height: 50, flex: 1, marginLeft: 40 }}
                     />
                 </div>
             }
