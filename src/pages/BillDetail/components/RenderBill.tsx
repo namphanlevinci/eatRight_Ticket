@@ -253,21 +253,24 @@ const RenderBillItem = ({
                         {CURRENTCY}{' '}
                         {selectDataShowbill
                             ? (
-                                  selectDataShowbill?.total?.grand_total
-                                      ?.value +
                                   parseFloat(
-                                      dataInvoice?.length > 0
-                                          ? dataInvoice[0]?.non_cash_amount
-                                          : '0',
+                                      selectDataShowbill?.total?.grand_total
+                                          ?.value,
+                                  ) +
+                                  parseFloat(
+                                      selectDataShowbill?.non_cash_amount || 0,
                                   )
                               )?.toFixed(2)
                             : (
-                                  data?.grand_total +
-                                  parseFloat(
-                                      dataInvoice?.length > 0
-                                          ? dataInvoice[0]?.non_cash_amount
-                                          : '0',
-                                  )
+                                  parseFloat(data?.grand_total) +
+                                  (dataInvoice?.length > 0
+                                      ? dataInvoice.reduce(
+                                            (a: any, b: any) =>
+                                                a +
+                                                parseFloat(b?.non_cash_amount),
+                                            0,
+                                        ) || 0
+                                      : 0)
                               )?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
@@ -328,7 +331,7 @@ const RenderItem = ({ data }: { data: any }) => {
                         <span>{item?.qty}</span>
                     </Col>
                     <Col style={{ flex: 1 }}> {item?.name}</Col>
-                    <Col style={{ textAlign: 'end', width: 50 }}>
+                    <Col style={{ textAlign: 'end', width: 'auto' }}>
                         {CURRENTCY}
                         {(item?.qty * item?.price).toFixed(2)}
                     </Col>
@@ -357,7 +360,7 @@ const RenderItem2 = ({ data }: { data: any }) => {
                         <span>{item?.quantity_invoiced?.toFixed(2)}</span>
                     </Col>
                     <Col style={{ flex: 1 }}> {item?.product_name}</Col>
-                    <Col style={{ textAlign: 'end', width: 50 }}>
+                    <Col style={{ textAlign: 'end', width: 'auto' }}>
                         {CURRENTCY}
                         {(
                             item?.quantity_invoiced *
