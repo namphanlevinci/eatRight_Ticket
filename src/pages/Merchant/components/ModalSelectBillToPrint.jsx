@@ -42,7 +42,7 @@ export const ModalSelectBillToPrint = ({
                 variables: { invoice_number: selectedOption?.number },
             });
             notification.success({
-                message: 'Send request print bill success',
+                message: 'Receipt sent to printer',
                 description: 'Please go to printer to take the bill!',
             });
         } catch (err) {
