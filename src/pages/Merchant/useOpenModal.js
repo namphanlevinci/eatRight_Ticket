@@ -23,6 +23,7 @@ import { PRINT_BILL } from 'graphql/printer';
 import { GET_ORDER_DETAIL } from 'graphql/orders/orderDetail';
 import { GET_CART_BY_ID } from 'graphql/cart/getCart';
 import { BASE_ROUTER } from 'constants/router';
+import { convertMethod } from 'utils/format';
 const { info } = Modal;
 // Component để hiển thị Modal
 
@@ -423,7 +424,7 @@ const ModalDetail = React.memo(
                                                 )}
                                             </Row>
                                             <div style={{ marginTop: 12 }}>
-                                                Method {data?.payment_method}
+                                                Method {convertMethod(data?.payment_method)}
                                             </div>
                                             {/* <div>Invoice Id</div> */}
                                             <div

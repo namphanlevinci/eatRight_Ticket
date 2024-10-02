@@ -12,6 +12,8 @@ import {
     BoldText,
 } from '../styled';
 import React from 'react';
+import { convertMethod } from 'utils/format';
+
 const RenderBillItem = ({
     data,
     selectDataShowbill,
@@ -263,9 +265,9 @@ const RenderBillItem = ({
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Payment Method:</TextDark>
                     <TextDark>
-                        {selectDataShowbill
+                        {convertMethod(selectDataShowbill
                             ? selectDataShowbill?.payment_methods[0]?.name
-                            : data?.payment_method}
+                            : data?.payment_method)}
                     </TextDark>
                 </RowStyled>
 
