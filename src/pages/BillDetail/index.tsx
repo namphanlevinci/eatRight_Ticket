@@ -222,7 +222,7 @@ export default function index() {
             })
                 .then(() => {
                     notification.success({
-                        message: 'Send request print bill Success',
+                        message: 'Receipt sent to printer',
                         description: 'Please go to printer to take the bill!',
                     });
                 })
@@ -245,7 +245,7 @@ export default function index() {
                     })
                         .then(() => {
                             notification.success({
-                                message: 'Send request print bill Success',
+                                message: 'Receipt sent to printer',
                                 description:
                                     'Please go to printer to take the bill!',
                             });
@@ -265,7 +265,7 @@ export default function index() {
             })
                 .then(() => {
                     notification.success({
-                        message: 'Send request print bill Success',
+                        message: 'Receipt sent to printer',
                         description: 'Please go to printer to take the bill!',
                     });
                 })
