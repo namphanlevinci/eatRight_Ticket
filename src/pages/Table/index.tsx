@@ -55,6 +55,9 @@ export const TablePage: React.FC = () => {
     );
     const [cleanTable, { loading: loading3 }] = useMutation(CLEAR_TABLE);
     const onCheckIn = () => {
+        if (table && table?.cartIds.length > 0) {
+            return;
+        }
         if (table?.status == '0') {
             checkin({
                 variables: {
