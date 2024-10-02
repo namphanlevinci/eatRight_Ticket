@@ -177,7 +177,8 @@ export const TablePage: React.FC = () => {
                                               ? '#08875D'
                                               : '#0455BF',
                                     height: 40,
-                                    width: 120,
+                                    width: 'auto',
+                                    minWidth: 120,
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
