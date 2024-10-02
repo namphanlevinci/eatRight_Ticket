@@ -2,12 +2,13 @@ import { Text } from 'components/atom/Text';
 import React, { useEffect } from 'react';
 import ButtonOptions from './buttonOptions';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+import { Input } from "antd";
 
 export default function PaymentOptions({
     onPayment,
     isPaid = false,
 }: {
-    onPayment: (type: string) => void;
+    onPayment: (type: string, po_number: string) => void;
     isPaid?: boolean;
 }) {
     const [paymentMethods, setPaymentMethods] = React.useState<
@@ -18,6 +19,12 @@ export default function PaymentOptions({
     >([]);
     const [selectedPaymentMethod, setSelectedPaymentMethod] =
         React.useState('cash');
+
+    const [value, setValue] = React.useState('');
+    const handleChange = (e: any) => {
+        setValue(e?.target.value);
+    };
+
 
     useEffect(() => {
         setPaymentMethods([
@@ -67,12 +74,18 @@ export default function PaymentOptions({
                         title={item.title}
                         isSelected={selectedPaymentMethod === `${item.id}`}
                         onClick={() => setSelectedPaymentMethod(`${item.id}`)}
+                        selectedPaymentMethod={selectedPaymentMethod}
+                        note={value}
+                        onChangeNote={handleChange}
                     />
                 ))}
             </div>
             <ButtonPrimary
                 title="Proceed Payment"
-                onClick={() => onPayment(selectedPaymentMethod)}
+                onClick={() => onPayment(
+                    selectedPaymentMethod,
+                    value
+                )}
                 isDisable={isPaid}
             />
         </div>
