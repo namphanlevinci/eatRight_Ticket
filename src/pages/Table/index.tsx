@@ -18,7 +18,6 @@ import LoadingModal from 'components/modal/loadingModal';
 import { useTheme } from 'context/themeContext';
 import { NoteTableIcon } from 'assets/icons/noteTableIcon';
 import ModalInputNote from 'components/modal/ModalInputNote';
-import BreadCrum from 'components/atom/BreadCrum/BreadCrum';
 const { Content } = Layout;
 
 type TableType = {
