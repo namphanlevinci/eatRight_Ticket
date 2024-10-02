@@ -62,7 +62,13 @@ export const BaseRouter = () => {
         if (token) {
             localStorage.setItem('token', token);
             if (from === 'merchant') {
-                dispatch(updateStatusLoginForMerchant());
+                dispatch(
+                    updateStatusLoginForMerchant({
+                        isTableView: JSON.parse(
+                            localStorage.getItem('isTableView') || 'false',
+                        ),
+                    }),
+                );
             } else {
                 dispatch(updateStatusLogin());
             }

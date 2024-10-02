@@ -40,9 +40,10 @@ export const BASE_ROUTER = {
     RESTAURENT_KITCHEN_STATION_DETAIL: '/restaurent/kitchenStation/Detail',
     RESTAURENT_TERMINAL: '/restaurent/terminal',
     RESTAURENT_TERMINAL_DETAIL: '/restaurent/terminal/Detail',
-    BATCH_HISTORY: "/batch-history",
-    SETTLE: "/settle",
-    TRANSACTIONS: "/transactions",
-    SALES_REPORT: "/report",
-    REPORT_BY_PAYMENT: "/report/:method"
+    RESTAURENT_DEFAULT_VIEW: '/restaurent/defaultView',
+    BATCH_HISTORY: '/batch-history',
+    SETTLE: '/settle',
+    TRANSACTIONS: '/transactions',
+    SALES_REPORT: '/report',
+    REPORT_BY_PAYMENT: '/report/:method',
 };
