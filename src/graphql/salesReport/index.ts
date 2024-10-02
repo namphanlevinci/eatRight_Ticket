@@ -28,15 +28,9 @@ export type DATA_SALES_REPORT = {
 };
 
 export const GET_SALES_REPORTS = gql`
-    query merchantSalesReport(
-        $date_from: String
-        $date_to: String
-    ) {
+    query merchantSalesReport($date_from: String, $date_to: String) {
         merchantSalesReport(
-            filter: {
-                date_from: $date_from
-                date_to: $date_to
-            }
+            filter: { date_from: $date_from, date_to: $date_to }
         ) {
             total {
                 gross_sales {
@@ -175,6 +169,11 @@ export const GET_REPORTS_BY_PAYMENT = gql`
                     value
                     currency
                 }
+            }
+            page_info {
+                current_page
+                page_size
+                total_pages
             }
         }
     }

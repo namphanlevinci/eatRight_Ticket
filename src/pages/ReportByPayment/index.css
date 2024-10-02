@@ -17,3 +17,8 @@ h2 {
 .rangePicker {
     margin-bottom: 16px;
 }
+
+.header-bottom-left {
+    display: flex;
+    gap: 8px;
+}
