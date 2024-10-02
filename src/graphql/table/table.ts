@@ -13,6 +13,7 @@ export const GET_ALL_TABLE_Floor = gql`
             cartIds {
                 cartId
             }
+            note
         }
     }
 `;
@@ -29,6 +30,7 @@ export const GET_ALL_TABLE = gql`
             cartIds {
                 cartId
             }
+            note
         }
     }
 `;
