@@ -40,6 +40,9 @@ export const useTableBill = (isGoBack = true) => {
         React.useState<boolean>(false);
     const [isVisibleModalPosDJV, setVisibleMoalPosDJV] =
         React.useState<boolean>(false);
+    const [isVisibleModalOtherMethod, setVisibleModalOtherMethod] =
+        React.useState<boolean>(false);
+
     const [orderInfo, setOrderInfo] = React.useState<{
         order_number?: number;
         order_id?: number;
@@ -213,10 +216,9 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
-                        `${
-                            orderDetail?.order_id
-                                ? orderDetail?.order_id
-                                : orderInfo?.order_id
+                        `${orderDetail?.order_id
+                            ? orderDetail?.order_id
+                            : orderInfo?.order_id
                         }`,
                         isGoToTable,
                     );
@@ -224,10 +226,9 @@ export const useTableBill = (isGoBack = true) => {
             })
             .catch(() => {
                 showModalErrorPayment(
-                    `${
-                        orderDetail?.order_id
-                            ? orderDetail?.order_id
-                            : orderInfo?.order_id
+                    `${orderDetail?.order_id
+                        ? orderDetail?.order_id
+                        : orderInfo?.order_id
                     }`,
                 );
             })
@@ -257,10 +258,9 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
-                        `${
-                            orderDetail?.order_id
-                                ? orderDetail?.order_id
-                                : orderInfo?.order_id
+                        `${orderDetail?.order_id
+                            ? orderDetail?.order_id
+                            : orderInfo?.order_id
                         }`,
                     );
                 }
@@ -268,10 +268,9 @@ export const useTableBill = (isGoBack = true) => {
             .catch((err) => {
                 console.log(err);
                 showModalErrorPayment(
-                    `${
-                        orderDetail?.order_id
-                            ? orderDetail?.order_id
-                            : orderInfo?.order_id
+                    `${orderDetail?.order_id
+                        ? orderDetail?.order_id
+                        : orderInfo?.order_id
                     }`,
                 );
             })
@@ -279,6 +278,35 @@ export const useTableBill = (isGoBack = true) => {
                 setPos_Loading(false);
             });
     };
+
+    const handleOtherPayment = (
+        note: string,
+    ) => {
+        placeOrder({
+            variables: {
+                cartId: cartItems[indexTable].carts[cartIndex].id,
+                paymentMethod: "purchaseorder",
+                po_number: note
+            },
+        })
+            .then((res) => {
+                console.log('response other payment : ', res);
+                if (paymentMethod === 'other') {
+                    navigation(
+                        `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data.createMerchantOrder.order.order_id}`,
+                    );
+                    emitter.emit('REPAYMENT_SUCCESS');
+                } else {
+                    showModalAlertPayment(
+                        res.data.createMerchantOrder.order.order_id,
+                    );
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
     useEffect(() => {
         if (isGoBack) {
             if (
@@ -449,5 +477,9 @@ export const useTableBill = (isGoBack = true) => {
         showModalSuccess,
         showError,
         showModalErrorPayment,
+        isVisibleModalOtherMethod,
+        setVisibleModalOtherMethod,
+        handleOtherPayment,
+        setOrderInfo
     };
 };
