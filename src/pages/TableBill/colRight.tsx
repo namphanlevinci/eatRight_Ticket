@@ -84,7 +84,10 @@ export default function ColRight({
     const { theme } = useTheme();
     const [value, setValue] = React.useState('');
     const handleChange = (e: any) => {
-        setValue(e?.target.value);
+        const value = e?.target?.value;
+        if(value?.length <= 50){
+            setValue(e?.target.value);
+        }
     };
 
 
