@@ -135,7 +135,7 @@ export default function useOpenModal() {
             })
                 .then(
                     notification.success({
-                        message: 'Send request print bill success',
+                        message: 'Receipt sent to printer',
                         description: 'Please go to printer to take the bill!',
                     }),
                 )

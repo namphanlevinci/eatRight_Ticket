@@ -20,7 +20,7 @@ export default function UpDownNumber({
             <div
                 style={{ height: 44, width: 44 }}
                 onClick={() =>
-                    !isSend && setQuantity(quantity >= 1 ? quantity - 1 : 0)
+                    !isSend && setQuantity(Math.max(quantity - 1, 0), 'decrea')
                 }
             >
                 <svg
@@ -54,7 +54,9 @@ export default function UpDownNumber({
             </div>
             <div
                 style={{ height: 44, width: 44 }}
-                onClick={() => !disableUp && setQuantity(quantity + 1)}
+                onClick={() =>
+                    !disableUp && setQuantity(quantity + 1, 'increa')
+                }
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
