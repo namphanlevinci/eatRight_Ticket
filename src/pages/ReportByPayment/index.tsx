@@ -2,7 +2,6 @@ import { DatePicker, Spin } from 'antd';
 import Table from 'components/Table';
 import Columns from './Columns';
 import Header from 'pages/Merchant/Header';
-import ic_back from 'assets/icons/icon_back.svg';
 
 import './index.css';
 import useReportByPayment from './useReportByPayment';
@@ -28,11 +27,6 @@ const ReportByPayment = () => {
                         className="header-bottom-left"
                         onClick={() => history.back()}
                     >
-                        <img
-                            style={{ cursor: 'pointer' }}
-                            src={ic_back}
-                            alt="icon"
-                        />
                         <p>Sales Report / {methodName}</p>
                     </h2>
                     <DatePicker.RangePicker

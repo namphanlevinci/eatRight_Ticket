@@ -4,6 +4,7 @@ import Columns from './Columns';
 import Table from 'components/Table';
 import { DatePicker, Spin } from 'antd';
 import Header from 'pages/Merchant/Header';
+import ic_back from 'assets/icons/icon_back.svg';
 
 import './index.css';
 
@@ -17,7 +18,17 @@ const SalesReport = () => {
             <Header />
             <div className="container-box body_history">
                 <div className="rangePicker">
-                    <h2>Sales Report</h2>
+                    <h2
+                        className="header-bottom-left"
+                        onClick={() => history.back()}
+                    >
+                        <img
+                            style={{ cursor: 'pointer' }}
+                            src={ic_back}
+                            alt="icon"
+                        />
+                        Sales Report
+                    </h2>
                     <DatePicker.RangePicker
                         allowClear={false}
                         defaultValue={rangDate}
