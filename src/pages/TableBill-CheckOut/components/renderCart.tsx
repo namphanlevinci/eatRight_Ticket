@@ -27,13 +27,13 @@ export const RenderCart = ({ cart }: { cart: InvoiceWithSplit }) => {
                 <DividedSolid color={theme.nEUTRALLine} />
                 <RenderText
                     title="Subtotal"
-                    value={`$${cart?.total?.subtotal?.value}`}
+                    value={`$${cart?.total?.subtotal?.value?.toFixed(2)}`}
                 />
                 {/* <RenderText title='Service fee' value={`$${cart.total}`}/> */}
                 {cart?.total?.discounts?.length > 0 && (
                     <RenderText
                         title="Discount"
-                        value={`- $${cart?.total?.discounts[0]?.amount?.value}`}
+                        value={`- $${cart?.total?.discounts[0]?.amount?.value?.toFixed(2)}`}
                     />
                 )}
                 <RenderText
@@ -73,7 +73,12 @@ const RenderItem = ({ item }: { item: any }) => {
                     </Col>
                 </Row>
             </Col>
-            <Text>$ {item?.product_sale_price?.value}</Text>
+            <Text>
+                ${' '}
+                {(
+                    item?.product_sale_price?.value * item?.quantity_invoiced
+                )?.toFixed(2)}
+            </Text>
         </Row>
     );
 };
