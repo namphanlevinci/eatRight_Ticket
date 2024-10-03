@@ -66,6 +66,7 @@ const useSette = () => {
     const getReportPaymentMethods = async () => {
         try {
             const result = await getReportByPaymentMethodsAPI();
+            console.log({ result })
             const data = result?.data?.merchantReportByPaymentMethods;
             if (!data) {
                 return message.error('Something went wrong');

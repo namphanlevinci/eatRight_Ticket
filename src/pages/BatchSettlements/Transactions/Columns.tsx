@@ -1,6 +1,7 @@
 import { TableColumnsType } from 'antd';
 import { TransactionItem } from 'graphql/batchSettlements/transactions';
 import { formatNumberWithCommas } from 'utils/format';
+import { convertMethod } from 'utils/format';
 
 export const Columns = (): TableColumnsType<TransactionItem> => {
     return [
@@ -57,7 +58,7 @@ export const Columns = (): TableColumnsType<TransactionItem> => {
             render: (payment) => {
                 return (
                     <div>
-                        {payment?.name} {payment?.additional_data.value}
+                        {convertMethod(payment?.name)} {payment?.additional_data.value}
                     </div>
                 );
             },
@@ -67,7 +68,7 @@ export const Columns = (): TableColumnsType<TransactionItem> => {
             dataIndex: 'type',
             key: 'type',
             render: (type) => {
-                return <div>{type?.toUpperCase()}</div>;
+                return <div>{convertMethod(type)?.toUpperCase?.()}</div>;
             },
         },
         {
