@@ -62,6 +62,7 @@ export const authSlice = createSlice({
             localStorage.removeItem('position');
             localStorage.removeItem('tableData');
             sessionStorage.removeItem('isTokenValidated');
+            localStorage.removeItem('store_view_code');
         },
         clearStoreData: (state) => {
             state.firstname = '';
