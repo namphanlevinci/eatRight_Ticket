@@ -329,10 +329,7 @@ const Index = () => {
                                 placeholder="Select kitchen station..."
                             >
                                 {stations?.map?.((m: any) => (
-                                    <Option
-                                        key={m?.printer_id}
-                                        value={m?.printer_id}
-                                    >
+                                    <Option key={m?.id} value={m?.id}>
                                         {m?.name}
                                     </Option>
                                 ))}
