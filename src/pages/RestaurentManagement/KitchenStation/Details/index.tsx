@@ -83,7 +83,12 @@ export default function KitchenStationDetailPage() {
     const [onSubmitUpdateStation] = useMutation(UPDATE_KITCHEN_STATION);
     const [onDeleteKitchenStation] = useMutation(DELETE_KITCHEN_STATION);
     const [loading, setLoading] = useState(false);
-    const [listPrinter, setListPrinter] = React.useState([]);
+    const [listPrinter, setListPrinter] = React.useState<
+        {
+            label: string;
+            value: string;
+        }[]
+    >([]);
     useEffect(() => {
         onGetPrinterList({
             fetchPolicy: 'cache-and-network',
@@ -92,11 +97,18 @@ export default function KitchenStationDetailPage() {
                 (item: any) => {
                     return {
                         label: item.printer_name,
-                        value: item.id,
+                        value: `${item.id}`,
                     };
                 },
             );
-            setListPrinter(list);
+
+            setListPrinter([
+                {
+                    label: 'No Device',
+                    value: '0',
+                },
+                ...list,
+            ]);
         });
     }, []);
     useEffect(() => {

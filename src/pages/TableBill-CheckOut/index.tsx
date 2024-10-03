@@ -23,7 +23,7 @@ import { emitter } from 'graphql/client';
 import { GET_INVOICES } from 'graphql/cart/splitBill';
 import LoadingModalPayment from 'components/modal/loadingModalPayment';
 import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
-import {isEmpty} from "lodash";
+import { isEmpty } from 'lodash';
 
 export default function TableSplitBillCheckOut() {
     const dataStorage = localStorage.getItem('split_bill_data');
@@ -69,14 +69,17 @@ export default function TableSplitBillCheckOut() {
     }, [loadingPosResult, intervalId]);
     const handlePayment = (
         paymentMethod: string,
-        po_number?: string | undefined | null
+        po_number?: string | undefined | null,
     ) => {
-        if (paymentMethod === 'cash' || paymentMethod == "other") {
+        if (paymentMethod === 'cash' || paymentMethod == 'other') {
             onPaymentWithCash({
                 variables: {
                     invoice_number: selectGuest?.number,
-                    payment_method: paymentMethod == "other" ? "purchaseorder" : paymentMethod,
-                    ...(!isEmpty(po_number) && { po_number } )
+                    payment_method:
+                        paymentMethod == 'other'
+                            ? 'purchaseorder'
+                            : paymentMethod,
+                    ...(!isEmpty(po_number) && { po_number }),
                 },
             })
                 .then((res) => {
@@ -297,7 +300,9 @@ export default function TableSplitBillCheckOut() {
                     onCancel={() => setShowPosModalDJV(false)}
                 />
             )}
-            <RenderHeader />
+            <RenderHeader
+                isHavePaid={data.invoice.some((item) => item.state === 'PAID')}
+            />
             <CartInfo data={data} />
             <div style={{ marginTop: 20 }} />
             <Container style={isMobile ? { flexWrap: 'wrap' } : {}}>
@@ -306,7 +311,7 @@ export default function TableSplitBillCheckOut() {
                         return (
                             (isMobile
                                 ? selectGuest?.index !== undefined &&
-                                index <= selectGuest?.index
+                                  index <= selectGuest?.index
                                 : true) && (
                                 <RenderGuest
                                     key={index}
