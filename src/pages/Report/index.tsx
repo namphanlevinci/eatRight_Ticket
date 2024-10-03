@@ -50,9 +50,10 @@ const SalesReport = () => {
                     rowPerPage={0}
                     scroll={{ x: 1067 }}
                     onRowClick={(record) => {
-                        if (record.payment !== 'total') {
-                            navigate(`${record.payment}`);
+                        if (record.payment === 'total' || record.payment === 'others') {
+                            return null;
                         }
+                        navigate(`${record.payment}`);
                     }}
                 />
             </div>
