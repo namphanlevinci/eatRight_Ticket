@@ -7,6 +7,7 @@ export const getNamePaymentFormated = (paymentName: PaymentName): string => {
         total: 'Total',
         cash: 'Cash',
         credit_card: 'Credit Card',
+        others: 'Others'
     };
     return paymentsNameFormated[paymentName];
 };

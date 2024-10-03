@@ -1,4 +1,4 @@
-export type PaymentName = 'total' | 'cash' | 'credit_card';
+export type PaymentName = 'total' | 'cash' | 'credit_card' | 'others';
 
 interface IReport {
     discounts: number;
