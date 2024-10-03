@@ -23,6 +23,7 @@ import RenderDiscountRow from './components/renderDiscountRow';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from './components/ModalPosDevicesDJV';
 import ModalOtherMethod from './components/ModalOtherMethod';
+import ChangeModal from 'components/modal/ChangeModal';
 
 export default function ColRight({
     cart,
@@ -80,6 +81,7 @@ export default function ColRight({
     const [tipPercent, setTipPercent] = useState(0);
     const [modalDiscount, setModalDiscount] = useState(false);
     const [modalTip, setModalTip] = useState(false);
+    const [modalChange, setModalChange] = useState(false);
     const { handleAddCoupon } = useCouponCart();
     const { theme } = useTheme();
     const [value, setValue] = React.useState('');
@@ -131,7 +133,7 @@ export default function ColRight({
 
     useEffect(() => {
         if (hasGivenTip) {
-            handleProceed();
+            setModalChange(true);
         }
     }, [hasGivenTip]);
 
@@ -184,6 +186,13 @@ export default function ColRight({
     }, [grandTotal, listItems]);
     return (
         <ColStyled style={{ width: 257 }}>
+            {modalChange && (
+                <ChangeModal
+                    isModalOpen={modalChange}
+                    grandTotal={grandTotal}
+                    onSubmit={handleProceed}
+                />
+            )}
             <ModalInput
                 title="Input your coupon "
                 isModalOpen={modalDiscount}
