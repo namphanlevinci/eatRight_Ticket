@@ -41,18 +41,18 @@ enum TableStatus {
 }
 
 const getStatusTableByCardIds = (item: IItem) => {
-    const tempNumber = item.size - item.numberOfCustomer;
+    // const tempNumber = item.size - item.numberOfCustomer;
     let status = TableStatus.Disabled;
-    if (tempNumber < 0) {
-        status = TableStatus.Unavailable;
-    }
-    if (item.cartIds.length == 0 && item.size > 0) {
+    // if (tempNumber < 0) {
+    //     status = TableStatus.Unavailable;
+    // }
+    if (item.status == '0') {
         status = TableStatus.Available;
     }
     if (item.status == '2') {
         status = TableStatus.Reserved;
     }
-    if (item.cartIds.length > 0 && tempNumber >= 0) {
+    if (item.status == '1') {
         status = TableStatus.Dining;
     }
 
@@ -93,9 +93,9 @@ const getColorByStatus = (
 function getStatusName(status: TableStatus): string {
     switch (status) {
         case TableStatus.Available:
-            return 'Available';
+            return 'Vacant';
         case TableStatus.Dining:
-            return 'Dining';
+            return 'Occupied';
         case TableStatus.Reserved:
             return 'Reserved';
         case TableStatus.Unavailable:
@@ -117,8 +117,7 @@ const Table = ({ item, onClick }: ITable) => {
     return (
         <StyledTable
             background={
-                status == TableStatus.Disabled ||
-                status == TableStatus.Unavailable
+                status == TableStatus.Disabled
                     ? theme.tEXTDisabled
                     : theme.itemCardBackground
             }
