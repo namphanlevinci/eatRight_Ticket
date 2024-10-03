@@ -125,6 +125,12 @@ export default function ColRight({
     };
 
     useEffect(() => {
+        if (hasGivenTip && paymentMethod !== 'cashondelivery') {
+            handleProceed();
+        }
+    }, [hasGivenTip]);
+
+    useEffect(() => {
         if (cart?.tip_amount) {
             setTip(cart?.tip_amount);
         }
