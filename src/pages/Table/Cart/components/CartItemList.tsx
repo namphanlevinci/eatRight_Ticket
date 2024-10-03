@@ -321,7 +321,7 @@ export default function CartItemList({
                     inputValue={noteSelectValue}
                 />
             )}
-            <div style={{ minHeight: ismobile ? 60 : 200 }}>
+            <div style={{ minHeight: ismobile ? 84 : 200 }}>
                 {data?.items?.length > 0 &&
                     data?.items?.map((item: any, index: any) => {
                         const orderItems =
@@ -690,7 +690,10 @@ export default function CartItemList({
                             justifyContent: 'center',
                             alignItems: 'center',
                             gap: 12,
-                            height: ismobile ? 60 : 160,
+                            height: ismobile ? 84 : 160,
+                            backgroundColor: theme.nEUTRALBase,
+                            padding: 12,
+                            borderRadius: 8,
                         }}
                     >
                         <FoodCoverIcon />

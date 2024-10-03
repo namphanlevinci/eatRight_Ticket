@@ -5,6 +5,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useTheme } from 'context/themeContext';
 import { Text } from 'components/atom/Text';
 import { isCartIdFromLocal } from 'utils/isNumericId';
+import styled from 'styled-components';
 export default function RenderAction({
     isNewItem,
     SendCart,
@@ -41,8 +42,18 @@ export default function RenderAction({
     });
     const { theme } = useTheme();
     return (
-        <Col style={ismobile ? { width: '100%' } : {}}>
-            <Row justify={'space-between'}>
+        <Col
+            style={
+                ismobile
+                    ? {
+                          width: '100%',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                      }
+                    : {}
+            }
+        >
+            <ContainerStyled style={{ justifyContent: 'space-between' }}>
                 <Col>
                     <Button
                         style={{
@@ -73,49 +84,51 @@ export default function RenderAction({
                 View Receipt
             </Button> */}
                 </Col>
-                <Col>
-                    {!isNewItem && data?.items?.length > 0 ? (
-                        <Button
-                            style={{
-                                width: 154,
-                                height: 44,
-                                marginInline: 10,
-                                background: theme.nEUTRALBase,
-                                justifyContent: 'space-around',
-                                padding: 0,
-                                border: `2px solid ${theme.pRIMARY6Primary}`,
-                            }}
-                            onClick={onClickChangeTable}
-                            background={theme.nEUTRALBase}
-                        >
-                            <Text
+                {!ismobile && (
+                    <Col>
+                        {!isNewItem && data?.items?.length > 0 ? (
+                            <Button
                                 style={{
-                                    color: theme.pRIMARY6Primary,
-                                    fontWeight: '600',
+                                    width: 154,
+                                    height: 44,
+                                    marginInline: 10,
+                                    background: theme.nEUTRALBase,
+                                    justifyContent: 'space-around',
+                                    padding: 0,
+                                    border: `2px solid ${theme.pRIMARY6Primary}`,
                                 }}
+                                onClick={onClickChangeTable}
+                                background={theme.nEUTRALBase}
+                            >
+                                <Text
+                                    style={{
+                                        color: theme.pRIMARY6Primary,
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Change table
+                                </Text>
+                            </Button>
+                        ) : (
+                            <Button
+                                style={{
+                                    width: 154,
+                                    height: 44,
+                                    marginInline: 10,
+                                    justifyContent: 'space-around',
+                                    padding: 0,
+                                }}
+                                disabled
+                                isDisable
+                                background={theme.nEUTRALBase}
                             >
                                 Change table
-                            </Text>
-                        </Button>
-                    ) : (
-                        <Button
-                            style={{
-                                width: 154,
-                                height: 44,
-                                marginInline: 10,
-                                justifyContent: 'space-around',
-                                padding: 0,
-                            }}
-                            disabled
-                            isDisable
-                            background={theme.nEUTRALBase}
-                        >
-                            Change table
-                        </Button>
-                    )}
-                </Col>
-            </Row>
-            <Row>
+                            </Button>
+                        )}
+                    </Col>
+                )}
+            </ContainerStyled>
+            <ContainerStyled>
                 {/* Show menu có nghĩa là chưa thanh toán  */}
                 {isAllDone ? (
                     showMenu ? (
@@ -194,7 +207,11 @@ export default function RenderAction({
                         Checkout
                     </Button>
                 )}
-            </Row>
+            </ContainerStyled>
         </Col>
     );
 }
+
+const ContainerStyled = styled.div`
+    display: flex;
+`;
