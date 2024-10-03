@@ -13,7 +13,7 @@ import {
 const useReport = () => {
     const [data, setData] = useState<ISalesReport[]>([]);
     const [rangDate, setRangeDate] = useState<RangeValue>([
-        dayjs().subtract(30, 'day'),
+        dayjs().subtract(0, 'day'),
         dayjs(),
     ]);
 
