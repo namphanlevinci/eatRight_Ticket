@@ -25,7 +25,7 @@ export default function BatchSettlements() {
         handleTableChange,
         confirmSettles,
     } = useSette();
-    
+
     return (
         <Spin spinning={isLoading}>
             <Header isSearch={false} />
@@ -76,7 +76,11 @@ export default function BatchSettlements() {
                             columns={ColumnsPaymentMethods()}
                             dataSource={reportPaymentMethods?.data}
                             rowClassName={(record) => {
-                                return paymentClassNames[record.payments as EPaymentMethod] || 'row-default';
+                                return (
+                                    paymentClassNames[
+                                        record.payments as EPaymentMethod
+                                    ] || 'row-default'
+                                );
                             }}
                             className="tableSettle"
                             pagination={false}
@@ -95,8 +99,11 @@ export default function BatchSettlements() {
                         className="btnConfirm"
                         style={{
                             background: isDisabledConfirmSettle
-                                ? 'var(--bg-disabled)'
+                                ? '#ccc'
                                 : 'var(--primary-6)',
+                            color: isDisabledConfirmSettle
+                                ? '#666'
+                                : '#fff',
                             cursor: isDisabledConfirmSettle
                                 ? 'not-allowed'
                                 : 'pointer',

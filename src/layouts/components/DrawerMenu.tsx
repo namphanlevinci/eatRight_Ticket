@@ -55,7 +55,7 @@ const MenuMerchant = [
     {
         title: 'Batch Settlements',
         icon: <BillIcon />,
-        to: BASE_ROUTER.BATCH_HISTORY,
+        to: BASE_ROUTER.SETTLE,
         isGo: true,
     },
     {
