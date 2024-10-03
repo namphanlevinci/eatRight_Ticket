@@ -51,7 +51,6 @@ const useSette = () => {
 
     const isDisabledConfirmSettle = useMemo(
         () =>
-            reportPaymentMethods?.total !== batchInvoices?.total ||
             !dataReportByPaymentMethods?.merchantReportByPaymentMethods
                 .total_amount.value ||
             !dataGetBatchInvoices?.merchantGetBatchInvoices.total_count,
@@ -66,6 +65,7 @@ const useSette = () => {
     const getReportPaymentMethods = async () => {
         try {
             const result = await getReportByPaymentMethodsAPI();
+            console.log({ result })
             const data = result?.data?.merchantReportByPaymentMethods;
             if (!data) {
                 return message.error('Something went wrong');

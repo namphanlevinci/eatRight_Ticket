@@ -144,6 +144,7 @@ export default function index() {
             }
         }
     }, [dataSplitBill]);
+    console.log({ dataSplitBill })
     const handleSendBill = (
         type: string,
         value: string,
@@ -469,6 +470,9 @@ export default function index() {
             },
         });
     };
+
+    console.log({dataSplitBill})
+
     return (
         <div>
             {' '}

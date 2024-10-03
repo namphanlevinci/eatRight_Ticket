@@ -93,10 +93,6 @@ export default function ColRight({
     };
 
     const handleProceed = () => {
-        if (tip === undefined) {
-            setModalTip(true);
-            return;
-        }
         if (isSplitBill) {
             if (numbersSplit && numbersSplit > 1) {
                 handleSplitEven(numbersSplit);
@@ -314,7 +310,25 @@ export default function ColRight({
                                     <ArrowRightIcon />
                                 </Row>
                             ) : (
-                                ''
+                                <Text
+                                    style={{
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        color: theme.pRIMARY6Primary,
+                                        backgroundColor: theme.nEUTRALBase,
+                                        fontWeight: 600,
+                                        marginLeft: 16,
+                                        fontSize: 16,
+                                        height: 40,
+                                        width: 128,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Add Tip
+                                </Text>
                             )
                         }
                         textRightStyle={{
@@ -453,13 +467,7 @@ export default function ColRight({
                     title="Proceed Payment"
                     onClick={() => {
                         if (paymentMethod === 'cashondelivery') {
-                            if (tip === undefined) {
-                                setModalTip(true);
-                                return;
-                            }
-                            if (hasGivenTip || tip) {
-                                setModalChange(true);
-                            }
+                            setModalChange(true);
                         } else {
                             handleProceed();
                         }

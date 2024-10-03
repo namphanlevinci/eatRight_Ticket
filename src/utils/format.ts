@@ -56,3 +56,10 @@ export const formatPrice = (value: string) => {
     // Chuyển đổi giá trị định dạng thành số
     return parseFloat(value.replace(/[$,]/g, '')) || 0; // loại bỏ ký hiệu $ và dấu ,
 };
+
+export const convertMethod = (method: any) => {
+    if(method?.toString()?.toLocaleLowerCase?.()?.includes?.("purchase")){
+        return "Other"
+    }
+    return method;
+}
