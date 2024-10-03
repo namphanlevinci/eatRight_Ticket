@@ -431,7 +431,7 @@ const ModalDetail = React.memo(
                                             </div>
                                             {
                                             
-                                            !isEmpty(data?.payment_methods?.[0]?.po_number) && 
+                                            !isEmpty(data?.payment_methods?.[0]?.po_number) && data?.payment_methods?.[0]?.po_number !== "none" && 
                                             <div style={{ marginTop: 12 }}>
                                                 {data?.payment_methods?.[0]?.po_number}
                                             </div>

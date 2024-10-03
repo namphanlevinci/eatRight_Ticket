@@ -279,7 +279,7 @@ const RenderBillItem = ({
                         )}
                     </TextDark>
                 </RowStyled>
-                {!isEmpty(dataInvoice?.[0]?.payment_methods?.[0]?.po_number) && (
+                {!isEmpty(dataInvoice?.[0]?.payment_methods?.[0]?.po_number) && dataInvoice?.[0]?.payment_methods?.[0]?.po_number !== "none" && (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>
                             {dataInvoice?.[0]?.payment_methods?.[0]?.po_number}
