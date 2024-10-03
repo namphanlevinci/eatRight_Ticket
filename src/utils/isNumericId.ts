@@ -1,3 +1,7 @@
 export function isCartIdFromLocal(id: string) {
-    return id.length > 4 ? false : true;
+    try {
+        return id.length > 4 ? false : true;
+    } catch (error) {
+        return false;
+    }
 }

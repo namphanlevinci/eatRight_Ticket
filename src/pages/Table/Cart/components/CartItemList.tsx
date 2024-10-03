@@ -953,7 +953,7 @@ export default function CartItemList({
                                 }
                                 isDisable={isCartIdFromLocal(
                                     cartItems[indexTable]?.carts[selectedCart]
-                                        .id,
+                                        ?.id,
                                 )}
                             >
                                 Checkout

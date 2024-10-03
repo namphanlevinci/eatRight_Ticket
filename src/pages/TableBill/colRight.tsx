@@ -126,7 +126,6 @@ export default function ColRight({
         }
     }, [cart?.tip_amount]);
 
-
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
     });
