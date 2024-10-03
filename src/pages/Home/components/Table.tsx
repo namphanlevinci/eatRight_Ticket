@@ -10,8 +10,6 @@ import {
 } from '../styled';
 import { ColorsThemeType, useTheme } from 'context/themeContext';
 import bellAlarm from 'assets/alarm_8721062.gif';
-import { useSelector } from 'react-redux';
-import { RootState } from 'store';
 
 interface IItem {
     cartIds: {
@@ -59,18 +57,12 @@ const getStatusTableByCardIds = (item: IItem) => {
     return status;
 };
 
-const getColorByStatus = (
-    item: IItem,
-    theme: ColorsThemeType,
-    isMerchant: boolean,
-) => {
+const getColorByStatus = (item: IItem, theme: ColorsThemeType) => {
     const status = parseInt(`${item.status}`);
     let color = '#ffffff';
     switch (status) {
         case TableStatus.Available:
-            color = isMerchant
-                ? theme.sECONDARY2Default
-                : theme.sUCCESS2Default;
+            color = theme.sUCCESS2Default;
             break;
         case TableStatus.Dining:
             color = theme.pRIMARY6Primary;
@@ -113,7 +105,6 @@ const Table = ({ item, onClick }: ITable) => {
         query: '(max-width: 768px)',
     });
     const { theme } = useTheme();
-    const { isMerchant } = useSelector((state: RootState) => state.auth);
     return (
         <StyledTable
             background={
@@ -125,9 +116,7 @@ const Table = ({ item, onClick }: ITable) => {
             onClick={onClick}
             mobileView={ismobile}
         >
-            <StyledTableName
-                textColor={getColorByStatus(item, theme, isMerchant)}
-            >
+            <StyledTableName textColor={getColorByStatus(item, theme)}>
                 {item.name}
             </StyledTableName>
             <StyledTableSize style={{ color: theme.tEXTPrimary }}>
@@ -152,9 +141,7 @@ const Table = ({ item, onClick }: ITable) => {
                     <img src={bellAlarm} style={{ height: 40, width: 40 }} />
                 </BellNeeded>
             )}
-            <StyledLine
-                background={getColorByStatus(item, theme, isMerchant)}
-            />
+            <StyledLine background={getColorByStatus(item, theme)} />
         </StyledTable>
     );
 };
