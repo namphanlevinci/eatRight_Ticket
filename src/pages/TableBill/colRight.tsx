@@ -93,6 +93,10 @@ export default function ColRight({
     };
 
     const handleProceed = () => {
+        if (tip === undefined) {
+            setModalTip(true);
+            return;
+        }
         if (isSplitBill) {
             if (numbersSplit && numbersSplit > 1) {
                 handleSplitEven(numbersSplit);
@@ -125,7 +129,6 @@ export default function ColRight({
             setTip(cart?.tip_amount);
         }
     }, [cart?.tip_amount]);
-
 
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
@@ -443,12 +446,16 @@ export default function ColRight({
                 <ButtonSubmit
                     title="Proceed Payment"
                     onClick={() => {
-                        if (tip === undefined) {
-                            setModalTip(true);
-                            return;
-                        }
-                        if (hasGivenTip || tip) {
-                            setModalChange(true);
+                        if (paymentMethod === 'cashondelivery') {
+                            if (tip === undefined) {
+                                setModalTip(true);
+                                return;
+                            }
+                            if (hasGivenTip || tip) {
+                                setModalChange(true);
+                            }
+                        } else {
+                            handleProceed();
                         }
                     }}
                 />
