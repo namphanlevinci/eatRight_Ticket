@@ -2,7 +2,6 @@ import { CusTomRow, StyledCartBorder } from '../styled';
 import { App, Col, Divider, Row, Button as ButtonAnt } from 'antd';
 import { Text } from 'components/atom/Text';
 import UpDownNumber from 'components/UpdownNumber';
-import { Button } from 'components/atom/Button';
 import { formatNumberWithCommas } from 'utils/format';
 import { useCart } from 'context/cartContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -27,6 +26,8 @@ import ModalInputNote from 'components/modal/ModalInputNote';
 import { useCartTable } from '../useGetCart';
 import ModalConfirm from 'components/modal/ModalConfirm';
 import { GET_INVOICES } from 'graphql/cart/splitBill';
+import { FoodCoverIcon } from 'assets/icons/foodCoverIcon';
+import RenderAction from './RenderAction';
 export default function CartItemList({
     data,
     cartInfo,
@@ -298,8 +299,8 @@ export default function CartItemList({
             style={{
                 minHeight: 280,
                 padding: 16,
-                backgroundColor: theme.nEUTRALBase,
-                border: `1px solid ${theme.nEUTRALLine}`,
+                backgroundColor: ismobile ? 'transparent' : theme.nEUTRALBase,
+                border: ismobile ? '0px' : `1px solid ${theme.nEUTRALLine}`,
             }}
         >
             <LoadingModal showLoading={loading || loadingClean} />
@@ -320,141 +321,192 @@ export default function CartItemList({
                     inputValue={noteSelectValue}
                 />
             )}
-            <div style={{ minHeight: 200 }}>
-                {data?.items?.map((item: any, index: any) => {
-                    const orderItems =
-                        data?.order?.items?.length > index
-                            ? data?.order?.items[index]
-                            : undefined;
+            <div style={{ minHeight: ismobile ? 60 : 200 }}>
+                {data?.items?.length > 0 &&
+                    data?.items?.map((item: any, index: any) => {
+                        const orderItems =
+                            data?.order?.items?.length > index
+                                ? data?.order?.items[index]
+                                : undefined;
 
-                    return (
-                        <div key={index}>
-                            <Row align={'middle'} justify={'space-between'}>
-                                <Col md={{ span: 14 }} xs={{ span: 24 }}>
-                                    <Row align={'middle'}>
-                                        <div
-                                            style={{
-                                                marginBlock: ismobile ? 10 : 0,
-                                            }}
-                                        >
-                                            <CustomTag
-                                                {...getTagStyled(
-                                                    item.isUnsend
-                                                        ? 'New'
-                                                        : orderItems
-                                                          ? orderItems?.serving_status
-                                                          : item?.status,
-                                                    theme,
-                                                )}
-                                            />
-                                        </div>
-                                        <div
-                                            style={{ flex: 1 }}
-                                            onClick={() => {
-                                                if (item.isUnsend) {
-                                                    if (
-                                                        item.product
-                                                            .__typename ==
-                                                        'BundleProduct'
-                                                    ) {
-                                                        setUpdate({
-                                                            product:
-                                                                item.product,
-                                                            options:
-                                                                item.bundle_options,
-                                                        });
-                                                        targetRef &&
-                                                            targetRef.current?.scrollIntoView(
-                                                                {
-                                                                    behavior:
-                                                                        'smooth',
-                                                                },
-                                                            );
+                        return (
+                            <div key={index}>
+                                <Row align={'middle'} justify={'space-between'}>
+                                    <Col md={{ span: 14 }} xs={{ span: 24 }}>
+                                        <Row align={'middle'}>
+                                            <div
+                                                style={{
+                                                    marginBlock: ismobile
+                                                        ? 10
+                                                        : 0,
+                                                }}
+                                            >
+                                                <CustomTag
+                                                    {...getTagStyled(
+                                                        item.isUnsend
+                                                            ? 'New'
+                                                            : orderItems
+                                                              ? orderItems?.serving_status
+                                                              : item?.status,
+                                                        theme,
+                                                    )}
+                                                />
+                                            </div>
+                                            <div
+                                                style={{ flex: 1 }}
+                                                onClick={() => {
+                                                    if (item.isUnsend) {
+                                                        if (
+                                                            item.product
+                                                                .__typename ==
+                                                            'BundleProduct'
+                                                        ) {
+                                                            setUpdate({
+                                                                product:
+                                                                    item.product,
+                                                                options:
+                                                                    item.bundle_options,
+                                                            });
+                                                            targetRef &&
+                                                                targetRef.current?.scrollIntoView(
+                                                                    {
+                                                                        behavior:
+                                                                            'smooth',
+                                                                    },
+                                                                );
+                                                        }
                                                     }
-                                                }
-                                            }}
-                                        >
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        fontSize: 18,
+                                                        fontWeight: '600',
+                                                    }}
+                                                >
+                                                    {' '}
+                                                    {item.product.name}
+                                                </Text>
+                                            </div>
+                                        </Row>
+                                    </Col>
+                                    <Col md={{ span: 10 }} xs={{ span: 24 }}>
+                                        <Row align={'middle'} justify={'end'}>
                                             <Text
                                                 style={{
+                                                    marginRight: 16,
                                                     fontSize: 18,
-                                                    fontWeight: '600',
                                                 }}
                                             >
                                                 {' '}
-                                                {item.product.name}
+                                                {formatNumberWithCommas(
+                                                    item.prices.price.value,
+                                                )}
                                             </Text>
-                                        </div>
-                                    </Row>
-                                </Col>
-                                <Col md={{ span: 10 }} xs={{ span: 24 }}>
-                                    <Row align={'middle'} justify={'end'}>
-                                        <Text
-                                            style={{
-                                                marginRight: 16,
-                                                fontSize: 18,
-                                            }}
-                                        >
-                                            {' '}
-                                            {formatNumberWithCommas(
-                                                item.prices.price.value,
-                                            )}
-                                        </Text>
-                                        <Row
-                                            style={{
-                                                minWidth: 222,
-                                                justifyContent:
-                                                    !item?.bundle_options
-                                                        ? 'space-between'
-                                                        : 'flex-end',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            {!item?.bundle_options && (
+                                            <Row
+                                                style={{
+                                                    minWidth: 222,
+                                                    justifyContent:
+                                                        !item?.bundle_options
+                                                            ? 'space-between'
+                                                            : 'flex-end',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                {!item?.bundle_options && (
+                                                    <div
+                                                        style={{
+                                                            cursor: 'pointer',
+                                                            width: 24,
+                                                            height: 24,
+                                                        }}
+                                                        onClick={() => {
+                                                            setShowNoteModalState(
+                                                                {
+                                                                    index: index,
+                                                                    show: true,
+                                                                },
+                                                            );
+                                                            setNoteSelectValue(
+                                                                item.note,
+                                                            );
+                                                        }}
+                                                    >
+                                                        {item.isUnsend && (
+                                                            <NoteIcon />
+                                                        )}
+                                                    </div>
+                                                )}
                                                 <div
                                                     style={{
-                                                        cursor: 'pointer',
-                                                        width: 24,
-                                                        height: 24,
-                                                    }}
-                                                    onClick={() => {
-                                                        setShowNoteModalState({
-                                                            index: index,
-                                                            show: true,
-                                                        });
-                                                        setNoteSelectValue(
-                                                            item.note,
-                                                        );
+                                                        marginRight: 'auto',
                                                     }}
                                                 >
-                                                    {item.isUnsend && (
-                                                        <NoteIcon />
-                                                    )}
+                                                    <UpDownNumber
+                                                        quantity={item.quantity}
+                                                        setQuantity={(
+                                                            e: number,
+                                                            type:
+                                                                | 'decrea'
+                                                                | 'increa',
+                                                        ) => {
+                                                            updateQuantityItemFromCart(
+                                                                index,
+                                                                type,
+                                                            );
+                                                        }}
+                                                        isSend={!item.isUnsend}
+                                                        disableUp={!showMenu}
+                                                    />
                                                 </div>
-                                            )}
-                                            <div
-                                                style={{ marginRight: 'auto' }}
-                                            >
-                                                <UpDownNumber
-                                                    quantity={item.quantity}
-                                                    setQuantity={(
-                                                        e: number,
-                                                        type:
-                                                            | 'decrea'
-                                                            | 'increa',
-                                                    ) => {
-                                                        updateQuantityItemFromCart(
-                                                            index,
-                                                            type,
-                                                        );
-                                                    }}
-                                                    isSend={!item.isUnsend}
-                                                    disableUp={!showMenu}
-                                                />
-                                            </div>
-                                            {((item.status === 'sent' &&
-                                                data?.is_active) ||
-                                                !item.status) &&
-                                                !item?.isUnsend && (
+                                                {((item.status === 'sent' &&
+                                                    data?.is_active) ||
+                                                    !item.status) &&
+                                                    !item?.isUnsend && (
+                                                        <ButtonAnt
+                                                            disabled={
+                                                                loadingCardTable
+                                                            }
+                                                            style={{
+                                                                fontSize: 16,
+                                                                backgroundColor:
+                                                                    'transparent',
+                                                                border: '0.5px solid #ccc',
+                                                                outline: 'none',
+                                                                color: '#ea4335',
+                                                                fontWeight: 500,
+                                                                borderRadius: 8,
+                                                            }}
+                                                            onClick={
+                                                                () => {
+                                                                    setIsOpenModalCancel(
+                                                                        true,
+                                                                    );
+                                                                    setItemSelected(
+                                                                        {
+                                                                            cartId: data?.id,
+                                                                            cartItemId:
+                                                                                item?.id,
+                                                                        },
+                                                                    );
+                                                                }
+                                                                // removeItemOnCartServer(
+                                                                //     {
+                                                                //         cartId: data?.id,
+                                                                //         cartItemId:
+                                                                //             item?.id,
+                                                                //     },
+                                                                // )
+                                                            }
+                                                        >
+                                                            Cancel
+                                                        </ButtonAnt>
+                                                    )}
+                                                {(orderItems
+                                                    ? orderItems.serving_status ===
+                                                      'ready'
+                                                    : item.status ===
+                                                      'ready') && (
                                                     <ButtonAnt
                                                         disabled={
                                                             loadingCardTable
@@ -462,206 +514,198 @@ export default function CartItemList({
                                                         style={{
                                                             fontSize: 16,
                                                             backgroundColor:
-                                                                'transparent',
+                                                                '#3498db',
                                                             border: '0.5px solid #ccc',
                                                             outline: 'none',
-                                                            color: '#ea4335',
+                                                            color: theme.nEUTRALPrimary,
                                                             fontWeight: 500,
                                                             borderRadius: 8,
+                                                            paddingTop: 0,
+                                                            paddingBottom: 0,
                                                         }}
-                                                        onClick={
-                                                            () => {
-                                                                setIsOpenModalCancel(
-                                                                    true,
-                                                                );
-                                                                setItemSelected(
-                                                                    {
-                                                                        cartId: data?.id,
-                                                                        cartItemId:
-                                                                            item?.id,
-                                                                    },
-                                                                );
-                                                            }
-                                                            // removeItemOnCartServer(
-                                                            //     {
-                                                            //         cartId: data?.id,
-                                                            //         cartItemId:
-                                                            //             item?.id,
-                                                            //     },
-                                                            // )
-                                                        }
+                                                        onClick={() => {
+                                                            updateStatusItemServer(
+                                                                {
+                                                                    cartId: orderItems
+                                                                        ? orderItems.id
+                                                                        : item.id,
+                                                                    itemType:
+                                                                        orderItems
+                                                                            ? 'ORDER'
+                                                                            : 'QUOTE',
+                                                                },
+                                                            );
+                                                        }}
                                                     >
-                                                        Cancel
+                                                        Serve
                                                     </ButtonAnt>
                                                 )}
-                                            {(orderItems
-                                                ? orderItems.serving_status ===
-                                                  'ready'
-                                                : item.status === 'ready') && (
-                                                <ButtonAnt
-                                                    disabled={loadingCardTable}
-                                                    style={{
-                                                        fontSize: 16,
-                                                        backgroundColor:
-                                                            '#3498db',
-                                                        border: '0.5px solid #ccc',
-                                                        outline: 'none',
-                                                        color: theme.nEUTRALPrimary,
-                                                        fontWeight: 500,
-                                                        borderRadius: 8,
-                                                        paddingTop: 0,
-                                                        paddingBottom: 0,
-                                                    }}
-                                                    onClick={() => {
-                                                        updateStatusItemServer({
-                                                            cartId: orderItems
-                                                                ? orderItems.id
-                                                                : item.id,
-                                                            itemType: orderItems
-                                                                ? 'ORDER'
-                                                                : 'QUOTE',
-                                                        });
-                                                    }}
-                                                >
-                                                    Serve
-                                                </ButtonAnt>
-                                            )}
+                                            </Row>
                                         </Row>
-                                    </Row>
-                                </Col>
-                            </Row>
-                            {item?.bundle_options?.map(
-                                (bundle: any, bundleIndex: number) => {
-                                    return (
-                                        <div key={bundle.id}>
-                                            {bundle?.values?.map(
-                                                (product: any, idx: number) => {
-                                                    return (
-                                                        <>
-                                                            <Row
-                                                                style={{
-                                                                    height: 40,
-                                                                }}
-                                                                key={`bundle ${idx}`}
-                                                                align={'middle'}
-                                                                justify={
-                                                                    'space-between'
-                                                                }
-                                                            >
-                                                                <Col
-                                                                    md={{
-                                                                        span: 14,
-                                                                    }}
+                                    </Col>
+                                </Row>
+                                {item?.bundle_options?.map(
+                                    (bundle: any, bundleIndex: number) => {
+                                        return (
+                                            <div key={bundle.id}>
+                                                {bundle?.values?.map(
+                                                    (
+                                                        product: any,
+                                                        idx: number,
+                                                    ) => {
+                                                        return (
+                                                            <>
+                                                                <Row
                                                                     style={{
-                                                                        paddingLeft:
-                                                                            ismobile
-                                                                                ? 0
-                                                                                : 100,
+                                                                        height: 40,
                                                                     }}
+                                                                    key={`bundle ${idx}`}
+                                                                    align={
+                                                                        'middle'
+                                                                    }
+                                                                    justify={
+                                                                        'space-between'
+                                                                    }
                                                                 >
-                                                                    <Text>
-                                                                        {' '}
-                                                                        ●{' '}
-                                                                        {
-                                                                            product.label
-                                                                        }
-                                                                        {' - '}
-                                                                        {formatNumberWithCommas(
-                                                                            product.price,
-                                                                        )}{' '}
-                                                                        {'  '}x
-                                                                        {
-                                                                            product.quantity
-                                                                        }
-                                                                    </Text>
-                                                                </Col>
-                                                                <Col
-                                                                    md={{
-                                                                        span: 10,
-                                                                    }}
-                                                                    style={{
-                                                                        paddingRight:
-                                                                            ismobile
-                                                                                ? 0
-                                                                                : 116,
-                                                                    }}
-                                                                >
-                                                                    <Row
-                                                                        justify={
-                                                                            'end'
-                                                                        }
-                                                                    >
-                                                                        <Text
-                                                                            style={{
-                                                                                marginRight: 16,
-                                                                            }}
-                                                                        >
-                                                                            {' '}
-                                                                            +{' '}
-                                                                            {formatNumberWithCommas(
-                                                                                product.price *
-                                                                                    product.quantity,
-                                                                            )}{' '}
-                                                                        </Text>
-                                                                        <div
-                                                                            style={{
-                                                                                cursor: 'pointer',
-                                                                                width: 24,
-                                                                                height: 24,
-                                                                                marginRight: 14,
-                                                                            }}
-                                                                            onClick={() => {
-                                                                                const note =
-                                                                                    prompt(
-                                                                                        'Note',
-                                                                                        item?.note,
-                                                                                    ) ||
-                                                                                    item?.note;
-                                                                                InputNoteItemBundleFromCart(
-                                                                                    index,
-                                                                                    note,
-                                                                                    bundleIndex,
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            {item.isUnsend && (
-                                                                                <NoteIcon />
-                                                                            )}
-                                                                        </div>
-                                                                    </Row>
-                                                                </Col>
-                                                            </Row>
-                                                            {bundle?.note ||
-                                                                (product?.note && (
-                                                                    <div
+                                                                    <Col
+                                                                        md={{
+                                                                            span: 14,
+                                                                        }}
                                                                         style={{
-                                                                            marginLeft: 20,
+                                                                            paddingLeft:
+                                                                                ismobile
+                                                                                    ? 0
+                                                                                    : 100,
                                                                         }}
                                                                     >
-                                                                        <RenderNote
-                                                                            note={
-                                                                                bundle?.note ||
-                                                                                product?.note
+                                                                        <Text>
+                                                                            {' '}
+                                                                            ●{' '}
+                                                                            {
+                                                                                product.label
                                                                             }
-                                                                        />
-                                                                    </div>
-                                                                ))}
-                                                        </>
-                                                    );
-                                                },
-                                            )}
-                                        </div>
-                                    );
-                                },
-                            )}
-                            {item?.note && <RenderNote note={item?.note} />}
-                        </div>
-                    );
-                })}
+                                                                            {
+                                                                                ' - '
+                                                                            }
+                                                                            {formatNumberWithCommas(
+                                                                                product.price,
+                                                                            )}{' '}
+                                                                            {
+                                                                                '  '
+                                                                            }
+                                                                            x
+                                                                            {
+                                                                                product.quantity
+                                                                            }
+                                                                        </Text>
+                                                                    </Col>
+                                                                    <Col
+                                                                        md={{
+                                                                            span: 10,
+                                                                        }}
+                                                                        style={{
+                                                                            paddingRight:
+                                                                                ismobile
+                                                                                    ? 0
+                                                                                    : 116,
+                                                                        }}
+                                                                    >
+                                                                        <Row
+                                                                            justify={
+                                                                                'end'
+                                                                            }
+                                                                        >
+                                                                            <Text
+                                                                                style={{
+                                                                                    marginRight: 16,
+                                                                                }}
+                                                                            >
+                                                                                {' '}
+                                                                                +{' '}
+                                                                                {formatNumberWithCommas(
+                                                                                    product.price *
+                                                                                        product.quantity,
+                                                                                )}{' '}
+                                                                            </Text>
+                                                                            <div
+                                                                                style={{
+                                                                                    cursor: 'pointer',
+                                                                                    width: 24,
+                                                                                    height: 24,
+                                                                                    marginRight: 14,
+                                                                                }}
+                                                                                onClick={() => {
+                                                                                    const note =
+                                                                                        prompt(
+                                                                                            'Note',
+                                                                                            item?.note,
+                                                                                        ) ||
+                                                                                        item?.note;
+                                                                                    InputNoteItemBundleFromCart(
+                                                                                        index,
+                                                                                        note,
+                                                                                        bundleIndex,
+                                                                                    );
+                                                                                }}
+                                                                            >
+                                                                                {item.isUnsend && (
+                                                                                    <NoteIcon />
+                                                                                )}
+                                                                            </div>
+                                                                        </Row>
+                                                                    </Col>
+                                                                </Row>
+                                                                {bundle?.note ||
+                                                                    (product?.note && (
+                                                                        <div
+                                                                            style={{
+                                                                                marginLeft: 20,
+                                                                            }}
+                                                                        >
+                                                                            <RenderNote
+                                                                                note={
+                                                                                    bundle?.note ||
+                                                                                    product?.note
+                                                                                }
+                                                                            />
+                                                                        </div>
+                                                                    ))}
+                                                            </>
+                                                        );
+                                                    },
+                                                )}
+                                            </div>
+                                        );
+                                    },
+                                )}
+                                {item?.note && <RenderNote note={item?.note} />}
+                            </div>
+                        );
+                    })}
+                {data?.items?.length === 0 && (
+                    <div
+                        style={{
+                            flexDirection: 'column',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: 12,
+                            height: ismobile ? 60 : 160,
+                        }}
+                    >
+                        <FoodCoverIcon />
+                        <Text style={{ fontWeight: '400' }}>No items yet</Text>
+                    </div>
+                )}
             </div>
-            <div style={{ paddingRight: ismobile ? 0 : 180 }}>
-                <Divider dashed style={{ borderColor: '#666666' }} />
-            </div>
+            {!ismobile ? (
+                <div style={{ paddingRight: 1 }}>
+                    <Divider dashed style={{ borderColor: '#666666' }} />
+                </div>
+            ) : (
+                <div style={{ height: 20 }} />
+            )}
+
             <CusTomRow>
                 <Col
                     flex={1}
@@ -726,27 +770,33 @@ export default function CartItemList({
                     ) : (
                         <></>
                     )}
-                    <Row justify={'space-between'}>
-                        <Col style={{ flex: 1 }}>
-                            <Text
+                    {totalDiscount ? (
+                        <Row justify={'space-between'}>
+                            <Col style={{ flex: 1 }}>
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        marginBottom: 10,
+                                    }}
+                                >
+                                    Discount :
+                                </Text>
+                            </Col>
+                            <Col
                                 style={{
-                                    fontSize: 16,
-                                    marginBottom: 10,
+                                    width: 100,
+                                    display: 'flex',
+                                    justifyContent: 'end',
                                 }}
                             >
-                                Discount :
-                            </Text>
-                        </Col>
-                        <Col
-                            style={{
-                                width: 100,
-                                display: 'flex',
-                                justifyContent: 'end',
-                            }}
-                        >
-                            <Text>{formatNumberWithCommas(totalDiscount)}</Text>
-                        </Col>
-                    </Row>
+                                <Text>
+                                    {formatNumberWithCommas(totalDiscount)}
+                                </Text>
+                            </Col>
+                        </Row>
+                    ) : (
+                        <></>
+                    )}
                     {data?.prices?.grand_total?.value ? (
                         <>
                             <Row justify={'space-between'}>
@@ -798,169 +848,22 @@ export default function CartItemList({
                         <></>
                     )}
                 </Col>
-                <Col style={ismobile ? { width: '100%' } : {}}>
-                    <Row justify={'space-between'}>
-                        <Col>
-                            <Button
-                                style={{
-                                    width: 154,
-                                    height: 44,
-                                    gap: 10,
-                                    border: `0px solid ${theme.pRIMARY6Primary}`,
-                                }}
-                                onClick={() => isNewItem && SendCart()}
-                                isDisable={!isNewItem}
-                                disabled={!isNewItem}
-                                background={theme.pRIMARY6Primary}
-                                color={theme.nEUTRALBase}
-                            >
-                                Confirm
-                            </Button>
-
-                            {/* <Button
-                                style={{
-                                    width: 154,
-                                    height: 44,
-                                    border: `0px solid ${theme.pRIMARY6Primary}`,
-                                }}
-                                onClick={() => goViewBill(data?.order_id)}
-                                background={theme.pRIMARY6Primary}
-                                color={theme.nEUTRALBase}
-                            >
-                                View Receipt
-                            </Button> */}
-                        </Col>
-                        <Col>
-                            {!isNewItem && data?.items?.length > 0 ? (
-                                <Button
-                                    style={{
-                                        width: 154,
-                                        height: 44,
-                                        marginInline: 10,
-                                        background: theme.nEUTRALBase,
-                                        justifyContent: 'space-around',
-                                        padding: 0,
-                                        border: `2px solid ${theme.pRIMARY6Primary}`,
-                                    }}
-                                    onClick={onClickChangeTable}
-                                    background={theme.nEUTRALBase}
-                                >
-                                    <Text
-                                        style={{
-                                            color: theme.pRIMARY6Primary,
-                                            fontWeight: '600',
-                                        }}
-                                    >
-                                        Change table
-                                    </Text>
-                                </Button>
-                            ) : (
-                                <Button
-                                    style={{
-                                        width: 154,
-                                        height: 44,
-                                        marginInline: 10,
-                                        justifyContent: 'space-around',
-                                        padding: 0,
-                                    }}
-                                    disabled
-                                    isDisable
-                                    background={theme.nEUTRALBase}
-                                >
-                                    Change table
-                                </Button>
-                            )}
-                        </Col>
-                    </Row>
-                    <Row>
-                        {/* Show menu có nghĩa là chưa thanh toán  */}
-                        {isAllDone ? (
-                            showMenu ? (
-                                <Button
-                                    style={{
-                                        width: '100%',
-                                        height: 44,
-                                        background: theme.sUCCESS2Default,
-                                        border: 0,
-                                    }}
-                                    onClick={goBill}
-                                    isDisable={
-                                        isNewItem || data?.items?.length === 0
-                                    }
-                                >
-                                    Checkout
-                                </Button>
-                            ) : (
-                                <Button
-                                    style={{
-                                        width: '100%',
-                                        height: 44,
-                                        border: 0,
-                                    }}
-                                    onClick={onCompleteService}
-                                    isDisable={
-                                        isNewItem || data?.items?.length === 0
-                                    }
-                                    background={theme.pRIMARY6Primary}
-                                    color={theme.nEUTRALBase}
-                                >
-                                    Complete Service
-                                </Button>
-                            )
-                        ) : !showMenu ? (
-                            data?.is_paid ? (
-                                <Button
-                                    style={{
-                                        width: '100%',
-                                        height: 44,
-                                        border: `2px solid ${theme.pRIMARY6Primary}`,
-                                    }}
-                                    onClick={() => goViewBill(data?.order_id)}
-                                    background={theme.nEUTRALBase}
-                                    color={theme.pRIMARY6Primary}
-                                >
-                                    View Receipt
-                                </Button>
-                            ) : (
-                                <Button
-                                    style={{
-                                        width: '100%',
-                                        height: 44,
-                                        border: `0px solid ${theme.pRIMARY6Primary}`,
-                                    }}
-                                    onClick={() =>
-                                        goFinishPayment(data?.order_number)
-                                    }
-                                    background={theme.pRIMARY6Primary}
-                                    color={theme.nEUTRALBase}
-                                >
-                                    Finish Payment
-                                </Button>
-                            )
-                        ) : (
-                            <Button
-                                style={{
-                                    width: '100%',
-                                    height: 44,
-                                    background: theme.sUCCESS2Default,
-                                    border: 0,
-                                }}
-                                onClick={() =>
-                                    !cartItems[indexTable]?.carts[
-                                        selectedCart
-                                    ]?.firstname?.includes('Guest') &&
-                                    goTableBill()
-                                }
-                                isDisable={isCartIdFromLocal(
-                                    cartItems[indexTable]?.carts[selectedCart]
-                                        .id,
-                                )}
-                            >
-                                Checkout
-                            </Button>
-                        )}
-                    </Row>
-                </Col>
+                <RenderAction
+                    SendCart={SendCart}
+                    cartItems={cartItems}
+                    indexTable={indexTable}
+                    selectedCart={selectedCart}
+                    data={data}
+                    goBill={goBill}
+                    goViewBill={goViewBill}
+                    onCompleteService={onCompleteService}
+                    goTableBill={goTableBill}
+                    isAllDone={isAllDone}
+                    goFinishPayment={goFinishPayment}
+                    onClickChangeTable={onClickChangeTable}
+                    isNewItem={isNewItem}
+                    showMenu={showMenu}
+                />
             </CusTomRow>
             {isOpenModalCancel && (
                 <ModalConfirmCancel

@@ -70,7 +70,7 @@ export default function OrderCart({ table }: { table: any }) {
                 modalChangeTable={modalChangeTable}
                 setModalChangeTableOpen={setModalChangeTableOpen}
             />
-            <Row>
+            <Row style={{ overflow: 'auto', flexFlow: 'row' }}>
                 {listCart.map((item, index) => {
                     const isCartNeedServed = cartItems[indexTable]?.carts[
                         index
