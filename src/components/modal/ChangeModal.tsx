@@ -38,45 +38,27 @@ const ChangeModal = ({
 }: IProps) => {
     const { theme } = useTheme();
 
-    const [received, setReceived] = useState(0);
+    const [received, setReceived] = useState('0');
     const [activeDecimal, setActiveDecimal] = useState(0);
 
     const change = useMemo(() => {
-        return received - grandTotal;
+        return +received - grandTotal;
     }, [received, grandTotal]);
 
-    const handleReceived = (value: string, isOption?: boolean) => {
+    const handleReceived = (value: string, isOption?: boolean | 'exact') => {
         setReceived((prev) => {
-            if (
-                (isOption || value === '0' || value === '00') &&
-                activeDecimal > 1
-            ) {
-                setActiveDecimal(0);
+            if (isOption === 'exact') {
+                return value;
             }
             if (isOption) {
-                return +value + prev;
+                return +value + +prev + '';
             }
-            if (value === '0') {
-                return prev * 10;
-            }
-            if (value === '00') {
-                return prev * 100;
-            }
-            if (value === '.') {
-                setActiveDecimal(1);
-                return prev;
-            }
-            if (activeDecimal) {
-                setActiveDecimal((prev) => ++prev);
-                return prev + +value / Math.pow(10, activeDecimal);
-            }
-
-            return +value + prev;
+            return prev + value;
         });
     };
 
     const handleSubmit = () => {
-        if (received < grandTotal) {
+        if (+received < grandTotal) {
             return message.error(`greater than or equal to $${grandTotal}`);
         }
         onSubmit();
@@ -124,8 +106,8 @@ const ChangeModal = ({
                                 {formatMoney(received.toString())}
                                 <ClearButton
                                     onClick={() => {
-                                        if (received > 0) {
-                                            setReceived(0);
+                                        if (+received > 0) {
+                                            setReceived('0');
                                         }
                                         if (activeDecimal > 1) {
                                             setActiveDecimal(0);
@@ -159,7 +141,7 @@ const ChangeModal = ({
                     <ButtonContainer>
                         <FastOptionButton
                             onClick={() =>
-                                handleReceived(grandTotal.toString(), true)
+                                handleReceived(grandTotal.toString(), 'exact')
                             }
                             theme={theme}
                             style={{
@@ -201,16 +183,12 @@ const ChangeModal = ({
                     </ButtonContainer>
                 </Row>
                 <ButtonPrimary
-                    title={
-                        grandTotal > received
-                            ? `greater than or equal to $${grandTotal}`
-                            : 'Pay'
-                    }
+                    title={'Pay'}
                     onClick={handleSubmit}
                     marginTop="20px"
-                    isDisable={grandTotal > received}
+                    isDisable={grandTotal > +received}
                     borderColor={`${theme.nEUTRALBase}`}
-                    color={grandTotal > received ? '#333741' : '#fff'}
+                    color={grandTotal > +received ? '#333741' : '#fff'}
                 />
             </Modal>
         </>

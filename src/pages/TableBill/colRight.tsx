@@ -93,10 +93,6 @@ export default function ColRight({
     };
 
     const handleProceed = () => {
-        if (tip === undefined) {
-            setModalTip(true);
-            return;
-        }
         if (isSplitBill) {
             if (numbersSplit && numbersSplit > 1) {
                 handleSplitEven(numbersSplit);
@@ -130,11 +126,6 @@ export default function ColRight({
         }
     }, [cart?.tip_amount]);
 
-    useEffect(() => {
-        if (hasGivenTip) {
-            setModalChange(true);
-        }
-    }, [hasGivenTip]);
 
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
@@ -218,7 +209,6 @@ export default function ColRight({
                     );
 
                     await handleSetTip(values);
-                    handleProceed();
                     setModalTip(false);
                 }}
                 total={(totalMoney + totalDiscount) * (Tax + 1)}
@@ -450,7 +440,18 @@ export default function ColRight({
                 </div>
             )}
             <div style={{ marginTop: 40 }}>
-                <ButtonSubmit title="Proceed Payment" onClick={handleProceed} />
+                <ButtonSubmit
+                    title="Proceed Payment"
+                    onClick={() => {
+                        if (tip === undefined) {
+                            setModalTip(true);
+                            return;
+                        }
+                        if (hasGivenTip || tip) {
+                            setModalChange(true);
+                        }
+                    }}
+                />
             </div>
         </ColStyled>
     );
