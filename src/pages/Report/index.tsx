@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router';
+// import { useNavigate } from 'react-router';
 import useReport from './useReport';
 import Columns from './Columns';
 import Table from 'components/Table';
@@ -9,7 +9,7 @@ import ic_back from 'assets/icons/icon_back.svg';
 import './index.css';
 
 const SalesReport = () => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const { data, rangDate, loading, handleChangeDate } = useReport();
 
@@ -49,12 +49,12 @@ const SalesReport = () => {
                     page={0}
                     rowPerPage={0}
                     scroll={{ x: 1067 }}
-                    onRowClick={(record) => {
-                        if (record.payment === 'total' || record.payment === 'others') {
-                            return null;
-                        }
-                        navigate(`${record.payment}`);
-                    }}
+                    // onRowClick={(record) => {
+                    //     if (record.payment === 'total' || record.payment === 'others') {
+                    //         return null;
+                    //     }
+                    //     navigate(`${record.payment}`);
+                    // }}
                 />
             </div>
         </Spin>
