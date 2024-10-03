@@ -470,6 +470,9 @@ export default function index() {
             },
         });
     };
+
+    console.log({dataSplitBill})
+
     return (
         <div>
             {' '}

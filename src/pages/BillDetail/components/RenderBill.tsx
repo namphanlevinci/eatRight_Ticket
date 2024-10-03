@@ -13,6 +13,7 @@ import {
 } from '../styled';
 import React from 'react';
 import { convertMethod } from 'utils/format';
+import {isEmpty} from "lodash";
 
 const RenderBillItem = ({
     data,
@@ -23,7 +24,8 @@ const RenderBillItem = ({
     selectDataShowbill: any;
     dataInvoice: any;
 }) => {
-    console.log({data})
+    console.log({ dataInvoice });
+
     const totalDiscount = selectDataShowbill
         ? selectDataShowbill?.total?.discounts.reduce(
               (total: number, discount: any) => {
@@ -38,6 +40,11 @@ const RenderBillItem = ({
                 return total;
             }, 0)
           : 0;
+
+    console.log({
+        selectDataShowbill,
+        data,
+    });
 
     return (
         <div
@@ -265,11 +272,20 @@ const RenderBillItem = ({
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Payment Method:</TextDark>
                     <TextDark>
-                        {convertMethod(selectDataShowbill
-                            ? selectDataShowbill?.payment_methods[0]?.name
-                            : data?.payment_method)}
+                        {convertMethod(
+                            selectDataShowbill
+                                ? selectDataShowbill?.payment_methods[0]?.name
+                                : data?.payment_method,
+                        )}
                     </TextDark>
                 </RowStyled>
+                {!isEmpty(dataInvoice?.[0]?.payment_methods?.[0]?.po_number) && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>
+                            {dataInvoice?.[0]?.payment_methods?.[0]?.po_number}
+                        </TextDark>
+                    </RowStyled>
+                )}
 
                 {data?.payment_methods &&
                     data?.payment_methods[0]?.additional_data[1]?.value && (

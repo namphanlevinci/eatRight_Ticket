@@ -24,6 +24,7 @@ import { GET_ORDER_DETAIL } from 'graphql/orders/orderDetail';
 import { GET_CART_BY_ID } from 'graphql/cart/getCart';
 import { BASE_ROUTER } from 'constants/router';
 import { convertMethod } from 'utils/format';
+import { isEmpty } from "lodash";
 const { info } = Modal;
 // Component để hiển thị Modal
 
@@ -44,6 +45,7 @@ const { info } = Modal;
  * @property {string} address
  * @property {string|null} customer_comment
  * @property {Array<{name: string, qty: number, price: number, status: string|null, note: string|null, options: Array<any>}>} items
+ * @property {Array<any>} payment_methods
  * @property {Array<any>} discount
  * @property {string} shipping_method
  * @property {string|null} use_plastic
@@ -182,6 +184,7 @@ const ModalDetail = React.memo(
         isCompletedOrder,
     }) => {
         const history = useNavigate();
+        console.log({ data })
         return (
             <>
                 <Modal
@@ -426,6 +429,13 @@ const ModalDetail = React.memo(
                                             <div style={{ marginTop: 12 }}>
                                                 Method {convertMethod(data?.payment_method)}
                                             </div>
+                                            {
+                                            
+                                            !isEmpty(data?.payment_methods?.[0]?.po_number) && 
+                                            <div style={{ marginTop: 12 }}>
+                                                {data?.payment_methods?.[0]?.po_number}
+                                            </div>
+                                            }
                                             {/* <div>Invoice Id</div> */}
                                             <div
                                                 style={{
