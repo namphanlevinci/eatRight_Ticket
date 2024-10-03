@@ -93,6 +93,7 @@ export const GET_INVOICES = gql`
                         name
                         value
                     }
+                    po_number
                 }
             }
         }

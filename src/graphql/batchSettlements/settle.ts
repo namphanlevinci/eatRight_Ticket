@@ -7,6 +7,7 @@ export type ReportPaymentMethodItem = {
     credit_card: TotalAmount;
     cash: TotalAmount;
     discount: TotalAmount;
+    others: TotalAmount
 };
 
 export type ReportByPaymentMethodsResponse = {
@@ -33,6 +34,10 @@ export const gql_ReportByPaymentMethods = gql`
                     currency
                 }
                 discount {
+                    value
+                    currency
+                }
+                others {
                     value
                     currency
                 }

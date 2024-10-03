@@ -19,7 +19,7 @@ export type TInvoice = {
 export enum EPaymentMethod {
     CREDIT_CARD = 'credit_card',
     CASH = 'cash',
-    DISCOUNT = 'discount',
+    DISCOUNT = 'discount'
 }
 
 export type TPaymentMethods = {
@@ -202,12 +202,13 @@ export const paymentClassNames = {
 };
 
 export const renderTitlePayment = (
-    value: 'credit_card' | 'cash' | 'discount',
+    value: 'credit_card' | 'cash' | 'discount' | 'others',
 ) => {
     const titles = {
         credit_card: 'Credit Card',
         cash: 'Cash',
         discount: 'Discount',
+        others: 'Others',
     };
     return titles[value];
 };
