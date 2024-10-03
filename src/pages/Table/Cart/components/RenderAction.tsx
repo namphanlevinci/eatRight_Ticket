@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col } from 'antd';
 import React from 'react';
 import { Button } from 'components/atom/Button';
 import { useMediaQuery } from 'react-responsive';

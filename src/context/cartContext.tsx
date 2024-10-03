@@ -32,7 +32,7 @@ interface CartContextType {
     InputNoteItemFromCart: (index: number, note: string) => void;
     InputNoteItemBundleFromCart: (
         index: number,
-        note: string,
+        note: string | any,
         bundleIndex: number,
     ) => void;
 }
@@ -467,7 +467,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         selectedCart: number,
         indexTable: number,
         numberOfCustomer = 1,
-        phonenumber?: string
+        phonenumber?: string,
     ) => {
         const newCartItems = [...cartItems[indexTable].carts];
         newCartItems[selectedCart].firstname = name;

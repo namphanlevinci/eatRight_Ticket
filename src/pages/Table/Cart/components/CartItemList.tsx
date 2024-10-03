@@ -58,7 +58,7 @@ export default function CartItemList({
     const [isOpenModalCancel, setIsOpenModalCancel] = useState(false);
     const [itemSelected, setItemSelected] = useState<{
         cartId: string;
-        cartItemId: string;
+        cartItemId: string | any;
     }>();
 
     const { addCart, loading, addMoreCart } = useAddCart();
@@ -272,7 +272,7 @@ export default function CartItemList({
     const goTable = () => {
         removeCartIndex(selectedCart);
     };
-    const [noteSelectValue, setNoteSelectValue] = useState('');
+    const [noteSelectValue, setNoteSelectValue] = useState<any>('');
 
     const [onGetInvoices] = useLazyQuery(GET_INVOICES, {
         fetchPolicy: 'cache-and-network',
@@ -323,7 +323,7 @@ export default function CartItemList({
             )}
             <div style={{ minHeight: ismobile ? 84 : 200 }}>
                 {data?.items?.length > 0 &&
-                    data?.items?.map((item: any, index: any) => {
+                    data?.items?.map((item: ItemType, index: any) => {
                         const orderItems =
                             data?.order?.items?.length > index
                                 ? data?.order?.items[index]
