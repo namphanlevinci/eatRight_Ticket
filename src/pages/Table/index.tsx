@@ -16,7 +16,6 @@ import {
 } from 'graphql/table/checkInTable';
 import LoadingModal from 'components/modal/loadingModal';
 import { useTheme } from 'context/themeContext';
-import { NoteTableIcon } from 'assets/icons/noteTableIcon';
 import ModalInputNote from 'components/modal/ModalInputNote';
 import { useCart } from 'context/cartContext';
 import { isCartIdFromLocal } from 'utils/isNumericId';
@@ -222,13 +221,6 @@ export const TablePage: React.FC = () => {
                                     setShowInputNote(true)
                                 }
                             >
-                                {note ? (
-                                    note
-                                ) : table?.status == '2' ? (
-                                    <NoteTableIcon />
-                                ) : (
-                                    ''
-                                )}
                                 <Text
                                     style={{
                                         marginLeft: 8,

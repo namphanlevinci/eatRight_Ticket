@@ -86,10 +86,11 @@ export const BaseRouter = () => {
         const handleErrorMessages = _.debounce((error: any) => {
             notification.error({
                 message: 'Error',
-                description: error,
+                description: 'Something went wrong !!!',
                 placement: 'topRight',
                 duration: 8,
             });
+            console.log(error);
         }, 500);
 
         emitter.on('error', handleErrorMessages);
