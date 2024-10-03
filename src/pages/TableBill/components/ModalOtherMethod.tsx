@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Modal } from 'antd';
 import ButtonSubmit from '../components/buttonSubmit';
 import { useTheme } from 'context/themeContext';
-import { Input } from "antd";
+import { Input } from 'antd';
 
 const ModalOtherMethod = ({
     onPressOK,
@@ -13,8 +13,6 @@ const ModalOtherMethod = ({
     isVisible: boolean;
     setVisible: (visible: boolean) => void;
 }) => {
-    const [selectedOption] = useState<any>(null);
-
     const handleOk = (): void => {
         onPressOK(value);
         setVisible(false);
@@ -69,10 +67,7 @@ const ModalOtherMethod = ({
                         style={{ height: 50 }}
                     />
 
-                    <ButtonSubmit
-                        title="OK"
-                        onClick={handleOk}
-                    />
+                    <ButtonSubmit title="OK" onClick={handleOk} />
                 </div>
             </Modal>
         </>

@@ -21,4 +21,5 @@ h2 {
 .header-bottom-left {
     display: flex;
     gap: 8px;
+    cursor: pointer;
 }

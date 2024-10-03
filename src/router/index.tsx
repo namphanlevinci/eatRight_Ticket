@@ -62,7 +62,13 @@ export const BaseRouter = () => {
         if (token) {
             localStorage.setItem('token', token);
             if (from === 'merchant') {
-                dispatch(updateStatusLoginForMerchant());
+                dispatch(
+                    updateStatusLoginForMerchant({
+                        isTableView: JSON.parse(
+                            localStorage.getItem('isTableView') || 'false',
+                        ),
+                    }),
+                );
             } else {
                 dispatch(updateStatusLogin());
             }
@@ -80,10 +86,11 @@ export const BaseRouter = () => {
         const handleErrorMessages = _.debounce((error: any) => {
             notification.error({
                 message: 'Error',
-                description: error,
+                description: 'Something went wrong !!!',
                 placement: 'topRight',
                 duration: 8,
             });
+            console.log(error);
         }, 500);
 
         emitter.on('error', handleErrorMessages);

@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { ArrawLeftIcon } from './SettingLayout';
 import { Text } from 'components/atom/Text';
 import PaymentIcon from './icons/Restaurent/payment_icon';
+import GeneralIcon from './icons/Restaurent/general_icon';
 
 type Props = {
     children: React.ReactNode;
@@ -24,17 +25,17 @@ export default function RestaurentManagementLayout(props: Props) {
     const { children } = props;
     const location = useLocation();
     const paths = [
-        // {
-        //     title: 'General',
-        //     path: BASE_ROUTER.RESTAURENT_MANAGER,
-        //     icon: (
-        //         <GeneralIcon
-        //             isSelected={
-        //                 location.pathname === BASE_ROUTER.RESTAURENT_MANAGER
-        //             }
-        //         />
-        //     ),
-        // },
+        {
+            title: 'General',
+            path: BASE_ROUTER.RESTAURENT_MANAGER,
+            icon: (
+                <GeneralIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_MANAGER
+                    }
+                />
+            ),
+        },
         // {
         //     title: 'Location',
         //     path: BASE_ROUTER.RESTAURENT_Location,

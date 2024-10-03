@@ -122,13 +122,17 @@ export default function ChangeTableModal({
                                         }}
                                     >
                                         <Row>
-                                            {item.cartIds.length > 0 ? (
+                                            {item.status == '1' ? (
                                                 <TagStyled color="#f50">
-                                                    Dining
+                                                    Occupied
+                                                </TagStyled>
+                                            ) : item.status == '0' ? (
+                                                <TagStyled color="#87d068">
+                                                    Vacant
                                                 </TagStyled>
                                             ) : (
                                                 <TagStyled color="#87d068">
-                                                    Available
+                                                    Reserved
                                                 </TagStyled>
                                             )}
                                             <Text style={{ marginLeft: 20 }}>

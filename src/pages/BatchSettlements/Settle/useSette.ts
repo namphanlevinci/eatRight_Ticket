@@ -15,8 +15,11 @@ import {
     TInvoice,
     TPaymentMethods,
 } from './Columns_v2';
+import { useNavigate } from 'react-router';
+import { BASE_ROUTER } from 'constants/router';
 
 const useSette = () => {
+    const navigate = useNavigate();
     const [finalTotal, setFinalTotal] = useState<TFinalTotal[]>();
     const [batchInvoices, setBatchInvoices] = useState<{
         data: TInvoice[];
@@ -48,10 +51,16 @@ const useSette = () => {
 
     const isDisabledConfirmSettle = useMemo(
         () =>
+            reportPaymentMethods?.total !== batchInvoices?.total ||
             !dataReportByPaymentMethods?.merchantReportByPaymentMethods
                 .total_amount.value ||
             !dataGetBatchInvoices?.merchantGetBatchInvoices.total_count,
-        [dataReportByPaymentMethods, dataGetBatchInvoices],
+        [
+            dataReportByPaymentMethods,
+            dataGetBatchInvoices,
+            batchInvoices,
+            reportPaymentMethods,
+        ],
     );
 
     const getReportPaymentMethods = async () => {
@@ -129,7 +138,7 @@ const useSette = () => {
             const response = await confirmSettlesAPI();
             if (response?.data?.posSettleMerchant) {
                 message.success('Settlement completed successfully');
-                getInit();
+                navigate(BASE_ROUTER.BATCH_HISTORY);
             } else {
                 message.error('Something went wrong');
             }

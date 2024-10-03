@@ -37,10 +37,10 @@ export const authSlice = createSlice({
         updateStatusLogin: (state) => {
             state.isLogged = true;
         },
-        updateStatusLoginForMerchant: (state) => {
+        updateStatusLoginForMerchant: (state, action) => {
             state.isLogged = true;
             state.isMerchant = true;
-            state.isTableView = false;
+            state.isTableView = action?.payload?.isTableView || false;
         },
         updateCustomerInfo: (state, action) => {
             state.firstname = action.payload.firstname;
@@ -62,6 +62,7 @@ export const authSlice = createSlice({
             localStorage.removeItem('position');
             localStorage.removeItem('tableData');
             sessionStorage.removeItem('isTokenValidated');
+            localStorage.removeItem('store_view_code');
         },
         clearStoreData: (state) => {
             state.firstname = '';

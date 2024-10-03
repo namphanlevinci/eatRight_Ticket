@@ -38,7 +38,14 @@ export const useLogin = () => {
                 if (
                     res.data.generateMerchantToken.account_type === 'merchant'
                 ) {
-                    dispatch(updateStatusLoginForMerchant());
+                    const isView = JSON.parse(
+                        localStorage.getItem('isTableView') || 'false',
+                    );
+                    dispatch(
+                        updateStatusLoginForMerchant({
+                            isTableView: isView,
+                        }),
+                    );
                 } else if (
                     res.data.generateMerchantToken.account_type === 'waiter'
                 ) {

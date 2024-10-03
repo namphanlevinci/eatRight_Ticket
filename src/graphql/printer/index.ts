@@ -45,7 +45,11 @@ export const SELECT_PRINTER_DEVICE = gql`
         merchantConfigPrinter(printer_id: $printer_id)
     }
 `;
-
+export const SELECT_TERMINAL_PRINTER_DEVICE = gql`
+    mutation ($pos_id: Int!) {
+        waiterAssignPosDevice(pos_id: $pos_id)
+    }
+`;
 export const PRINT_BILL = gql`
     mutation ($invoice_number: String!) {
         merchantPrintReceiptCustomer(invoice_number: $invoice_number)

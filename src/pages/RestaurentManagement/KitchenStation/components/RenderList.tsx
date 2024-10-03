@@ -11,6 +11,7 @@ type PrinterInfo = {
     restaurant_id: number;
     name: string;
     printer_id: number;
+    printer_name: string;
 };
 export default function RenderList() {
     const [onGetList, { loading, data }] = useLazyQuery(
@@ -62,11 +63,11 @@ export default function RenderList() {
                                         fontWeight: '600',
                                     }}
                                 >
-                                    {item.name}
+                                    {item?.name}
                                 </Text>
                             </Col>
                             <Col span={12}>
-                                <Text>{item.printer_id}</Text>
+                                <Text>{item?.printer_name}</Text>
                             </Col>
                         </Row>
                     ),

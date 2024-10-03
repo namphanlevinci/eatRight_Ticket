@@ -10,7 +10,7 @@ import { CANCEL_CHECKOUT } from 'graphql/orders/cancelCheckout';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-export const RenderHeader = () => {
+export const RenderHeader = ({ isHavePaid }: { isHavePaid: boolean }) => {
     const { Header } = Layout;
     const navigation = useNavigate();
     const [showModalConfirm, setShowModalConfirm] = useState(false);
@@ -31,13 +31,14 @@ export const RenderHeader = () => {
                     cart_id: cartId,
                 },
             })
-                .then((res) => {
+                .then(() => {
                     navigation(-1);
-                    console.log(res);
-                    notification.success({
-                        message: 'Success',
-                        description: 'Cancel Check out successfully',
-                    });
+                    if (isHavePaid) {
+                        notification.success({
+                            message: 'Success',
+                            description: 'Cancel Check out successfully',
+                        });
+                    }
                 })
                 .catch((err) => {
                     console.log(err);
