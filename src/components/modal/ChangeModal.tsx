@@ -141,9 +141,7 @@ const ChangeModal = ({
                     <InfoRow justify="space-between" align="middle">
                         <InfoLabel>Change</InfoLabel>
                         <InfoValueContainer style={{ border: 'none' }}>
-                            {change > grandTotal
-                                ? formatMoney(change.toString())
-                                : `$0`}
+                            {change > 0 ? formatMoney(change.toString()) : `$0`}
                         </InfoValueContainer>
                     </InfoRow>
                     <NumberContainer>
