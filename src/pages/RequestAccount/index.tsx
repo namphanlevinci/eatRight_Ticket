@@ -25,11 +25,12 @@ export const RequestAccountPage: React.FC = () => {
                 firstname: values.firstname,
                 lastname: values.lastname,
                 email: values.email,
+                description: values.description,
                 phone_number: values.phonenumber,
             },
         }).then(() => {
             modal.success({
-                title: 'Request Account Success',
+                title: 'Request Support Success',
                 content: 'Please wait for admin contact you',
                 centered: true,
                 onOk: () => {
@@ -84,7 +85,7 @@ export const RequestAccountPage: React.FC = () => {
                             message: 'Please input your fullname!',
                         },
                     ]}
-                    required={false}
+                    required={true}
                     theme={theme}
                 >
                     <DarkInput
@@ -102,7 +103,7 @@ export const RequestAccountPage: React.FC = () => {
                             message: 'Please input your fullname!',
                         },
                     ]}
-                    required={false}
+                    required={true}
                 >
                     <DarkInput
                         placeholder="Last Name"
@@ -121,7 +122,7 @@ export const RequestAccountPage: React.FC = () => {
                                 message: 'Please input your email!',
                             },
                         ]}
-                        required={false}
+                        required={true}
                     >
                         <DarkInput
                             placeholder="Email"
@@ -139,13 +140,30 @@ export const RequestAccountPage: React.FC = () => {
                             message: 'Please input your phone number!',
                         },
                     ]}
-                    required={false}
+                    required={true}
                 >
                     <PhoneInputCustom
                         country={'us'}
                         value={''}
                         enableSearch
                         theme={theme}
+                    />
+                </FormItem>
+                <FormItem
+                    theme={theme}
+                    label="Description"
+                    name="description"
+                    required={true}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input description!',
+                        },
+                    ]}
+                >
+                    <DarkInput
+                        placeholder="Description"
+                        style={{ background: 'dark' }}
                     />
                 </FormItem>
 

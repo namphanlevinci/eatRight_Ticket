@@ -9,6 +9,7 @@ import { useCartTable } from './useGetCart';
 import { useEffect, useState } from 'react';
 import ChangeTableModal from 'components/modal/changeTableModal';
 import { useMenuContext } from '../context/MenuContext';
+import { random } from 'lodash';
 
 export default function OrderCart({ table }: { table: any }) {
     const {
@@ -21,6 +22,7 @@ export default function OrderCart({ table }: { table: any }) {
         setListCart,
         setSelectedCart,
         tableId,
+        removeCartIndex,
     } = useCartTable();
     const { setShowMenu } = useMenuContext();
     const [modalChangeTable, setModalChangeTableOpen] = useState(false);
@@ -48,6 +50,19 @@ export default function OrderCart({ table }: { table: any }) {
             }
         }
     }, [cartItems, indexTable, selectedCart]);
+    const generateValidId = () => {
+        let newId: string;
+        let isDuplicate;
+
+        do {
+            newId = `${random(0, 100)}${listCart.length + 1}`; // Tạo id mới với số ngẫu nhiên
+            isDuplicate = cartItems[indexTable]?.carts.some(
+                (item) => item.id === newId,
+            );
+        } while (isDuplicate); // Lặp lại nếu id đã tồn tại
+
+        return newId; // Trả về id hợp lệ không trùng
+    };
     return (
         <div style={{ marginBottom: 20 }}>
             <LoadingModal showLoading={loading} />
@@ -65,10 +80,13 @@ export default function OrderCart({ table }: { table: any }) {
                     ]?.carts[index]?.order?.items?.find(
                         (item) => item.serving_status === 'ready',
                     );
+                    const isPayment =
+                        cartItems[indexTable]?.carts[index]?.is_paid;
                     const isBell =
                         isCartFormServerNeedServed || isCartNeedServed;
                     return (
                         <RenderTab
+                            isPaid={isPayment ? true : false}
                             isBell={isBell ? true : false}
                             key={index}
                             id={item}
@@ -79,11 +97,15 @@ export default function OrderCart({ table }: { table: any }) {
                                 Modal.confirm({
                                     title: 'Are you sure you want to delete this cart?',
                                     onOk: () => {
+                                        if (index > 0) {
+                                            setSelectedCart(index - 1);
+                                        }
                                         setListCart(
                                             listCart.filter(
                                                 (cart) => cart !== item,
                                             ),
                                         );
+                                        removeCartIndex(index);
                                     },
                                     centered: true,
                                 });
@@ -95,11 +117,12 @@ export default function OrderCart({ table }: { table: any }) {
                     onClick={() => {
                         setSelectedCart(listCart.length);
                         setListCart([...listCart, `${listCart.length + 1}`]);
-                        addCart(getInitialCartState(`${listCart.length + 1}`));
+
+                        addCart(getInitialCartState(generateValidId()));
                     }}
                 />
             </Row>
-            <CartInfo table={table} />
+            <CartInfo table={{ ...table }} />
             {indexTable !== -1 && (
                 <CartItemList
                     data={

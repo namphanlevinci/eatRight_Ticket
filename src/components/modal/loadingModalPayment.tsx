@@ -7,10 +7,12 @@ export default function LoadingModalPayment({
     showLoading,
     title = 'Payment processing...',
     onClose,
+    isClose = true,
 }: {
     showLoading: boolean;
     title?: string;
     onClose?: () => void;
+    isClose?: boolean;
 }) {
     return showLoading ? (
         <CustomModal
@@ -32,7 +34,7 @@ export default function LoadingModalPayment({
             >
                 <Spin />
                 <Text style={{ color: 'white' }}>{title}</Text>
-                <Button onClick={onClose}> Close </Button>
+                {isClose && <Button onClick={onClose}> Close </Button>}
             </div>
         </CustomModal>
     ) : (

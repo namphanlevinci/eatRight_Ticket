@@ -13,7 +13,7 @@ export const GET_LIST_PRINTER = gql`
 `;
 
 export const CREATE_KITCHEN_STATION = gql`
-    mutation ($name: String!, $id: Int!) {
+    mutation ($name: String!, $id: Int) {
         createKitchenStation(name: $name, printer_id: $id) {
             id
             restaurant_id
@@ -24,7 +24,7 @@ export const CREATE_KITCHEN_STATION = gql`
 `;
 
 export const UPDATE_KITCHEN_STATION = gql`
-    mutation ($id: ID!, $name: String!, $printer_id: Int!) {
+    mutation ($id: ID!, $name: String!, $printer_id: Int) {
         updateKitchenStation(id: $id, name: $name, printer_id: $printer_id) {
             id
             restaurant_id
@@ -45,7 +45,11 @@ export const SELECT_PRINTER_DEVICE = gql`
         merchantConfigPrinter(printer_id: $printer_id)
     }
 `;
-
+export const SELECT_TERMINAL_PRINTER_DEVICE = gql`
+    mutation ($pos_id: Int!) {
+        waiterAssignPosDevice(pos_id: $pos_id)
+    }
+`;
 export const PRINT_BILL = gql`
     mutation ($invoice_number: String!) {
         merchantPrintReceiptCustomer(invoice_number: $invoice_number)

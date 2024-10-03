@@ -7,6 +7,7 @@ export const GET_LIST_KITCHEN_STATION = gql`
             restaurant_id
             name
             printer_id
+            printer_name
         }
     }
 `;

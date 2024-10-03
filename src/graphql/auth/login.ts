@@ -22,6 +22,7 @@ export const USER_INFO = gql`
             restaurant_name
             restaurant_id
             store_view_code
+            is_dine_in
         }
     }
 `;

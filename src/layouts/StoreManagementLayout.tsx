@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { ArrawLeftIcon } from './SettingLayout';
 import { Text } from 'components/atom/Text';
 import PaymentIcon from './icons/Restaurent/payment_icon';
+import GeneralIcon from './icons/Restaurent/general_icon';
 
 type Props = {
     children: React.ReactNode;
@@ -24,17 +25,17 @@ export default function RestaurentManagementLayout(props: Props) {
     const { children } = props;
     const location = useLocation();
     const paths = [
-        // {
-        //     title: 'General',
-        //     path: BASE_ROUTER.RESTAURENT_MANAGER,
-        //     icon: (
-        //         <GeneralIcon
-        //             isSelected={
-        //                 location.pathname === BASE_ROUTER.RESTAURENT_MANAGER
-        //             }
-        //         />
-        //     ),
-        // },
+        {
+            title: 'General',
+            path: BASE_ROUTER.RESTAURENT_MANAGER,
+            icon: (
+                <GeneralIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_MANAGER
+                    }
+                />
+            ),
+        },
         // {
         //     title: 'Location',
         //     path: BASE_ROUTER.RESTAURENT_Location,
@@ -176,12 +177,8 @@ export default function RestaurentManagementLayout(props: Props) {
             >
                 <Layout
                     style={{
-                        background: theme.pRIMARY1,
                         maxWidth: '100%',
                         minHeight: '80vh',
-                        borderRadius: 8,
-                        boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.08)',
-                        border: `1px solid ${theme.pRIMARY2}`,
                     }}
                 >
                     <Row
@@ -217,7 +214,17 @@ export default function RestaurentManagementLayout(props: Props) {
                                 ))}
                             </div>
                         </Col>
-                        <Col style={{ paddingLeft: 30, flex: 1 }}>
+                        <Col
+                            style={{
+                                padding: 20,
+                                flex: 1,
+                                background: theme.pRIMARY1,
+                                border: `1px solid ${theme.pRIMARY2}`,
+                                borderRadius: 8,
+                                boxShadow:
+                                    '0px 4px 8px 0px rgba(0, 0, 0, 0.08)',
+                            }}
+                        >
                             {children}
                         </Col>
                     </Row>

@@ -9,7 +9,7 @@ import { ButtonContainer, ButtonLeftContainer, Container } from './styled';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import ModalPaymentPending from 'components/modal/ModalPaymentPending';
-import { GET_RE_PAYMENT_URL } from 'graphql/orders/repayment';
+import { RETRY_PAY_CASH } from 'graphql/orders/repayment';
 import LazyLoadedScripts from 'LazyLoadedScripts';
 import { useTableBill } from 'pages/TableBill/useTableBill';
 import ModalPosDevices from 'pages/TableBill/components/ModalPosDevices';
@@ -99,14 +99,18 @@ export default function index() {
         };
     }, [data?.orderDetail]);
     const GetDataWithId = (orderId: string) => {
-        getOrderDetail({ variables: { id: orderId } }).then((res) => {
-            onGetInvoices({
-                variables: {
-                    OrderNumber: res.data?.orderDetail?.order_number,
-                },
-                fetchPolicy: 'no-cache',
+        getOrderDetail({ variables: { id: orderId } })
+            .then((res) => {
+                onGetInvoices({
+                    variables: {
+                        OrderNumber: res.data?.orderDetail?.order_number,
+                    },
+                    fetchPolicy: 'no-cache',
+                });
+            })
+            .catch((err) => {
+                console.log(err);
             });
-        });
     };
     useEffect(() => {
         if (orderId !== null && orderId !== 'undefined') {
@@ -134,11 +138,13 @@ export default function index() {
                         'split_bill_data',
                         JSON.stringify(dataSplitBill?.merchantGetOrderInvoices),
                     );
+                    localStorage.setItem('split_bill_can_go_back', 'false');
                     navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
                 }
             }
         }
     }, [dataSplitBill]);
+    console.log({ dataSplitBill })
     const handleSendBill = (
         type: string,
         value: string,
@@ -216,10 +222,9 @@ export default function index() {
                 },
             })
                 .then(() => {
-                    modal.success({
-                        title: 'Send request print bill Success',
-                        content: 'Please go to printer to take the bill!',
-                        centered: true,
+                    notification.success({
+                        message: 'Receipt sent to printer',
+                        description: 'Please go to printer to take the bill!',
                     });
                 })
                 .catch((e) => {
@@ -240,11 +245,10 @@ export default function index() {
                         },
                     })
                         .then(() => {
-                            modal.success({
-                                title: 'Send request print bill Success',
-                                content:
+                            notification.success({
+                                message: 'Receipt sent to printer',
+                                description:
                                     'Please go to printer to take the bill!',
-                                centered: true,
                             });
                         })
                         .catch((e) => {
@@ -261,10 +265,9 @@ export default function index() {
                 },
             })
                 .then(() => {
-                    modal.success({
-                        title: 'Send request print bill Success',
-                        content: 'Please go to printer to take the bill!',
-                        centered: true,
+                    notification.success({
+                        message: 'Receipt sent to printer',
+                        description: 'Please go to printer to take the bill!',
                     });
                 })
                 .catch((e) => {
@@ -279,10 +282,9 @@ export default function index() {
         title: string;
         content: string;
     }) => {
-        modal.success({
-            title: title,
-            content: content,
-            centered: true,
+        notification.success({
+            message: title,
+            description: content,
         });
     };
     useEffect(() => {
@@ -293,7 +295,8 @@ export default function index() {
             setShowPendingPayment(true);
         }
     }, [data]);
-    const [handleRePayment] = useMutation(GET_RE_PAYMENT_URL);
+    const [handleRePayment, { loading: loadingRePayment }] =
+        useMutation(RETRY_PAY_CASH);
     const {
         handlePOSPayment,
         isVisibleModalPos,
@@ -332,23 +335,22 @@ export default function index() {
     const handleCheckOut = async (paymentMethod = 'cashondelivery') => {
         handleRePayment({
             variables: {
-                orderId: orderId ? atob(orderId) : order_ID,
                 paymentMethod: paymentMethod,
+                orderNumber: data?.orderDetail?.order_number,
             },
         })
             .then((res) => {
-                if (paymentMethod === 'cashondelivery') {
-                    modal.success({
-                        title: 'Repayment Success',
-                        centered: true,
-                        onOk: () => {
-                            setShowPendingPayment(false);
-                        },
-                    });
-                } else {
-                    window.location.href =
-                        res.data.retryPurchaseAppotaPayOrder.pay_url;
-                }
+                modal.success({
+                    title: 'Repayment Success',
+                    content: 'Repayment Success with cash',
+                    centered: true,
+                    onOk: () => {
+                        setShowPendingPayment(false);
+                        GetDataWithId(
+                            atob(res?.data?.retryPayCashOrder.order.order_id),
+                        );
+                    },
+                });
             })
             .catch((err) => {
                 console.log(err);
@@ -468,6 +470,9 @@ export default function index() {
             },
         });
     };
+
+    console.log({dataSplitBill})
+
     return (
         <div>
             {' '}
@@ -598,7 +603,8 @@ export default function index() {
                         refundLoading ||
                         refund2Loading ||
                         refund3Loading ||
-                        refund4Loading
+                        refund4Loading ||
+                        loadingRePayment
                     }
                 />
                 <LazyLoadedScripts />

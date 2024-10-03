@@ -25,10 +25,12 @@ export default function KitchenStationDetailPage() {
     const name = searchParams.get('name');
     const printer_id = searchParams.get('printer_id');
     useEffect(() => {
-        form.setFieldsValue({
-            name: name,
-            printer: parseInt(printer_id || '0'),
-        });
+        if (printer_id) {
+            form.setFieldsValue({
+                name: name,
+                printer: `${printer_id}`,
+            });
+        }
     }, [id, name, printer_id]);
     const handleCreateSubmit = (values: any) => {
         setLoading(true);
@@ -41,7 +43,7 @@ export default function KitchenStationDetailPage() {
             .then(() => {
                 notification.success({
                     message: 'Success',
-                    description: 'Created successfully',
+                    description: `Station "${values.name}" has been created!`,
                 });
                 navigation(BASE_ROUTER.RESTAURENT_KITCHEN_STATION);
             })
@@ -64,7 +66,7 @@ export default function KitchenStationDetailPage() {
             .then(() => {
                 notification.success({
                     message: 'Success',
-                    description: 'Update successfully',
+                    description: `Changes have been saved!`,
                 });
                 navigation(BASE_ROUTER.RESTAURENT_KITCHEN_STATION);
             })
@@ -81,7 +83,12 @@ export default function KitchenStationDetailPage() {
     const [onSubmitUpdateStation] = useMutation(UPDATE_KITCHEN_STATION);
     const [onDeleteKitchenStation] = useMutation(DELETE_KITCHEN_STATION);
     const [loading, setLoading] = useState(false);
-    const [listPrinter, setListPrinter] = React.useState([]);
+    const [listPrinter, setListPrinter] = React.useState<
+        {
+            label: string;
+            value: string;
+        }[]
+    >([]);
     useEffect(() => {
         onGetPrinterList({
             fetchPolicy: 'cache-and-network',
@@ -90,21 +97,29 @@ export default function KitchenStationDetailPage() {
                 (item: any) => {
                     return {
                         label: item.printer_name,
-                        value: item.id,
+                        value: `${item.id}`,
                     };
                 },
             );
-            setListPrinter(list);
+
+            setListPrinter([
+                {
+                    label: 'No Device',
+                    value: '0',
+                },
+                ...list,
+            ]);
         });
     }, []);
     useEffect(() => {
         if (printer_id && listPrinter.length > 0) {
             form.setFieldsValue({
-                printer: parseInt(printer_id),
+                printer: `${printer_id}`,
             });
         }
     }, [listPrinter, printer_id]);
     const [showModalDelete, setShowModalDelete] = useState(false);
+    const [showModalCancel, setShowModalCancel] = useState(false);
     return (
         <Form
             name="basic"
@@ -137,7 +152,7 @@ export default function KitchenStationDetailPage() {
                         .then(() => {
                             notification.success({
                                 message: 'Success',
-                                description: 'Deleted successfully',
+                                description: `"${name}" has been deleted!`,
                             });
                             navigation(BASE_ROUTER.RESTAURENT_KITCHEN_STATION);
                         })
@@ -148,6 +163,17 @@ export default function KitchenStationDetailPage() {
                             setLoading(false);
                         });
                     setShowModalDelete(false);
+                }}
+                okText="Delete"
+            />
+            <ModalConfirm
+                content="You will lost all of your changes!"
+                title={'Cancel editing?'}
+                isModalOpen={showModalCancel}
+                onCancel={() => setShowModalCancel(false)}
+                onSubmit={() => {
+                    navigation(-1);
+                    setShowModalCancel(false);
                 }}
             />
             <LoadingModal showLoading={loading} />
@@ -182,7 +208,9 @@ export default function KitchenStationDetailPage() {
                                 <ButtonPrimary
                                     isCancel
                                     title="Cancel"
-                                    onClick={() => navigation(-1)}
+                                    onClick={() => {
+                                        setShowModalCancel(true);
+                                    }}
                                     width="100px"
                                     height="48px"
                                 />
@@ -191,7 +219,7 @@ export default function KitchenStationDetailPage() {
                             <ButtonPrimary
                                 isCancel
                                 title="Cancel"
-                                onClick={() => navigation(-1)}
+                                onClick={() => setShowModalCancel(true)}
                                 width="100px"
                                 backgroundColor={theme.eRROR1BG}
                                 color={theme.eRROR2Default}
@@ -219,6 +247,8 @@ export default function KitchenStationDetailPage() {
                     placeholder="Linked printer"
                     options={listPrinter}
                     style={{ width: '60%', minWidth: 600 }}
+                    required={false}
+                    rule={[{ required: false }]}
                 />
             </div>
         </Form>

@@ -29,6 +29,7 @@ export const GET_INVOICES = gql`
                 state
                 can_refund
                 is_refunded
+                non_cash_amount
                 total {
                     tip_amount {
                         value
@@ -92,6 +93,7 @@ export const GET_INVOICES = gql`
                         name
                         value
                     }
+                    po_number
                 }
             }
         }

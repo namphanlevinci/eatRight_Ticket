@@ -90,6 +90,7 @@ export const GET_ORDER_DETAIL = gql`
                     name
                     value
                 }
+                po_number
             }
             tip_amount {
                 value

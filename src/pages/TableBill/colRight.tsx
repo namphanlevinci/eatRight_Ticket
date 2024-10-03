@@ -22,6 +22,8 @@ import { useTheme } from 'context/themeContext';
 import RenderDiscountRow from './components/renderDiscountRow';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from './components/ModalPosDevicesDJV';
+import ModalOtherMethod from './components/ModalOtherMethod';
+import ChangeModal from 'components/modal/ChangeModal';
 
 export default function ColRight({
     cart,
@@ -67,6 +69,9 @@ export default function ColRight({
         handlePOSPaymentWithDJV,
         onCloseProcessingPayment,
         showModalErrorPayment,
+        isVisibleModalOtherMethod,
+        setVisibleModalOtherMethod,
+        handleOtherPayment,
     } = useTableBill();
 
     useEffect(() => {
@@ -76,14 +81,18 @@ export default function ColRight({
     const [tipPercent, setTipPercent] = useState(0);
     const [modalDiscount, setModalDiscount] = useState(false);
     const [modalTip, setModalTip] = useState(false);
+    const [modalChange, setModalChange] = useState(false);
     const { handleAddCoupon } = useCouponCart();
     const { theme } = useTheme();
+    const [value, setValue] = React.useState('');
+    const handleChange = (e: any) => {
+        const value = e?.target?.value;
+        if (value?.length <= 50) {
+            setValue(e?.target.value);
+        }
+    };
 
     const handleProceed = () => {
-        if (tip === undefined) {
-            setModalTip(true);
-            return;
-        }
         if (isSplitBill) {
             if (numbersSplit && numbersSplit > 1) {
                 handleSplitEven(numbersSplit);
@@ -103,21 +112,25 @@ export default function ColRight({
                 handleSplitByItem(newData);
             }
         } else {
+            if (paymentMethod === 'other') {
+                handleOtherPayment(value);
+                return;
+            }
             handleCheckOut();
         }
     };
+
+    useEffect(() => {
+        if (hasGivenTip && paymentMethod !== 'cashondelivery') {
+            handleProceed();
+        }
+    }, [hasGivenTip]);
 
     useEffect(() => {
         if (cart?.tip_amount) {
             setTip(cart?.tip_amount);
         }
     }, [cart?.tip_amount]);
-
-    useEffect(() => {
-        if (hasGivenTip) {
-            handleProceed();
-        }
-    }, [hasGivenTip]);
 
     const isMobile = useMediaQuery({
         query: '(max-width: 767px)',
@@ -168,6 +181,14 @@ export default function ColRight({
     }, [grandTotal, listItems]);
     return (
         <ColStyled style={{ width: 257 }}>
+            {modalChange && paymentMethod === 'cashondelivery' && (
+                <ChangeModal
+                    isModalOpen={modalChange}
+                    grandTotal={grandTotal}
+                    onClose={() => setModalChange(false)}
+                    onSubmit={handleProceed}
+                />
+            )}
             <ModalInput
                 title="Input your coupon "
                 isModalOpen={modalDiscount}
@@ -193,7 +214,6 @@ export default function ColRight({
                     );
 
                     await handleSetTip(values);
-                    handleProceed();
                     setModalTip(false);
                 }}
                 total={(totalMoney + totalDiscount) * (Tax + 1)}
@@ -207,6 +227,13 @@ export default function ColRight({
                 setVisibleMoalPos={setVisibleMoalPos}
                 onPressOK={(pos_id: string) => {
                     handlePOSPayment(pos_id);
+                }}
+            />
+            <ModalOtherMethod
+                isVisible={isVisibleModalOtherMethod}
+                setVisible={setVisibleModalOtherMethod}
+                onPressOK={(value: string) => {
+                    handleOtherPayment(value);
                 }}
             />
             <ModalPosDevicesDJV
@@ -283,7 +310,25 @@ export default function ColRight({
                                     <ArrowRightIcon />
                                 </Row>
                             ) : (
-                                ''
+                                <Text
+                                    style={{
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        color: theme.pRIMARY6Primary,
+                                        backgroundColor: theme.nEUTRALBase,
+                                        fontWeight: 600,
+                                        marginLeft: 16,
+                                        fontSize: 16,
+                                        height: 40,
+                                        width: 128,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Add Tip
+                                </Text>
                             )
                         }
                         textRightStyle={{
@@ -388,14 +433,28 @@ export default function ColRight({
                         title="Cash"
                         isSelected={paymentMethod === 'cashondelivery'}
                         onClick={() => setPaymentMethod('cashondelivery')}
+                        selectedPaymentMethod={paymentMethod}
+                        note={value}
+                        onChangeNote={handleChange}
                     />
                     <div style={{ marginTop: 15 }} />
                     <ButtonOptions
                         title="Credit Card"
                         isSelected={paymentMethod === 'pos_djv'}
                         onClick={() => setPaymentMethod('pos_djv')}
+                        selectedPaymentMethod={paymentMethod}
+                        note={value}
+                        onChangeNote={handleChange}
                     />
                     <div style={{ marginTop: 15 }} />
+                    <ButtonOptions
+                        title="Other"
+                        isSelected={paymentMethod === 'other'}
+                        onClick={() => setPaymentMethod('other')}
+                        selectedPaymentMethod={paymentMethod}
+                        note={value}
+                        onChangeNote={handleChange}
+                    />
                     {/* <ButtonOptions
                         title="POS (ARISE)"
                         isSelected={paymentMethod === 'pos'}
@@ -404,7 +463,16 @@ export default function ColRight({
                 </div>
             )}
             <div style={{ marginTop: 40 }}>
-                <ButtonSubmit title="Proceed Payment" onClick={handleProceed} />
+                <ButtonSubmit
+                    title="Proceed Payment"
+                    onClick={() => {
+                        if (paymentMethod === 'cashondelivery') {
+                            setModalChange(true);
+                        } else {
+                            handleProceed();
+                        }
+                    }}
+                />
             </div>
         </ColStyled>
     );

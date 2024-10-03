@@ -18,6 +18,7 @@ import CustomerIcon from 'assets/icons/customerIcon';
 import SettingV2Icon from 'assets/icons/settingV2';
 import ReceiptBillV2Icon from 'assets/icons/receiptV2Bill';
 import KitchenIcon from './icons/kitchenIcon';
+import ReportIcon from './icons/ReportIcon';
 import {
     HistoryOutlined,
     PrinterOutlined,
@@ -28,7 +29,6 @@ import { Text } from 'components/atom/Text';
 import { useMediaQuery } from 'react-responsive';
 import { OPEN_CASHIER } from 'graphql/printer';
 import { useMutation } from '@apollo/client';
-const MerchantURL = process.env.REACT_APP_MERCHANTURL;
 const urlKitchen = process.env.REACT_APP_KITCHENURL;
 const MenuMerchant = [
     // {
@@ -45,8 +45,7 @@ const MenuMerchant = [
     {
         title: 'Menu Manager',
         icon: <MenuManagerIcon />,
-        to: `${MerchantURL}/menu?token=${localStorage.getItem('token')}`,
-        isGo: true,
+        to: BASE_ROUTER.MENU_PAGE,
     },
     {
         title: 'Order History',
@@ -56,7 +55,13 @@ const MenuMerchant = [
     {
         title: 'Batch Settlements',
         icon: <BillIcon />,
-        to: `${MerchantURL}/settle?token=${localStorage.getItem('token')}`,
+        to: BASE_ROUTER.SETTLE,
+        isGo: true,
+    },
+    {
+        title: 'Report',
+        icon: <ReportIcon />,
+        to: BASE_ROUTER.SALES_REPORT,
         isGo: true,
     },
     {

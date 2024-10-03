@@ -28,10 +28,32 @@ export const BaseRouter = () => {
     const { error } = Modal;
     const [needLogout, setNeedLogout] = useState(false);
     const [noStore, setNoStore] = useState(false);
-    const { isLogged } = useSelector((state: RootState) => state.auth);
+    const { isLogged, isMerchant } = useSelector(
+        (state: RootState) => state.auth,
+    );
     const [urlParams] = useSearchParams();
     const navigate = useNavigate();
     const location = useLocation();
+    useEffect(() => {
+        if (isMerchant) {
+            document.title = 'EatRight Merchant';
+            const link = document.querySelector(
+                "link[rel='icon']",
+            ) as HTMLLinkElement;
+            if (link) {
+                link.href = '/merchant.ico';
+            }
+        } else {
+            document.title = 'EatRight Waiter';
+            const link = document.querySelector(
+                "link[rel='icon']",
+            ) as HTMLLinkElement;
+            if (link) {
+                link.href = '/favicon.ico';
+            }
+        }
+    }, [isMerchant]);
+
     // get token on params
     useEffect(() => {
         const token = urlParams.get('token');
@@ -40,7 +62,13 @@ export const BaseRouter = () => {
         if (token) {
             localStorage.setItem('token', token);
             if (from === 'merchant') {
-                dispatch(updateStatusLoginForMerchant());
+                dispatch(
+                    updateStatusLoginForMerchant({
+                        isTableView: JSON.parse(
+                            localStorage.getItem('isTableView') || 'false',
+                        ),
+                    }),
+                );
             } else {
                 dispatch(updateStatusLogin());
             }
@@ -58,9 +86,11 @@ export const BaseRouter = () => {
         const handleErrorMessages = _.debounce((error: any) => {
             notification.error({
                 message: 'Error',
-                description: error,
+                description: 'Something went wrong !!!',
                 placement: 'topRight',
+                duration: 8,
             });
+            console.log(error);
         }, 500);
 
         emitter.on('error', handleErrorMessages);
@@ -295,6 +325,126 @@ export const BaseRouter = () => {
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
                             <Container.RestaurentTip />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.MERCHANT_PAGE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.MerchantPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.BATCH_HISTORY}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.BatchHistory />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.SETTLE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.Settle />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.TRANSACTIONS}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.Transactions />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.SALES_REPORT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.Report />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.REPORT_BY_PAYMENT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ReportByPayment />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.MENU_PAGE_NEW}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.Menu_Detail_Page />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.MENU_PAGE_EDIT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.Menu_Detail_Page />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.CATEGORY_PAGE_NEW}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.CategoryPage_DETAIL />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.CATEGORY_PAGE_EDIT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.CategoryPage_DETAIL />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.ITEM_PAGE_EDIT}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ItemPage_DETAIL />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.MENU_PAGE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.MenuPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.CATEGORY_PAGE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.CategoryPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.ITEM_PAGE}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ItemPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.ITEM_PAGE_NEW}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ItemPage_DETAIL />
                         </PrivateRoute>
                     }
                 />

@@ -8,6 +8,7 @@ import { findIndicesNotInArray } from 'utils/findIndicesNotInArray';
 import { REMOVE_ITEM_ON_CART } from 'graphql/cart/removeItemOnCart';
 import { UPDATE_STATUS_ITEM } from 'graphql/cart/updateStatusItem';
 import { emitter } from 'graphql/client';
+import { isCartIdFromLocal } from 'utils/isNumericId';
 export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
     const [listCart, setListCart] = useState<string[]>([]);
     const [searchParams] = useSearchParams();
@@ -131,9 +132,7 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
                 filterCarts,
             ).forEach((item) => {
                 if (
-                    !cartItems[indexTable].carts[item].firstname.includes(
-                        'Guest',
-                    )
+                    !isCartIdFromLocal(cartItems[indexTable].carts[item].id)
                 ) {
                     removeCartIndex(item);
                 }
@@ -217,5 +216,6 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
         tableId,
         removeItemOnCartServer,
         updateStatusItemServer,
+        removeCartIndex
     };
 };

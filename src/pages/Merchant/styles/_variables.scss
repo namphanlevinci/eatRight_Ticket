@@ -1,0 +1,18 @@
+$yallow-color: var(--tertiary-2-default);
+$black-color: #1B1B1B;
+$gray-color:#414141;
+$red-color: #E31837;
+$white-color: #FFFFFF;
+$orange-color:#F0810D;
+$green-color-1:var(--info-2-default);
+$green-color-2:var(--success-2-default);
+$green-color-3: var(--primary-6);
+$green:#55C04A;
+$blue:#47619b;
+$bg-columns:#F8F8F8;
+@mixin flex-center {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+

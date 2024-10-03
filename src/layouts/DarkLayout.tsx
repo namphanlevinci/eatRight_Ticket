@@ -16,12 +16,16 @@ import { Colors } from 'themes/colors';
 import Logo from 'assets/logos/logo.png';
 import LogoMerchant from 'assets/logos/merchantLogo.png';
 // import HelpIcon from 'assets/icons/help';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { USER_INFO } from 'graphql/auth/login';
 import { useDispatch } from 'react-redux';
-import { updateCustomerInfo, updateFloor } from 'features/auth/authSlice';
+import {
+    changeModeTableView,
+    updateCustomerInfo,
+    updateFloor,
+} from 'features/auth/authSlice';
 import { GET_RESTAURANT } from 'graphql/auth/restaurent';
 import BellIcon from 'assets/icons/bell';
 import blackNoti from 'assets/icons/black-noti.png';
@@ -43,7 +47,6 @@ type Props = {
     children: React.ReactNode;
 };
 
-const MERCHANTURL = process.env.REACT_APP_MERCHANTURL;
 export const DarkLayout = (props: Props) => {
     const { children } = props;
     const {
@@ -53,6 +56,7 @@ export const DarkLayout = (props: Props) => {
         restaurant_address,
         restaurant_name,
         isMerchant,
+        isTableView,
     } = useSelector((state: RootState) => state.auth);
     const [onGetInfo] = useLazyQuery(USER_INFO);
     const [onGetRestaurent] = useLazyQuery(GET_RESTAURANT);
@@ -193,14 +197,14 @@ export const DarkLayout = (props: Props) => {
                                 display: 'inline-block',
                                 whiteSpace: 'break-spaces',
                                 overflow: 'visible',
-                                color: 'white',
+                                color: '#384052',
                             }}
                         >
                             Table {item?.title} - {item?.content}
                         </span>
                         <p
                             style={{
-                                color: '#fafafa',
+                                color: '#384052',
                                 fontSize: 13,
                                 marginTop: 3,
                             }}
@@ -232,6 +236,11 @@ export const DarkLayout = (props: Props) => {
             .catch((err) => {
                 console.log(err);
             });
+    };
+    const navigation = useNavigate();
+    const onToggleView = () => {
+        dispatch(changeModeTableView());
+        navigation(BASE_ROUTER.MERCHANT_PAGE);
     };
     return (
         <Layout
@@ -311,11 +320,11 @@ export const DarkLayout = (props: Props) => {
                                                     </Text>
 
                                                     <Switch
-                                                        defaultChecked
+                                                        defaultChecked={
+                                                            isTableView
+                                                        }
                                                         onChange={() => {
-                                                            const url = `${MERCHANTURL}/home?token=${localStorage.getItem('token')}`;
-                                                            window.location.href =
-                                                                url;
+                                                            onToggleView();
                                                         }}
                                                         style={{
                                                             marginLeft: 5,
@@ -335,7 +344,7 @@ export const DarkLayout = (props: Props) => {
                                     open={isOpenNoti}
                                     onOpenChange={handleOpenChangeNoti}
                                     overlayInnerStyle={{
-                                        background: '#4B3718',
+                                        background: '#fff',
                                     }}
                                     placement="bottomRight"
                                 >
