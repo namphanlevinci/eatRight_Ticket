@@ -248,7 +248,7 @@ const RenderBillItem = ({
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Grand Total:</TextDark>
+                    <TextDark style={text16}>Total:</TextDark>
                     <TextDark>
                         {CURRENTCY}{' '}
                         {selectDataShowbill
@@ -273,6 +273,14 @@ const RenderBillItem = ({
                                       : 0)
                               )?.toFixed(2)}
                     </TextDark>
+                </RowStyled>
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Tip:$</TextDark>
+                    <TextDark>_______________________________</TextDark>
+                </RowStyled>
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Grand Total:$</TextDark>
+                    <TextDark>______________________</TextDark>
                 </RowStyled>
                 <DividedDashed />
                 <RowStyled align={'middle'}>
@@ -300,7 +308,11 @@ const RenderBillItem = ({
                             </TextDark>
                         </RowStyled>
                     )}
-
+                <DividedDashed />
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Signature:</TextDark>
+                    <TextDark>______________________</TextDark>
+                </RowStyled>
                 <DividedDashed />
                 <TextDark
                     style={{
