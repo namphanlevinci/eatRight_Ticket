@@ -18,6 +18,8 @@ import LoadingModal from 'components/modal/loadingModal';
 import { useTheme } from 'context/themeContext';
 import { NoteTableIcon } from 'assets/icons/noteTableIcon';
 import ModalInputNote from 'components/modal/ModalInputNote';
+import { useCart } from 'context/cartContext';
+import { isCartIdFromLocal } from 'utils/isNumericId';
 const { Content } = Layout;
 
 type TableType = {
@@ -54,7 +56,7 @@ export const TablePage: React.FC = () => {
     );
     const [cleanTable, { loading: loading3 }] = useMutation(CLEAR_TABLE);
     const onCheckIn = () => {
-        if (table && table?.cartIds.length > 0) {
+        if ((table && table?.cartIds.length > 0) || isHaveCart) {
             return;
         }
         if (table?.status == '0') {
@@ -135,6 +137,13 @@ export const TablePage: React.FC = () => {
     useEffect(() => {
         setNote(table?.note || '');
     }, [table?.note]);
+    const { cartItems } = useCart();
+    const getIndexTable = cartItems.findIndex(
+        (item) => item.tableId == tableId,
+    );
+    const isHaveCart = cartItems[getIndexTable]?.carts.find(
+        (item) => !isCartIdFromLocal(item.id),
+    );
     return (
         <Layout
             style={{
@@ -173,7 +182,9 @@ export const TablePage: React.FC = () => {
                                         table?.status == '2'
                                             ? 'white'
                                             : table?.status == '1'
-                                              ? '#08875D'
+                                              ? isHaveCart
+                                                  ? '#4c5056'
+                                                  : '#08875D'
                                               : '#0455BF',
                                     height: 40,
                                     width: 'auto',
