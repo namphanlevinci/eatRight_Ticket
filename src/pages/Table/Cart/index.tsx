@@ -97,6 +97,9 @@ export default function OrderCart({ table }: { table: any }) {
                                 Modal.confirm({
                                     title: 'Are you sure you want to delete this cart?',
                                     onOk: () => {
+                                        if (index > 0) {
+                                            setSelectedCart(index - 1);
+                                        }
                                         setListCart(
                                             listCart.filter(
                                                 (cart) => cart !== item,
