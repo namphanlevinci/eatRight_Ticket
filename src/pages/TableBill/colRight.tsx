@@ -87,11 +87,10 @@ export default function ColRight({
     const [value, setValue] = React.useState('');
     const handleChange = (e: any) => {
         const value = e?.target?.value;
-        if(value?.length <= 50){
+        if (value?.length <= 50) {
             setValue(e?.target.value);
         }
     };
-
 
     const handleProceed = () => {
         if (tip === undefined) {
@@ -120,7 +119,7 @@ export default function ColRight({
             if (paymentMethod === 'other') {
                 handleOtherPayment(value);
                 return;
-            } 
+            }
             handleCheckOut();
         }
     };
@@ -156,7 +155,7 @@ export default function ColRight({
         () =>
             roundTo(
                 (cart?.prices?.discount?.amount?.value || 0) +
-                (cart?.prices?.total_items_canceled_discount?.value || 0),
+                    (cart?.prices?.total_items_canceled_discount?.value || 0),
                 2,
             ),
         [cart],
@@ -186,10 +185,11 @@ export default function ColRight({
     }, [grandTotal, listItems]);
     return (
         <ColStyled style={{ width: 257 }}>
-            {modalChange && (
+            {modalChange && paymentMethod === 'cashondelivery' && (
                 <ChangeModal
                     isModalOpen={modalChange}
                     grandTotal={grandTotal}
+                    onClose={() => setModalChange(false)}
                     onSubmit={handleProceed}
                 />
             )}
@@ -213,8 +213,8 @@ export default function ColRight({
                     setTip(values);
                     setTipPercent(
                         values /
-                        ((cart?.prices.grand_total.value || 0) -
-                            (cart?.prices?.total_canceled?.value || 0)),
+                            ((cart?.prices.grand_total.value || 0) -
+                                (cart?.prices?.total_canceled?.value || 0)),
                     );
 
                     await handleSetTip(values);
@@ -326,7 +326,7 @@ export default function ColRight({
                 )}
 
                 {cart?.prices?.applied_taxes &&
-                    cart?.prices?.applied_taxes[0]?.amount ? (
+                cart?.prices?.applied_taxes[0]?.amount ? (
                     <RenderBillInfomationRow
                         title="Tax"
                         value={`$ ${formatNumberWithCommas(
@@ -374,41 +374,41 @@ export default function ColRight({
                     </div>
                     {listItems?.length === 0 && numbersSplit && numbersSplit > 1
                         ? Array.from({ length: numbersSplit }, (_, index) => (
-                            <RenderSplitBillGuest
-                                key={index}
-                                title={`Guest ${index + 1}`}
-                                total={grandTotal / numbersSplit}
-                                onPress={openModalSplitBill}
-                            />
-                        ))
+                              <RenderSplitBillGuest
+                                  key={index}
+                                  title={`Guest ${index + 1}`}
+                                  total={grandTotal / numbersSplit}
+                                  onPress={openModalSplitBill}
+                              />
+                          ))
                         : listItems?.map(({ guestId, items }) => {
-                            const total = items.reduce((acc, item) => {
-                                const price =
-                                    (item.prices.price.value * item.quantity -
-                                        (item.prices?.total_item_discount
-                                            ?.value || 0)) *
-                                    (1 + Tax);
-                                return (
-                                    acc +
-                                    (item.status === 'cancel'
-                                        ? 0
-                                        : price + tipPercent * price)
-                                );
-                            }, 0);
-                            return (
-                                total > 0 && (
-                                    <RenderSplitBillGuest
-                                        key={guestId}
-                                        title={guestId}
-                                        total={roundTo(
-                                            total * isNewPriceForListItems,
-                                            2,
-                                        )}
-                                        onPress={openModalSplitBill}
-                                    />
-                                )
-                            );
-                        })}
+                              const total = items.reduce((acc, item) => {
+                                  const price =
+                                      (item.prices.price.value * item.quantity -
+                                          (item.prices?.total_item_discount
+                                              ?.value || 0)) *
+                                      (1 + Tax);
+                                  return (
+                                      acc +
+                                      (item.status === 'cancel'
+                                          ? 0
+                                          : price + tipPercent * price)
+                                  );
+                              }, 0);
+                              return (
+                                  total > 0 && (
+                                      <RenderSplitBillGuest
+                                          key={guestId}
+                                          title={guestId}
+                                          total={roundTo(
+                                              total * isNewPriceForListItems,
+                                              2,
+                                          )}
+                                          onPress={openModalSplitBill}
+                                      />
+                                  )
+                              );
+                          })}
                 </div>
             ) : (
                 <div style={{ marginTop: 56 }}>

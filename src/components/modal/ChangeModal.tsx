@@ -1,10 +1,11 @@
 import { message, Modal, Row } from 'antd';
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTheme } from 'context/themeContext';
 import { formatMoney } from 'utils/format';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import CloseIcon from 'assets/icons/close';
 import styled from 'styled-components';
+import CloseXIcon from 'assets/icons/closeIcon';
 
 const elementsNumber = [
     '1',
@@ -25,10 +26,16 @@ const fastOptions = ['10', '20', '50'];
 interface IProps {
     isModalOpen: boolean;
     grandTotal: number;
+    onClose: () => void;
     onSubmit: () => void;
 }
 
-const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
+const ChangeModal = ({
+    isModalOpen,
+    grandTotal,
+    onClose,
+    onSubmit,
+}: IProps) => {
     const { theme } = useTheme();
 
     const [received, setReceived] = useState(0);
@@ -94,9 +101,22 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                 closeIcon={<></>}
                 centered
                 closable={false}
-                maskClosable
+                onClose={onClose}
             >
                 <Row>
+                    <div style={{ width: '100%' }}>
+                        <div
+                            style={{
+                                cursor: 'pointer',
+                                marginLeft: 'auto',
+                                width: 'fit-content',
+                                marginBottom: 16,
+                            }}
+                            onClick={onClose}
+                        >
+                            <CloseXIcon />
+                        </div>
+                    </div>
                     <InfoRow justify="space-between" align="middle">
                         <InfoLabel>Received</InfoLabel>
                         <InfoValueContainer>
@@ -145,8 +165,16 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                             }
                             theme={theme}
                             style={{
+                                borderRadius: 8,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 20,
+                                fontWeight: 700,
                                 marginTop: 16,
-                                width: 56,
+                                width: 98,
+                                height: 72,
+                                cursor: 'pointer',
                             }}
                         >
                             Exact
@@ -157,7 +185,6 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                                 onClick={() => handleReceived(number, true)}
                                 theme={theme}
                                 style={{
-                                    padding: '16px 20px',
                                     borderRadius: 8,
                                     display: 'flex',
                                     alignItems: 'center',
@@ -165,8 +192,8 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                                     fontSize: 20,
                                     fontWeight: 700,
                                     marginTop: 16,
-                                    height: 28,
-                                    width: 56,
+                                    width: 98,
+                                    height: 72,
                                     cursor: 'pointer',
                                 }}
                             >
@@ -225,12 +252,11 @@ const ClearButton = styled.div`
 `;
 
 const NumberButton = styled.div`
-    padding: 16px 20px;
     border: 0.5px solid #c0c2c8;
     background-color: ${(props) => props.theme.nEUTRALSecBG};
     border-radius: 8px;
-    width: 28px;
-    height: 28px;
+    width: 70px;
+    height: 62px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -241,7 +267,7 @@ const NumberButton = styled.div`
 
 const FastOptionButton = styled(NumberButton)`
     border: 0.5px solid ${(props) => props.theme.pRIMARY6Primary};
-    color: ${(props) => props.theme.pRIMARY6Primary};,
+    color: ${(props) => props.theme.pRIMARY6Primary};
 `;
 
 const NumberContainer = styled.div`
