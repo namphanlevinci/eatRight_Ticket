@@ -7,7 +7,7 @@ const Columns = () => {
         {
             title: 'Bill',
             dataIndex: 'invoice_number',
-            render: (value) => (value ? `${formatMoney(value)}` : 'Total'),
+            render: (value) => value || 'Total',
         },
         {
             title: 'Gross Sales',
