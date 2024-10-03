@@ -50,15 +50,17 @@ const Pagination: React.FC<IProps> = ({
     }
 
     return (
-        <div className="flex flex-col space-y-4 items-start md:flex-row md:space-y-0 md:justify-between">
-            <div className="flex items-center space-x-2">
+        <div className="paginate">
+            <div>
                 {showRowPerPage && (
                     <>
                         <Select
                             onChange={(value) => handleRowPerPageChange(value)}
                             value={rowPerPage}
                             size="middle"
-                            className="h-10"
+                            style={{
+                                height: 40,
+                            }}
                         >
                             <Select.Option value={10}>10 / page</Select.Option>
                             <Select.Option value={20}>20 / page</Select.Option>
@@ -71,19 +73,27 @@ const Pagination: React.FC<IProps> = ({
             </div>
             <ReactPaginate
                 previousClassName="previous-item"
-                previousLabel={<i className="las la-angle-left text-sm px-1" />}
+                previousLabel={
+                    <i
+                        style={{ fontSize: 12, padding: '0 4px' }}
+                        className="las la-angle-left"
+                    />
+                }
                 nextClassName="next-item"
-                nextLabel={<i className="las la-angle-right text-sm px-1" />}
+                nextLabel={
+                    <i
+                        style={{ fontSize: 12, padding: '0 4px' }}
+                        className="las la-angle-right"
+                    />
+                }
                 pageCount={pageCount}
                 forcePage={page}
                 onPageChange={({ selected }) => {
                     handlePageChange(selected);
                 }}
-                pageClassName="pagination-item text-center duration-300 transition-all py-1 px-2.5 text-sm font-medium leading-normal rounded-md text-dark hover:!text-dark"
-                containerClassName={'items-center right flex justify-center'}
-                activeClassName={
-                    'active_link text-center duration-300 transition-all py-1 px-2.5 text-sm font-medium leading-normal bg-dark rounded-md text-white hover:!text-white'
-                }
+                pageClassName="pagination-item"
+                containerClassName={'container'}
+                activeClassName={'active_link'}
             />
         </div>
     );
