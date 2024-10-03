@@ -6,6 +6,7 @@ export const getNamePaymentFormated = (paymentName: PaymentName): string => {
     const paymentsNameFormated: Record<PaymentName, string> = {
         total: 'Total',
         cash: 'Cash',
+        others: 'Others',
         credit_card: 'Credit Card',
     };
     return paymentsNameFormated[paymentName];
