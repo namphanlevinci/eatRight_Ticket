@@ -192,20 +192,7 @@ const HomePage: React.FC = () => {
                 minHeight: '100vh',
             }}
         >
-            <Content style={{ margin: '0 16px' }}>
-                <Row style={{ marginBlock: 10 }} align={'middle'}>
-                    <HomeIcon />
-                    <BreadCrum>Home</BreadCrum>
-                    <ArrowRightIcon />
-                    {floors?.length > 0 && (
-                        <BreadCrum isSelected>
-                            {floorActive === -1
-                                ? 'All'
-                                : floors[floorActive].name}
-                        </BreadCrum>
-                    )}
-                </Row>
-
+            <Content style={{ margin: '0 16px', paddingTop: 16 }}>
                 {renderContent({ data: memoizedTables })}
             </Content>
         </Layout>

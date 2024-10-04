@@ -42,6 +42,7 @@ import DrawerMenu from './components/DrawerMenu';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
 import { OPEN_CASHIER } from 'graphql/printer';
+import HomeIcon from 'assets/icons/homeIcon';
 
 type Props = {
     children: React.ReactNode;
@@ -269,17 +270,25 @@ export const DarkLayout = (props: Props) => {
                         background: theme.nEUTRALPrimary,
                         paddingInline: 16,
                         justifyContent: 'space-between',
+                        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Added box-shadow
                     }}
                 >
                     <Link
                         to={BASE_ROUTER.HOME}
                         style={{ cursor: 'pointer', height: 36 }}
                     >
-                        {isMerchant ? (
-                            <img src={LogoMerchant} style={{ height: 36 }} />
-                        ) : (
-                            <img src={Logo} style={{ height: 36 }} />
-                        )}
+                        <div
+                            style={{
+                                borderRadius: 300,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                background: "#F1F3F7",
+                                padding: 5
+                            }}
+                        >
+                            <HomeIcon />
+                        </div>
                     </Link>
                     <Row style={{ gap: 10 }} align={'middle'}>
                         {/* <BellIcon />
