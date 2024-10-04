@@ -1,7 +1,6 @@
 import { Divider, Row } from 'antd';
 import { Text } from 'components/atom/Text';
 import React, { useEffect, useMemo, useState } from 'react';
-import InputInfoCart from './components/inputInfo';
 import RenderBillInfomationRow from './components/billInfo';
 import ButtonOptions from './components/buttonOptions';
 import ButtonSubmit from './components/buttonSubmit';
@@ -10,7 +9,6 @@ import { formatNumberWithCommas } from 'utils/format';
 import { useTableBill } from './useTableBill';
 import LoadingModal from 'components/modal/loadingModal';
 import { ColStyled } from './styleds';
-import AccountIcon from 'assets/icons/accountIcon';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { roundTo } from 'utils/number';
 import ModalPosDevices from './components/ModalPosDevices';
@@ -46,9 +44,9 @@ export default function ColRight({
     openModalSplitBill?: () => void;
     SplitBillButton?: any;
 }) {
-    const [customerName, setCustomerName] = React.useState<any>(
-        cart?.firstname,
-    );
+    // const [customerName, setCustomerName] = React.useState<any>(
+    //     cart?.firstname,
+    // );
 
     const {
         handleCheckOut,
@@ -74,9 +72,9 @@ export default function ColRight({
         handleOtherPayment,
     } = useTableBill();
 
-    useEffect(() => {
-        setCustomerName(cart?.firstname);
-    }, [cart]);
+    // useEffect(() => {
+    //     setCustomerName(cart?.firstname);
+    // }, [cart]);
     const [tip, setTip] = useState<any>(undefined);
     const [tipPercent, setTipPercent] = useState(0);
     const [modalDiscount, setModalDiscount] = useState(false);
@@ -125,7 +123,6 @@ export default function ColRight({
             handleProceed();
         }
     }, [hasGivenTip]);
-
     useEffect(() => {
         if (cart?.tip_amount) {
             setTip(cart?.tip_amount);
@@ -179,8 +176,15 @@ export default function ColRight({
         });
         return grandTotal / total || 1;
     }, [grandTotal, listItems]);
+    console.log(cart?.prices, numbersSplit);
     return (
-        <ColStyled style={{ width: 257 }}>
+        <ColStyled
+            style={{
+                width: 257,
+                marginRight: isMobile ? 0 : 24,
+                padding: isMobile ? 16 : 0,
+            }}
+        >
             {modalChange && paymentMethod === 'cashondelivery' && (
                 <ChangeModal
                     isModalOpen={modalChange}
@@ -253,29 +257,10 @@ export default function ColRight({
                 title="Processing ..."
                 onClose={onCloseProcessingPayment}
             />
-            {isMobile && (
-                <Row justify={'end'} style={{ marginTop: 20 }}>
-                    <SplitBillButton />
-                </Row>
-            )}
-
-            <InputInfoCart
-                icon={<AccountIcon />}
-                value={customerName}
-                setValue={setCustomerName}
-                placeholder="Customer Name"
-            />
-            {/* <InputInfoCart
-                icon={<PhoneIcon />}
-                value={cusomterNumber}
-                setValue={setCustomerNumber}
-                placeholder="Customer Number"
-            /> */}
-
-            <div style={{ marginTop: isMobile ? 20 : 56 }}>
+            <div style={{ marginTop: isMobile ? '-12px' : 0 }}>
                 <RenderBillInfomationRow
                     title="Subtotal"
-                    value={`$ ${formatNumberWithCommas(totalMoney)}`}
+                    value={`$${formatNumberWithCommas(totalMoney)}`}
                 />
 
                 {cart?.prices?.discounts && (
@@ -284,7 +269,7 @@ export default function ColRight({
                         value={
                             cart?.prices?.discounts.length > 0
                                 ? cart?.prices?.discounts[0].label
-                                : 'Add Code'
+                                : 'ADD CODE'
                         }
                         textRightStyle={{
                             color:
@@ -292,44 +277,58 @@ export default function ColRight({
                                     ? theme.sUCCESS2Default
                                     : theme.pRIMARY6Primary,
                         }}
-                        valueDiscount={totalDiscount}
+                        valueDiscount={totalDiscount.toString()}
                         onRightClick={() => setModalDiscount(true)}
                     />
+                )}
+                {cart?.prices?.applied_taxes &&
+                cart?.prices?.applied_taxes[0]?.amount ? (
+                    <RenderBillInfomationRow
+                        title={`Tax (${Tax * 100}%)`}
+                        value={
+                            <Text
+                                style={{ color: '#4A505C', fontWeight: 600 }}
+                            >{`$${formatNumberWithCommas(
+                                (totalMoney + totalDiscount) * Tax,
+                            )}`}</Text>
+                        }
+                    />
+                ) : (
+                    <></>
                 )}
 
                 {cart?.prices?.discounts && (
                     <RenderBillInfomationRow
-                        title="Tip"
+                        title={`Tip (${(Math.round((tip / grandTotal) * 10) / 10) * 100}%)`}
                         value={
-                            tip !== undefined ? (
-                                <Row
-                                    align={'middle'}
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    <Text>$ {tip?.toFixed(2)}</Text>{' '}
-                                    <ArrowRightIcon />
-                                </Row>
-                            ) : (
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                            >
                                 <Text
                                     style={{
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
                                         color: theme.pRIMARY6Primary,
-                                        backgroundColor: theme.nEUTRALBase,
                                         fontWeight: 600,
                                         marginLeft: 16,
-                                        fontSize: 16,
-                                        height: 40,
-                                        width: 128,
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        cursor: 'pointer',
                                     }}
                                 >
-                                    Add Tip
+                                    {tip
+                                        ? `$${formatNumberWithCommas(tip)}`
+                                        : `ADD TIP`}
                                 </Text>
-                            )
+                                <div
+                                    style={{
+                                        marginTop: 4,
+                                        marginRight: '-4px',
+                                    }}
+                                >
+                                    <ArrowRightIcon />
+                                </div>
+                            </div>
                         }
                         textRightStyle={{
                             color: tip > 0 ? 'white' : theme.pRIMARY6Primary,
@@ -337,30 +336,34 @@ export default function ColRight({
                         onRightClick={() => setModalTip(true)}
                     />
                 )}
-
-                {cart?.prices?.applied_taxes &&
-                cart?.prices?.applied_taxes[0]?.amount ? (
-                    <RenderBillInfomationRow
-                        title="Tax"
-                        value={`$ ${formatNumberWithCommas(
-                            (totalMoney + totalDiscount) * Tax,
-                        )}`}
-                    />
-                ) : (
-                    <></>
-                )}
                 {/* <RenderBillInfomationRow title="Taxes" value="$10.99" />
                 <RenderBillInfomationRow title="Service fee" value="$5.99" /> */}
-                <Divider style={{ borderColor: theme.nEUTRALLine }} />
+                <Divider
+                    style={{ borderColor: theme.nEUTRALLine, marginBottom: 36 }}
+                />
 
                 <RenderBillInfomationRow
-                    title="To be paid"
-                    value={`$ ${formatNumberWithCommas(grandTotal)} `}
+                    title="Grand Total"
+                    value={`$${formatNumberWithCommas(grandTotal)} `}
                     textRightStyle={{
-                        fontSize: 24,
+                        fontSize: 18,
                         fontWeight: '600',
                         color: theme.pRIMARY6Primary,
                     }}
+                />
+                <RenderBillInfomationRow
+                    title="Split Bill"
+                    value={
+                        <Row justify={'end'} style={{ marginTop: 20 }}>
+                            <SplitBillButton />
+                        </Row>
+                    }
+                    textRightStyle={{
+                        fontSize: 18,
+                        fontWeight: '600',
+                        color: theme.pRIMARY6Primary,
+                    }}
+                    marginBlock={8}
                 />
             </div>
             {isSplitBill ? (
@@ -374,15 +377,25 @@ export default function ColRight({
                     >
                         <Text
                             style={{
-                                fontSize: 18,
-                                fontWeight: '600',
+                                fontSize: 13,
+                                fontWeight: '400',
                                 color: theme.pRIMARY6Primary,
                             }}
                         >
-                            Split Bills
+                            {numbersSplit && numbersSplit > 1
+                                ? `Split evenly`
+                                : 'Split by items'}
                         </Text>
-                        <div style={{ marginLeft: 'auto', marginTop: 4 }}>
-                            <ArrowRightIcon />
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginLeft: 'auto',
+                                color: theme.tEXTPrimary,
+                            }}
+                        >
+                            Change
+                            <ArrowRightIcon color="#4A505C" />
                         </div>
                     </div>
                     {listItems?.length === 0 && numbersSplit && numbersSplit > 1
@@ -424,8 +437,14 @@ export default function ColRight({
                           })}
                 </div>
             ) : (
-                <div style={{ marginTop: 56 }}>
-                    <Text style={{ fontSize: 20, marginBottom: 16 }}>
+                <div style={{ marginTop: 24 }}>
+                    <Text
+                        style={{
+                            fontSize: 18,
+                            fontWeight: 600,
+                            marginBottom: 16,
+                        }}
+                    >
                         Payment method
                     </Text>
 
@@ -462,7 +481,7 @@ export default function ColRight({
                     /> */}
                 </div>
             )}
-            <div style={{ marginTop: 40 }}>
+            <div style={{ margin: '40px 0 16px' }}>
                 <ButtonSubmit
                     title="Proceed Payment"
                     onClick={() => {
@@ -487,16 +506,19 @@ const RenderSplitBillGuest = ({
     total: number;
     onPress?: () => void;
 }) => {
+    const { theme } = useTheme();
     return (
         <Row
             justify={'space-between'}
             align={'middle'}
-            style={{ marginTop: 12, cursor: 'pointer' }}
+            style={{ marginTop: 12, marginLeft: 16, cursor: 'pointer' }}
             onClick={onPress}
         >
-            <Text style={{ fontWeight: '400' }}>{title}</Text>
+            <Text style={{ color: theme.tEXTPrimary, fontWeight: '600' }}>
+                {title}
+            </Text>
             <Row align={'middle'}>
-                <Text style={{ fontWeight: '400' }}>
+                <Text style={{ color: theme.tEXTPrimary, fontWeight: '600' }}>
                     ${formatNumberWithCommas(total)}
                 </Text>
             </Row>
