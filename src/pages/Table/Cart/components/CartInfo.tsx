@@ -67,7 +67,7 @@ export default function CartInfo({ table }: { table?: any }) {
                 borderTopLeftRadius: 0,
                 paddingBlock: isMobile ? 16 : 0,
                 overflowX: 'auto',
-                backgroundColor: theme.nEUTRALLine,
+                backgroundColor: isMobile ? theme.pRIMARY1 : theme.nEUTRALLine,
                 border: 0,
                 flexWrap: 'wrap',
             }}
@@ -108,60 +108,103 @@ export default function CartInfo({ table }: { table?: any }) {
                     }}
                 />
             )}
-            <Col
-                style={{
-                    minWidth: isMobile ? '100%' : 300,
-                }}
-            >
+            {isMobile ? (
                 <Row
+                    style={{
+                        width: '100%',
+                        gap: 20,
+                        justifyContent: 'flex-start',
+                    }}
                     onClick={() => {
                         setShowModal(true);
                     }}
-                    justify={'space-between'}
-                    align={'middle'}
                 >
-                    <Text>Name</Text>
-                    <Row
-                        align={'middle'}
+                    <Col
                         style={{
-                            borderBottom: `1px solid #${theme.nEUTRALLine}`,
-                            padding: 5,
-                            width: '70%',
+                            border: '1px solid #E0E0E0',
+                            borderColor: theme.nEUTRALLine,
+                            borderTopWidth: 0,
+                            borderLeftWidth: 0,
+                            borderRightWidth: 0,
+                            paddingInline: 5,
                         }}
-                        justify={'end'}
+                        span={11}
                     >
                         <Text>{customerName}</Text>
-                        <ArrowRightIcon />
-                    </Row>
-                </Row>
-            </Col>
-            <Col
-                style={{
-                    minWidth: isMobile ? '100%' : 300,
-                }}
-            >
-                <Row
-                    onClick={() => {
-                        setShowModal(true);
-                    }}
-                    justify={'space-between'}
-                    align={'middle'}
-                >
-                    <Text>Customers </Text>
-                    <Row
-                        align={'middle'}
+                    </Col>
+                    <Col
+                        span={11}
                         style={{
-                            borderBottom: `1px solid #${theme.nEUTRALLine}`,
-                            padding: 5,
-                            width: '70%',
+                            border: '1px solid #E0E0E0',
+                            borderColor: theme.nEUTRALLine,
+                            borderTopWidth: 0,
+                            borderLeftWidth: 0,
+                            borderRightWidth: 0,
+                            paddingInline: 5,
                         }}
-                        justify={'end'}
                     >
-                        <Text>{numberOfCustomer}</Text>
-                        <ArrowRightIcon />
-                    </Row>
+                        <Text>{numberOfCustomer} guest</Text>
+                    </Col>
                 </Row>
-            </Col>
+            ) : (
+                <>
+                    {' '}
+                    <Col
+                        style={{
+                            minWidth: isMobile ? '100%' : 300,
+                        }}
+                    >
+                        <Row
+                            onClick={() => {
+                                setShowModal(true);
+                            }}
+                            justify={'space-between'}
+                            align={'middle'}
+                        >
+                            <Text>Name</Text>
+                            <Row
+                                align={'middle'}
+                                style={{
+                                    borderBottom: `1px solid #${theme.nEUTRALLine}`,
+                                    padding: 5,
+                                    width: '70%',
+                                }}
+                                justify={'end'}
+                            >
+                                <Text>{customerName}</Text>
+                                <ArrowRightIcon />
+                            </Row>
+                        </Row>
+                    </Col>
+                    <Col
+                        style={{
+                            minWidth: isMobile ? '100%' : 300,
+                        }}
+                    >
+                        <Row
+                            onClick={() => {
+                                setShowModal(true);
+                            }}
+                            justify={'space-between'}
+                            align={'middle'}
+                        >
+                            <Text>Customers </Text>
+                            <Row
+                                align={'middle'}
+                                style={{
+                                    borderBottom: `1px solid #${theme.nEUTRALLine}`,
+                                    padding: 5,
+                                    width: '70%',
+                                }}
+                                justify={'end'}
+                            >
+                                <Text>{numberOfCustomer}</Text>
+                                <ArrowRightIcon />
+                            </Row>
+                        </Row>
+                    </Col>
+                </>
+            )}
         </StyledCartBorder>
     );
 }

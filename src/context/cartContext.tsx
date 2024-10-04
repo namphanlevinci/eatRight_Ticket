@@ -12,10 +12,15 @@ interface CartContextType {
     cartItems: CartTableType[];
     addCart: (item: any) => void;
     addToCart(item: ItemType): void;
-    updateQuantityItemFromCart: (
-        index: number,
-        type: 'decrea' | 'increa',
-    ) => void;
+    updateQuantityItemFromCart: ({
+        index,
+        type,
+        value,
+    }: {
+        index: number;
+        type: 'decrea' | 'increa';
+        value?: number;
+    }) => void;
     // clearCart: () => void;
     setSelectedCart: any;
     selectedCart: number;
@@ -32,9 +37,10 @@ interface CartContextType {
     InputNoteItemFromCart: (index: number, note: string) => void;
     InputNoteItemBundleFromCart: (
         index: number,
-        note: string,
+        note: string | any,
         bundleIndex: number,
     ) => void;
+    onRemoveItem: (index: number) => void;
 }
 
 // Tạo Context cho giỏ hàng
@@ -371,10 +377,26 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
             setCartItems(newCartTable);
         }
     };
-    const updateQuantityItemFromCart = (
-        index: number,
-        type: 'increa' | 'decrea',
-    ) => {
+    /*************  ✨ Codeium Command ⭐  *************/
+    /**
+     * @description Update quantity item from cart
+     * @param {Object} param - Param update quantity item from cart
+     * @param {number} param.index - Index item in cart
+     * @param {'increa' | 'decrea'} param.type - Type update quantity (increa or decrea)
+     * @example
+     * updateQuantityItemFromCart({index: 0, type: 'increa'})
+     * updateQuantityItemFromCart({index: 0, type: 'decrea'})
+     */
+    /******  87df525e-d550-4813-9aae-5bb297b9dea8  *******/
+    const updateQuantityItemFromCart = ({
+        index,
+        type,
+        value,
+    }: {
+        index: number;
+        type: 'increa' | 'decrea';
+        value?: number;
+    }) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems[indexTable].carts];
         let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
@@ -405,10 +427,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                         ) {
                             return {
                                 ...item,
-                                quantity:
-                                    type === 'decrea'
-                                        ? cartItemExisted.quantity - 1
-                                        : cartItemExisted.quantity + 1,
+                                quantity: value
+                                    ? value
+                                    : type === 'decrea'
+                                      ? cartItemExisted.quantity - 1
+                                      : cartItemExisted.quantity + 1,
                             };
                         }
                         return item;
@@ -467,7 +490,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         selectedCart: number,
         indexTable: number,
         numberOfCustomer = 1,
-        phonenumber?: string
+        phonenumber?: string,
     ) => {
         const newCartItems = [...cartItems[indexTable].carts];
         newCartItems[selectedCart].firstname = name;
@@ -492,6 +515,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         removeItemFromCart,
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
+        onRemoveItem,
     };
     const [isModalConfirm, setIsModalConfirm] = React.useState<boolean>(false);
     const [idx, setIdx] = React.useState<any>('');

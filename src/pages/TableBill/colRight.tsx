@@ -181,14 +181,16 @@ export default function ColRight({
     }, [grandTotal, listItems]);
     return (
         <ColStyled style={{ width: 257 }}>
-            {modalChange && paymentMethod === 'cashondelivery' && (
-                <ChangeModal
-                    isModalOpen={modalChange}
-                    grandTotal={grandTotal}
-                    onClose={() => setModalChange(false)}
-                    onSubmit={handleProceed}
-                />
-            )}
+            {modalChange &&
+                !isSplitBill &&
+                paymentMethod === 'cashondelivery' && (
+                    <ChangeModal
+                        isModalOpen={modalChange}
+                        grandTotal={grandTotal}
+                        onClose={() => setModalChange(false)}
+                        onSubmit={handleProceed}
+                    />
+                )}
             <ModalInput
                 title="Input your coupon "
                 isModalOpen={modalDiscount}
@@ -466,7 +468,7 @@ export default function ColRight({
                 <ButtonSubmit
                     title="Proceed Payment"
                     onClick={() => {
-                        if (paymentMethod === 'cashondelivery') {
+                        if (paymentMethod === 'cashondelivery' && !isSplitBill) {
                             setModalChange(true);
                         } else {
                             handleProceed();

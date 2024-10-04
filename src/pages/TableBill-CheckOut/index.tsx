@@ -72,6 +72,7 @@ export default function TableSplitBillCheckOut() {
         po_number?: string | undefined | null,
     ) => {
         if (paymentMethod === 'cash' || paymentMethod == 'other') {
+            setLoading(true);
             onPaymentWithCash({
                 variables: {
                     invoice_number: selectGuest?.number,
@@ -79,6 +80,7 @@ export default function TableSplitBillCheckOut() {
                         paymentMethod == 'other'
                             ? 'purchaseorder'
                             : paymentMethod,
+                    po_number: po_number ?? '',
                     ...(!isEmpty(po_number) && { po_number }),
                 },
             })
@@ -134,6 +136,9 @@ export default function TableSplitBillCheckOut() {
                         );
                         SkipSelectGuest({ newData });
                     }
+                })
+                .finally(() => {
+                    setLoading(false);
                 });
         } else if (paymentMethod === 'pos') {
             setShowPosModalDJV(true);
@@ -341,6 +346,7 @@ export default function TableSplitBillCheckOut() {
                         <PaymentOptions
                             onPayment={handlePayment}
                             isPaid={selectGuest?.state === 'PAID'}
+                            selectedGuest={selectGuest}
                         />
                     )}
                 </ColumnCart>
@@ -378,6 +384,7 @@ export default function TableSplitBillCheckOut() {
                     <PaymentOptions
                         onPayment={handlePayment}
                         isPaid={selectGuest?.state === 'PAID'}
+                        selectedGuest={selectGuest}
                     />
                 )}
             </Container>

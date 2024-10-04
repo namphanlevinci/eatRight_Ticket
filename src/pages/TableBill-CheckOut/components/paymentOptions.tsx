@@ -2,13 +2,17 @@ import { Text } from 'components/atom/Text';
 import React, { useEffect } from 'react';
 import ButtonOptions from './buttonOptions';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+import ChangeModal from 'components/modal/ChangeModal';
+import { InvoiceWithSplit } from '../IType';
 
 export default function PaymentOptions({
     onPayment,
     isPaid = false,
+    selectedGuest,
 }: {
     onPayment: (type: string, po_number: string) => void;
     isPaid?: boolean;
+    selectedGuest?: InvoiceWithSplit;
 }) {
     const [paymentMethods, setPaymentMethods] = React.useState<
         {
@@ -18,6 +22,7 @@ export default function PaymentOptions({
     >([]);
     const [selectedPaymentMethod, setSelectedPaymentMethod] =
         React.useState('cash');
+    const [modalChange, setModalChange] = React.useState(false);
 
     const [value, setValue] = React.useState('');
     const handleChange = (e: any) => {
@@ -83,9 +88,26 @@ export default function PaymentOptions({
             </div>
             <ButtonPrimary
                 title="Proceed Payment"
-                onClick={() => onPayment(selectedPaymentMethod, value)}
+                onClick={() => {
+                    if (selectedPaymentMethod === 'cash') {
+                        setModalChange(true);
+                        return;
+                    }
+                    onPayment(selectedPaymentMethod, value);
+                }}
                 isDisable={isPaid}
             />
+            {modalChange && selectedPaymentMethod === 'cash' && (
+                <ChangeModal
+                    isModalOpen={modalChange}
+                    grandTotal={selectedGuest?.total.grand_total.value || 0}
+                    onClose={() => setModalChange(false)}
+                    onSubmit={() => {
+                        onPayment(selectedPaymentMethod, value);
+                        setModalChange(false);
+                    }}
+                />
+            )}
         </div>
     );
 }

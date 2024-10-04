@@ -2,12 +2,15 @@ import { useTheme } from 'context/themeContext';
 import { Button } from 'components/atom/Button';
 import { TextDark } from 'components/atom/Text';
 import { useMediaQuery } from 'react-responsive';
+import { Spin } from 'antd';
 export const ButtonBill = ({
     title,
     onPress,
+    loading,
 }: {
     title: string;
     onPress: () => void;
+    loading?: boolean;
 }) => {
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
@@ -20,6 +23,28 @@ export const ButtonBill = ({
             <EmailIcon />
         ) : null;
     };
+    if (loading) {
+        return (
+            <Button
+                style={{
+                    height: 56,
+                    width: isMobile ? 56 : 160,
+                    display: 'flex',
+                    border: '0px',
+                    minWidth: 'auto',
+                    padding: isMobile ? 0 : '16px',
+                    paddingInline: isMobile ? 10 : 0,
+                    flexDirection: isMobile ? 'column' : 'row',
+                    gap: isMobile ? 0 : 10,
+                }}
+                onClick={onPress}
+                background={theme.pRIMARY6Primary}
+                disabled={loading}
+            >
+                <Spin />
+            </Button>
+        );
+    }
     return (
         <Button
             style={{
@@ -35,6 +60,7 @@ export const ButtonBill = ({
             }}
             onClick={onPress}
             background={theme.pRIMARY6Primary}
+            disabled={loading}
         >
             {Icon(title) && (
                 <div style={{ height: 24, width: 24 }}>{Icon(title)}</div>

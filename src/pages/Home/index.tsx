@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Layout, Row } from 'antd';
+import { Layout } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGetAllTable } from './useTable';
 import {
@@ -14,13 +14,10 @@ import {
 } from './styled';
 import Table from './components/Table';
 import { BASE_ROUTER } from 'constants/router';
-import BreadCrum from 'components/atom/BreadCrum/BreadCrum';
-import { ArrowRightIcon } from 'assets/icons/arrowRight';
 // import SearchTable from './components/Search';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { useTheme } from 'context/themeContext';
-import HomeIcon from 'assets/icons/homeIcon';
 import { useMediaQuery } from 'react-responsive';
 const { Content } = Layout;
 
@@ -192,20 +189,7 @@ const HomePage: React.FC = () => {
                 minHeight: '100vh',
             }}
         >
-            <Content style={{ margin: '0 16px' }}>
-                <Row style={{ marginBlock: 10 }} align={'middle'}>
-                    <HomeIcon />
-                    <BreadCrum>Home</BreadCrum>
-                    <ArrowRightIcon />
-                    {floors?.length > 0 && (
-                        <BreadCrum isSelected>
-                            {floorActive === -1
-                                ? 'All'
-                                : floors[floorActive].name}
-                        </BreadCrum>
-                    )}
-                </Row>
-
+            <Content style={{ margin: '0 16px', paddingTop: 16 }}>
                 {renderContent({ data: memoizedTables })}
             </Content>
         </Layout>

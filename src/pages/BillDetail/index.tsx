@@ -38,6 +38,13 @@ import {
     API_REFUND_ORDER_POS,
 } from 'graphql/orders/refund';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+declare global {
+    interface Window {
+        ReactNativeWebView?: {
+            postMessage: (message: string) => void;
+        };
+    }
+}
 export default function index() {
     const [getOrderDetail, { data, loading, refetch }] = useLazyQuery(
         GET_ORDER_DETAIL,
@@ -144,7 +151,7 @@ export default function index() {
             }
         }
     }, [dataSplitBill]);
-    console.log({ dataSplitBill })
+    console.log({ dataSplitBill });
     const handleSendBill = (
         type: string,
         value: string,
@@ -213,8 +220,20 @@ export default function index() {
     //         });
     //     }
     // };
-    const [onPrintBill] = useMutation(PRINT_BILL);
+    const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
+
     const PrintBillApi = () => {
+        if (window?.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'print',
+                    data: data?.orderDetail,
+                    selectDataShowbill: selectDataShowbill,
+                    dataInvoice:
+                        dataSplitBill?.merchantGetOrderInvoices?.invoice,
+                }),
+            );
+        }
         if (childBill.length) {
             onPrintBill({
                 variables: {
@@ -471,8 +490,6 @@ export default function index() {
         });
     };
 
-    console.log({dataSplitBill})
-
     return (
         <div>
             {' '}
@@ -633,6 +650,7 @@ export default function index() {
                                     <ButtonBill
                                         title="Print"
                                         onPress={PrintBillApi}
+                                        loading={loadingPrint}
                                     />
                                     <ButtonBill
                                         title="Email"
