@@ -26,6 +26,8 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_NOTIFICATION } from 'graphql/notification';
 import { changeModeTableView } from 'features/auth/authSlice';
 import { useDispatch } from 'react-redux';
+import HomeIconMerchant from '../assets/icons/homeIconMerchant';
+
 function Header(props) {
     const { setSearchValue, isSearch } = props;
     const history = useNavigate();
@@ -231,17 +233,23 @@ function Header(props) {
                     style={{ width: '100%', paddingInline: 16 }}
                 >
                     <div className="header-left">
-                        <img
-                            style={{ cursor: 'pointer' }}
-                            className="header-logo"
-                            src={logo}
-                            alt={'logo'}
-                            onClick={() =>
+                        <div
+                            onClick={() => {
                                 isTableView
                                     ? history(BASE_ROUTER.HOME)
-                                    : history(BASE_ROUTER.MERCHANT_PAGE)
-                            }
-                        />
+                                    : history(BASE_ROUTER.MERCHANT_PAGE);
+                            }}
+                            style={{
+                                borderRadius: 300,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                background: "#F1F3F7",
+                                padding: 5
+                            }}
+                        >
+                            <HomeIconMerchant />
+                        </div>
                     </div>
                     <div className="header-right" style={{ gap: 10 }}>
                         {isSearch && (
