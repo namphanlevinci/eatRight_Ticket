@@ -220,7 +220,7 @@ export default function index() {
     //         });
     //     }
     // };
-    const [onPrintBill] = useMutation(PRINT_BILL);
+    const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
 
     const PrintBillApi = () => {
         if (window?.ReactNativeWebView) {
@@ -650,6 +650,7 @@ export default function index() {
                                     <ButtonBill
                                         title="Print"
                                         onPress={PrintBillApi}
+                                        loading={loadingPrint}
                                     />
                                     <ButtonBill
                                         title="Email"

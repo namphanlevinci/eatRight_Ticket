@@ -212,30 +212,6 @@ const RenderBillItem = ({
                         </TextDark>
                     </RowStyled>
                 )}
-                {dataInvoice?.length > 0 && dataInvoice[0]?.non_cash_amount && (
-                    <RowStyled align={'middle'}>
-                        <TextDark style={text16}>Total:</TextDark>
-                        <TextDark>
-                            {CURRENTCY}{' '}
-                            {selectDataShowbill
-                                ? (
-                                      selectDataShowbill?.total?.subtotal
-                                          ?.value -
-                                      totalDiscount +
-                                      selectDataShowbill?.total?.total_tax
-                                          ?.value
-                                  )?.toFixed(2)
-                                : (
-                                      data?.total?.subtotal?.value -
-                                      totalDiscount +
-                                      data?.total?.total_tax?.value +
-                                      parseFloat(
-                                          dataInvoice[0]?.non_cash_amount,
-                                      )
-                                  )?.toFixed(2)}
-                        </TextDark>
-                    </RowStyled>
-                )}
 
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Tip:</TextDark>
