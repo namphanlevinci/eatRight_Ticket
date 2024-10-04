@@ -9,6 +9,7 @@ import { formatNumberWithCommas } from 'utils/format';
 import RenderNote from './RenderNote';
 import { NoteTableIcon } from 'assets/icons/noteTableIcon';
 import { CURRENTCY } from 'constants/currency';
+import UpDownNumberV2 from 'components/UpdownNumber/index2';
 
 export default function RenderItemNew({
     item,
@@ -111,10 +112,10 @@ export default function RenderItemNew({
 
             <Row align={'middle'} justify={'space-between'}>
                 <Row
-                    style={{ width: ismobile ? 200 : 400 }}
+                    style={{ width: ismobile ? 240 : 400 }}
                     justify={'space-between'}
                 >
-                    <div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Text
                             style={{
                                 marginLeft: 24,
@@ -126,9 +127,28 @@ export default function RenderItemNew({
                         </Text>
                     </div>
                     <div>
-                        <Text style={{ fontWeight: '600' }}>
-                            x{item.quantity}
-                        </Text>
+                        {item.isUnsend ? (
+                            <UpDownNumberV2
+                                quantity={item.quantity}
+                                setQuantity={(
+                                    e: number,
+                                    type: 'decrea' | 'increa',
+                                ) => {
+                                    updateQuantityItemFromCart(index, type);
+                                }}
+                                isSend={!item.isUnsend}
+                                disableUp={!showMenu}
+                            />
+                        ) : (
+                            <Text
+                                style={{ fontWeight: '600' }}
+                                onClick={() => {
+                                    console.log('open quantity modal');
+                                }}
+                            >
+                                x{item.quantity}
+                            </Text>
+                        )}
                     </div>
                 </Row>
                 <RenderButtonStatus
@@ -296,35 +316,7 @@ const RenderButtonStatus = ({
             </Button>
         );
     }
-    if (item.status === 'sent' || item.status === null) {
-        return (
-            <Button
-                disabled={loadingCardTable}
-                style={{
-                    fontSize: 16,
-                    backgroundColor: 'transparent',
-                    border: '0.5px solid #F67E89',
-                    outline: 'none',
-                    color: '#F67E89',
-                    fontWeight: 500,
-                    borderRadius: 4,
-                    height: 32,
-                    width: 80,
-                }}
-                onClick={() => {
-                    if (item.status === 'sent') {
-                        setIsOpenModalCancel(true);
-                        setItemSelected({
-                            cartId: data?.id,
-                            cartItemId: item?.id,
-                        });
-                    }
-                }}
-            >
-                Cancel
-            </Button>
-        );
-    }
+
     if (
         orderItems
             ? orderItems.serving_status === 'ready'
@@ -424,6 +416,35 @@ const RenderButtonStatus = ({
                 }}
             >
                 Served
+            </Button>
+        );
+    }
+    if (!orderItems?.id && (item.status === 'sent' || item.status === null)) {
+        return (
+            <Button
+                disabled={loadingCardTable}
+                style={{
+                    fontSize: 16,
+                    backgroundColor: 'transparent',
+                    border: '0.5px solid #F67E89',
+                    outline: 'none',
+                    color: '#F67E89',
+                    fontWeight: 500,
+                    borderRadius: 4,
+                    height: 32,
+                    width: 80,
+                }}
+                onClick={() => {
+                    if (item.status === 'sent') {
+                        setIsOpenModalCancel(true);
+                        setItemSelected({
+                            cartId: data?.id,
+                            cartItemId: item?.id,
+                        });
+                    }
+                }}
+            >
+                Cancel
             </Button>
         );
     }

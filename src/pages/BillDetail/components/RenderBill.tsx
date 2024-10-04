@@ -212,27 +212,6 @@ const RenderBillItem = ({
                         </TextDark>
                     </RowStyled>
                 )}
-                {dataInvoice?.length > 0 && dataInvoice[0]?.non_cash_amount && (
-                    <RowStyled align={'middle'}>
-                        <TextDark style={text16}>Total:</TextDark>
-                        <TextDark>
-                            {CURRENTCY}{' '}
-                            {(selectDataShowbill
-                                ? (
-                                      selectDataShowbill?.total?.subtotal
-                                          ?.value -
-                                      totalDiscount +
-                                      selectDataShowbill?.total?.total_tax
-                                          ?.value
-                                  )?.toFixed(2)
-                                : data?.total?.subtotal?.value -
-                                  totalDiscount +
-                                  data?.total?.total_tax?.value +
-                                  parseFloat(dataInvoice[0]?.non_cash_amount)
-                            )?.toFixed(2)}
-                        </TextDark>
-                    </RowStyled>
-                )}
 
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Tip:</TextDark>
@@ -309,22 +288,41 @@ const RenderBillItem = ({
                         </RowStyled>
                     )}
 
-                {data?.payment_methods &&
-                    data?.payment_methods[0]?.additional_data[1]?.value && (
-                        <RowStyled align={'middle'}>
-                            <TextDark style={text16}>
-                                {
-                                    data?.payment_methods[0]?.additional_data[1]
-                                        ?.value
-                                }
-                                {'  '}
-                                {
-                                    data?.payment_methods[0]?.additional_data[0]
-                                        ?.value
-                                }
-                            </TextDark>
-                        </RowStyled>
-                    )}
+                {selectDataShowbill
+                    ? selectDataShowbill?.payment_methods &&
+                      selectDataShowbill?.payment_methods[0]?.additional_data[1]
+                          ?.value && (
+                          <RowStyled align={'middle'}>
+                              <TextDark style={text16}>
+                                  {
+                                      selectDataShowbill?.payment_methods[0]
+                                          ?.additional_data[1]?.value
+                                  }
+                                  {'  '}
+                                  {
+                                      selectDataShowbill?.payment_methods[0]
+                                          ?.additional_data[0]?.value
+                                  }
+                              </TextDark>
+                          </RowStyled>
+                      )
+                    : data?.payment_methods &&
+                      data?.payment_methods[0]?.additional_data[1]?.value && (
+                          <RowStyled align={'middle'}>
+                              <TextDark style={text16}>
+                                  {
+                                      data?.payment_methods[0]
+                                          ?.additional_data[1]?.value
+                                  }
+                                  {'  '}
+                                  {
+                                      data?.payment_methods[0]
+                                          ?.additional_data[0]?.value
+                                  }
+                              </TextDark>
+                          </RowStyled>
+                      )}
+
                 <DividedDashed />
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Signature:</TextDark>

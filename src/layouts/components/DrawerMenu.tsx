@@ -73,6 +73,7 @@ const MenuMerchant = [
         title: 'Printer Setting',
         icon: <PrinterOutlined style={{ fontSize: 30 }} />,
         to: BASE_ROUTER.SETTINGS_PRINTER,
+        sendToReactNative: true,
     },
 
     {
@@ -125,6 +126,7 @@ export default function DrawerMenu() {
             icon: JSX.Element;
             to: string;
             isGo?: boolean;
+            sendToReactNative?: boolean;
         }[]
     >(MenuList);
     useEffect(() => {
@@ -210,6 +212,13 @@ export default function DrawerMenu() {
                                 if (item?.isGo) {
                                     window.location.href = item.to;
                                     return;
+                                }
+                                if (item?.sendToReactNative) {
+                                    if (window?.ReactNativeWebView) {
+                                        window.ReactNativeWebView.postMessage(
+                                            'openMenu',
+                                        );
+                                    }
                                 }
                                 navigation(item.to);
                             }}
