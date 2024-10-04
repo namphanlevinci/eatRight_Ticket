@@ -35,13 +35,13 @@ export default function TableBill() {
     });
     const RenderHeader = () => {
         return (
-            <Header
+            <div
                 style={{
                     background: theme.nEUTRALPrimary,
-                    height: '56',
+                    height: '48px',
                     display: 'flex ',
                     alignItems: 'center',
-                    paddingInline: 20,
+                    padding: "10px 12px",
                 }}
             >
                 <LoadingModal showLoading={loading} />
@@ -54,13 +54,15 @@ export default function TableBill() {
                 <Text
                     style={{
                         fontSize: 20,
-                        fontWeight: '600',
-                        marginLeft: 20,
+                        fontWeight: '400',
+                        marginLeft: 4,
+                        marginTop: 4,
+                        color: theme.tEXTPrimary
                     }}
                 >
-                    Bill Information
+                    Bill Summary
                 </Text>
-            </Header>
+            </div>
         );
     };
     const SplitBillButton = () => {
@@ -121,11 +123,11 @@ export default function TableBill() {
                 }}
             />
             <RenderHeader />
-            <div style={{ flex: 1, padding: 16 }}>
+            <div style={{ flex: 1, padding: "0 16px" }}>
                 <Row justify={'space-between'} align={'middle'}>
                     {!isMobile && <SplitBillButton />}
                 </Row>
-                <Row style={{ marginTop: 16 }}>
+                <Row>
                     <ColLeft
                         cart={cart}
                         count={count}

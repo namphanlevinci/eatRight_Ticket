@@ -1,18 +1,15 @@
 import { Col, Row } from 'antd';
-import { Text, Text18, Text20 } from 'components/atom/Text';
+import { Text, Text20 } from 'components/atom/Text';
 import { CartItemType, ItemType } from 'context/cartType';
 import React from 'react';
 import { formatNumberWithCommas } from 'utils/format';
 import { ColStyled } from './styleds';
 import { useTheme } from 'context/themeContext';
 import { DividedSolid } from 'pages/BillDetail/styled';
-import CustomTag from 'components/atom/Tag/CustomTag';
-import { getTagStyled } from 'utils/tag';
 import { useMediaQuery } from 'react-responsive';
 
 export default function ColLeft({
     cart,
-    count,
     listItems,
     isSplitBill,
     openModalSplitBill,
@@ -26,21 +23,16 @@ export default function ColLeft({
     isSplitBill?: boolean;
     openModalSplitBill?: () => void;
 }) {
-    const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <ColStyled
             style={{
                 flex: 1,
-                background: theme.nEUTRALBase,
-                border: `1px solid ${theme.nEUTRALLine}`,
                 marginRight: isMobile ? 0 : 16,
                 borderRadius: 8,
-                padding: 16,
+                padding: '0px 16px',
             }}
         >
-            <Text style={{ fontWeight: '600' }}>Total {count} Items</Text>
-            <DividedSolid />
             {isSplitBill && listItems.length > 0
                 ? listItems?.map((data) => {
                       const { items } = data;
@@ -51,7 +43,6 @@ export default function ColLeft({
                           <div key={data.guestId}>
                               <Row
                                   style={{
-                                      marginTop: 40,
                                       border: '1px solid #3F3F3F',
                                       borderLeftWidth: 0,
                                       borderRightWidth: 0,
@@ -84,6 +75,7 @@ export default function ColLeft({
                       }
                       return <RenderItem key={index} item={item} />;
                   })}
+            {isMobile && <DividedSolid />}
         </ColStyled>
     );
 }
@@ -91,32 +83,32 @@ export default function ColLeft({
 export const RenderItem = ({ item }: { item: ItemType }) => {
     const { theme } = useTheme();
     return (
-        <div>
-            <Row justify={'space-between'} style={{ marginTop: 32 }}>
+        <div
+            style={{
+                color: theme.tEXTPrimary,
+            }}
+        >
+            <Row justify={'space-between'} style={{ marginTop: 16 }}>
                 <Col style={{ flex: 1 }}>
                     <Row>
                         <Col>
-                            <Text18 style={{ marginRight: 8 }}>
+                            <Text style={{ marginRight: 8, fontWeight: 600 }}>
                                 {item.quantityText
                                     ? item.quantityText
-                                    : item.quantity}{' '}
-                                X
-                            </Text18>
+                                    : item.quantity}
+                                x
+                            </Text>
                         </Col>
                         <Col style={{ flex: 1 }}>
-                            <Text18>{item.product.name}</Text18>
+                            <Text style={{ fontWeight: 600 }}>
+                                {item.product.name}
+                            </Text>
                         </Col>
-                        <CustomTag
-                            {...getTagStyled(
-                                item.isUnsend ? 'New' : item?.status,
-                                theme,
-                            )}
-                        />
                     </Row>
                 </Col>
-                <Text18>
+                <Text style={{ fontWeight: 600 }}>
                     $ {formatNumberWithCommas(item.prices.price.value)}
-                </Text18>
+                </Text>
             </Row>
             {item.bundle_options?.map((bundle) => {
                 return (

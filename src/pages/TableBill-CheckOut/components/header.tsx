@@ -48,7 +48,7 @@ export const RenderHeader = ({ isHavePaid }: { isHavePaid: boolean }) => {
         }
     };
     return (
-        <Header
+        <div
             style={{
                 height: '56',
                 display: 'flex',
@@ -85,6 +85,6 @@ export const RenderHeader = ({ isHavePaid }: { isHavePaid: boolean }) => {
                 onCancel={() => setShowModalConfirm(false)}
                 onSubmit={() => handleOnCancelCheck()}
             />
-        </Header>
+        </div>
     );
 };
