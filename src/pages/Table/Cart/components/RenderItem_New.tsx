@@ -296,35 +296,7 @@ const RenderButtonStatus = ({
             </Button>
         );
     }
-    if (item.status === 'sent' || item.status === null) {
-        return (
-            <Button
-                disabled={loadingCardTable}
-                style={{
-                    fontSize: 16,
-                    backgroundColor: 'transparent',
-                    border: '0.5px solid #F67E89',
-                    outline: 'none',
-                    color: '#F67E89',
-                    fontWeight: 500,
-                    borderRadius: 4,
-                    height: 32,
-                    width: 80,
-                }}
-                onClick={() => {
-                    if (item.status === 'sent') {
-                        setIsOpenModalCancel(true);
-                        setItemSelected({
-                            cartId: data?.id,
-                            cartItemId: item?.id,
-                        });
-                    }
-                }}
-            >
-                Cancel
-            </Button>
-        );
-    }
+
     if (
         orderItems
             ? orderItems.serving_status === 'ready'
@@ -424,6 +396,35 @@ const RenderButtonStatus = ({
                 }}
             >
                 Served
+            </Button>
+        );
+    }
+    if (item.status === 'sent' || item.status === null) {
+        return (
+            <Button
+                disabled={loadingCardTable}
+                style={{
+                    fontSize: 16,
+                    backgroundColor: 'transparent',
+                    border: '0.5px solid #F67E89',
+                    outline: 'none',
+                    color: '#F67E89',
+                    fontWeight: 500,
+                    borderRadius: 4,
+                    height: 32,
+                    width: 80,
+                }}
+                onClick={() => {
+                    if (item.status === 'sent') {
+                        setIsOpenModalCancel(true);
+                        setItemSelected({
+                            cartId: data?.id,
+                            cartItemId: item?.id,
+                        });
+                    }
+                }}
+            >
+                Cancel
             </Button>
         );
     }
