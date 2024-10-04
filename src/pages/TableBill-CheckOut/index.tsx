@@ -346,6 +346,7 @@ export default function TableSplitBillCheckOut() {
                         <PaymentOptions
                             onPayment={handlePayment}
                             isPaid={selectGuest?.state === 'PAID'}
+                            selectedGuest={selectGuest}
                         />
                     )}
                 </ColumnCart>
@@ -383,6 +384,7 @@ export default function TableSplitBillCheckOut() {
                     <PaymentOptions
                         onPayment={handlePayment}
                         isPaid={selectGuest?.state === 'PAID'}
+                        selectedGuest={selectGuest}
                     />
                 )}
             </Container>

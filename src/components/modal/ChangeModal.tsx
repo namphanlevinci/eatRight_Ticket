@@ -78,6 +78,7 @@ const ChangeModal = ({
                     content: {
                         backgroundColor: theme.nEUTRALPrimary,
                         width: 412,
+                        maxWidth: "100%"
                     },
                 }}
                 closeIcon={<></>}
@@ -152,7 +153,7 @@ const ChangeModal = ({
                                 fontSize: 20,
                                 fontWeight: 700,
                                 marginTop: 16,
-                                width: 98,
+                                width: 88,
                                 height: 72,
                                 cursor: 'pointer',
                             }}
@@ -172,7 +173,7 @@ const ChangeModal = ({
                                     fontSize: 20,
                                     fontWeight: 700,
                                     marginTop: 16,
-                                    width: 98,
+                                    width: 88,
                                     height: 72,
                                     cursor: 'pointer',
                                 }}
@@ -231,7 +232,7 @@ const NumberButton = styled.div`
     border: 0.5px solid #c0c2c8;
     background-color: ${(props) => props.theme.nEUTRALSecBG};
     border-radius: 8px;
-    width: 70px;
+    width: 62px;
     height: 62px;
     display: flex;
     align-items: center;
