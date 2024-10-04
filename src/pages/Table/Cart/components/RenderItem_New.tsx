@@ -9,6 +9,7 @@ import { formatNumberWithCommas } from 'utils/format';
 import RenderNote from './RenderNote';
 import { NoteTableIcon } from 'assets/icons/noteTableIcon';
 import { CURRENTCY } from 'constants/currency';
+import UpDownNumberV2 from 'components/UpdownNumber/index2';
 
 export default function RenderItemNew({
     item,
@@ -20,8 +21,8 @@ export default function RenderItemNew({
     setShowNoteModalState,
     data,
     loadingCardTable,
-    // showMenu,
-    // updateQuantityItemFromCart,
+    showMenu,
+    updateQuantityItemFromCart,
     InputNoteItemBundleFromCart,
     setIsOpenModalCancel,
     setItemSelected,
@@ -111,10 +112,10 @@ export default function RenderItemNew({
 
             <Row align={'middle'} justify={'space-between'}>
                 <Row
-                    style={{ width: ismobile ? 200 : 400 }}
+                    style={{ width: ismobile ? 240 : 400 }}
                     justify={'space-between'}
                 >
-                    <div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Text
                             style={{
                                 marginLeft: 24,
@@ -126,9 +127,28 @@ export default function RenderItemNew({
                         </Text>
                     </div>
                     <div>
-                        <Text style={{ fontWeight: '600' }}>
-                            x{item.quantity}
-                        </Text>
+                        {item.isUnsend ? (
+                            <UpDownNumberV2
+                                quantity={item.quantity}
+                                setQuantity={(
+                                    e: number,
+                                    type: 'decrea' | 'increa',
+                                ) => {
+                                    updateQuantityItemFromCart(index, type);
+                                }}
+                                isSend={!item.isUnsend}
+                                disableUp={!showMenu}
+                            />
+                        ) : (
+                            <Text
+                                style={{ fontWeight: '600' }}
+                                onClick={() => {
+                                    console.log('open quantity modal');
+                                }}
+                            >
+                                x{item.quantity}
+                            </Text>
+                        )}
                     </div>
                 </Row>
                 <RenderButtonStatus

@@ -387,6 +387,7 @@ export default function CartItemList({
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'center',
+                        paddingRight: ismobile ? 0 : 16,
                     }}
                 >
                     {data?.prices?.subtotal_excluding_tax?.value ? (
