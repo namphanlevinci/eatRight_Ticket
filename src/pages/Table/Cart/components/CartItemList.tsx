@@ -392,12 +392,10 @@ export default function CartItemList({
                 >
                     {data?.prices?.subtotal_excluding_tax?.value ? (
                         <Row justify={'space-between'}>
-                            <Text style={{ fontSize: 16 }}>Total</Text>
+                            <Text style={{ fontSize: 16 }}>Subtotal</Text>
                             <Text
                                 style={{
-                                    fontSize: 20,
-                                    fontWeight: '600',
-                                    color: theme.pRIMARY6Primary,
+                                    fontSize: 14,
                                 }}
                             >
                                 {' $'} {formatNumberWithCommas(total)}{' '}
@@ -413,8 +411,8 @@ export default function CartItemList({
                             <Text style={{ fontSize: 16 }}>Tax</Text>
                             <Text
                                 style={{
-                                    fontSize: 20,
-                                    fontWeight: '600',
+                                    fontSize: 14,
+
                                     color: theme.pRIMARY6Primary,
                                 }}
                             >
@@ -434,8 +432,8 @@ export default function CartItemList({
                             <Text style={{ fontSize: 16 }}>Tip</Text>
                             <Text
                                 style={{
-                                    fontSize: 20,
-                                    fontWeight: '600',
+                                    fontSize: 14,
+
                                     color: theme.pRIMARY6Primary,
                                 }}
                             >
@@ -464,13 +462,12 @@ export default function CartItemList({
                             </Col>
                             <Col
                                 style={{
-                                    width: 100,
                                     display: 'flex',
                                     justifyContent: 'end',
                                 }}
                             >
-                                <Text>
-                                    {formatNumberWithCommas(totalDiscount)}
+                                <Text style={{ fontSize: 14 }}>
+                                    - ${formatNumberWithCommas(-totalDiscount)}
                                 </Text>
                             </Col>
                         </Row>
@@ -487,7 +484,7 @@ export default function CartItemList({
                                     style={{
                                         fontSize: 20,
                                         fontWeight: '600',
-                                        color: theme.pRIMARY6Primary,
+                                        color: theme.sECONDARY2Default,
                                     }}
                                 >
                                     {' $'} {formatNumberWithCommas(grandTotal)}{' '}
@@ -506,9 +503,7 @@ export default function CartItemList({
                     {data?.prices?.new_items_total?.value ? (
                         <>
                             <Row justify={'space-between'}>
-                                <Text style={{ fontSize: 16 }}>
-                                    New Items Total
-                                </Text>
+                                <Text style={{ fontSize: 16 }}>New Items</Text>
                                 <Text
                                     style={{
                                         fontSize: 20,
