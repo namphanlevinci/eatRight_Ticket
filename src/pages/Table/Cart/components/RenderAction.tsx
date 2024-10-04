@@ -57,7 +57,7 @@ export default function RenderAction({
                 <Col>
                     <Button
                         style={{
-                            width: ismobile ? 154 : 154,
+                            width: ismobile ? 130 : 154,
                             height: 44,
 
                             border: `0px solid ${theme.pRIMARY6Primary}`,
@@ -134,7 +134,7 @@ export default function RenderAction({
                     showMenu ? (
                         <Button
                             style={{
-                                width: '100%',
+                                width: ismobile ? 180 : '100%',
                                 height: 44,
                                 background: theme.sUCCESS2Default,
                                 border: 0,
@@ -147,7 +147,7 @@ export default function RenderAction({
                     ) : (
                         <Button
                             style={{
-                                width: '100%',
+                                width: ismobile ? 180 : '100%',
                                 height: 44,
                                 border: 0,
                             }}
@@ -163,7 +163,7 @@ export default function RenderAction({
                     data?.is_paid ? (
                         <Button
                             style={{
-                                width: '100%',
+                                width: ismobile ? 180 : '100%',
                                 height: 44,
                                 border: `2px solid ${theme.pRIMARY6Primary}`,
                             }}
@@ -176,7 +176,7 @@ export default function RenderAction({
                     ) : (
                         <Button
                             style={{
-                                width: '100%',
+                                width: ismobile ? 180 : '100%',
                                 height: 44,
                                 border: `0px solid ${theme.pRIMARY6Primary}`,
                             }}
@@ -190,7 +190,7 @@ export default function RenderAction({
                 ) : (
                     <Button
                         style={{
-                            width: '100%',
+                            width: ismobile ? 180 : '100%',
                             height: 44,
                             background: theme.sUCCESS2Default,
                             border: 0,

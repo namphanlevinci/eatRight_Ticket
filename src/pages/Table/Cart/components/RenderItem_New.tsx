@@ -1,7 +1,6 @@
 import { Button, Col, Divider, Row } from 'antd';
 import NoteIcon from 'assets/icons/noteIcon';
 import { Text } from 'components/atom/Text';
-import UpDownNumber from 'components/UpdownNumber';
 import { ItemType, OrderItemType } from 'context/cartType';
 import { useTheme } from 'context/themeContext';
 import React from 'react';
@@ -138,6 +137,7 @@ export default function RenderItemNew({
                     orderItems={orderItems}
                     index={index}
                     onRemoveItem={onRemoveItem}
+                    updateStatusItemServer={updateStatusItemServer}
                 />
             </Row>
             {/* </Row> */}
@@ -258,6 +258,7 @@ const RenderButtonStatus = ({
     orderItems,
     onRemoveItem,
     index,
+    updateStatusItemServer,
 }: {
     item: ItemType;
     data: any;
@@ -267,6 +268,7 @@ const RenderButtonStatus = ({
     orderItems: OrderItemType | undefined;
     onRemoveItem: any;
     index: number;
+    updateStatusItemServer: any;
 }) => {
     if (item.isUnsend) {
         return (
@@ -291,7 +293,7 @@ const RenderButtonStatus = ({
             </Button>
         );
     }
-    if (item.status === 'sent') {
+    if (item.status === 'sent' || item.status === null) {
         return (
             <Button
                 disabled={loadingCardTable}
@@ -338,6 +340,12 @@ const RenderButtonStatus = ({
                     borderRadius: 4,
                     height: 32,
                     width: 80,
+                }}
+                onClick={() => {
+                    updateStatusItemServer({
+                        cartId: orderItems ? orderItems.id : item.id,
+                        itemType: orderItems ? 'ORDER' : 'QUOTE',
+                    });
                 }}
             >
                 Serve
@@ -389,6 +397,30 @@ const RenderButtonStatus = ({
                 }}
             >
                 Canceled
+            </Button>
+        );
+    }
+    if (
+        orderItems
+            ? orderItems.serving_status === 'done'
+            : item.status === 'done'
+    ) {
+        return (
+            <Button
+                disabled={loadingCardTable}
+                style={{
+                    fontSize: 16,
+                    backgroundColor: 'transparent',
+                    border: '0px solid #F67E89',
+                    outline: 'none',
+                    color: '#3498DB',
+                    fontWeight: 500,
+                    borderRadius: 4,
+                    height: 32,
+                    width: 80,
+                }}
+            >
+                Served
             </Button>
         );
     }
