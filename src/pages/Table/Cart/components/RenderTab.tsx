@@ -29,7 +29,7 @@ export default function RenderTab({
                 background: !id
                     ? theme.wARNING1BG
                     : selected
-                      ? theme.nEUTRALLine
+                      ? theme.pRIMARY1
                       : theme.nEUTRALSecBG,
                 borderTopLeftRadius: 8,
                 borderTopRightRadius: 8,
@@ -70,9 +70,7 @@ export default function RenderTab({
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
-                            color: selected
-                                ? theme.pRIMARY6Primary
-                                : theme.textTitle,
+                            color: theme.textTitle,
                             fontWeight: selected ? '600' : '400',
                         }}
                     >

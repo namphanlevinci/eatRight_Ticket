@@ -98,6 +98,7 @@ export type ItemType = {
     product: {
         name: string;
         sku: string;
+        __typename: string;
     };
     quantity: number;
     quantityText?: string;
