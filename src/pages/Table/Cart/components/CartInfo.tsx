@@ -115,6 +115,9 @@ export default function CartInfo({ table }: { table?: any }) {
                         gap: 20,
                         justifyContent: 'flex-start',
                     }}
+                    onClick={() => {
+                        setShowModal(true);
+                    }}
                 >
                     <Col
                         style={{

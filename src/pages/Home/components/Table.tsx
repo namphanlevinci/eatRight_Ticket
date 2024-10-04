@@ -85,9 +85,9 @@ const getColorByStatus = (item: IItem, theme: ColorsThemeType) => {
 function getStatusName(status: TableStatus): string {
     switch (status) {
         case TableStatus.Available:
-            return 'Vacant';
+            return 'Available';
         case TableStatus.Dining:
-            return 'Occupied';
+            return 'Dining';
         case TableStatus.Reserved:
             return 'Reserved';
         case TableStatus.Unavailable:

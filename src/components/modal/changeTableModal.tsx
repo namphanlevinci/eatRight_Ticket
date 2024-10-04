@@ -124,11 +124,11 @@ export default function ChangeTableModal({
                                         <Row>
                                             {item.status == '1' ? (
                                                 <TagStyled color="#f50">
-                                                    Occupied
+                                                    Dining
                                                 </TagStyled>
                                             ) : item.status == '0' ? (
                                                 <TagStyled color="#87d068">
-                                                    Vacant
+                                                    Available
                                                 </TagStyled>
                                             ) : (
                                                 <TagStyled color="#87d068">

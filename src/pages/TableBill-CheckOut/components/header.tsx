@@ -33,7 +33,7 @@ export const RenderHeader = ({ isHavePaid }: { isHavePaid: boolean }) => {
             })
                 .then(() => {
                     navigation(-1);
-                    if (isHavePaid) {
+                    if (!isHavePaid) {
                         notification.success({
                             message: 'Success',
                             description: 'Cancel Check out successfully',

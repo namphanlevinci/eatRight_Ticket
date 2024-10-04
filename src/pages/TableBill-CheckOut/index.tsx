@@ -27,7 +27,8 @@ import { isEmpty } from 'lodash';
 
 export default function TableSplitBillCheckOut() {
     const dataStorage = localStorage.getItem('split_bill_data');
-    const [onPaymentWithCash] = useMutation(PAY_SPLITBILL);
+    const [onPaymentWithCash, { loading: loadingCash }] =
+        useMutation(PAY_SPLITBILL);
     const [onPaymentWithPOS] = useMutation(PAY_SPLIT_BILL_POS);
     const [onPaymentWithPOSDJV] = useMutation(PAY_SPLIT_BILL_POS_DJV);
     const [showPosModal, setShowPosModal] = useState(false);
@@ -72,6 +73,7 @@ export default function TableSplitBillCheckOut() {
         po_number?: string | undefined | null,
     ) => {
         if (paymentMethod === 'cash' || paymentMethod == 'other') {
+            setLoading(true);
             onPaymentWithCash({
                 variables: {
                     invoice_number: selectGuest?.number,
@@ -134,6 +136,9 @@ export default function TableSplitBillCheckOut() {
                         );
                         SkipSelectGuest({ newData });
                     }
+                })
+                .finally(() => {
+                    setLoading(false);
                 });
         } else if (paymentMethod === 'pos') {
             setShowPosModalDJV(true);
