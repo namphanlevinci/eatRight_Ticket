@@ -58,8 +58,8 @@ export const formatPrice = (value: string) => {
 };
 
 export const convertMethod = (method: any) => {
-    if(method?.toString()?.toLocaleLowerCase?.()?.includes?.("purchase")){
-        return "Other"
+    if (method?.toString()?.toLocaleLowerCase?.()?.includes?.('purchase')) {
+        return 'Other';
     }
     return method;
-}
+};

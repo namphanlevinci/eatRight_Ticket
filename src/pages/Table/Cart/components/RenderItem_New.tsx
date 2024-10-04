@@ -134,7 +134,11 @@ export default function RenderItemNew({
                                     e: number,
                                     type: 'decrea' | 'increa',
                                 ) => {
-                                    updateQuantityItemFromCart(index, type);
+                                    updateQuantityItemFromCart({
+                                        index,
+                                        type,
+                                        value: e,
+                                    });
                                 }}
                                 isSend={!item.isUnsend}
                                 disableUp={!showMenu}

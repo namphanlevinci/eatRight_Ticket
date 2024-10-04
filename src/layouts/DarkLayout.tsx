@@ -13,8 +13,6 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { Colors } from 'themes/colors';
-import Logo from 'assets/logos/logo.png';
-import LogoMerchant from 'assets/logos/merchantLogo.png';
 // import HelpIcon from 'assets/icons/help';
 import { Link, useNavigate } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
@@ -283,8 +281,8 @@ export const DarkLayout = (props: Props) => {
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                background: "#F1F3F7",
-                                padding: 5
+                                background: '#F1F3F7',
+                                padding: 5,
                             }}
                         >
                             <HomeIcon />

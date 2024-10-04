@@ -27,8 +27,7 @@ import { isEmpty } from 'lodash';
 
 export default function TableSplitBillCheckOut() {
     const dataStorage = localStorage.getItem('split_bill_data');
-    const [onPaymentWithCash, { loading: loadingCash }] =
-        useMutation(PAY_SPLITBILL);
+    const [onPaymentWithCash] = useMutation(PAY_SPLITBILL);
     const [onPaymentWithPOS] = useMutation(PAY_SPLIT_BILL_POS);
     const [onPaymentWithPOSDJV] = useMutation(PAY_SPLIT_BILL_POS_DJV);
     const [showPosModal, setShowPosModal] = useState(false);
