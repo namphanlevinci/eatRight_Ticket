@@ -23,7 +23,6 @@ import ModalConfirm from 'components/modal/ModalConfirm';
 import { GET_INVOICES } from 'graphql/cart/splitBill';
 import { FoodCoverIcon } from 'assets/icons/foodCoverIcon';
 import RenderAction from './RenderAction';
-import RenderItem from './RenderItem';
 import RenderItemNew from './RenderItem_New';
 export default function CartItemList({
     data,
