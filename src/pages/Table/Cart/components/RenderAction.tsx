@@ -208,9 +208,14 @@ export default function RenderAction({
                                 selectedCart
                             ]?.firstname?.includes('Guest') && goTableBill()
                         }
-                        isDisable={isCartIdFromLocal(
-                            cartItems[indexTable]?.carts[selectedCart].id,
-                        )}
+                        isDisable={
+                            isCartIdFromLocal(
+                                cartItems[indexTable]?.carts[selectedCart].id,
+                            ) ||
+                            cartItems[indexTable]?.carts[selectedCart].items
+                                ?.length === 0 ||
+                            isNewItem
+                        }
                     >
                         Checkout
                     </Button>
