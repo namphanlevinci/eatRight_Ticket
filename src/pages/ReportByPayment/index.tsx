@@ -1,4 +1,4 @@
-import { DatePicker, Spin } from 'antd';
+import { Spin } from 'antd';
 import Table from 'components/Table';
 import Columns from './Columns';
 import Header from 'pages/Merchant/Header';
@@ -11,9 +11,7 @@ const ReportByPayment = () => {
         data,
         reportResponse,
         loading,
-        rangDate,
         methodName,
-        handleChangeDate,
         handlePageChange,
         handlePerPageChange,
     } = useReportByPayment();
@@ -29,17 +27,6 @@ const ReportByPayment = () => {
                     >
                         <p>Sales Report / {methodName}</p>
                     </h2>
-                    <DatePicker.RangePicker
-                        allowClear={false}
-                        defaultValue={rangDate}
-                        onChange={handleChangeDate}
-                        size="middle"
-                        style={{
-                            width: 280,
-                            height: 40,
-                        }}
-                        format="YYYY-MM-DD"
-                    />
                 </div>
 
                 <Table
