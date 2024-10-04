@@ -81,6 +81,7 @@ export default function TableSplitBillCheckOut() {
                         paymentMethod == 'other'
                             ? 'purchaseorder'
                             : paymentMethod,
+                    po_number: po_number ?? '',
                     ...(!isEmpty(po_number) && { po_number }),
                 },
             })
