@@ -170,22 +170,13 @@ export default function RenderItem({
                                             fontWeight: 500,
                                             borderRadius: 8,
                                         }}
-                                        onClick={
-                                            () => {
-                                                setIsOpenModalCancel(true);
-                                                setItemSelected({
-                                                    cartId: data?.id,
-                                                    cartItemId: item?.id,
-                                                });
-                                            }
-                                            // removeItemOnCartServer(
-                                            //     {
-                                            //         cartId: data?.id,
-                                            //         cartItemId:
-                                            //             item?.id,
-                                            //     },
-                                            // )
-                                        }
+                                        onClick={() => {
+                                            setIsOpenModalCancel(true);
+                                            setItemSelected({
+                                                cartId: data?.id,
+                                                cartItemId: item?.id,
+                                            });
+                                        }}
                                     >
                                         Cancel
                                     </Button>

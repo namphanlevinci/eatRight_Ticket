@@ -6,7 +6,7 @@ import { useCart } from 'context/cartContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import { useMediaQuery } from 'react-responsive';
-import { ItemType } from 'context/cartType';
+import { CartItemType, ItemType } from 'context/cartType';
 import { useAddCart } from '../useAddCart';
 import LoadingModal from 'components/modal/loadingModal';
 import { isCartIdFromLocal } from 'utils/isNumericId';
@@ -31,7 +31,7 @@ export default function CartItemList({
     onClickChangeTable,
     table,
 }: {
-    data: any;
+    data: CartItemType | undefined;
     cartInfo: string;
     onClickChangeTable: any;
     table: any;
@@ -44,6 +44,7 @@ export default function CartItemList({
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
         removeCartIndex,
+        onRemoveItem,
     } = useCart();
 
     const {
@@ -63,11 +64,13 @@ export default function CartItemList({
     const [isAllDone, setIsAllDone] = useState(false);
     const [searchParams] = useSearchParams();
     const selectedCart = parseInt(searchParams.get('cartIndex') || '0');
-    const isNewItem = data?.items?.find((item: ItemType) => item.isUnsend);
+    const isNewItem = data?.items?.find((item: ItemType) => item.isUnsend)
+        ? true
+        : false;
     useEffect(() => {
-        if (data?.items?.length > 0) {
+        if (data && data?.items?.length > 0) {
             if (data?.order_number) {
-                const itemNeedDone = data?.order?.items.find(
+                const itemNeedDone = data?.order?.items?.find(
                     (item: any) => item.serving_status !== 'done',
                 );
                 if (itemNeedDone) {
@@ -92,9 +95,8 @@ export default function CartItemList({
         query: '(max-width: 768px)',
     });
     const goBill = () => {
-        const items: ItemType[] = data?.items.filter(
-            (item: ItemType) => item.isUnsend,
-        );
+        const items: ItemType[] =
+            data?.items?.filter((item: ItemType) => item.isUnsend) || [];
         if (items.length > 0) {
             alert('Please send all cart to bill');
             return;
@@ -133,9 +135,8 @@ export default function CartItemList({
         numberOfCustomer?: number;
         phoneNumber?: string;
     }) => {
-        const items: ItemType[] = data?.items.filter(
-            (item: ItemType) => item.isUnsend,
-        );
+        const items: ItemType[] =
+            data?.items.filter((item: ItemType) => item.isUnsend) || [];
         const carts = items.map((item: ItemType) => {
             if (item.is_configurable) {
                 return {
@@ -182,7 +183,7 @@ export default function CartItemList({
                 note: item.note,
             };
         });
-        if (isCartIdFromLocal(data.id)) {
+        if (isCartIdFromLocal(data?.id || '')) {
             addCart(
                 carts,
                 username || '',
@@ -191,7 +192,7 @@ export default function CartItemList({
                 phoneNumber,
             );
         } else {
-            addMoreCart(data.id, carts);
+            addMoreCart(data?.id || '', carts);
         }
     };
     const { setUpdate, targetRef, showMenu } = useMenuContext();
@@ -249,7 +250,7 @@ export default function CartItemList({
                             centered: true,
                             title: 'Complete service successfully',
                             onOk: () => {
-                                goViewBill(data?.order_id);
+                                goViewBill(data?.order_id || '');
                             },
                             onCancel: () => {
                                 goTable();
@@ -295,7 +296,7 @@ export default function CartItemList({
         <StyledCartBorder
             style={{
                 minHeight: 280,
-                padding: 16,
+                padding: ismobile ? 0 : 16,
                 backgroundColor: ismobile ? 'transparent' : theme.nEUTRALBase,
                 border: ismobile ? '0px' : `1px solid ${theme.nEUTRALLine}`,
             }}
@@ -322,6 +323,7 @@ export default function CartItemList({
                 {data?.items?.length > 0 &&
                     data?.items?.map((item: ItemType, index: any) => {
                         const orderItems =
+                            data?.order?.items &&
                             data?.order?.items?.length > index
                                 ? data?.order?.items[index]
                                 : undefined;
@@ -348,6 +350,7 @@ export default function CartItemList({
                                 }
                                 updateStatusItemServer={updateStatusItemServer}
                                 key={index}
+                                onRemoveItem={onRemoveItem}
                             />
                         );
                     })}
@@ -387,7 +390,7 @@ export default function CartItemList({
                         justifyContent: 'center',
                     }}
                 >
-                    {data?.prices?.subtotal_excluding_tax?.value && (
+                    {data?.prices?.subtotal_excluding_tax?.value ? (
                         <Row justify={'space-between'}>
                             <Text style={{ fontSize: 16 }}>Total</Text>
                             <Text
@@ -400,8 +403,11 @@ export default function CartItemList({
                                 {' $'} {formatNumberWithCommas(total)}{' '}
                             </Text>
                         </Row>
+                    ) : (
+                        <></>
                     )}
-                    {data?.prices?.applied_taxes?.length > 0 &&
+                    {data?.prices?.applied_taxes &&
+                    data?.prices?.applied_taxes?.length > 0 &&
                     data?.prices?.applied_taxes[0]?.amount ? (
                         <Row justify={'space-between'}>
                             <Text style={{ fontSize: 16 }}>Tax</Text>
@@ -421,7 +427,9 @@ export default function CartItemList({
                     ) : (
                         <></>
                     )}
-                    {data?.tip_amount > 0 && data?.tip_amount ? (
+                    {data?.tip_amount &&
+                    data?.tip_amount > 0 &&
+                    data?.tip_amount ? (
                         <Row justify={'space-between'}>
                             <Text style={{ fontSize: 16 }}>Tip</Text>
                             <Text

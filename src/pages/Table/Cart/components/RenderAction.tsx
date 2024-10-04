@@ -57,9 +57,9 @@ export default function RenderAction({
                 <Col>
                     <Button
                         style={{
-                            width: 154,
+                            width: ismobile ? 154 : 154,
                             height: 44,
-                            gap: 10,
+
                             border: `0px solid ${theme.pRIMARY6Primary}`,
                         }}
                         onClick={() => isNewItem && SendCart()}

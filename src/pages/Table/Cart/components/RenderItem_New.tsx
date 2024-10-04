@@ -1,13 +1,15 @@
-import { Button, Col, Row } from 'antd';
+import { Button, Col, Divider, Row } from 'antd';
 import NoteIcon from 'assets/icons/noteIcon';
 import { Text } from 'components/atom/Text';
 import UpDownNumber from 'components/UpdownNumber';
-import { ItemType } from 'context/cartType';
+import { ItemType, OrderItemType } from 'context/cartType';
 import { useTheme } from 'context/themeContext';
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { formatNumberWithCommas } from 'utils/format';
 import RenderNote from './RenderNote';
+import { NoteTableIcon } from 'assets/icons/noteTableIcon';
+import { CURRENTCY } from 'constants/currency';
 
 export default function RenderItemNew({
     item,
@@ -25,10 +27,11 @@ export default function RenderItemNew({
     setIsOpenModalCancel,
     setItemSelected,
     updateStatusItemServer,
+    onRemoveItem,
 }: {
     item: ItemType;
     index: number;
-    orderItems: any;
+    orderItems: OrderItemType | undefined;
     targetRef: any;
     setUpdate: any;
     setShowNoteModalState: any;
@@ -41,6 +44,7 @@ export default function RenderItemNew({
     setIsOpenModalCancel: any;
     setItemSelected: any;
     updateStatusItemServer: any;
+    onRemoveItem: any;
 }) {
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
@@ -48,127 +52,95 @@ export default function RenderItemNew({
     const { theme } = useTheme();
     return (
         <div key={index}>
+            {/* <Row align={'middle'} justify={'space-between'}> */}
+
+            <Row align={'middle'}>
+                <div
+                    style={{ flex: 1 }}
+                    onClick={() => {
+                        if (item.isUnsend) {
+                            if (item.product.__typename == 'BundleProduct') {
+                                setUpdate({
+                                    product: item.product,
+                                    options: item.bundle_options,
+                                });
+                                targetRef &&
+                                    targetRef.current?.scrollIntoView({
+                                        behavior: 'smooth',
+                                    });
+                            }
+                        }
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontSize: 16,
+                            fontWeight: '500',
+                        }}
+                    >
+                        {' '}
+                        {item.product.name}
+                    </Text>
+                </div>
+            </Row>
+            {(item.note || item.isUnsend) && (
+                <Row
+                    align={'middle'}
+                    style={{ marginBlock: 8 }}
+                    onClick={() => {
+                        if (item.isUnsend) {
+                            setShowNoteModalState({
+                                index: index,
+                                show: true,
+                            });
+                            setNoteSelectValue(item.note);
+                        }
+                    }}
+                >
+                    <NoteTableIcon />
+                    <Text
+                        style={{
+                            fontSize: 12,
+                            color: theme.tEXTSecondary,
+                            marginLeft: 8,
+                        }}
+                    >
+                        {item.note ? item.note : 'Note'}
+                    </Text>
+                </Row>
+            )}
+
             <Row align={'middle'} justify={'space-between'}>
-                <Col md={{ span: 14 }} xs={{ span: 24 }}>
-                    <Row align={'middle'}>
-                        <div
-                            style={{ flex: 1 }}
-                            onClick={() => {
-                                if (item.isUnsend) {
-                                    if (
-                                        item.product.__typename ==
-                                        'BundleProduct'
-                                    ) {
-                                        setUpdate({
-                                            product: item.product,
-                                            options: item.bundle_options,
-                                        });
-                                        targetRef &&
-                                            targetRef.current?.scrollIntoView({
-                                                behavior: 'smooth',
-                                            });
-                                    }
-                                }
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontWeight: '500',
-                                }}
-                            >
-                                {' '}
-                                {item.product.name}
-                            </Text>
-                        </div>
-                    </Row>
-                </Col>
-                <Col md={{ span: 10 }} xs={{ span: 24 }}>
-                    <Row align={'middle'} justify={'end'}>
+                <Row style={{ width: 200 }} justify={'space-between'}>
+                    <div>
                         <Text
                             style={{
-                                marginRight: 16,
+                                marginLeft: 24,
                                 fontSize: 18,
                             }}
                         >
-                            {' '}
+                            {CURRENTCY}
                             {formatNumberWithCommas(item.prices.price.value)}
                         </Text>
-
-                        <div
-                            style={{
-                                marginRight: 'auto',
-                            }}
-                        >
+                    </div>
+                    <div>
+                        <Text style={{ fontWeight: '600' }}>
                             x{item.quantity}
-                        </div>
-                        {((item.status === 'sent' && data?.is_active) ||
-                            !item.status) &&
-                            !item?.isUnsend && (
-                                <Button
-                                    disabled={loadingCardTable}
-                                    style={{
-                                        fontSize: 16,
-                                        backgroundColor: 'transparent',
-                                        border: '0.5px solid #ccc',
-                                        outline: 'none',
-                                        color: '#ea4335',
-                                        fontWeight: 500,
-                                        borderRadius: 8,
-                                    }}
-                                    onClick={
-                                        () => {
-                                            setIsOpenModalCancel(true);
-                                            setItemSelected({
-                                                cartId: data?.id,
-                                                cartItemId: item?.id,
-                                            });
-                                        }
-                                        // removeItemOnCartServer(
-                                        //     {
-                                        //         cartId: data?.id,
-                                        //         cartItemId:
-                                        //             item?.id,
-                                        //     },
-                                        // )
-                                    }
-                                >
-                                    Cancel
-                                </Button>
-                            )}
-                        {(orderItems
-                            ? orderItems.serving_status === 'ready'
-                            : item.status === 'ready') && (
-                            <Button
-                                disabled={loadingCardTable}
-                                style={{
-                                    fontSize: 16,
-                                    backgroundColor: '#3498db',
-                                    border: '0.5px solid #ccc',
-                                    outline: 'none',
-                                    color: theme.nEUTRALPrimary,
-                                    fontWeight: 500,
-                                    borderRadius: 8,
-                                    paddingTop: 0,
-                                    paddingBottom: 0,
-                                }}
-                                onClick={() => {
-                                    updateStatusItemServer({
-                                        cartId: orderItems
-                                            ? orderItems.id
-                                            : item.id,
-                                        itemType: orderItems
-                                            ? 'ORDER'
-                                            : 'QUOTE',
-                                    });
-                                }}
-                            >
-                                Serve
-                            </Button>
-                        )}
-                    </Row>
-                </Col>
+                        </Text>
+                    </div>
+                </Row>
+                <RenderButtonStatus
+                    data={data}
+                    item={item}
+                    loadingCardTable={loadingCardTable}
+                    setIsOpenModalCancel={setIsOpenModalCancel}
+                    setItemSelected={setItemSelected}
+                    orderItems={orderItems}
+                    index={index}
+                    onRemoveItem={onRemoveItem}
+                />
             </Row>
+            {/* </Row> */}
             {item?.bundle_options?.map((bundle: any, bundleIndex: number) => {
                 return (
                     <div key={bundle.id}>
@@ -272,7 +244,153 @@ export default function RenderItemNew({
                     </div>
                 );
             })}
-            {item?.note && <RenderNote note={item?.note} />}
+            <Divider />
         </div>
     );
 }
+
+const RenderButtonStatus = ({
+    item,
+    data,
+    loadingCardTable,
+    setIsOpenModalCancel,
+    setItemSelected,
+    orderItems,
+    onRemoveItem,
+    index,
+}: {
+    item: ItemType;
+    data: any;
+    loadingCardTable: boolean;
+    setIsOpenModalCancel: any;
+    setItemSelected: any;
+    orderItems: OrderItemType | undefined;
+    onRemoveItem: any;
+    index: number;
+}) => {
+    if (item.isUnsend) {
+        return (
+            <Button
+                disabled={loadingCardTable}
+                style={{
+                    fontSize: 16,
+                    backgroundColor: 'transparent',
+                    border: '0.5px solid #F67E89',
+                    outline: 'none',
+                    color: '#F67E89',
+                    fontWeight: 500,
+                    borderRadius: 4,
+                    height: 32,
+                    width: 80,
+                }}
+                onClick={() => {
+                    onRemoveItem(index);
+                }}
+            >
+                Cancel
+            </Button>
+        );
+    }
+    if (item.status === 'sent') {
+        return (
+            <Button
+                disabled={loadingCardTable}
+                style={{
+                    fontSize: 16,
+                    backgroundColor: 'transparent',
+                    border: '0.5px solid #F67E89',
+                    outline: 'none',
+                    color: '#F67E89',
+                    fontWeight: 500,
+                    borderRadius: 4,
+                    height: 32,
+                    width: 80,
+                }}
+                onClick={() => {
+                    if (item.status === 'sent') {
+                        setIsOpenModalCancel(true);
+                        setItemSelected({
+                            cartId: data?.id,
+                            cartItemId: item?.id,
+                        });
+                    }
+                }}
+            >
+                Cancel
+            </Button>
+        );
+    }
+    if (
+        orderItems
+            ? orderItems.serving_status === 'ready'
+            : item.status === 'ready'
+    ) {
+        return (
+            <Button
+                disabled={loadingCardTable}
+                style={{
+                    fontSize: 16,
+                    backgroundColor: '#3498DB',
+                    border: '0px solid #F67E89',
+                    outline: 'none',
+                    color: 'white',
+                    fontWeight: 500,
+                    borderRadius: 4,
+                    height: 32,
+                    width: 80,
+                }}
+            >
+                Serve
+            </Button>
+        );
+    }
+    if (
+        orderItems
+            ? orderItems.serving_status === 'cooking'
+            : item.status === 'cooking'
+    ) {
+        return (
+            <Button
+                disabled={loadingCardTable}
+                style={{
+                    fontSize: 16,
+                    backgroundColor: 'transparent',
+                    border: '0px solid #F67E89',
+                    outline: 'none',
+                    color: '#FF9D00',
+                    fontWeight: 500,
+                    borderRadius: 4,
+                    height: 32,
+                    width: 80,
+                }}
+            >
+                Cooking
+            </Button>
+        );
+    }
+    if (
+        orderItems
+            ? orderItems.serving_status === 'cancel'
+            : item.status === 'cancel'
+    ) {
+        return (
+            <Button
+                disabled={loadingCardTable}
+                style={{
+                    fontSize: 16,
+                    backgroundColor: 'transparent',
+                    border: '0px solid #F67E89',
+                    outline: 'none',
+                    color: '#F67E89',
+                    fontWeight: 500,
+                    borderRadius: 4,
+                    height: 32,
+                    width: 80,
+                }}
+            >
+                Canceled
+            </Button>
+        );
+    }
+    return <></>;
+};
