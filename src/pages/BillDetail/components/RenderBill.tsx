@@ -12,6 +12,9 @@ import {
     BoldText,
 } from '../styled';
 import React from 'react';
+import { convertMethod } from 'utils/format';
+import { isEmpty } from 'lodash';
+
 const RenderBillItem = ({
     data,
     selectDataShowbill,
@@ -248,7 +251,7 @@ const RenderBillItem = ({
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Grand Total:</TextDark>
+                    <TextDark style={text16}>Total:</TextDark>
                     <TextDark>
                         {CURRENTCY}{' '}
                         {selectDataShowbill
@@ -274,15 +277,37 @@ const RenderBillItem = ({
                               )?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Tip:$</TextDark>
+                    <TextDark>_______________________________</TextDark>
+                </RowStyled>
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Grand Total:$</TextDark>
+                    <TextDark>______________________</TextDark>
+                </RowStyled>
                 <DividedDashed />
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Payment Method:</TextDark>
                     <TextDark>
-                        {selectDataShowbill
-                            ? selectDataShowbill?.payment_methods[0]?.name
-                            : data?.payment_method}
+                        {convertMethod(
+                            selectDataShowbill
+                                ? selectDataShowbill?.payment_methods[0]?.name
+                                : data?.payment_method,
+                        )}
                     </TextDark>
                 </RowStyled>
+                {!isEmpty(dataInvoice?.[0]?.payment_methods?.[0]?.po_number) &&
+                    dataInvoice?.[0]?.payment_methods?.[0]?.po_number !==
+                        'none' && (
+                        <RowStyled align={'middle'}>
+                            <TextDark style={text16}>
+                                {
+                                    dataInvoice?.[0]?.payment_methods?.[0]
+                                        ?.po_number
+                                }
+                            </TextDark>
+                        </RowStyled>
+                    )}
 
                 {data?.payment_methods &&
                     data?.payment_methods[0]?.additional_data[1]?.value && (
@@ -300,7 +325,11 @@ const RenderBillItem = ({
                             </TextDark>
                         </RowStyled>
                     )}
-
+                <DividedDashed />
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Signature:</TextDark>
+                    <TextDark>______________________</TextDark>
+                </RowStyled>
                 <DividedDashed />
                 <TextDark
                     style={{

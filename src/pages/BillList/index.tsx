@@ -19,6 +19,7 @@ import LoadingModal from 'components/modal/loadingModal';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
 import ListBillForMobile from './listForMobile';
+import { convertMethod } from 'utils/format';
 
 const { Content } = Layout;
 
@@ -334,7 +335,7 @@ const BillList: React.FC = () => {
                                         color: theme.tEXTPrimary,
                                     }}
                                 >
-                                    {dt?.payment_methods?.[0]?.name}
+                                    {convertMethod(dt?.payment_methods?.[0]?.name)}
                                 </StyledColumn>
                                 <StyledColumn
                                     style={{

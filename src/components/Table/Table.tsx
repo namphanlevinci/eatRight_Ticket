@@ -81,19 +81,17 @@ const Table = <T extends object>({
                 summary={renderSummary}
                 {...props}
             />
-            <div className="mt-3">
-                {count !== 0 && rowPerPage !== 0 && page !== 0 && (
-                    <Pagination
-                        count={count}
-                        pageCount={Math.ceil(count / rowPerPage)}
-                        page={page}
-                        rowPerPage={rowPerPage}
-                        showRowPerPage={showRowPerPage}
-                        onPageChange={handlePageChange}
-                        onRowPerPageChange={handlePerPageChange}
-                    />
-                )}
-            </div>
+            {count !== 0 && (
+                <Pagination
+                    count={count}
+                    pageCount={Math.ceil(count / rowPerPage)}
+                    page={page}
+                    rowPerPage={rowPerPage}
+                    showRowPerPage={showRowPerPage}
+                    onPageChange={handlePageChange}
+                    onRowPerPageChange={handlePerPageChange}
+                />
+            )}
         </div>
     );
 };

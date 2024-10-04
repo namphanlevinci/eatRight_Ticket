@@ -1,10 +1,11 @@
 import { message, Modal, Row } from 'antd';
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTheme } from 'context/themeContext';
 import { formatMoney } from 'utils/format';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import CloseIcon from 'assets/icons/close';
 import styled from 'styled-components';
+import CloseXIcon from 'assets/icons/closeIcon';
 
 const elementsNumber = [
     '1',
@@ -25,51 +26,39 @@ const fastOptions = ['10', '20', '50'];
 interface IProps {
     isModalOpen: boolean;
     grandTotal: number;
+    onClose: () => void;
     onSubmit: () => void;
 }
 
-const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
+const ChangeModal = ({
+    isModalOpen,
+    grandTotal,
+    onClose,
+    onSubmit,
+}: IProps) => {
     const { theme } = useTheme();
 
-    const [received, setReceived] = useState(0);
+    const [received, setReceived] = useState('0');
     const [activeDecimal, setActiveDecimal] = useState(0);
 
     const change = useMemo(() => {
-        return received - grandTotal;
+        return +received - grandTotal;
     }, [received, grandTotal]);
 
-    const handleReceived = (value: string, isOption?: boolean) => {
+    const handleReceived = (value: string, isOption?: boolean | 'exact') => {
         setReceived((prev) => {
-            if (
-                (isOption || value === '0' || value === '00') &&
-                activeDecimal > 1
-            ) {
-                setActiveDecimal(0);
+            if (isOption === 'exact') {
+                return value;
             }
             if (isOption) {
-                return +value + prev;
+                return +value + +prev + '';
             }
-            if (value === '0') {
-                return prev * 10;
-            }
-            if (value === '00') {
-                return prev * 100;
-            }
-            if (value === '.') {
-                setActiveDecimal(1);
-                return prev;
-            }
-            if (activeDecimal) {
-                setActiveDecimal((prev) => ++prev);
-                return prev + +value / Math.pow(10, activeDecimal);
-            }
-
-            return +value + prev;
+            return prev + value;
         });
     };
 
     const handleSubmit = () => {
-        if (received < grandTotal) {
+        if (+received < grandTotal) {
             return message.error(`greater than or equal to $${grandTotal}`);
         }
         onSubmit();
@@ -94,9 +83,22 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                 closeIcon={<></>}
                 centered
                 closable={false}
-                maskClosable
+                onClose={onClose}
             >
                 <Row>
+                    <div style={{ width: '100%' }}>
+                        <div
+                            style={{
+                                cursor: 'pointer',
+                                marginLeft: 'auto',
+                                width: 'fit-content',
+                                marginBottom: 16,
+                            }}
+                            onClick={onClose}
+                        >
+                            <CloseXIcon />
+                        </div>
+                    </div>
                     <InfoRow justify="space-between" align="middle">
                         <InfoLabel>Received</InfoLabel>
                         <InfoValueContainer>
@@ -104,8 +106,8 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                                 {formatMoney(received.toString())}
                                 <ClearButton
                                     onClick={() => {
-                                        if (received > 0) {
-                                            setReceived(0);
+                                        if (+received > 0) {
+                                            setReceived('0');
                                         }
                                         if (activeDecimal > 1) {
                                             setActiveDecimal(0);
@@ -121,9 +123,7 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                     <InfoRow justify="space-between" align="middle">
                         <InfoLabel>Change</InfoLabel>
                         <InfoValueContainer style={{ border: 'none' }}>
-                            {change > grandTotal
-                                ? formatMoney(change.toString())
-                                : `$0`}
+                            {change > 0 ? formatMoney(change.toString()) : `$0`}
                         </InfoValueContainer>
                     </InfoRow>
                     <NumberContainer>
@@ -141,12 +141,20 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                     <ButtonContainer>
                         <FastOptionButton
                             onClick={() =>
-                                handleReceived(grandTotal.toString(), true)
+                                handleReceived(grandTotal.toString(), 'exact')
                             }
                             theme={theme}
                             style={{
+                                borderRadius: 8,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 20,
+                                fontWeight: 700,
                                 marginTop: 16,
-                                width: 56,
+                                width: 98,
+                                height: 72,
+                                cursor: 'pointer',
                             }}
                         >
                             Exact
@@ -157,7 +165,6 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                                 onClick={() => handleReceived(number, true)}
                                 theme={theme}
                                 style={{
-                                    padding: '16px 20px',
                                     borderRadius: 8,
                                     display: 'flex',
                                     alignItems: 'center',
@@ -165,8 +172,8 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                                     fontSize: 20,
                                     fontWeight: 700,
                                     marginTop: 16,
-                                    height: 28,
-                                    width: 56,
+                                    width: 98,
+                                    height: 72,
                                     cursor: 'pointer',
                                 }}
                             >
@@ -176,16 +183,12 @@ const ChangeModal = ({ isModalOpen, grandTotal, onSubmit }: IProps) => {
                     </ButtonContainer>
                 </Row>
                 <ButtonPrimary
-                    title={
-                        grandTotal > received
-                            ? `greater than or equal to $${grandTotal}`
-                            : 'Pay'
-                    }
+                    title={'Pay'}
                     onClick={handleSubmit}
                     marginTop="20px"
-                    isDisable={grandTotal > received}
+                    isDisable={grandTotal > +received}
                     borderColor={`${theme.nEUTRALBase}`}
-                    color={grandTotal > received ? '#333741' : '#fff'}
+                    color={grandTotal > +received ? '#333741' : '#fff'}
                 />
             </Modal>
         </>
@@ -225,12 +228,11 @@ const ClearButton = styled.div`
 `;
 
 const NumberButton = styled.div`
-    padding: 16px 20px;
     border: 0.5px solid #c0c2c8;
     background-color: ${(props) => props.theme.nEUTRALSecBG};
     border-radius: 8px;
-    width: 28px;
-    height: 28px;
+    width: 70px;
+    height: 62px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -241,7 +243,7 @@ const NumberButton = styled.div`
 
 const FastOptionButton = styled(NumberButton)`
     border: 0.5px solid ${(props) => props.theme.pRIMARY6Primary};
-    color: ${(props) => props.theme.pRIMARY6Primary};,
+    color: ${(props) => props.theme.pRIMARY6Primary};
 `;
 
 const NumberContainer = styled.div`

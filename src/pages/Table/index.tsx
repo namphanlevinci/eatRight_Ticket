@@ -16,7 +16,6 @@ import {
 } from 'graphql/table/checkInTable';
 import LoadingModal from 'components/modal/loadingModal';
 import { useTheme } from 'context/themeContext';
-import { NoteTableIcon } from 'assets/icons/noteTableIcon';
 import ModalInputNote from 'components/modal/ModalInputNote';
 import { useCart } from 'context/cartContext';
 import { isCartIdFromLocal } from 'utils/isNumericId';
@@ -176,45 +175,66 @@ export const TablePage: React.FC = () => {
                 <Content style={{ margin: '0 16px' }}>
                     <Row style={{ marginBlock: 16, gap: 12 }} align={'middle'}>
                         <>
-                            <Button
-                                style={{
-                                    background:
-                                        table?.status == '2'
-                                            ? 'white'
-                                            : table?.status == '1'
-                                              ? isHaveCart
-                                                  ? '#4c5056'
-                                                  : '#08875D'
-                                              : '#0455BF',
-                                    height: 40,
-                                    width: 'auto',
-                                    minWidth: 120,
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: 4,
-                                    border:
-                                        table?.status == '2'
-                                            ? '1px solid #0455BF'
-                                            : '0px',
-                                }}
-                                onClick={onCheckIn}
-                            >
-                                {table?.status == '2' ? (
-                                    <Text style={{ color: '#0455BF' }}>
-                                        Reserved {table?.name}
-                                    </Text>
-                                ) : table?.status == '1' ? (
+                            {isHaveCart ? (
+                                <Button
+                                    style={{
+                                        background: '#4c5056',
+
+                                        height: 40,
+                                        width: 'auto',
+                                        minWidth: 120,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        borderRadius: 4,
+                                        border: '0px',
+                                    }}
+                                    onClick={onCheckIn}
+                                >
                                     <Text style={{ color: 'white' }}>
                                         Clean Table {table?.name}
                                     </Text>
-                                ) : (
-                                    <Text style={{ color: 'white' }}>
-                                        Reserve {table?.name}
-                                    </Text>
-                                )}
-                            </Button>
-
+                                </Button>
+                            ) : (
+                                <Button
+                                    style={{
+                                        background:
+                                            table?.status == '2'
+                                                ? 'white'
+                                                : table?.status == '1'
+                                                  ? isHaveCart
+                                                      ? '#4c5056'
+                                                      : '#08875D'
+                                                  : '#0455BF',
+                                        height: 40,
+                                        width: 'auto',
+                                        minWidth: 120,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        borderRadius: 4,
+                                        border:
+                                            table?.status == '2'
+                                                ? '1px solid #0455BF'
+                                                : '0px',
+                                    }}
+                                    onClick={onCheckIn}
+                                >
+                                    {table?.status == '2' ? (
+                                        <Text style={{ color: '#0455BF' }}>
+                                            Reserved {table?.name}
+                                        </Text>
+                                    ) : table?.status == '1' ? (
+                                        <Text style={{ color: 'white' }}>
+                                            Clean Table {table?.name}
+                                        </Text>
+                                    ) : (
+                                        <Text style={{ color: 'white' }}>
+                                            Reserve {table?.name}
+                                        </Text>
+                                    )}
+                                </Button>
+                            )}
                             <Row
                                 align={'middle'}
                                 onClick={() =>
@@ -222,13 +242,6 @@ export const TablePage: React.FC = () => {
                                     setShowInputNote(true)
                                 }
                             >
-                                {note ? (
-                                    note
-                                ) : table?.status == '2' ? (
-                                    <NoteTableIcon />
-                                ) : (
-                                    ''
-                                )}
                                 <Text
                                     style={{
                                         marginLeft: 8,

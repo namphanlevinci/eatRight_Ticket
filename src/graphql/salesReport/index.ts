@@ -86,6 +86,24 @@ export const GET_SALES_REPORTS = gql`
                     currency
                 }
             }
+            others {
+                gross_sales {
+                    value
+                    currency
+                }
+                discounts {
+                    value
+                    currency
+                }
+                refunds {
+                    value
+                    currency
+                }
+                net_sales {
+                    value
+                    currency
+                }
+            }
         }
     }
 `;

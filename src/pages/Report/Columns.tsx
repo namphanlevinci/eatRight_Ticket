@@ -1,11 +1,12 @@
 import type { ColumnsType } from 'antd/es/table';
 import { formatMoney } from 'utils/format';
-import { ISalesReport, PaymentName } from "interfaces/IReport";
+import { ISalesReport, PaymentName } from 'interfaces/IReport';
 
 export const getNamePaymentFormated = (paymentName: PaymentName): string => {
     const paymentsNameFormated: Record<PaymentName, string> = {
         total: 'Total',
         cash: 'Cash',
+        others: 'Others',
         credit_card: 'Credit Card',
     };
     return paymentsNameFormated[paymentName];

@@ -7,6 +7,7 @@ import Header from 'pages/Merchant/Header';
 import ic_back from 'assets/icons/icon_back.svg';
 
 import './index.css';
+import dayjs from 'dayjs';
 
 const SalesReport = () => {
     const navigate = useNavigate();
@@ -50,9 +51,18 @@ const SalesReport = () => {
                     rowPerPage={0}
                     scroll={{ x: 1067 }}
                     onRowClick={(record) => {
-                        if (record.payment !== 'total') {
-                            navigate(`${record.payment}`);
+                        if (
+                            record.payment === 'total' ||
+                            record.payment === 'others'
+                        ) {
+                            return null;
                         }
+                        navigate(`${record.payment}`, {
+                            state: {
+                                startDate: dayjs(rangDate?.[0]).format('YYYY-MM-DD'),
+                                endDate: dayjs(rangDate?.[1]).format('YYYY-MM-DD')
+                            }
+                        });
                     }}
                 />
             </div>

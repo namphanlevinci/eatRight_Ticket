@@ -10,8 +10,6 @@ import {
 } from '../styled';
 import { ColorsThemeType, useTheme } from 'context/themeContext';
 import bellAlarm from 'assets/alarm_8721062.gif';
-import { useSelector } from 'react-redux';
-import { RootState } from 'store';
 
 interface IItem {
     cartIds: {
@@ -41,36 +39,30 @@ enum TableStatus {
 }
 
 const getStatusTableByCardIds = (item: IItem) => {
-    const tempNumber = item.size - item.numberOfCustomer;
+    // const tempNumber = item.size - item.numberOfCustomer;
     let status = TableStatus.Disabled;
-    if (tempNumber < 0) {
-        status = TableStatus.Unavailable;
-    }
-    if (item.cartIds.length == 0 && item.size > 0) {
+    // if (tempNumber < 0) {
+    //     status = TableStatus.Unavailable;
+    // }
+    if (item.status == '0') {
         status = TableStatus.Available;
     }
     if (item.status == '2') {
         status = TableStatus.Reserved;
     }
-    if (item.cartIds.length > 0 && tempNumber >= 0) {
+    if (item.status == '1') {
         status = TableStatus.Dining;
     }
 
     return status;
 };
 
-const getColorByStatus = (
-    item: IItem,
-    theme: ColorsThemeType,
-    isMerchant: boolean,
-) => {
+const getColorByStatus = (item: IItem, theme: ColorsThemeType) => {
     const status = parseInt(`${item.status}`);
     let color = '#ffffff';
     switch (status) {
         case TableStatus.Available:
-            color = isMerchant
-                ? theme.sECONDARY2Default
-                : theme.sUCCESS2Default;
+            color = theme.sUCCESS2Default;
             break;
         case TableStatus.Dining:
             color = theme.pRIMARY6Primary;
@@ -93,9 +85,9 @@ const getColorByStatus = (
 function getStatusName(status: TableStatus): string {
     switch (status) {
         case TableStatus.Available:
-            return 'Available';
+            return 'Vacant';
         case TableStatus.Dining:
-            return 'Dining';
+            return 'Occupied';
         case TableStatus.Reserved:
             return 'Reserved';
         case TableStatus.Unavailable:
@@ -113,12 +105,10 @@ const Table = ({ item, onClick }: ITable) => {
         query: '(max-width: 768px)',
     });
     const { theme } = useTheme();
-    const { isMerchant } = useSelector((state: RootState) => state.auth);
     return (
         <StyledTable
             background={
-                status == TableStatus.Disabled ||
-                status == TableStatus.Unavailable
+                status == TableStatus.Disabled
                     ? theme.tEXTDisabled
                     : theme.itemCardBackground
             }
@@ -126,9 +116,7 @@ const Table = ({ item, onClick }: ITable) => {
             onClick={onClick}
             mobileView={ismobile}
         >
-            <StyledTableName
-                textColor={getColorByStatus(item, theme, isMerchant)}
-            >
+            <StyledTableName textColor={getColorByStatus(item, theme)}>
                 {item.name}
             </StyledTableName>
             <StyledTableSize style={{ color: theme.tEXTPrimary }}>
@@ -153,9 +141,7 @@ const Table = ({ item, onClick }: ITable) => {
                     <img src={bellAlarm} style={{ height: 40, width: 40 }} />
                 </BellNeeded>
             )}
-            <StyledLine
-                background={getColorByStatus(item, theme, isMerchant)}
-            />
+            <StyledLine background={getColorByStatus(item, theme)} />
         </StyledTable>
     );
 };
