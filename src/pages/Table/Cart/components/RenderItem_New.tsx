@@ -399,7 +399,7 @@ const RenderButtonStatus = ({
             </Button>
         );
     }
-    if (item.status === 'sent' || item.status === null) {
+    if (!orderItems?.id && (item.status === 'sent' || item.status === null)) {
         return (
             <Button
                 disabled={loadingCardTable}

@@ -47,8 +47,10 @@ export default function RenderAction({
                 ismobile
                     ? {
                           width: '100%',
+                          marginInline: 0,
                           display: 'flex',
                           justifyContent: 'space-between',
+                          gap: 20,
                       }
                     : {}
             }
@@ -57,10 +59,11 @@ export default function RenderAction({
                 <Col>
                     <Button
                         style={{
-                            width: ismobile ? 130 : 154,
+                            width: 154,
                             height: 44,
 
                             border: `0px solid ${theme.pRIMARY6Primary}`,
+                            marginInline: 0,
                         }}
                         onClick={() => isNewItem && SendCart()}
                         isDisable={!isNewItem}
@@ -128,13 +131,14 @@ export default function RenderAction({
                     </Col>
                 )}
             </ContainerStyled>
-            <ContainerStyled>
+            <ContainerStyled style={{ flex: 1 }}>
                 {/* Show menu có nghĩa là chưa thanh toán  */}
                 {isAllDone ? (
                     showMenu ? (
                         <Button
                             style={{
-                                width: ismobile ? 180 : '100%',
+                                width: '100%',
+                                marginInline: 0,
                                 height: 44,
                                 background: theme.sUCCESS2Default,
                                 border: 0,
@@ -147,7 +151,8 @@ export default function RenderAction({
                     ) : (
                         <Button
                             style={{
-                                width: ismobile ? 180 : '100%',
+                                width: '100%',
+                                marginInline: 0,
                                 height: 44,
                                 border: 0,
                             }}
@@ -163,7 +168,8 @@ export default function RenderAction({
                     data?.is_paid ? (
                         <Button
                             style={{
-                                width: ismobile ? 180 : '100%',
+                                width: '100%',
+                                marginInline: 0,
                                 height: 44,
                                 border: `2px solid ${theme.pRIMARY6Primary}`,
                             }}
@@ -176,7 +182,8 @@ export default function RenderAction({
                     ) : (
                         <Button
                             style={{
-                                width: ismobile ? 180 : '100%',
+                                width: '100%',
+                                marginInline: 0,
                                 height: 44,
                                 border: `0px solid ${theme.pRIMARY6Primary}`,
                             }}
@@ -190,7 +197,8 @@ export default function RenderAction({
                 ) : (
                     <Button
                         style={{
-                            width: ismobile ? 180 : '100%',
+                            width: '100%',
+                            marginInline: 0,
                             height: 44,
                             background: theme.sUCCESS2Default,
                             border: 0,
