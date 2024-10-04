@@ -110,7 +110,10 @@ export default function RenderItemNew({
             )}
 
             <Row align={'middle'} justify={'space-between'}>
-                <Row style={{ width: 200 }} justify={'space-between'}>
+                <Row
+                    style={{ width: ismobile ? 200 : 400 }}
+                    justify={'space-between'}
+                >
                     <div>
                         <Text
                             style={{
