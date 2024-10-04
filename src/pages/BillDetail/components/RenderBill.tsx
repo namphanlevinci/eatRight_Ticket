@@ -208,7 +208,10 @@ const RenderBillItem = ({
                             Non-Cash Adjustment :
                         </TextDark>
                         <TextDark>
-                            {CURRENTCY} {dataInvoice[0]?.non_cash_amount}
+                            {CURRENTCY}{' '}
+                            {selectDataShowbill
+                                ? selectDataShowbill.non_cash_amount
+                                : dataInvoice[0]?.non_cash_amount}
                         </TextDark>
                     </RowStyled>
                 )}
