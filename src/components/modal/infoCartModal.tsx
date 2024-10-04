@@ -1,11 +1,10 @@
-import { Button, Form, Input, Modal, Row, Select } from 'antd';
+import { Button, Form, Input, Modal, Row } from 'antd';
 import { PatternFormat } from 'react-number-format';
 import CloseXIcon from 'assets/icons/closeIcon';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import { useEffect, useRef, useState } from 'react';
 import { SelectStyled } from 'components/atom/Select';
-import { useGetAllTable } from 'pages/Home/useTable';
 import ChangeTableModal from './changeTableModal';
 type FieldType = {
     username?: string;

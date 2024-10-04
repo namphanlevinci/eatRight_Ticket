@@ -4,7 +4,6 @@ import { Columns } from './Columns';
 import useTransaction, { STATUS_TRANSACTIONS } from './useTransaction';
 import { useTheme } from 'context/themeContext';
 import Header from 'pages/Merchant/Header';
-import { convertMethod } from 'utils/format';
 const { RangePicker } = DatePicker;
 
 const windowHeight = window.innerHeight;

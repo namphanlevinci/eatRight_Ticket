@@ -4,7 +4,6 @@ import { Badge, Popover, Row, Col, Switch, Button } from 'antd';
 
 import moment from 'dayjs';
 import React, { useState, useEffect } from 'react';
-import logo from '../assets/logo/logo.png';
 import iconNoti from '../assets/noti.png';
 import blackNoti from '../assets/black-noti.png';
 import { useNavigate } from 'react-router-dom';
@@ -244,8 +243,8 @@ function Header(props) {
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                background: "#F1F3F7",
-                                padding: 5
+                                background: '#F1F3F7',
+                                padding: 5,
                             }}
                         >
                             <HomeIconMerchant />
