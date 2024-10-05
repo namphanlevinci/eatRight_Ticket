@@ -73,3 +73,12 @@ export const OPEN_CASHIER = gql`
         merchantOpenCashier
     }
 `;
+
+export const GET_CONFIG_PRINTER = gql`
+    query {
+        merchantGetPrinterConfig {
+            is_used_terminal
+            printer_id
+        }
+    }
+`;

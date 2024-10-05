@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Layout, notification } from 'antd';
+import { notification } from 'antd';
 import ArrowLeftIcon from 'assets/icons/arrowLeft';
 import ReceiptBillIcon from 'assets/icons/receiptBill';
 import { Text } from 'components/atom/Text';
@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 export const RenderHeader = ({ isHavePaid }: { isHavePaid: boolean }) => {
-    const { Header } = Layout;
     const navigation = useNavigate();
     const [showModalConfirm, setShowModalConfirm] = useState(false);
     const cartId = localStorage.getItem('split_bill_can_go_back');

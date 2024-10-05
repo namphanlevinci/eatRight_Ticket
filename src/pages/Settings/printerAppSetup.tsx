@@ -6,6 +6,7 @@ import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import { POS_DEVICE_LIST_DJV } from 'graphql/orders/paymentMethod';
 import {
+    GET_CONFIG_PRINTER,
     LIST_PRINTER_DEVICES,
     SELECT_PRINTER_DEVICE,
     SELECT_TERMINAL_PRINTER_DEVICE,
@@ -19,8 +20,11 @@ export default function PrinterAppSetUpPage() {
     const { isMerchant } = useSelector((state: RootState) => state.auth);
     const [onGetListPrinterDevice] = useLazyQuery(LIST_PRINTER_DEVICES);
     const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST_DJV);
+    const [onGetConfig, { data }] = useLazyQuery(GET_CONFIG_PRINTER);
     const [posDeviceList, setPosDeviceList] = useState<any>([]);
+
     useEffect(() => {
+        onGetConfig({ fetchPolicy: 'no-cache' });
         onGetPosDeviceList({ fetchPolicy: 'no-cache' }).then((res: any) => {
             setPosDeviceList(res?.data?.getPosDevices?.items ?? []);
         });
@@ -86,12 +90,25 @@ export default function PrinterAppSetUpPage() {
     const handleChange = (item: any): void => {
         setSelectedOption(item);
     };
-    const selectPrinterId = localStorage.getItem('printer_id') ?? null;
     useEffect(() => {
-        setSelectedOption(
-            list?.find((item: any) => item?.id == selectPrinterId),
-        );
-    }, [selectPrinterId, list]);
+        if (data?.merchantGetPrinterConfig) {
+            const idDevice = data?.merchantGetPrinterConfig?.printer_id;
+
+            if (data?.merchantGetPrinterConfig?.is_used_terminal) {
+                setSelectedOption(
+                    posDeviceList?.find(
+                        (item: any) => item?.entity_id == idDevice,
+                    ),
+                );
+                setSwitchPrinterMode(true);
+            } else {
+                setSelectedOption(
+                    list?.find((item: any) => item?.id == idDevice),
+                );
+                setSwitchPrinterMode(false);
+            }
+        }
+    }, [data, list]);
     const [switchPrinterMode, setSwitchPrinterMode] = useState(false);
     const RenderEPSONPrinter = () => {
         return (
@@ -199,6 +216,7 @@ export default function PrinterAppSetUpPage() {
                             onChange={() =>
                                 setSwitchPrinterMode(!switchPrinterMode)
                             }
+                            value={switchPrinterMode}
                         />
                         <Text>Terminal Printer</Text>{' '}
                     </>

@@ -20,7 +20,6 @@ export default function TableBill() {
     } = useTableBill();
     const [searchParams] = useSearchParams();
     const tableId = searchParams.get('tableId');
-    const { Header } = Layout;
     const navigation = useNavigate();
     const { theme } = useTheme();
     const RenderHeader = () => {
