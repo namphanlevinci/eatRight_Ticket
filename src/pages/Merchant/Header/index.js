@@ -231,7 +231,15 @@ function Header(props) {
                     justify={'space-between'}
                     style={{ width: '100%', paddingInline: 16 }}
                 >
-                    <div className="header-left">
+                    <div
+                        className="header-left"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            color: 'var(--primary-6)',
+                        }}
+                    >
                         <div
                             onClick={() => {
                                 isTableView
@@ -249,6 +257,7 @@ function Header(props) {
                         >
                             <HomeIconMerchant />
                         </div>
+                        <span style={{ fontSize: 20 }}>Home</span>
                     </div>
                     <div className="header-right" style={{ gap: 10 }}>
                         {isSearch && (

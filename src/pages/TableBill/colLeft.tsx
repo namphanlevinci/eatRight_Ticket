@@ -1,18 +1,15 @@
 import { Col, Row } from 'antd';
-import { Text, Text18, Text20 } from 'components/atom/Text';
+import { Text } from 'components/atom/Text';
 import { CartItemType, ItemType } from 'context/cartType';
 import React from 'react';
 import { formatNumberWithCommas } from 'utils/format';
 import { ColStyled } from './styleds';
 import { useTheme } from 'context/themeContext';
 import { DividedSolid } from 'pages/BillDetail/styled';
-import CustomTag from 'components/atom/Tag/CustomTag';
-import { getTagStyled } from 'utils/tag';
 import { useMediaQuery } from 'react-responsive';
 
 export default function ColLeft({
     cart,
-    count,
     listItems,
     isSplitBill,
     openModalSplitBill,
@@ -26,44 +23,59 @@ export default function ColLeft({
     isSplitBill?: boolean;
     openModalSplitBill?: () => void;
 }) {
-    const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const { theme } = useTheme();
     return (
         <ColStyled
             style={{
                 flex: 1,
-                background: theme.nEUTRALBase,
-                border: `1px solid ${theme.nEUTRALLine}`,
-                marginRight: isMobile ? 0 : 16,
-                borderRadius: 8,
+                marginRight: isMobile ? 0 : 24,
+                marginLeft: isMobile ? 0 : 16,
+                marginTop: isMobile ? 0 : 2,
                 padding: 16,
+                // paddingBottom: 24,
+                background: isMobile ? 'none' : theme.nEUTRALBase,
+                border: isMobile ? 'none' : `1px solid ${theme.nEUTRALLine}`,
+                borderRadius: 8,
             }}
         >
-            <Text style={{ fontWeight: '600' }}>Total {count} Items</Text>
-            <DividedSolid />
             {isSplitBill && listItems.length > 0
-                ? listItems?.map((data) => {
+                ? listItems?.map((data, idx) => {
                       const { items } = data;
                       if (items.find((item) => item.status === 'cancel')) {
                           return null;
                       }
+                      console.log(data);
+                      const totalPrice = items.reduce((sum, item) => {
+                          return sum + item.prices.price.value * item.quantity;
+                      }, 0);
+                      console.log(totalPrice);
                       return (
                           <div key={data.guestId}>
                               <Row
                                   style={{
-                                      marginTop: 40,
-                                      border: '1px solid #3F3F3F',
-                                      borderLeftWidth: 0,
-                                      borderRightWidth: 0,
-                                      paddingBlock: 20,
                                       cursor: 'pointer',
                                   }}
                                   justify={'space-between'}
                                   onClick={openModalSplitBill}
                               >
-                                  <Text20 style={{ fontWeight: '600' }}>
+                                  <Text
+                                      style={{
+                                          fontWeight: '600',
+                                          color: theme.pRIMARY6Primary,
+                                      }}
+                                  >
                                       {data.guestId}
-                                  </Text20>
+                                  </Text>
+                                  <Text
+                                      style={{
+                                          fontWeight: '600',
+                                          color: theme.pRIMARY6Primary,
+                                      }}
+                                  >
+                                      Total: $
+                                      {formatNumberWithCommas(totalPrice)}
+                                  </Text>
                               </Row>
 
                               {data.items?.length > 0 &&
@@ -75,6 +87,18 @@ export default function ColLeft({
                                           />
                                       );
                                   })}
+                              {isMobile && idx <= items?.length - 1 && (
+                                  <div
+                                      style={{
+                                          marginBottom:
+                                              idx <= items?.length - 1
+                                                  ? 16
+                                                  : 40,
+                                      }}
+                                  >
+                                      <DividedSolid />
+                                  </div>
+                              )}
                           </div>
                       );
                   })
@@ -84,6 +108,11 @@ export default function ColLeft({
                       }
                       return <RenderItem key={index} item={item} />;
                   })}
+            {isMobile && !isSplitBill && (
+                <div style={{ marginTop: 24 }}>
+                    <DividedSolid />
+                </div>
+            )}
         </ColStyled>
     );
 }
@@ -91,32 +120,32 @@ export default function ColLeft({
 export const RenderItem = ({ item }: { item: ItemType }) => {
     const { theme } = useTheme();
     return (
-        <div>
-            <Row justify={'space-between'} style={{ marginTop: 32 }}>
+        <div
+            style={{
+                color: theme.tEXTPrimary,
+            }}
+        >
+            <Row justify={'space-between'} style={{ marginTop: 16 }}>
                 <Col style={{ flex: 1 }}>
                     <Row>
                         <Col>
-                            <Text18 style={{ marginRight: 8 }}>
+                            <Text style={{ marginRight: 8, fontWeight: 600 }}>
                                 {item.quantityText
                                     ? item.quantityText
-                                    : item.quantity}{' '}
-                                X
-                            </Text18>
+                                    : item.quantity}
+                                x
+                            </Text>
                         </Col>
                         <Col style={{ flex: 1 }}>
-                            <Text18>{item.product.name}</Text18>
+                            <Text style={{ fontWeight: 600 }}>
+                                {item.product.name}
+                            </Text>
                         </Col>
-                        <CustomTag
-                            {...getTagStyled(
-                                item.isUnsend ? 'New' : item?.status,
-                                theme,
-                            )}
-                        />
                     </Row>
                 </Col>
-                <Text18>
-                    $ {formatNumberWithCommas(item.prices.price.value)}
-                </Text18>
+                <Text style={{ fontWeight: 600 }}>
+                    ${formatNumberWithCommas(item.prices.price.value)}
+                </Text>
             </Row>
             {item.bundle_options?.map((bundle) => {
                 return (

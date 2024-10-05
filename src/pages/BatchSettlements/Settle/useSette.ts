@@ -64,7 +64,9 @@ const useSette = () => {
 
     const getReportPaymentMethods = async () => {
         try {
-            const result = await getReportByPaymentMethodsAPI();
+            const result = await getReportByPaymentMethodsAPI({
+                fetchPolicy: 'no-cache',
+            });
             const data = result?.data?.merchantReportByPaymentMethods;
             if (!data) {
                 return message.error('Something went wrong');
@@ -93,6 +95,7 @@ const useSette = () => {
                     currentPage: page,
                     pageSize,
                 },
+                fetchPolicy: 'no-cache',
             });
             const data = result?.data?.merchantGetBatchInvoices;
             if (!data) {

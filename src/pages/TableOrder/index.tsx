@@ -20,12 +20,11 @@ export default function TableBill() {
     } = useTableBill();
     const [searchParams] = useSearchParams();
     const tableId = searchParams.get('tableId');
-    const { Header } = Layout;
     const navigation = useNavigate();
     const { theme } = useTheme();
     const RenderHeader = () => {
         return (
-            <Header
+            <div
                 style={{
                     background: theme.nEUTRALPrimary,
                     height: '56',
@@ -50,7 +49,7 @@ export default function TableBill() {
                     {/* Table {tables?.find((item: any) => item.id == tableId).name} */}
                     Bill Information
                 </Text>
-            </Header>
+            </div>
         );
     };
     return (

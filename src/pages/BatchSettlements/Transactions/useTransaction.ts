@@ -42,6 +42,7 @@ const useTransaction = () => {
             };
             await getTransactionsAPI({
                 variables,
+                fetchPolicy: 'no-cache',
             });
         } catch (error) {
             message.error('Something went wrong');
