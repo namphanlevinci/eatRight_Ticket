@@ -44,6 +44,7 @@ const useBatchHistory = () => {
             }
             getBatchHistoryAPI({
                 variables,
+                fetchPolicy: 'no-cache',
             });
         } catch (error) {
             message.error('Something went wrong');
