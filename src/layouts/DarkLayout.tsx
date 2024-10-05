@@ -273,7 +273,13 @@ export const DarkLayout = (props: Props) => {
                 >
                     <Link
                         to={BASE_ROUTER.HOME}
-                        style={{ cursor: 'pointer', height: 36 }}
+                        style={{
+                            cursor: 'pointer',
+                            height: 36,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                        }}
                     >
                         <div
                             style={{
@@ -287,6 +293,7 @@ export const DarkLayout = (props: Props) => {
                         >
                             <HomeIcon />
                         </div>
+                        <span style={{ fontSize: 20 }}>Home</span>
                     </Link>
                     <Row style={{ gap: 10 }} align={'middle'}>
                         {/* <BellIcon />
