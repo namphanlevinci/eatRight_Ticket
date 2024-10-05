@@ -15,7 +15,7 @@ export default function RenderDiscountRow({
     marginBlock?: number;
     textRightStyle?: React.CSSProperties;
     onRightClick?: () => void;
-    valueDiscount?: string;
+    valueDiscount?: number;
 }) {
     const { theme } = useTheme();
     return (
@@ -51,7 +51,7 @@ export default function RenderDiscountRow({
                             }}
                         >
                             {valueDiscount
-                                ? `-$${valueDiscount?.slice(1)}`
+                                ? `-$${-valueDiscount.toFixed(2)}`
                                 : value}
                         </Text>
                         <div style={{ marginTop: 4, marginRight: '-4px' }}>

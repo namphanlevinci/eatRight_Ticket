@@ -279,7 +279,7 @@ export default function ColRight({
                                     ? theme.sUCCESS2Default
                                     : theme.pRIMARY6Primary,
                         }}
-                        valueDiscount={totalDiscount.toString()}
+                        valueDiscount={totalDiscount}
                         onRightClick={() => setModalDiscount(true)}
                     />
                 )}
@@ -301,7 +301,7 @@ export default function ColRight({
 
                 {cart?.prices?.discounts && (
                     <RenderBillInfomationRow
-                        title={`Tip (${(Math.round((tip / grandTotal) * 10) / 10) * 100}%)`}
+                        title={`Tip `}
                         value={
                             <div
                                 style={{
