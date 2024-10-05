@@ -83,6 +83,7 @@ export default function ColRight({
     const { handleAddCoupon } = useCouponCart();
     const { theme } = useTheme();
     const [value, setValue] = React.useState('');
+    const [isClickProceed, setIsClickProceed] = useState(false);
     const handleChange = (e: any) => {
         const value = e?.target?.value;
         if (value?.length <= 50) {
@@ -119,7 +120,11 @@ export default function ColRight({
     };
 
     useEffect(() => {
-        if (hasGivenTip && paymentMethod !== 'cashondelivery') {
+        if (
+            hasGivenTip &&
+            paymentMethod !== 'cashondelivery' &&
+            isClickProceed
+        ) {
             handleProceed();
         }
     }, [hasGivenTip]);
@@ -487,6 +492,7 @@ export default function ColRight({
                 <ButtonSubmit
                     title="Proceed Payment"
                     onClick={() => {
+                        setIsClickProceed(true);
                         if (
                             paymentMethod === 'cashondelivery' &&
                             !isSplitBill

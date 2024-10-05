@@ -3,7 +3,7 @@ import RadioBtnSelected from 'assets/icons/radioBtnSelected';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import React from 'react';
-import { Input } from "antd";
+import { Input } from 'antd';
 
 export default function ButtonOptions({
     isSelected,
@@ -12,24 +12,26 @@ export default function ButtonOptions({
     icon = <IconBankCard />,
     selectedPaymentMethod,
     note,
-    onChangeNote
+    onChangeNote,
 }: {
     icon?: React.ReactNode;
     isSelected: boolean;
     onClick: any;
     title: string;
-    selectedPaymentMethod: string,
-    note: string,
-    onChangeNote: any
+    selectedPaymentMethod: string;
+    note: string;
+    onChangeNote: any;
 }) {
     const { theme } = useTheme();
     return (
-        <div style={{
-            width: "48%",
-            background: theme.nEUTRALBase,
-            borderRadius: 8,
-            border: `1px solid ${theme.nEUTRALLine}`,
-        }}>
+        <div
+            style={{
+                width: '48%',
+                background: theme.nEUTRALBase,
+                borderRadius: 8,
+                border: `1px solid ${theme.nEUTRALLine}`,
+            }}
+        >
             <Button
                 style={{
                     height: 56,
@@ -37,14 +39,16 @@ export default function ButtonOptions({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'flex-start',
-                    border: "none",
-                    background: "transparent",
-                    outline: "none",
-                    boxShadow: "none"
+                    border: 'none',
+                    background: 'transparent',
+                    outline: 'none',
+                    boxShadow: 'none',
                 }}
                 onClick={onClick}
             >
-                <div style={{ width: 28, display: 'flex', alignItems: 'center' }}>
+                <div
+                    style={{ width: 28, display: 'flex', alignItems: 'center' }}
+                >
                     {icon}
                 </div>
                 <div
@@ -57,21 +61,29 @@ export default function ButtonOptions({
                 >
                     <Text>{title}</Text>
                 </div>
-                <div style={{ width: 30, display: 'flex', alignItems: 'center' }}>
+                <div
+                    style={{ width: 30, display: 'flex', alignItems: 'center' }}
+                >
                     {isSelected && <RadioBtnSelected />}
                 </div>
             </Button>
-            {
-                selectedPaymentMethod == "other" && title == "Other" &&
-                <div style={{ width: "100%", paddingBottom: 8, display: "flex", paddingRight: 24}}>
+            {selectedPaymentMethod == 'other' && title == 'Other' && (
+                <div
+                    style={{
+                        width: '100%',
+                        paddingBottom: 8,
+                        display: 'flex',
+                        paddingRight: 24,
+                    }}
+                >
                     <Input
-                        placeholder="Note here)"
+                        placeholder="Note here"
                         value={note}
                         onChange={onChangeNote}
                         style={{ height: 50, flex: 1, marginLeft: 40 }}
                     />
                 </div>
-            }
+            )}
         </div>
     );
 }
