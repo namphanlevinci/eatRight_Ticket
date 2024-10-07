@@ -225,15 +225,18 @@ export default function index() {
     const PrintBillApi = () => {
         if (window?.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(
-                JSON.stringify({
-                    type: 'print',
-                    data: data?.orderDetail,
-                    selectDataShowbill: selectDataShowbill,
-                    dataInvoice:
-                        dataSplitBill?.merchantGetOrderInvoices?.invoice,
-                }),
+                selectDataShowbill
+                    ? selectDataShowbill.invoice_image
+                    : dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                          .invoice_image,
             );
         }
+        console.log(
+            selectDataShowbill
+                ? selectDataShowbill.invoice_image
+                : dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                      .invoice_image,
+        );
         if (childBill.length) {
             onPrintBill({
                 variables: {
