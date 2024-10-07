@@ -8,6 +8,7 @@ import { getCurrentMonthDates } from 'utils/date';
 import dayjs from 'dayjs';
 import './index.scss';
 import { ReceiptItem } from 'graphql/receipts';
+import { RenderBill } from './RenderBill';
 const { RangePicker } = DatePicker;
 
 const windowHeight = window.innerHeight;
@@ -127,16 +128,20 @@ export default function ReceiptsPage() {
                             justifyContent: 'center',
                             alignItems: 'center',
                             overflow: 'scroll',
+                            height: windowHeight - 120,
+                            paddingTop: 600,
+                            paddingBottom: 200,
                         }}
                     >
                         {loadingReceipt ? (
                             <Spin />
                         ) : (
                             <div>
-                                {
-                                    receiptDetail?.merchantGetReceipt
-                                        .customer_name
-                                }
+                                {receiptDetail && (
+                                    <RenderBill
+                                        data={receiptDetail.merchantGetReceipt}
+                                    />
+                                )}
                             </div>
                         )}
                     </Col>

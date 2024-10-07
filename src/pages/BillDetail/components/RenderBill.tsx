@@ -20,9 +20,9 @@ const RenderBillItem = ({
     selectDataShowbill,
     dataInvoice,
 }: {
-    data: any;
+    data?: any;
     selectDataShowbill: any;
-    dataInvoice: any;
+    dataInvoice?: any;
 }) => {
     const totalDiscount = selectDataShowbill
         ? selectDataShowbill?.total?.discounts.reduce(

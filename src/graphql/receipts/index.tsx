@@ -171,8 +171,10 @@ export type ReceiptDetail = {
     is_refunded: boolean;
     is_bill_split: boolean;
     payment_method: PaymentMethod;
+    non_cash_amount: string;
     items: ReceiptItem[];
     total: Total;
+    feedback_url?: string;
 };
 
 // Kiểu cho phản hồi của truy vấn
