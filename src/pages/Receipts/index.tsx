@@ -9,6 +9,11 @@ import dayjs from 'dayjs';
 import './index.scss';
 import { ReceiptItem } from 'graphql/receipts';
 import { RenderBill } from './RenderBill';
+import { ButtonBill } from 'pages/BillDetail/components/ButtonBill';
+import ModalInput from 'components/modal/ModalInput';
+import { useState } from 'react';
+import useActionReceipt from './useActionReceipt';
+import LoadingModal from 'components/modal/loadingModal';
 const { RangePicker } = DatePicker;
 
 const windowHeight = window.innerHeight;
@@ -26,14 +31,71 @@ export default function ReceiptsPage() {
         setSelectData,
         loadingReceipt,
         receiptDetail,
+        getReceiptDetail,
     } = useReceipts();
     const dates = getCurrentMonthDates();
-
+    const [modalInputEmail, setModalInputEmail] = useState(false);
+    const [modalRefund, setModalRefund] = useState(false);
+    const {
+        PrintBillApi,
+        handleSendBill,
+        loading: loadingAction,
+        loadingPrint,
+        onRefund,
+    } = useActionReceipt();
     const rowClassNameSelect = (record: ReceiptItem) => {
         return record.id === selectData?.id ? 'highlight-row' : '';
     };
     return (
         <Spin spinning={loading}>
+            <LoadingModal showLoading={loadingAction} />
+            <ModalInput
+                isModalOpen={modalRefund}
+                title="Input reason refund money : "
+                onSubmit={(value: string) => {
+                    if (!receiptDetail?.merchantGetReceipt) {
+                        return;
+                    }
+                    onRefund({
+                        reason: value,
+                        data: receiptDetail?.merchantGetReceipt,
+                        GetDataWithId: (id: string) =>
+                            getReceiptDetail({
+                                variables: {
+                                    invoice_number: id,
+                                },
+                                fetchPolicy: 'no-cache',
+                            })
+                                .then(() => {
+                                    handleSearch({});
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                }),
+                    });
+
+                    setModalRefund(false);
+                }}
+                onCancel={() => {
+                    setModalRefund(false);
+                }}
+            />
+            <ModalInput
+                isModalOpen={modalInputEmail}
+                title="Input customer e-mail"
+                onSubmit={(value: string) => {
+                    handleSendBill(
+                        'email',
+                        value,
+                        receiptDetail?.merchantGetReceipt.increment_id || '',
+                    );
+                    setModalInputEmail(false);
+                }}
+                onCancel={() => {
+                    setModalInputEmail(false);
+                }}
+                type="email"
+            />
             <Header />
             <div
                 style={{
@@ -129,19 +191,60 @@ export default function ReceiptsPage() {
                             alignItems: 'center',
                             overflow: 'scroll',
                             height: windowHeight - 120,
-                            paddingTop: 600,
-                            paddingBottom: 200,
+                            paddingTop: loadingReceipt ? 0 : 400,
+                            paddingBottom: loadingReceipt ? 0 : 100,
+                            background: 'var(--field-background)',
+                            position: 'relative',
                         }}
                     >
                         {loadingReceipt ? (
                             <Spin />
                         ) : (
-                            <div>
+                            <div style={{ position: 'relative' }}>
                                 {receiptDetail && (
                                     <RenderBill
                                         data={receiptDetail.merchantGetReceipt}
                                     />
                                 )}
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-around',
+                                        position: 'fixed',
+                                        bottom: 0,
+                                        right: 0,
+                                        width: 370,
+                                        background: 'white',
+                                        boxShadow:
+                                            '0px -4px 4px 0px rgba(0, 0, 0, 0.12)',
+                                    }}
+                                >
+                                    <ButtonBill
+                                        title="Print"
+                                        onPress={() =>
+                                            PrintBillApi(
+                                                receiptDetail
+                                                    ?.merchantGetReceipt
+                                                    ?.increment_id || '',
+                                            )
+                                        }
+                                        isSmall
+                                        loading={loadingPrint}
+                                    />
+                                    <ButtonBill
+                                        title="Email"
+                                        onPress={() => setModalInputEmail(true)}
+                                        isSmall
+                                    />
+                                    {receiptDetail?.merchantGetReceipt
+                                        ?.can_refund && (
+                                        <ButtonBill
+                                            title="Void"
+                                            isSmall
+                                            onPress={() => setModalRefund(true)}
+                                        />
+                                    )}
+                                </div>
                             </div>
                         )}
                     </Col>

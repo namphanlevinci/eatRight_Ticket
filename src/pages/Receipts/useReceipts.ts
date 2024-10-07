@@ -19,9 +19,13 @@ const useReceipts = () => {
     const [selectData, setSelectData] = useState<ReceiptItem | undefined>(
         undefined,
     );
+    const [pageConfig, setPageConfig] = useState<TablePaginationConfig>();
     const [getReceiptDetail, { data: receiptDetail, loading: loadingReceipt }] =
         useLazyQuery<data_MerchantGetReceiptResponse, var_ReceiptDetail>(
             gqlGetReceiptDetail,
+            {
+                fetchPolicy: 'no-cache',
+            },
         );
     const [getBatchHistoryAPI, { data, loading }] = useLazyQuery<
         data_ReceiptHistory,
@@ -66,6 +70,7 @@ const useReceipts = () => {
 
     const handleTableChange = (pagination: TablePaginationConfig) => {
         handleSearch({ pagination });
+        setPageConfig(pagination);
     };
 
     const handleTextChange = (value: string) => {
@@ -99,6 +104,8 @@ const useReceipts = () => {
             dateTo: endDate
                 ? dayjs(endDate).format('YYYY-MM-DD')
                 : dayjs(searchDate?.[1]).format('YYYY-MM-DD'),
+            currentPage: pageConfig?.current || 1,
+            pageSize: pageConfig?.pageSize || 10,
         };
 
         if (searchText) {
@@ -110,6 +117,7 @@ const useReceipts = () => {
         }
         getBatchHistoryAPI({
             variables,
+            fetchPolicy: 'no-cache',
         });
     };
 
@@ -147,6 +155,7 @@ const useReceipts = () => {
         selectData,
         receiptDetail,
         loadingReceipt,
+        getReceiptDetail,
     };
 };
 

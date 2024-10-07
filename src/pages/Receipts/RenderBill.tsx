@@ -34,7 +34,6 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 background: 'white',
                 paddingTop: 20,
                 paddingInline: 16,
-                overflow: 'auto',
             }}
         >
             <div id="billHeader">
