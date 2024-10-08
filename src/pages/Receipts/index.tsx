@@ -191,8 +191,6 @@ export default function ReceiptsPage() {
                             alignItems: 'center',
                             overflow: 'scroll',
                             height: windowHeight - 120,
-                            paddingTop: loadingReceipt ? 0 : 400,
-                            paddingBottom: loadingReceipt ? 0 : 100,
                             background: 'var(--field-background)',
                             position: 'relative',
                         }}
