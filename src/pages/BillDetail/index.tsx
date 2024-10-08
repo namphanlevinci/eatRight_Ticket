@@ -224,11 +224,13 @@ export default function index() {
 
     const PrintBillApi = () => {
         if (window?.ReactNativeWebView) {
+            const imageUrl = selectDataShowbill
+                ? selectDataShowbill.invoice_image
+                : dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                      .invoice_image;
+
             window.ReactNativeWebView.postMessage(
-                selectDataShowbill
-                    ? selectDataShowbill.invoice_image
-                    : dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
-                          .invoice_image,
+                JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
             );
         }
         console.log(
