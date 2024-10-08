@@ -281,18 +281,7 @@ export const DarkLayout = (props: Props) => {
                             gap: 10,
                         }}
                     >
-                        <div
-                            style={{
-                                borderRadius: 300,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                background: '#F1F3F7',
-                                padding: 5,
-                            }}
-                        >
-                            <HomeIcon />
-                        </div>
+                        <HomeIcon />
                         <span style={{ fontSize: 20 }}>Home</span>
                     </Link>
                     <Row style={{ gap: 10 }} align={'middle'}>
