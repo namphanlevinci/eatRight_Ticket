@@ -263,7 +263,9 @@ function Header(props) {
                         {isSearch && (
                             <InputSearch
                                 onChange={(e) => {
-                                    setSearchValue(e.target.value);
+                                    setSearchValue(
+                                        e.target.value.toLowerCase(),
+                                    );
                                 }}
                                 placeholder={
                                     is_dine_in
