@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { CheckOutlined } from '@ant-design/icons';
-import { Badge, Popover, Row, Col, Switch, Button } from 'antd';
+import { Badge, Popover, Row, Col, Switch, Button, Checkbox } from 'antd';
 
 import moment from 'dayjs';
 import React, { useState, useEffect } from 'react';
@@ -26,6 +26,8 @@ import { GET_NOTIFICATION } from 'graphql/notification';
 import { changeModeTableView } from 'features/auth/authSlice';
 import { useDispatch } from 'react-redux';
 import HomeIconMerchant from '../assets/icons/homeIconMerchant';
+import FilterIcon from '../assets/FilterIcon';
+import DownIcon from '../assets/downIcon';
 
 function Header(props) {
     const { setSearchValue, isSearch } = props;
@@ -223,6 +225,19 @@ function Header(props) {
     };
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     const dispatch = useDispatch();
+    const content = (
+        <div>
+            <Row>
+                <Checkbox />
+                Hello world
+            </Row>
+            <Row>
+                <Checkbox />
+                Hello world
+            </Row>
+        </div>
+    );
+
     return (
         <>
             <div className="header">
@@ -273,6 +288,30 @@ function Header(props) {
                                         : 'Order Number'
                                 }
                             />
+                        )}
+                        {isSearch && (
+                            <Popover
+                                content={content}
+                                title="Title"
+                                trigger="click"
+                            >
+                                <div
+                                    style={{
+                                        height: 46,
+                                        width: 132,
+                                        borderRadius: 4,
+                                        border: `1px solid ${theme.nEUTRALLine}`,
+                                        background: theme.nEUTRALBase,
+                                        display: 'flex',
+                                        justifyContent: 'space-around',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <FilterIcon />
+                                    Filter
+                                    <DownIcon />
+                                </div>
+                            </Popover>
                         )}
                         <Row style={{ gap: 30 }}>
                             <Button
