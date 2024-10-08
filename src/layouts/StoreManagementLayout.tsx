@@ -120,7 +120,7 @@ export default function RestaurentManagementLayout(props: Props) {
                 >
                     <ArrawLeftIcon />
                 </div>
-                {isSelected && (
+                {/* {isSelected && (
                     <Link to={BASE_ROUTER.RESTAURENT_MANAGER}>
                         <Row align={'middle'} style={{ gap: 16 }}>
                             <Text
@@ -133,7 +133,7 @@ export default function RestaurentManagementLayout(props: Props) {
                             </Text>
                         </Row>
                     </Link>
-                )}
+                )} */}
                 {array.map((path, index) => {
                     return index > 1 ? (
                         <Link to={array.slice(0, index + 1).join('/')}>
@@ -164,7 +164,6 @@ export default function RestaurentManagementLayout(props: Props) {
     return (
         <DarkLayout>
             {/* <Text>Restaurant management</Text> */}
-            <Breadcrumb />
             <div
                 style={{
                     height: '100%',

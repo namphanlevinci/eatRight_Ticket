@@ -19,17 +19,6 @@ const SalesReport = () => {
             <Header />
             <div className="container-box body_history">
                 <div className="rangePicker">
-                    <h2
-                        className="header-bottom-left"
-                        onClick={() => history.back()}
-                    >
-                        <img
-                            style={{ cursor: 'pointer' }}
-                            src={ic_back}
-                            alt="icon"
-                        />
-                        Sales Report
-                    </h2>
                     <DatePicker.RangePicker
                         allowClear={false}
                         defaultValue={rangDate}
@@ -59,9 +48,13 @@ const SalesReport = () => {
                         }
                         navigate(`${record.payment}`, {
                             state: {
-                                startDate: dayjs(rangDate?.[0]).format('YYYY-MM-DD'),
-                                endDate: dayjs(rangDate?.[1]).format('YYYY-MM-DD')
-                            }
+                                startDate: dayjs(rangDate?.[0]).format(
+                                    'YYYY-MM-DD',
+                                ),
+                                endDate: dayjs(rangDate?.[1]).format(
+                                    'YYYY-MM-DD',
+                                ),
+                            },
                         });
                     }}
                 />

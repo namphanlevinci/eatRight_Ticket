@@ -64,23 +64,7 @@ const CustomerList: React.FC = () => {
                     align={'middle'}
                     justify={'space-between'}
                 >
-                    <Row>
-                        <Link to={BASE_ROUTER.HOME}>
-                            <Row align={'middle'} style={{ gap: 16 }}>
-                                <ArrawLeftIcon />
-                                <Text
-                                    style={{
-                                        fontSize: 16,
-                                        color: theme.pRIMARY6Primary,
-                                    }}
-                                >
-                                    Home
-                                </Text>
-                            </Row>
-                        </Link>
-                        <Text>/</Text>
-                        <Text>Customer List</Text>
-                    </Row>
+                    <Row>&nbsp;</Row>
                     <Row
                         align={'middle'}
                         style={isMobile ? { width: '100%' } : {}}

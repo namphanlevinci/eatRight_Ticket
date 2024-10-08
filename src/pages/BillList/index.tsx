@@ -335,7 +335,9 @@ const BillList: React.FC = () => {
                                         color: theme.tEXTPrimary,
                                     }}
                                 >
-                                    {convertMethod(dt?.payment_methods?.[0]?.name)}
+                                    {convertMethod(
+                                        dt?.payment_methods?.[0]?.name,
+                                    )}
                                 </StyledColumn>
                                 <StyledColumn
                                     style={{
