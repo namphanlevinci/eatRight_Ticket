@@ -101,9 +101,7 @@ export default function BatchSettlements() {
                             background: isDisabledConfirmSettle
                                 ? '#ccc'
                                 : 'var(--primary-6)',
-                            color: isDisabledConfirmSettle
-                                ? '#666'
-                                : '#fff',
+                            color: isDisabledConfirmSettle ? '#666' : '#fff',
                             cursor: isDisabledConfirmSettle
                                 ? 'not-allowed'
                                 : 'pointer',

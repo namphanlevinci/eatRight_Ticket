@@ -29,15 +29,7 @@ const MenuBar = ({ title = '' }) => {
 
     return (
         <div className="header-bottom">
-            <h3 className="header-bottom-left">
-                <img
-                    style={{ cursor: 'pointer' }}
-                    src={ic_back}
-                    alt="icon"
-                    onClick={() => navigate(-1)}
-                />
-                <p>{title}</p>
-            </h3>
+            <h3 className="header-bottom-left">&nbsp;</h3>
             <div className="header-bottom-right">
                 {menuBar.map((menu) => {
                     const isActive = pathname?.includes?.(menu.key);

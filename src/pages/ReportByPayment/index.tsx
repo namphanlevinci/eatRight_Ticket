@@ -23,10 +23,7 @@ const ReportByPayment = () => {
             <Header />
             <div className="container-box body_history">
                 <div className="rangePicker">
-                    <h2
-                        className="header-bottom-left"
-                        onClick={handleBack}
-                    >
+                    <h2 className="header-bottom-left" onClick={handleBack}>
                         <p>Sales Report / {methodName}</p>
                     </h2>
                 </div>
