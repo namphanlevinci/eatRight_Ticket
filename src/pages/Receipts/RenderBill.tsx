@@ -33,7 +33,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 borderRadius: 8,
                 background: 'white',
                 paddingInline: 16,
-                paddingTop: 400,
+                paddingTop: data.items.length * 30 + 400,
                 paddingBottom: 100,
             }}
         >

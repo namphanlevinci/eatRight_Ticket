@@ -55,7 +55,7 @@ export const Columns = (): TableColumnsType<ReceiptItem> => {
             title: 'Method',
             dataIndex: 'payment_method',
             key: 'payment_method',
-            width: 200,
+            width: 150,
             render: (payment_method) => {
                 return (
                     <div style={{ fontSize: 16 }}>{payment_method?.title}</div>
@@ -63,10 +63,19 @@ export const Columns = (): TableColumnsType<ReceiptItem> => {
             },
         },
         {
+            title: 'Terminal',
+            dataIndex: 'terminal_name',
+            key: 'terminal_name',
+            width: 150,
+            render: (terminal_name) => {
+                return <div style={{ fontSize: 16 }}>{terminal_name}</div>;
+            },
+        },
+        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
-            width: 200,
+            width: 150,
             render: (status) => {
                 const lowerCaseStatus = status.toLowerCase();
                 if (lowerCaseStatus === 'paid') {
