@@ -9,12 +9,17 @@ import {
     GET_SALES_REPORTS,
     VAR_SALES_REPORTS,
 } from 'graphql/salesReport';
+import { useLocation } from 'react-router';
 
 const useReport = () => {
+    const location = useLocation();
+
     const [data, setData] = useState<ISalesReport[]>([]);
     const [rangDate, setRangeDate] = useState<RangeValue>([
-        dayjs().subtract(0, 'day'),
-        dayjs(),
+        location.state?.startDate
+            ? dayjs(location.state?.startDate)
+            : dayjs().subtract(0, 'day'),
+        location.state?.endDate ? dayjs(location.state?.endDate) : dayjs(),
     ]);
 
     const { data: reportResponse, loading } = useQuery<
@@ -39,8 +44,8 @@ const useReport = () => {
                     reportResponseCleaned.merchantSalesReport[keyItem].discounts
                         .value,
                 gross_sales:
-                    reportResponseCleaned.merchantSalesReport[keyItem].gross_sales
-                        .value,
+                    reportResponseCleaned.merchantSalesReport[keyItem]
+                        .gross_sales.value,
                 net_sales:
                     reportResponseCleaned.merchantSalesReport[keyItem].net_sales
                         .value,

@@ -12,6 +12,7 @@ const ReportByPayment = () => {
         reportResponse,
         loading,
         methodName,
+        handleBack,
         handlePageChange,
         handlePerPageChange,
         handleChangeTable,
@@ -24,7 +25,7 @@ const ReportByPayment = () => {
                 <div className="rangePicker">
                     <h2
                         className="header-bottom-left"
-                        onClick={() => history.back()}
+                        onClick={handleBack}
                     >
                         <p>Sales Report / {methodName}</p>
                     </h2>

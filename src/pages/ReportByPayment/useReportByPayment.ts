@@ -7,11 +7,12 @@ import {
     VAR_REPORTS_BY_PAYMENT,
 } from 'graphql/salesReport';
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import removeTypename from 'utils/removeTypename';
 
 const useReportByPayment = () => {
     const { method } = useParams();
+    const navigate = useNavigate();
     const {
         state: { startDate, endDate },
     } = useLocation();
@@ -47,6 +48,15 @@ const useReportByPayment = () => {
             [];
         const reportArr = [totalsItem, ...items];
         setData(reportArr);
+    };
+
+    const handleBack = () => {
+        navigate('/report', {
+            state: {
+                startDate,
+                endDate,
+            },
+        });
     };
 
     useEffect(() => {
@@ -91,6 +101,7 @@ const useReportByPayment = () => {
         loading,
         reportResponse,
         methodName: getReportNameFormated(method as string),
+        handleBack,
         handlePageChange,
         handlePerPageChange,
         handleChangeTable,
