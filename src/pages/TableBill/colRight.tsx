@@ -233,13 +233,15 @@ export default function ColRight({
                     (cart?.prices?.total_canceled_without_tax?.value || 0)
                 }
             />
-            <ModalPosDevices
-                isVisibleModalPos={isVisibleModalPos}
-                setVisibleMoalPos={setVisibleMoalPos}
-                onPressOK={(pos_id: string) => {
-                    handlePOSPayment(pos_id);
-                }}
-            />
+            {isVisibleModalPos && (
+                <ModalPosDevices
+                    isVisibleModalPos={isVisibleModalPos}
+                    setVisibleMoalPos={setVisibleMoalPos}
+                    onPressOK={(pos_id: string) => {
+                        handlePOSPayment(pos_id);
+                    }}
+                />
+            )}
             <ModalOtherMethod
                 isVisible={isVisibleModalOtherMethod}
                 setVisible={setVisibleModalOtherMethod}
@@ -247,16 +249,20 @@ export default function ColRight({
                     handleOtherPayment(value);
                 }}
             />
-            <ModalPosDevicesDJV
-                isVisibleModalPos={isVisibleModalPosDJV}
-                setVisibleMoalPos={setVisibleMoalPosDJV}
-                onPressOK={(pos_id: number) => {
-                    handlePOSPaymentWithDJV(pos_id);
-                }}
-                onCancel={() => {
-                    showModalErrorPayment();
-                }}
-            />
+            {isVisibleModalPosDJV && (
+                <ModalPosDevicesDJV
+                    isVisibleModalPos={isVisibleModalPosDJV}
+                    setVisibleMoalPos={setVisibleMoalPosDJV}
+                    onPressOK={(pos_id: number) => {
+                        handlePOSPaymentWithDJV(pos_id, {
+                            cart_id: cart?.id,
+                        });
+                    }}
+                    onCancel={() => {
+                        showModalErrorPayment();
+                    }}
+                />
+            )}
             {contextHolder}
             <LoadingModal showLoading={loading} />
             <LoadingModalPayment

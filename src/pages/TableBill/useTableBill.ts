@@ -7,6 +7,7 @@ import { GET_CART_BY_ID } from 'graphql/cart/getCart';
 import { PLACE_ORDER, SET_TIPS } from 'graphql/cart/placeOrder';
 import { SPLIT_BILL_BY_ITEM, SPLIT_BILL_EVENLY } from 'graphql/cart/splitBill';
 import { emitter } from 'graphql/client';
+import { CANCEL_CHECKOUT } from 'graphql/orders/cancelCheckout';
 import {
     GET_APPOTA_URL,
     POS_PAYMENT,
@@ -193,11 +194,13 @@ export const useTableBill = (isGoBack = true) => {
                 console.log(err);
             });
     };
+    const [onCancelCheckout] = useMutation(CANCEL_CHECKOUT);
     const handlePOSPaymentWithDJV = (
         posId: number,
         orderDetail?: {
-            order_number: number;
-            order_id: any;
+            order_number?: number;
+            order_id?: any;
+            cart_id?: any;
         },
         isGoToTable = true,
     ) => {
@@ -216,19 +219,26 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
-                        `${orderDetail?.order_id
-                            ? orderDetail?.order_id
-                            : orderInfo?.order_id
+                        `${
+                            orderDetail?.order_id
+                                ? orderDetail?.order_id
+                                : orderInfo?.order_id
                         }`,
                         isGoToTable,
                     );
                 }
             })
             .catch(() => {
+                onCancelCheckout({
+                    variables: {
+                        cart_id: orderDetail?.cart_id,
+                    },
+                });
                 showModalErrorPayment(
-                    `${orderDetail?.order_id
-                        ? orderDetail?.order_id
-                        : orderInfo?.order_id
+                    `${
+                        orderDetail?.order_id
+                            ? orderDetail?.order_id
+                            : orderInfo?.order_id
                     }`,
                 );
             })
@@ -241,6 +251,7 @@ export const useTableBill = (isGoBack = true) => {
         orderDetail?: {
             order_number: number;
             order_id: any;
+            cart_id: any;
         },
     ) => {
         setPos_Loading(true);
@@ -258,19 +269,25 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
-                        `${orderDetail?.order_id
-                            ? orderDetail?.order_id
-                            : orderInfo?.order_id
+                        `${
+                            orderDetail?.order_id
+                                ? orderDetail?.order_id
+                                : orderInfo?.order_id
                         }`,
                     );
                 }
             })
             .catch((err) => {
-                console.log(err);
+                onCancelCheckout({
+                    variables: {
+                        cart_id: orderDetail?.cart_id,
+                    },
+                });
                 showModalErrorPayment(
-                    `${orderDetail?.order_id
-                        ? orderDetail?.order_id
-                        : orderInfo?.order_id
+                    `${
+                        orderDetail?.order_id
+                            ? orderDetail?.order_id
+                            : orderInfo?.order_id
                     }`,
                 );
             })
@@ -279,14 +296,12 @@ export const useTableBill = (isGoBack = true) => {
             });
     };
 
-    const handleOtherPayment = (
-        note: string,
-    ) => {
+    const handleOtherPayment = (note: string) => {
         placeOrder({
             variables: {
                 cartId: cartItems[indexTable].carts[cartIndex].id,
-                paymentMethod: "purchaseorder",
-                po_number: note
+                paymentMethod: 'purchaseorder',
+                po_number: note,
             },
         })
             .then((res) => {
@@ -480,6 +495,6 @@ export const useTableBill = (isGoBack = true) => {
         isVisibleModalOtherMethod,
         setVisibleModalOtherMethod,
         handleOtherPayment,
-        setOrderInfo
+        setOrderInfo,
     };
 };

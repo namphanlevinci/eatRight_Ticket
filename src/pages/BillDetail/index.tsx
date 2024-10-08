@@ -586,6 +586,7 @@ export default function index() {
                         handlePOSPayment(pos_id, {
                             order_number: data?.orderDetail?.order_number,
                             order_id: orderId ? orderId : btoa(order_ID || ''),
+                            cart_id: data?.orderDetail?.cart_id,
                         });
                     }}
                 />
@@ -602,6 +603,7 @@ export default function index() {
                                     order_id: orderId
                                         ? orderId
                                         : btoa(order_ID || ''),
+                                    cart_id: data?.orderDetail?.cart_id,
                                 },
                                 false,
                             );
