@@ -14,6 +14,7 @@ const ReportByPayment = () => {
         methodName,
         handlePageChange,
         handlePerPageChange,
+        handleChangeTable,
     } = useReportByPayment();
 
     return (
@@ -52,6 +53,7 @@ const ReportByPayment = () => {
                     scroll={{ x: 1067 }}
                     onPageChange={handlePageChange}
                     onPerPageChange={handlePerPageChange}
+                    onTableChange={handleChangeTable}
                 />
             </div>
         </Spin>

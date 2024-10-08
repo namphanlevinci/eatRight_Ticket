@@ -12,28 +12,28 @@ const Columns = () => {
         {
             title: 'Gross Sales',
             dataIndex: 'gross_sales',
-            sorter: false,
+            sorter: true,
             render: (valueObj) =>
                 valueObj.value ? formatMoney(valueObj.value) : `$0.00`,
         },
         {
             title: 'Discount',
             dataIndex: 'discounts',
-            sorter: false,
+            sorter: true,
             render: (valueObj) =>
                 valueObj.value ? formatMoney(valueObj.value) : `$0.00`,
         },
         {
             title: 'Refunds',
             dataIndex: 'refunds',
-            sorter: false,
+            sorter: true,
             render: (valueObj) =>
                 valueObj.value ? formatMoney(valueObj.value) : `$0.00`,
         },
         {
             title: 'Net Sales',
             dataIndex: 'net_sales',
-            sorter: false,
+            sorter: true,
             render: (valueObj) =>
                 valueObj.value ? formatMoney(valueObj.value) : `$0.00`,
         },

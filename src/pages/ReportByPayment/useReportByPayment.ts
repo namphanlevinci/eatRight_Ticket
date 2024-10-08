@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { SorterResult } from 'antd/es/table/interface';
 import {
     DATA_REPORTS_BY_PAYMENT,
     GET_REPORTS_BY_PAYMENT,
@@ -16,6 +17,10 @@ const useReportByPayment = () => {
     } = useLocation();
 
     const [data, setData] = useState<MerchantSalesReportByPayment[]>([]);
+    const [sorter, setSorter] = useState<Record<string, string>>({
+        field: 'gross_sales',
+        direction: 'DESC',
+    });
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
 
@@ -29,6 +34,8 @@ const useReportByPayment = () => {
             method: method?.toUpperCase() as string,
             currentPage,
             pageSize,
+            field: sorter?.field as string,
+            direction: sorter?.direction as string,
         },
     });
     const getReportByPayment = (reportResponse: DATA_REPORTS_BY_PAYMENT) => {
@@ -57,6 +64,18 @@ const useReportByPayment = () => {
         setCurrentPage(page);
     };
 
+    const handleChangeTable = (
+        sorter:
+            | SorterResult<MerchantSalesReportByPayment>
+            | SorterResult<MerchantSalesReportByPayment>[],
+    ) => {
+        const { field, order } =
+            sorter as SorterResult<MerchantSalesReportByPayment>;
+        if (field && order) {
+            const direction = order === 'ascend' ? 'ASC' : 'DESC';
+            setSorter({ field: field as string, direction });
+        }
+    };
 
     const getReportNameFormated = (reportName: string) => {
         const keyItem = reportName as keyof typeof namesForted;
@@ -74,6 +93,7 @@ const useReportByPayment = () => {
         methodName: getReportNameFormated(method as string),
         handlePageChange,
         handlePerPageChange,
+        handleChangeTable,
     };
 };
 
