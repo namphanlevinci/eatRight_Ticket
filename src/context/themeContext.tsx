@@ -189,11 +189,11 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         );
     };
     useEffect(() => {
-        // if (isMerchant) {
-        //     setTheme(MerchantTheme);
-        // } else {
-        setTheme(themeMode.lightTheme);
-        // }
+        if (isMerchant) {
+            setTheme(MerchantTheme);
+        } else {
+            setTheme(themeMode.lightTheme);
+        }
     }, [isMerchant]);
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme }}>

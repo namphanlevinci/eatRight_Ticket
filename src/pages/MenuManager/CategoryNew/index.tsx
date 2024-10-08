@@ -20,6 +20,15 @@ import {
 import { GET_MENU_LIST } from 'graphql/menu';
 import { GET_LIST_KITCHEN_STATION } from 'containers/Kitchen/printer';
 import { BASE_ROUTER } from 'constants/router';
+import ModalConfirm from 'components/modal/ModalConfirm';
+
+interface ICategory {
+    name: string;
+    description: string;
+    is_active: string;
+    menu_ids: string[];
+    kitchen_station: string;
+}
 
 const Index = () => {
     const [apiMerchantCreateCategory] = useMutation(CREATE_CATEGORY);
@@ -29,6 +38,7 @@ const Index = () => {
     const [apiGetMenu] = useLazyQuery(GET_MENU_LIST);
     const [apiGetKitchenStation] = useLazyQuery(GET_LIST_KITCHEN_STATION);
     const [isToggled, setIsToggled] = useState(false);
+    const [data, setData] = useState<ICategory>();
     const [menuList, setMenuList] = useState<any>([]);
     const [isLoading, setLoading] = useState(false);
     const history = useNavigate();
@@ -36,17 +46,45 @@ const Index = () => {
     const [form] = Form.useForm();
     const { openModal } = useContext(AlertContext);
     const [stations, setStations] = useState([]);
+    const [showModalChangeStation, setShowModalChangeStation] = useState(false);
 
     const location = useLocation();
     const pathname = location?.pathname;
     const refPopupDelete = useRef<any>();
     const refPopupEdit = useRef<any>();
 
+    const handleConfirmChaneStation = () => {
+        const values = form.getFieldsValue();
+        const payload = {
+            ...values,
+            is_active: isToggled ? true : false,
+        };
+        if (categoryId) {
+            apiMerchantUpdateCategory({
+                variables: {
+                    ...payload,
+                    id: parseInt(categoryId),
+                },
+            }).then((res) => {
+                setLoading(false);
+                if (res?.errors && res?.errors?.length > 0) {
+                    openModal(res?.errors?.[0]?.message);
+                    return;
+                }
+                history(BASE_ROUTER.CATEGORY_PAGE);
+            });
+        }
+    };
+
     const handleToggle = (checked: any) => {
         setIsToggled(checked);
     };
 
     const onFinish = (values: any) => {
+        if (data?.kitchen_station !== values?.kitchen_station) {
+            setShowModalChangeStation(true);
+            return;
+        }
         const payload = {
             ...values,
             is_active: isToggled ? true : false,
@@ -108,6 +146,7 @@ const Index = () => {
                         kitchen_station: `${detail?.kitchen_station ?? ''}`,
                     });
                     setIsToggled(detail?.is_active);
+                    setData(detail);
                     setLoading(false);
                 })
                 .catch((err) => {
@@ -146,8 +185,16 @@ const Index = () => {
             });
     }, []);
     const { Option } = Select;
+
     return (
         <div style={{ padding: 16 }}>
+            {showModalChangeStation && (
+                <ModalConfirmChangeStation
+                    isModalConfirm={showModalChangeStation}
+                    onCancel={() => setShowModalChangeStation(false)}
+                    onSubmit={handleConfirmChaneStation}
+                />
+            )}
             {isLoading && (
                 <div className="loading_container">
                     <Spin />
@@ -362,3 +409,26 @@ const Index = () => {
 };
 
 export default Index;
+
+interface IModal {
+    isModalConfirm: boolean;
+    onCancel: () => void;
+    onSubmit: () => void;
+}
+
+const ModalConfirmChangeStation = ({
+    isModalConfirm,
+    onCancel,
+    onSubmit,
+}: IModal) => {
+    return (
+        <ModalConfirm
+            isModalOpen={isModalConfirm}
+            onCancel={onCancel}
+            onSubmit={onSubmit}
+            title="Change Station"
+            content={`This action will update the station for all inherrited menu
+                    items within this group Are you sure you want to proceed?`}
+        />
+    );
+};
