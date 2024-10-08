@@ -9,7 +9,6 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { useLocation } from 'react-router';
-import { Link } from 'react-router-dom';
 
 type Props = {
     children: React.ReactNode;

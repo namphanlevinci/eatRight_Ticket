@@ -14,9 +14,6 @@ import {
     StyledColumnContainer,
 } from 'pages/BillList/styled';
 import { useCustomerList } from './useCustomerList';
-import { ArrawLeftIcon } from 'layouts/SettingLayout';
-import { Text } from 'components/atom/Text';
-import { Link } from 'react-router-dom';
 import SearchSettings from 'layouts/components/Search';
 import _ from 'lodash';
 import { formatPhoneNumber } from 'utils/number';

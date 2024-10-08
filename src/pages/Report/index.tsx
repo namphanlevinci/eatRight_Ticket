@@ -4,7 +4,6 @@ import Columns from './Columns';
 import Table from 'components/Table';
 import { DatePicker, Spin } from 'antd';
 import Header from 'pages/Merchant/Header';
-import ic_back from 'assets/icons/icon_back.svg';
 
 import './index.css';
 import dayjs from 'dayjs';

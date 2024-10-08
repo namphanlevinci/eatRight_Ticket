@@ -1,10 +1,10 @@
 import React from 'react';
-import ic_back from '../../../Merchant/assets/icon/icon_back.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './index.scss';
 import { BASE_ROUTER } from 'constants/router';
 
 const MenuBar = ({ title = '' }) => {
+    console.log(title);
     const location = useLocation();
     const pathname = location.pathname;
     const navigate = useNavigate();
