@@ -210,9 +210,9 @@ export default function RenderAction({
                         }
                         isDisable={
                             isCartIdFromLocal(
-                                cartItems[indexTable]?.carts[selectedCart].id,
+                                cartItems[indexTable]?.carts[selectedCart]?.id,
                             ) ||
-                            cartItems[indexTable]?.carts[selectedCart].items
+                            cartItems[indexTable]?.carts[selectedCart]?.items
                                 ?.length === 0 ||
                             isNewItem
                         }

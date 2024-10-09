@@ -439,14 +439,13 @@ const RenderButtonStatus = ({
                     width: 80,
                 }}
                 onClick={() => {
-                    if (item.status === 'sent') {
-                        setIsOpenModalCancel(true);
-                        setItemSelected({
-                            cartId: data?.id,
-                            cartItemId: item?.id,
-                        });
-                    }
+                    setIsOpenModalCancel(true);
+                    setItemSelected({
+                        cartId: data?.id,
+                        cartItemId: item?.id,
+                    });
                 }}
+                loading={loadingCardTable}
             >
                 Cancel
             </Button>
