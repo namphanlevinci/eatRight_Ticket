@@ -30,7 +30,7 @@ import { useMediaQuery } from 'react-responsive';
 import { OPEN_CASHIER } from 'graphql/printer';
 import { useMutation } from '@apollo/client';
 const urlKitchen = process.env.REACT_APP_KITCHENURL;
-const MenuMerchant = ({ isMerchant }: { isMerchant?: boolean }) => [
+const MenuMerchant = () => [
     // {
     //     title: 'Restaurant Manager',
     //     icon: <StoreIcon />,
@@ -50,7 +50,7 @@ const MenuMerchant = ({ isMerchant }: { isMerchant?: boolean }) => [
     {
         title: 'Order History',
         icon: <HistoryOutlined style={{ fontSize: 34 }} />,
-        to: isMerchant ? BASE_ROUTER.RECEIPTS : BASE_ROUTER.BILL,
+        to: BASE_ROUTER.RECEIPTS,
     },
     {
         title: 'Batch Settlements',
@@ -101,7 +101,7 @@ const MenuList = [
     {
         title: 'Receipts',
         icon: <ReceiptBillV2Icon />,
-        to: BASE_ROUTER.BILL,
+        to: BASE_ROUTER.RECEIPTS,
     },
     {
         title: 'Settings',
@@ -131,7 +131,7 @@ export default function DrawerMenu() {
     >(MenuList);
     useEffect(() => {
         if (isMerchant) {
-            setMenuData(MenuMerchant({ isMerchant: isMerchant }));
+            setMenuData(MenuMerchant());
         } else {
             setMenuData(MenuList);
         }

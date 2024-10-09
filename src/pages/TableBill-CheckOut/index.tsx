@@ -270,7 +270,7 @@ export default function TableSplitBillCheckOut() {
             const isAllPay = data.invoice.find((item) => item.state !== 'PAID');
             if (!isAllPay) {
                 navigation(
-                    `${BASE_ROUTER.BILL_DETAIL}?orderId=${data.order.order_id}`,
+                    `${BASE_ROUTER.BILL_DETAIL}?order_id=${data.order.order_id}`,
                 );
             }
         }

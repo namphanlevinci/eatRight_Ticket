@@ -44,10 +44,11 @@ import HomeIcon from 'assets/icons/homeIcon';
 
 type Props = {
     children: React.ReactNode;
+    isNotShowHeader?: boolean;
 };
 
 export const DarkLayout = (props: Props) => {
-    const { children } = props;
+    const { children, isNotShowHeader } = props;
     const {
         isLogged,
         firstname,
@@ -255,127 +256,135 @@ export const DarkLayout = (props: Props) => {
             style={{
                 backgroundColor: theme.nEUTRALPrimary,
                 minHeight: '100vh',
-                paddingTop: 64,
+                paddingTop: isNotShowHeader ? 0 : 64,
                 paddingBottom: 100,
             }}
         >
-            <div
-                style={{
-                    position: 'fixed',
-                    top: 0,
-                    width: '100%',
-                    zIndex: 1000,
-                }}
-            >
-                <Header
+            {!isNotShowHeader && (
+                <div
                     style={{
-                        padding: 0,
-                        display: 'flex',
-                        paddingRight: 20,
-                        alignItems: 'center',
-                        height: 56,
-                        background: theme.nEUTRALPrimary,
-                        paddingInline: 16,
-                        justifyContent: 'space-between',
-                        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Added box-shadow
+                        position: 'fixed',
+                        top: 0,
+                        width: '100%',
+                        zIndex: 1000,
                     }}
                 >
-                    <Link
-                        to={BASE_ROUTER.HOME}
+                    <Header
                         style={{
-                            cursor: 'pointer',
-                            height: 36,
+                            padding: 0,
                             display: 'flex',
+                            paddingRight: 20,
                             alignItems: 'center',
-                            gap: 10,
+                            height: 56,
+                            background: theme.nEUTRALPrimary,
+                            paddingInline: 16,
+                            justifyContent: 'space-between',
+                            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Added box-shadow
                         }}
                     >
-                        <HomeIcon />
-                        <span style={{ fontSize: 20 }}>Home</span>
-                    </Link>
-                    <Row style={{ gap: 10 }} align={'middle'}>
-                        {/* <BellIcon />
+                        <Link
+                            to={BASE_ROUTER.HOME}
+                            style={{
+                                cursor: 'pointer',
+                                height: 36,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 10,
+                            }}
+                        >
+                            <HomeIcon />
+                            <span style={{ fontSize: 20 }}>Home</span>
+                        </Link>
+                        <Row style={{ gap: 10 }} align={'middle'}>
+                            {/* <BellIcon />
                             <HelpIcon /> */}
-                        {/* <Button onClick={toggleTheme} title="Change Theme" /> */}
-                        {isLogged && (
-                            <>
-                                {isMerchant && (
-                                    <Row align={'middle'} style={{ gap: 30 }}>
-                                        {!isMobile && (
-                                            <Button
-                                                type="primary"
-                                                onClick={() => openCashier()}
-                                            >
-                                                <Text
-                                                    style={{
-                                                        color: theme.nEUTRALPrimary,
-                                                        fontWeight: '600',
-                                                    }}
+                            {/* <Button onClick={toggleTheme} title="Change Theme" /> */}
+                            {isLogged && (
+                                <>
+                                    {isMerchant && (
+                                        <Row
+                                            align={'middle'}
+                                            style={{ gap: 30 }}
+                                        >
+                                            {!isMobile && (
+                                                <Button
+                                                    type="primary"
+                                                    onClick={() =>
+                                                        openCashier()
+                                                    }
                                                 >
-                                                    Open Cashier
-                                                </Text>
-                                            </Button>
-                                        )}
-                                        <SwitchContainer
+                                                    <Text
+                                                        style={{
+                                                            color: theme.nEUTRALPrimary,
+                                                            fontWeight: '600',
+                                                        }}
+                                                    >
+                                                        Open Cashier
+                                                    </Text>
+                                                </Button>
+                                            )}
+                                            <SwitchContainer
+                                                style={{
+                                                    display: 'flex',
+                                                    marginRight: 16,
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                {!isMobile && (
+                                                    <>
+                                                        <Text
+                                                            style={{
+                                                                fontSize: 18,
+                                                            }}
+                                                        >
+                                                            Table View
+                                                        </Text>
+
+                                                        <Switch
+                                                            defaultChecked={
+                                                                isTableView
+                                                            }
+                                                            onChange={() => {
+                                                                onToggleView();
+                                                            }}
+                                                            style={{
+                                                                marginLeft: 5,
+                                                                height: 32,
+                                                                width: 72,
+                                                            }}
+                                                        />
+                                                    </>
+                                                )}
+                                            </SwitchContainer>
+                                        </Row>
+                                    )}
+                                    <Popover
+                                        content={noti}
+                                        title={notiTitle}
+                                        trigger="click"
+                                        open={isOpenNoti}
+                                        onOpenChange={handleOpenChangeNoti}
+                                        overlayInnerStyle={{
+                                            background: '#fff',
+                                        }}
+                                        placement="bottomRight"
+                                    >
+                                        <div
                                             style={{
                                                 display: 'flex',
-                                                marginRight: 16,
                                                 alignItems: 'center',
                                             }}
                                         >
-                                            {!isMobile && (
-                                                <>
-                                                    <Text
-                                                        style={{ fontSize: 18 }}
-                                                    >
-                                                        Table View
-                                                    </Text>
-
-                                                    <Switch
-                                                        defaultChecked={
-                                                            isTableView
-                                                        }
-                                                        onChange={() => {
-                                                            onToggleView();
-                                                        }}
-                                                        style={{
-                                                            marginLeft: 5,
-                                                            height: 32,
-                                                            width: 72,
-                                                        }}
-                                                    />
-                                                </>
-                                            )}
-                                        </SwitchContainer>
-                                    </Row>
-                                )}
-                                <Popover
-                                    content={noti}
-                                    title={notiTitle}
-                                    trigger="click"
-                                    open={isOpenNoti}
-                                    onOpenChange={handleOpenChangeNoti}
-                                    overlayInnerStyle={{
-                                        background: '#fff',
-                                    }}
-                                    placement="bottomRight"
-                                >
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <BellIcon />
-                                    </div>
-                                </Popover>
-                                <DrawerMenu />
-                            </>
-                        )}
-                    </Row>
-                </Header>
-            </div>
-
+                                            <BellIcon />
+                                        </div>
+                                    </Popover>
+                                    <DrawerMenu />
+                                </>
+                            )}
+                        </Row>
+                    </Header>
+                </div>
+            )}
             <div style={{ width: '100%' }}>{children}</div>
             {isLogged && !isMobile && (
                 <div

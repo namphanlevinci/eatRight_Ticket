@@ -29,6 +29,7 @@ export type ReceiptTotal = {
 export type ReceiptItem = {
     id: string;
     increment_id: string;
+    order_id: string;
     order_increment_id: string;
     created_at: string;
     status: string;
@@ -73,6 +74,7 @@ export const gql_ReceiptHistory = gql`
                 id
                 increment_id
                 order_increment_id
+                order_id
                 created_at
                 status
                 payment_method {
@@ -154,6 +156,7 @@ export type Total = {
 export type ReceiptDetail = {
     increment_id: string;
     order_increment_id: string;
+    order_id: string;
     customer_phone_number: string;
     restaurant_name: string;
     restaurant_address: string;
@@ -190,6 +193,7 @@ export const gqlGetReceiptDetail = gql`
         merchantGetReceipt(invoice_number: $invoice_number) {
             increment_id
             order_increment_id
+            order_id
             customer_phone_number
             restaurant_name
             restaurant_address
