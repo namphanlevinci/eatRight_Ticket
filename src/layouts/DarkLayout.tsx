@@ -83,6 +83,15 @@ export const DarkLayout = (props: Props) => {
                         'store_view_code',
                         res?.data?.getMerchantInfo?.store_view_code,
                     );
+                    if (window?.ReactNativeWebView) {
+                        window.ReactNativeWebView.postMessage(
+                            JSON.stringify({
+                                type: 'StoreCode',
+                                code: res?.data?.getMerchantInfo
+                                    ?.restaurant_code,
+                            }),
+                        );
+                    }
                 }
             });
             onGetRestaurent({ fetchPolicy: 'no-cache' }).then((res) => {
