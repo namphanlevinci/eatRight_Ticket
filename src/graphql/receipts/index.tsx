@@ -206,6 +206,7 @@ export const gqlGetReceiptDetail = gql`
             can_refund
             is_refunded
             is_bill_split
+            non_cash_amount
             payment_method {
                 title
                 card_type

@@ -6,8 +6,8 @@ export const Columns = (): TableColumnsType<ReceiptItem> => {
     return [
         {
             title: 'Receipt ID',
-            dataIndex: 'invoice_number',
-            key: 'invoice_number',
+            dataIndex: 'increment_id',
+            key: 'increment_id',
             width: 200,
             render: (batch_id) => {
                 return (

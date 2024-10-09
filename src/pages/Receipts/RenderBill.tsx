@@ -221,7 +221,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     Thank you for dining with us!
                 </TextDark>
                 <TextDark style={{ marginTop: 10 }}>
-                    Feedback/Contact us: {data?.feedback_url}
+                    Feedback/Contact us: {data?.website_url}
                 </TextDark>
                 <div style={{ height: 24 }} />
             </div>
