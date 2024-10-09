@@ -448,6 +448,14 @@ export const BaseRouter = () => {
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path={BASE_ROUTER.RECEIPTS}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.ReceiptsContainer />
+                        </PrivateRoute>
+                    }
+                />
                 <Route path={'*'} element={<Page404 />} />
             </Routes>
         </Suspense>

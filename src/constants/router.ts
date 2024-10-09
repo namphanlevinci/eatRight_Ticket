@@ -46,4 +46,5 @@ export const BASE_ROUTER = {
     TRANSACTIONS: '/transactions',
     SALES_REPORT: '/report',
     REPORT_BY_PAYMENT: '/report/:method',
+    RECEIPTS: '/receipts',
 };

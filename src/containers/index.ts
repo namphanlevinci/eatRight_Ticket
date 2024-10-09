@@ -57,6 +57,7 @@ export const containers = {
     TerminalDetail: lazy(
         () => import('containers/RestaurentManagement/TerminalDetailSetting'),
     ),
+    ReceiptsContainer: lazy(() => import('containers/Receipts')),
 };
 
 export default containers;
