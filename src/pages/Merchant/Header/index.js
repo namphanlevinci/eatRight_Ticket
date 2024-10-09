@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { CheckOutlined } from '@ant-design/icons';
-import { Badge, Popover, Row, Col, Switch, Button, Checkbox } from 'antd';
+import { Badge, Popover, Row, Col, Switch, Button } from 'antd';
 
 import moment from 'dayjs';
 import React, { useState, useEffect } from 'react';
@@ -28,9 +28,10 @@ import { useDispatch } from 'react-redux';
 import HomeIconMerchant from '../assets/icons/homeIconMerchant';
 import FilterIcon from '../assets/FilterIcon';
 import DownIcon from '../assets/downIcon';
+import CheckBoxOption from '../components/CheckBoxOption';
 
 function Header(props) {
-    const { setSearchValue, isSearch } = props;
+    const { setSearchValue, isSearch, onFilterChange } = props;
     const history = useNavigate();
     const [listNotifications, setListNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -225,15 +226,45 @@ function Header(props) {
     };
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     const dispatch = useDispatch();
+    const [fillter, setFillter] = useState({
+        dine_in: localStorage.getItem('is_dine_in') !== 'false',
+        eat_out: localStorage.getItem('is_eat_out') !== 'false',
+    });
+    useEffect(() => {
+        onFilterChange(fillter);
+    }, [fillter]);
     const content = (
         <div style={{ width: 200 }}>
-            <Row style={{ height: 30, alignItems: 'center', gap: 12 }}>
-                <Checkbox />
-                Hello world
+            <Row
+                style={{
+                    alignItems: 'center',
+                    gap: 12,
+                }}
+            >
+                <CheckBoxOption
+                    isChecked={fillter.dine_in}
+                    name="Dine-in"
+                    onChange={(value) => {
+                        setFillter({
+                            ...fillter,
+                            dine_in: value,
+                        });
+                        localStorage.setItem('is_dine_in', value.toString());
+                    }}
+                />
             </Row>
-            <Row style={{ height: 30, alignItems: 'center', gap: 12 }}>
-                <Checkbox />
-                Hello world
+            <Row style={{ alignItems: 'center', gap: 12 }}>
+                <CheckBoxOption
+                    isChecked={fillter.eat_out}
+                    name="Eat Out"
+                    onChange={(value) => {
+                        setFillter({
+                            ...fillter,
+                            eat_out: value,
+                        });
+                        localStorage.setItem('is_eat_out', value.toString());
+                    }}
+                />
             </Row>
         </div>
     );
