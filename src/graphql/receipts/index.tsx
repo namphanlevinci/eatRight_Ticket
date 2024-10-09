@@ -28,8 +28,8 @@ export type ReceiptTotal = {
 
 export type ReceiptItem = {
     id: string;
-    invoice_number: string;
-    order_number: string;
+    increment_id: string;
+    order_increment_id: string;
     created_at: string;
     status: string;
     payment_method: ReceiptPaymentMethod;
@@ -71,8 +71,8 @@ export const gql_ReceiptHistory = gql`
         ) {
             items {
                 id
-                invoice_number
-                order_number
+                increment_id
+                order_increment_id
                 created_at
                 status
                 payment_method {

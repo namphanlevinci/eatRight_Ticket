@@ -138,7 +138,7 @@ const useReceipts = () => {
         if (selectData) {
             getReceiptDetail({
                 variables: {
-                    invoice_number: selectData.invoice_number,
+                    invoice_number: selectData.increment_id,
                 },
             });
         }
