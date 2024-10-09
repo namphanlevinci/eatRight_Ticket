@@ -226,12 +226,12 @@ function Header(props) {
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     const dispatch = useDispatch();
     const content = (
-        <div>
-            <Row>
+        <div style={{ width: 200 }}>
+            <Row style={{ height: 30, alignItems: 'center', gap: 12 }}>
                 <Checkbox />
                 Hello world
             </Row>
-            <Row>
+            <Row style={{ height: 30, alignItems: 'center', gap: 12 }}>
                 <Checkbox />
                 Hello world
             </Row>
@@ -290,11 +290,7 @@ function Header(props) {
                             />
                         )}
                         {isSearch && (
-                            <Popover
-                                content={content}
-                                title="Title"
-                                trigger="click"
-                            >
+                            <Popover content={content} title="" trigger="click">
                                 <div
                                     style={{
                                         height: 46,
@@ -305,6 +301,7 @@ function Header(props) {
                                         display: 'flex',
                                         justifyContent: 'space-around',
                                         alignItems: 'center',
+                                        marginLeft: 24,
                                     }}
                                 >
                                     <FilterIcon />
