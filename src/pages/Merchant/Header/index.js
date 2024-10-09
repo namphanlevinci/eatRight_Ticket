@@ -231,7 +231,9 @@ function Header(props) {
         eat_out: localStorage.getItem('is_eat_out') !== 'false',
     });
     useEffect(() => {
-        onFilterChange(fillter);
+        if (onFilterChange) {
+            onFilterChange(fillter);
+        }
     }, [fillter]);
     const content = (
         <div style={{ width: 200 }}>
