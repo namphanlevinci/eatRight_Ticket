@@ -30,6 +30,7 @@ export default function UpDownNumberV2({
                     }}
                     onCancel={() => setShowModal(false)}
                     defaultValue={quantity.toString()}
+                    type="numeric"
                 />
             )}
             <Row align={'middle'}>
