@@ -175,6 +175,7 @@ export type ReceiptDetail = {
     items: ReceiptItem[];
     total: Total;
     feedback_url?: string;
+    invoice_image?: string;
 };
 
 // Kiểu cho phản hồi của truy vấn
@@ -201,6 +202,7 @@ export const gqlGetReceiptDetail = gql`
             order_type
             serve_name
             customer_name
+            invoice_image
             website_url
             terminal_name
             can_refund

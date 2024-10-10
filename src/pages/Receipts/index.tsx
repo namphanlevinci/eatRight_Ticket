@@ -221,9 +221,7 @@ export default function ReceiptsPage() {
                                         title="Print"
                                         onPress={() =>
                                             PrintBillApi(
-                                                receiptDetail
-                                                    ?.merchantGetReceipt
-                                                    ?.increment_id || '',
+                                                receiptDetail?.merchantGetReceipt,
                                             )
                                         }
                                         isSmall

@@ -18,7 +18,11 @@ export const PAY_SPLIT_BILL_POS_DJV = gql`
     }
 `;
 export const PAY_SPLITBILL = gql`
-    mutation ($invoice_number: String!, $payment_method: String!, $po_number: String) {
+    mutation (
+        $invoice_number: String!
+        $payment_method: String!
+        $po_number: String
+    ) {
         merchantPayInvoice(
             input: {
                 invoice_number: $invoice_number
@@ -30,6 +34,7 @@ export const PAY_SPLITBILL = gql`
                 id
                 number
                 state
+                invoice_image
                 total {
                     subtotal {
                         value

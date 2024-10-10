@@ -34,6 +34,13 @@ export const BaseRouter = () => {
     const [urlParams] = useSearchParams();
     const navigate = useNavigate();
     const location = useLocation();
+    const sendReactNativeLogout = () => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: 'logout' }),
+            );
+        }
+    };
     useEffect(() => {
         if (isMerchant) {
             document.title = 'EatRight Merchant';
@@ -71,6 +78,7 @@ export const BaseRouter = () => {
                 );
             } else {
                 dispatch(updateStatusLogin());
+                sendReactNativeLogout();
             }
 
             const { pathname } = location;
@@ -129,6 +137,7 @@ export const BaseRouter = () => {
                 onOk: () => {
                     setNeedLogout(false);
                     dispatch(updateStatusLogout());
+                    sendReactNativeLogout();
                     Modal.destroyAll();
                 },
                 centered: true,
