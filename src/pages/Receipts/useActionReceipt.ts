@@ -21,10 +21,20 @@ export default function useActionReceipt() {
     const [onSendBillToPhone, { loading: sendLoading2 }] = useMutation(
         SEND_RECEIPT_TO_PHONENUMBER,
     );
-    const PrintBillApi = (invoice_number: string) => {
+    const PrintBillApi = (data: ReceiptDetail | undefined) => {
+        if (!data) {
+            return;
+        }
+        if (window?.ReactNativeWebView) {
+            const imageUrl = data.invoice_image;
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
+            );
+            return;
+        }
         onPrintBill({
             variables: {
-                invoice_number: invoice_number,
+                invoice_number: data.increment_id,
             },
         })
             .then(() => {

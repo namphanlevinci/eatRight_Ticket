@@ -138,6 +138,13 @@ export default function DrawerMenu() {
     }, [isMerchant]);
     const [modal, contextHolder] = Modal.useModal();
     const dispatch = useDispatch();
+    const sendReactNativeLogout = () => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: 'logout' }),
+            );
+        }
+    };
     const onLogout = async () => {
         const confirmed = await modal.confirm({
             title: 'Are you sure to logout ?',
@@ -146,6 +153,7 @@ export default function DrawerMenu() {
         });
         if (confirmed) {
             dispatch(updateStatusLogout());
+            sendReactNativeLogout();
         }
     };
     const { theme } = useTheme();
@@ -212,13 +220,6 @@ export default function DrawerMenu() {
                                 if (item?.isGo) {
                                     window.location.href = item.to;
                                     return;
-                                }
-                                if (item?.sendToReactNative) {
-                                    if (window?.ReactNativeWebView) {
-                                        window.ReactNativeWebView.postMessage(
-                                            'openMenu',
-                                        );
-                                    }
                                 }
                                 navigation(item.to);
                             }}
