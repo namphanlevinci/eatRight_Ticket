@@ -82,11 +82,6 @@ export default function AddNewCustomer() {
                 onSubmit={() => navigation(-1)}
                 yesBtnText="Yes, cancel"
             />
-            <Header
-                rootTitle="Customer Information"
-                title="Add New Customer"
-                rootUrl={BASE_ROUTER.CUSTOMER_LIST}
-            />
             <Form
                 name="basic"
                 initialValues={{ remember: true }}

@@ -543,18 +543,6 @@ export default function index() {
                 }}
                 type="tel"
             />
-            <Row
-                style={{ marginBlock: 10, position: 'relative' }}
-                align={'middle'}
-            >
-                <Link to={BASE_ROUTER.HOME}>
-                    <BreadCrum>Home</BreadCrum>
-                </Link>
-                <ArrowRightIcon />
-                <Link to={BASE_ROUTER.BILL}>
-                    <BreadCrum>Receipts</BreadCrum>
-                </Link>
-            </Row>
             <Container
                 style={{
                     background: theme.pRIMARY1,
