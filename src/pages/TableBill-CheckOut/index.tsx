@@ -67,6 +67,16 @@ export default function TableSplitBillCheckOut() {
             }
         };
     }, [loadingPosResult, intervalId]);
+    const PrintMerchantCopy = (url: string) => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'merchant',
+                    url: url,
+                }),
+            );
+        }
+    };
     const handlePayment = (
         paymentMethod: string,
         po_number?: string | undefined | null,
@@ -102,6 +112,7 @@ export default function TableSplitBillCheckOut() {
                                 return value;
                             }),
                         };
+                        PrintMerchantCopy(result.invoice_image);
                         setData(newData);
                         localStorage.setItem(
                             'split_bill_data',
@@ -154,7 +165,7 @@ export default function TableSplitBillCheckOut() {
             },
         }).catch((err) => {
             console.log(err);
-        }).catch;
+        });
     };
     const handlePaymentWithPOSDJV = (id: any) => {
         setLoading(true);
@@ -167,7 +178,7 @@ export default function TableSplitBillCheckOut() {
         })
             .then(() => {
                 showModalSuccess();
-                ReloadInvoice();
+                ReloadInvoice({ printInVoice: selectGuest?.number });
             })
             .catch((err) => {
                 console.log(err);
@@ -183,7 +194,7 @@ export default function TableSplitBillCheckOut() {
             }
             if (msg?.additional_data?.payment_status === 'success') {
                 showModalSuccess();
-                ReloadInvoice();
+                ReloadInvoice({});
             } else {
                 setLoading(false);
                 showError(msg?.message);
@@ -194,7 +205,7 @@ export default function TableSplitBillCheckOut() {
             emitter.off('arise_result');
         };
     }, [selectGuest]);
-    const ReloadInvoice = () => {
+    const ReloadInvoice = ({ printInVoice }: { printInVoice?: string }) => {
         onGetInvoices({
             variables: {
                 OrderNumber: data.order.order_number,
@@ -204,6 +215,16 @@ export default function TableSplitBillCheckOut() {
             .then((res) => {
                 const newData = res?.data?.merchantGetOrderInvoices;
                 setData(newData);
+                if (printInVoice) {
+                    const FindInvoice = newData.invoice.find(
+                        (value: InvoiceWithSplit) =>
+                            value.number === printInVoice,
+                    );
+                    if (FindInvoice) {
+                        PrintMerchantCopy(FindInvoice.invoice_image);
+                    }
+                }
+
                 localStorage.setItem(
                     'split_bill_data',
                     JSON.stringify(newData),

@@ -5,7 +5,11 @@ import { useCart } from 'context/cartContext';
 import { CartItemType, ItemType } from 'context/cartType';
 import { GET_CART_BY_ID } from 'graphql/cart/getCart';
 import { PLACE_ORDER, SET_TIPS } from 'graphql/cart/placeOrder';
-import { SPLIT_BILL_BY_ITEM, SPLIT_BILL_EVENLY } from 'graphql/cart/splitBill';
+import {
+    GET_INVOICES,
+    SPLIT_BILL_BY_ITEM,
+    SPLIT_BILL_EVENLY,
+} from 'graphql/cart/splitBill';
 import { emitter } from 'graphql/client';
 import { CANCEL_CHECKOUT } from 'graphql/orders/cancelCheckout';
 import {
@@ -102,6 +106,7 @@ export const useTableBill = (isGoBack = true) => {
         navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${orderInfo?.order_id}`);
     };
     const showModalSuccess = (order_id: string, isGoToTable = true) => {
+        PrintMerchantCopy(dataInvoices?.createMerchantOrder.order.order_number);
         modal.success({
             title: !isGoToTable ? 'Payment Success' : 'Check Out Success',
             centered: true,
@@ -163,6 +168,17 @@ export const useTableBill = (isGoBack = true) => {
                 });
             });
     };
+    const PrintMerchantCopy = (url: string) => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'merchant',
+                    url: url,
+                }),
+            );
+        }
+    };
+    const [onGetInvoices, { data: dataInvoices }] = useLazyQuery(GET_INVOICES);
     const handleCheckOut = async () => {
         placeOrder({
             variables: {
@@ -173,22 +189,39 @@ export const useTableBill = (isGoBack = true) => {
             },
         })
             .then((res) => {
-                if (paymentMethod === 'cashondelivery') {
-                    navigation(
-                        `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data.createMerchantOrder.order.order_id}`,
-                    );
-                    emitter.emit('REPAYMENT_SUCCESS');
-                } else if (paymentMethod === 'pos') {
-                    setVisibleMoalPos(true);
-                    setOrderInfo(res.data.createMerchantOrder.order);
-                } else if (paymentMethod === 'pos_djv') {
-                    setVisibleMoalPosDJV(true);
-                    setOrderInfo(res.data.createMerchantOrder.order);
-                } else {
-                    showModalAlertPayment(
-                        res.data.createMerchantOrder.order.order_id,
-                    );
-                }
+                onGetInvoices({
+                    variables: {
+                        OrderNumber:
+                            res.data.createMerchantOrder.order.order_number,
+                    },
+                })
+                    .then((invoices) => {
+                        if (paymentMethod === 'cashondelivery') {
+                            navigation(
+                                `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data.createMerchantOrder.order.order_id}`,
+                            );
+                            PrintMerchantCopy(
+                                invoices.data?.merchantGetOrderInvoices
+                                    ?.invoice[0]?.invoice_image,
+                            );
+                            emitter.emit('REPAYMENT_SUCCESS');
+                        } else if (paymentMethod === 'pos') {
+                            setVisibleMoalPos(true);
+                            setOrderInfo(res.data.createMerchantOrder.order);
+                        } else if (paymentMethod === 'pos_djv') {
+                            setVisibleMoalPosDJV(true);
+                            setOrderInfo(res.data.createMerchantOrder.order);
+                        } else {
+                            showModalAlertPayment(
+                                res.data.createMerchantOrder.order.order_id,
+                            );
+                        }
+                    })
+                    .catch(() => {
+                        showModalErrorPayment(
+                            res.data.createMerchantOrder.order.order_id,
+                        );
+                    });
             })
             .catch((err) => {
                 console.log(err);
