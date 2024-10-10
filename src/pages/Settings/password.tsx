@@ -11,6 +11,13 @@ export default function SettingPasswordPage() {
     const [changePassword, { loading }] = useMutation(CHANGE_PASSWORD);
     const { modal } = App.useApp();
     const dispatch = useDispatch();
+    const sendReactNativeLogout = () => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: 'logout' }),
+            );
+        }
+    };
     const handleChangePassword = (values: {
         oldPassword: string;
         password: string;
@@ -28,6 +35,7 @@ export default function SettingPasswordPage() {
                 centered: true,
                 onOk: () => {
                     dispatch(updateStatusLogout());
+                    sendReactNativeLogout();
                 },
             });
         });

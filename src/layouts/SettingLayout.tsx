@@ -27,6 +27,13 @@ export default function SettingLayout(props: Props) {
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
     const isSelected = location.pathname.includes('/settings/');
+    const sendReactNativeLogout = () => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: 'logout' }),
+            );
+        }
+    };
     return (
         <DarkLayout>
             {contextHolder}
@@ -79,6 +86,7 @@ export default function SettingLayout(props: Props) {
                                         await modal.confirm(config);
                                     if (confirmed) {
                                         dispatch(updateStatusLogout());
+                                        sendReactNativeLogout();
                                     }
                                 }}
                             />
