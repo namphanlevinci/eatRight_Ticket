@@ -28,12 +28,6 @@ export default function CustomerDetail() {
                 padding: 20,
             }}
         >
-            <Header
-                rootTitle="Customer Information"
-                rootUrl={BASE_ROUTER.CUSTOMER_LIST}
-                title="Customer Detail"
-            />
-
             <Row style={isMobile ? { flexDirection: 'column' } : {}}>
                 <Col style={{ width: 260 }}>
                     <Row>
