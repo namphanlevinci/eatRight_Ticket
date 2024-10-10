@@ -32,7 +32,10 @@ const useReportByPayment = () => {
         variables: {
             date_from: startDate,
             date_to: endDate,
-            method: method?.toUpperCase() as string,
+            method:
+                method?.toUpperCase() === 'OTHERS'
+                    ? 'OTHER'
+                    : (method?.toUpperCase() as string),
             currentPage,
             pageSize,
             field: sorter?.field as string,
@@ -92,6 +95,7 @@ const useReportByPayment = () => {
         const namesForted = {
             cash: 'Cash',
             credit_card: 'Credit Card',
+            others: 'Others',
         };
         return namesForted[keyItem];
     };
