@@ -14,10 +14,6 @@ import ModalInput from 'components/modal/ModalInput';
 import { useState } from 'react';
 import useActionReceipt from './useActionReceipt';
 import LoadingModal from 'components/modal/loadingModal';
-import { useSelector } from 'react-redux';
-import { RootState } from 'store';
-import { useNavigate } from 'react-router';
-import { BASE_ROUTER } from 'constants/router';
 const { RangePicker } = DatePicker;
 
 const windowHeight = window.innerHeight;
@@ -47,16 +43,9 @@ export default function ReceiptsPage() {
         loadingPrint,
         onRefund,
     } = useActionReceipt();
-    const { isMerchant } = useSelector((state: RootState) => state.auth);
     const rowClassNameSelect = (record: ReceiptItem) => {
-        return record.id === selectData?.id
-            ? isMerchant
-                ? 'highlight-row'
-                : 'highlight-row-waiter'
-            : '';
+        return record.id === selectData?.id ? 'highlight-row' : '';
     };
-    const navigation = useNavigate();
-
     return (
         <Spin spinning={loading}>
             <LoadingModal showLoading={loadingAction} />
@@ -107,7 +96,7 @@ export default function ReceiptsPage() {
                 }}
                 type="email"
             />
-            {isMerchant && <Header />}
+            <Header />
             <div
                 style={{
                     display: 'flex',
@@ -115,7 +104,6 @@ export default function ReceiptsPage() {
                     paddingTop: 12,
                     alignItems: 'center',
                     justifyContent: 'flex-end',
-                    paddingInline: 16,
                 }}
             >
                 <RangePicker
@@ -173,7 +161,7 @@ export default function ReceiptsPage() {
                             rowKey="order_number"
                             columns={Columns()}
                             dataSource={data?.merchantGetListReceipt.items}
-                            className={`table-menu-${!isMerchant && 'waiter'}`}
+                            className="table-menu"
                             rowClassName={rowClassNameSelect}
                             scroll={{ y: windowHeight - 300 }}
                             pagination={{
@@ -186,14 +174,7 @@ export default function ReceiptsPage() {
                             onRow={(record) => {
                                 return {
                                     onClick: () => {
-                                        if (isMerchant) {
-                                            setSelectData(record);
-                                        } else {
-                                            navigation(
-                                                BASE_ROUTER.BILL_DETAIL +
-                                                    `?order_id=${record?.order_id}`,
-                                            );
-                                        }
+                                        setSelectData(record);
                                     },
                                 };
                             }}
