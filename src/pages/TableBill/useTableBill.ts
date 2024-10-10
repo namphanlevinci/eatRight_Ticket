@@ -173,7 +173,7 @@ export const useTableBill = (isGoBack = true) => {
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({
                     type: 'merchant',
-                    url: url,
+                    imageUrl: url,
                 }),
             );
         }

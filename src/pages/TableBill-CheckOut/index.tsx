@@ -72,7 +72,7 @@ export default function TableSplitBillCheckOut() {
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({
                     type: 'merchant',
-                    url: url,
+                    imageUrl: url,
                 }),
             );
         }
