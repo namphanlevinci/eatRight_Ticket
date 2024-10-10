@@ -235,12 +235,23 @@ export default function ReceiptsPage() {
                                         isSmall
                                     />
                                     {receiptDetail?.merchantGetReceipt
-                                        ?.can_refund && (
+                                        ?.can_void ? (
                                         <ButtonBill
                                             title="Void"
                                             isSmall
                                             onPress={() => setModalRefund(true)}
                                         />
+                                    ) : (
+                                        receiptDetail?.merchantGetReceipt
+                                            ?.can_refund && (
+                                            <ButtonBill
+                                                title="Refund"
+                                                isSmall
+                                                onPress={() =>
+                                                    setModalRefund(true)
+                                                }
+                                            />
+                                        )
                                     )}
                                 </div>
                             </div>

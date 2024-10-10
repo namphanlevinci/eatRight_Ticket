@@ -102,6 +102,18 @@ export default function useActionReceipt() {
     const [onRefundOrder, { loading: refund4Loading }] =
         useMutation(API_REFUND_ORDER);
 
+    /*************  ✨ Codeium Command ⭐  *************/
+    /**
+     * This function is used to refund money to customer.
+     * @param {{
+     *  reason: string,
+     *  data: ReceiptDetail,
+     *  GetDataWithId: any,
+     * }} param0
+     * @return {*}
+     */
+
+    /******  0803ddd9-6159-445a-8dcd-9c7abc2442d4  *******/
     const onRefund = ({
         reason,
         data,
@@ -119,7 +131,7 @@ export default function useActionReceipt() {
                 if (data.is_bill_split) {
                     if (
                         data?.payment_method &&
-                        data?.payment_method.method === 'pos'
+                        data?.payment_method.title !== 'Cash'
                     ) {
                         onRefundInvoicePos({
                             variables: {
@@ -157,7 +169,7 @@ export default function useActionReceipt() {
                 } else {
                     if (
                         data?.order_increment_id &&
-                        data?.payment_method.method === 'pos'
+                        data?.payment_method.title !== 'Cash'
                     ) {
                         onRefundOrderPos({
                             variables: {

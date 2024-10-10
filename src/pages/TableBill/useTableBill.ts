@@ -277,7 +277,7 @@ export const useTableBill = (isGoBack = true) => {
                     );
                 }
             })
-            .catch((err) => {
+            .catch(() => {
                 onCancelCheckout({
                     variables: {
                         cart_id: orderDetail?.cart_id,

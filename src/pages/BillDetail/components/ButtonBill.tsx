@@ -25,7 +25,7 @@ export const ButtonBill = ({
             <SMSIcon />
         ) : title === 'Email' ? (
             <EmailIcon />
-        ) : title === 'Void' ? (
+        ) : title === 'Void' || title === 'Refund' ? (
             <VoidIcon />
         ) : null;
     };

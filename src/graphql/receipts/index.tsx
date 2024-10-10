@@ -168,6 +168,7 @@ export type ReceiptDetail = {
     website_url: string;
     terminal_name: string;
     can_refund: boolean;
+    can_void: boolean;
     is_refunded: boolean;
     is_bill_split: boolean;
     payment_method: PaymentMethod;
@@ -204,6 +205,7 @@ export const gqlGetReceiptDetail = gql`
             website_url
             terminal_name
             can_refund
+            can_void
             is_refunded
             is_bill_split
             non_cash_amount
