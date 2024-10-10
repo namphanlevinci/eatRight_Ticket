@@ -81,7 +81,7 @@ const Index = () => {
     };
 
     const onFinish = (values: any) => {
-        if (data?.kitchen_station !== values?.kitchen_station) {
+        if (data?.kitchen_station !== values?.kitchen_station && categoryId) {
             setShowModalChangeStation(true);
             return;
         }
