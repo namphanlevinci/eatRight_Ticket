@@ -378,12 +378,27 @@ const Index = () => {
                                         }}
                                         placeholder="Select a group"
                                         defaultActiveFirstOption
+                                        onSelect={(value) => console.log(value)}
                                     >
-                                        {menuList?.map?.((m: any) => (
-                                            <Option key={m?.id} value={m?.id}>
-                                                {m?.name}
-                                            </Option>
-                                        ))}
+                                        {menuList?.map?.((m: any) => {
+                                            return (
+                                                <Option
+                                                    key={m?.id}
+                                                    value={m?.id}
+                                                >
+                                                    <div
+                                                        onClick={() => {
+                                                            form.setFieldValue(
+                                                                'kitchen_station',
+                                                                `${m?.kitchen_station}`,
+                                                            );
+                                                        }}
+                                                    >
+                                                        {m?.name}
+                                                    </div>
+                                                </Option>
+                                            );
+                                        })}
                                     </Select>
                                 </Form.Item>
                             </Col>
