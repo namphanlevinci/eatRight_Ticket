@@ -25,6 +25,7 @@ export const GET_CATEGORY_LIST = gql`
                 is_active
                 description
                 product_count
+                kitchen_station
                 menus {
                     entity_id
                     name
