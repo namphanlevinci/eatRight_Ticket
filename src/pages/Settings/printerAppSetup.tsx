@@ -1,6 +1,8 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { Layout, notification, Row, Switch } from 'antd';
+import { Button, Layout, notification, Row, Switch } from 'antd';
+import RadioBtnSelected from 'assets/icons/radioBtnSelected';
 import { Text } from 'components/atom/Text';
+import { useTheme } from 'context/themeContext';
 
 import { POS_DEVICE_LIST_DJV } from 'graphql/orders/paymentMethod';
 import {
@@ -32,6 +34,10 @@ export default function PrinterAppSetUpPage() {
     const [onSetTerminalPrinter] = useMutation(SELECT_TERMINAL_PRINTER_DEVICE);
     const [list, setList] = useState<any>([]);
     const [selectedOption, setSelectedOption] = useState<any>(null);
+    const { theme } = useTheme();
+    const handleChange = (item: any): void => {
+        setSelectedOption(item);
+    };
     const OpenMenuPrinter = () => {
         if (window?.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(
@@ -143,7 +149,7 @@ export default function PrinterAppSetUpPage() {
     const RenderEPSONPrinter = () => {
         return (
             <div style={{ paddingTop: 8 }}>
-                {/* {list?.map?.((Printer: any) => (
+                {list?.map?.((Printer: any) => (
                     <Button
                         key={`Printer ${Printer?.id}`}
                         style={{
@@ -173,10 +179,17 @@ export default function PrinterAppSetUpPage() {
                         </div>
                         <Text>{Printer?.printer_name}</Text>
                     </Button>
-                ))} */}
-
+                ))}
                 <ButtonSubmit
                     title="Select Printer"
+                    onClick={handleOk}
+                    loading={loading}
+                />
+                {printerFromReactNative && (
+                    <Text>Connected Printer : {printerFromReactNative}</Text>
+                )}
+                <ButtonSubmit
+                    title="Select Printer (New Version)"
                     onClick={OpenMenuPrinter}
                     loading={loading}
                 />
@@ -186,7 +199,7 @@ export default function PrinterAppSetUpPage() {
     const RenderTerminalPrinter = () => {
         return (
             <div style={{ paddingTop: 8 }}>
-                {/* {posDeviceList?.map?.((Printer: any) => (
+                {posDeviceList?.map?.((Printer: any) => (
                     <Button
                         key={`Printer ${Printer?.entity_id}`}
                         style={{
@@ -217,10 +230,8 @@ export default function PrinterAppSetUpPage() {
                         </div>
                         <Text>{Printer?.name}</Text>
                     </Button>
-                ))} */}
-                {printerFromReactNative && (
-                    <Text>Connected Printer : {printerFromReactNative}</Text>
-                )}
+                ))}
+
                 <ButtonSubmit
                     title="Select"
                     onClick={handleOk}
