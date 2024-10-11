@@ -18,6 +18,7 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
     const [counterTable, setCounterTable] = useState<any>();
     const [searchText, setSearchText] = useState('');
     const fetchTableData = () => {
+        console.log('getTable call from Home');
         if (restaurant_id) {
             if (floor && floor?.length > 0 && floorActive !== -1) {
                 onGetTableFloor({

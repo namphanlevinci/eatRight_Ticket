@@ -53,6 +53,7 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
     const getCartsTable = async () => {
         if (tableId) {
             setLoading(true);
+            console.log('call getCartByTable');
             const listCartId = await onGetCartByTable({
                 variables: {
                     tableId,
@@ -131,9 +132,7 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
                 cartItems[indexTable]?.carts,
                 filterCarts,
             ).forEach((item) => {
-                if (
-                    !isCartIdFromLocal(cartItems[indexTable].carts[item].id)
-                ) {
+                if (!isCartIdFromLocal(cartItems[indexTable].carts[item].id)) {
                     removeCartIndex(item);
                 }
             });
@@ -216,6 +215,6 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
         tableId,
         removeItemOnCartServer,
         updateStatusItemServer,
-        removeCartIndex
+        removeCartIndex,
     };
 };

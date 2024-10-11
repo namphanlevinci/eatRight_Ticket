@@ -157,7 +157,6 @@ export default function index() {
             }
         }
     }, [dataSplitBill]);
-    console.log({ dataSplitBill });
     const handleSendBill = (
         type: string,
         value: string,
