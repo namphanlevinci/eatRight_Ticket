@@ -12,6 +12,7 @@ import {
 } from 'graphql/orders/refund';
 import { PRINT_BILL } from 'graphql/printer';
 import { ReceiptDetail } from 'graphql/receipts';
+import { useEffect, useState } from 'react';
 
 export default function useActionReceipt() {
     const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
@@ -21,11 +22,20 @@ export default function useActionReceipt() {
     const [onSendBillToPhone, { loading: sendLoading2 }] = useMutation(
         SEND_RECEIPT_TO_PHONENUMBER,
     );
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        if (loading) {
+            setTimeout(() => {
+                setLoading(false);
+            }, 5000);
+        }
+    }, [loading]);
     const PrintBillApi = (data: ReceiptDetail | undefined) => {
         if (!data) {
             return;
         }
         if (window?.ReactNativeWebView) {
+            setLoading(true);
             const imageUrl = data.invoice_image;
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
@@ -220,7 +230,7 @@ export default function useActionReceipt() {
     };
     return {
         PrintBillApi,
-        loadingPrint,
+        loadingPrint: loadingPrint || loading,
         loading:
             sendLoading1 ||
             sendLoading2 ||

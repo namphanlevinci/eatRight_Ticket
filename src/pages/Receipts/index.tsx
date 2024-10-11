@@ -190,7 +190,7 @@ export default function ReceiptsPage() {
                             justifyContent: 'center',
                             alignItems: 'center',
                             overflow: 'scroll',
-                            height: windowHeight - 120,
+                            height: 'calc(100vh - 135px)',
                             background: 'var(--field-background)',
                             position: 'relative',
                         }}
@@ -198,7 +198,9 @@ export default function ReceiptsPage() {
                         {loadingReceipt ? (
                             <Spin />
                         ) : (
-                            <div style={{ position: 'relative' }}>
+                            <div
+                                style={{ position: 'relative', height: '100%' }}
+                            >
                                 {receiptDetail && (
                                     <RenderBill
                                         data={receiptDetail.merchantGetReceipt}
@@ -217,6 +219,11 @@ export default function ReceiptsPage() {
                                             '0px -4px 4px 0px rgba(0, 0, 0, 0.12)',
                                     }}
                                 >
+                                    <ButtonBill
+                                        title="Close"
+                                        onPress={() => setSelectData(undefined)}
+                                        isSmall
+                                    />
                                     <ButtonBill
                                         title="Print"
                                         onPress={() =>

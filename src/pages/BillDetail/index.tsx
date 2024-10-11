@@ -36,6 +36,8 @@ import {
     API_REFUND_ORDER_POS,
 } from 'graphql/orders/refund';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 declare global {
     interface Window {
         ReactNativeWebView?: {
@@ -61,6 +63,7 @@ export default function index() {
     const orderId = searchParams.get('orderId');
     const order_ID = searchParams.get('order_id');
     const [loadingPosResult, setLoadingPosResult] = useState(false);
+    const { isMerchant } = useSelector((state: RootState) => state.auth);
     let intervalId: any = null;
     useEffect(() => {
         if (loadingPosResult) {
@@ -689,7 +692,13 @@ export default function index() {
                                     border: `2px solid ${theme.pRIMARY6Primary}`,
                                     padding: '0 16px',
                                 }}
-                                onClick={() => navigation(BASE_ROUTER.BILL)}
+                                onClick={() => {
+                                    navigation(
+                                        isMerchant
+                                            ? BASE_ROUTER.RECEIPTS
+                                            : BASE_ROUTER.BILL,
+                                    );
+                                }}
                                 background={theme.nEUTRALPrimary}
                             >
                                 <TextDark
