@@ -38,6 +38,11 @@ import {
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
+import {
+    data_MerchantGetReceiptResponse,
+    gqlGetReceiptDetail,
+    var_ReceiptDetail,
+} from 'graphql/receipts';
 declare global {
     interface Window {
         ReactNativeWebView?: {
@@ -222,16 +227,36 @@ export default function index() {
     //     }
     // };
     const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
-
+    const [getReceiptDetail, { data: receiptDetail, loading: loadingReceipt }] =
+        useLazyQuery<data_MerchantGetReceiptResponse, var_ReceiptDetail>(
+            gqlGetReceiptDetail,
+            {
+                fetchPolicy: 'no-cache',
+            },
+        );
     const PrintBillApi = () => {
         if (window?.ReactNativeWebView) {
-            const imageUrl = selectDataShowbill
-                ? selectDataShowbill.invoice_image
-                : dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
-                      .invoice_image;
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
-            );
+            getReceiptDetail({
+                variables: {
+                    invoice_number: selectDataShowbill?.number,
+                },
+            })
+                .then((res) => {
+                    window?.ReactNativeWebView?.postMessage(
+                        JSON.stringify({
+                            type: 'Customer',
+                            imageUrl:
+                                res.data?.merchantGetReceipt.invoice_image,
+                        }),
+                    );
+                    notification.success({
+                        message: 'Receipt sent to printer',
+                        description: 'Please go to printer to take the bill!',
+                    });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
         }
         // else {
 
