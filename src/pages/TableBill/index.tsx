@@ -11,6 +11,7 @@ import { useTheme } from 'context/themeContext';
 import ModalOffSplitBill from 'components/modal/ModalOffSplitBill';
 import { useCartTable } from 'pages/Table/Cart/useGetCart';
 import LoadingModal from 'components/modal/loadingModal';
+import ModalPaySuccess from 'components/modal/ModalPaySuccess';
 export default function TableBill() {
     const { loading } = useCartTable(false, false);
     const {
@@ -135,6 +136,7 @@ export default function TableBill() {
                     SplitBillButton={SplitBillButton}
                 />
             </Row>
+            <ModalPaySuccess />
         </Layout>
     );
 }
