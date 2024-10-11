@@ -40,7 +40,7 @@ export default function useActionReceipt() {
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
             );
-            return;
+            // return;
         }
         onPrintBill({
             variables: {
