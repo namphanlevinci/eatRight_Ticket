@@ -37,7 +37,7 @@ const Index = () => {
     const [apiGetCategoryDetail] = useLazyQuery(GET_CATEGORY_DETAIL);
     const [apiGetMenu] = useLazyQuery(GET_MENU_LIST);
     const [apiGetKitchenStation] = useLazyQuery(GET_LIST_KITCHEN_STATION);
-    const [isToggled, setIsToggled] = useState(false);
+    const [isToggled, setIsToggled] = useState(true);
     const [data, setData] = useState<ICategory>();
     const [menuList, setMenuList] = useState<any>([]);
     const [isLoading, setLoading] = useState(false);
@@ -351,15 +351,18 @@ const Index = () => {
                             ]}
                         >
                             <Checkbox.Group>
-                                {menuList?.map?.((menu: any) => (
-                                    <Checkbox
-                                        className="custom-checkbox"
-                                        key={menu?.entity_id}
-                                        value={menu?.entity_id}
-                                    >
-                                        {menu?.name}
-                                    </Checkbox>
-                                ))}
+                                {menuList?.map?.(
+                                    (menu: any) =>
+                                        menu?.is_active && (
+                                            <Checkbox
+                                                className="custom-checkbox"
+                                                key={menu?.entity_id}
+                                                value={menu?.entity_id}
+                                            >
+                                                {menu?.name}
+                                            </Checkbox>
+                                        ),
+                                )}
                             </Checkbox.Group>
                         </Form.Item>
 

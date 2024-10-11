@@ -3,17 +3,17 @@ import { ColumnType } from 'antd/es/table'; // Adjust based on your library
 import { Image } from 'antd';
 
 export const ColumnsItem: ColumnType<any>[] = [
-    {
-        title: 'No.',
-        dataIndex: 'id',
-        sorter: true,
-        key: 'id',
-        render: (id) => (
-            <div style={{ color: '#1D2433', fontSize: 16 }}>{id}</div>
-        ),
-        width: '5%',
-        align: 'center', // Center align this column if needed
-    },
+    // {
+    //     title: 'No.',
+    //     dataIndex: 'id',
+    //     sorter: true,
+    //     key: 'id',
+    //     render: (id) => (
+    //         <div style={{ color: '#1D2433', fontSize: 16 }}>{id}</div>
+    //     ),
+    //     width: '5%',
+    //     align: 'center', // Center align this column if needed
+    // },
     {
         title: '',
         dataIndex: 'thumbnail',

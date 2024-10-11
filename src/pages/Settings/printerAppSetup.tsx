@@ -47,6 +47,15 @@ export default function PrinterAppSetUpPage() {
             );
         }
     };
+    const pushMsgOffPrinter = () => {
+        if (window?.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'MsgOffPrinter',
+                }),
+            );
+        }
+    };
     const handleOk = (): void => {
         if (selectedOption) {
             if (switchPrinterMode) {
@@ -64,6 +73,7 @@ export default function PrinterAppSetUpPage() {
                             'printer_id',
                             selectedOption?.id.toString(),
                         );
+                        pushMsgOffPrinter();
                     })
                     .catch(() => {
                         console.log('error');
@@ -92,6 +102,26 @@ export default function PrinterAppSetUpPage() {
             // onPressOK(selectedOption?.id);
         }
         // setVisibleMoalPrinter(false);
+    };
+    const handleSelectPrinter = (id: string) => {
+        onSetPrinterDevice({
+            variables: {
+                printer_id: id,
+            },
+        })
+            .then(() => {
+                notification.success({
+                    message: 'Success',
+                    description: 'Set up printer successfully',
+                });
+                localStorage.setItem(
+                    'printer_id',
+                    selectedOption?.id.toString(),
+                );
+            })
+            .catch(() => {
+                console.log('error');
+            });
     };
     useEffect(() => {
         onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then((res: any) => {
@@ -132,6 +162,16 @@ export default function PrinterAppSetUpPage() {
                 });
                 setPrinterFromReactNative(data.data.deviceName);
                 localStorage.setItem('printer_name', data.data.deviceName);
+                onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then(
+                    (res: any) => {
+                        const list = res?.data?.merchantGetListDevice?.prints;
+                        const printer = list.find(
+                            (item: any) =>
+                                item?.printer_name == data.data.deviceName,
+                        );
+                        handleSelectPrinter(printer?.id);
+                    },
+                );
             } catch (error) {
                 notification.error({
                     message: 'Error',
