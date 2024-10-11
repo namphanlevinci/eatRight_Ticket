@@ -189,7 +189,7 @@ export default function PrinterAppSetUpPage() {
     const RenderEPSONPrinter = () => {
         return (
             <div style={{ paddingTop: 8 }}>
-                {list?.map?.((Printer: any) => (
+                {/* {list?.map?.((Printer: any) => (
                     <Button
                         key={`Printer ${Printer?.id}`}
                         style={{
@@ -224,12 +224,12 @@ export default function PrinterAppSetUpPage() {
                     title="Select Printer"
                     onClick={handleOk}
                     loading={loading}
-                />
+                /> */}
                 {printerFromReactNative && (
                     <Text>Connected Printer : {printerFromReactNative}</Text>
                 )}
                 <ButtonSubmit
-                    title="Select Printer (New Version)"
+                    title="Select Printer"
                     onClick={OpenMenuPrinter}
                     loading={loading}
                 />
