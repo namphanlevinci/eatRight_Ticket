@@ -227,18 +227,21 @@ export default function index() {
     //     }
     // };
     const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
-    const [getReceiptDetail, { data: receiptDetail, loading: loadingReceipt }] =
-        useLazyQuery<data_MerchantGetReceiptResponse, var_ReceiptDetail>(
-            gqlGetReceiptDetail,
-            {
-                fetchPolicy: 'no-cache',
-            },
-        );
-    const PrintBillApi = () => {
+    const [getReceiptDetail, { loading: loadingReceipt }] = useLazyQuery<
+        data_MerchantGetReceiptResponse,
+        var_ReceiptDetail
+    >(gqlGetReceiptDetail, {
+        fetchPolicy: 'no-cache',
+    });
+    const CallPrintBillById = ({
+        invoice_number,
+    }: {
+        invoice_number: string;
+    }) => {
         if (window?.ReactNativeWebView) {
             getReceiptDetail({
                 variables: {
-                    invoice_number: selectDataShowbill?.number,
+                    invoice_number: invoice_number,
                 },
             })
                 .then((res) => {
@@ -258,23 +261,26 @@ export default function index() {
                     console.log(e);
                 });
         }
+    };
+    const PrintBillApi = () => {
         // else {
 
         if (childBill.length) {
-            onPrintBill({
-                variables: {
-                    invoice_number: selectDataShowbill.number,
-                },
-            })
-                .then(() => {
-                    notification.success({
-                        message: 'Receipt sent to printer',
-                        description: 'Please go to printer to take the bill!',
-                    });
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
+            // onPrintBill({
+            //     variables: {
+            //         invoice_number: selectDataShowbill.number,
+            //     },
+            // })
+            //     .then(() => {
+            //         notification.success({
+            //             message: 'Receipt sent to printer',
+            //             description: 'Please go to printer to take the bill!',
+            //         });
+            //     })
+            //     .catch((e) => {
+            //         console.log(e);
+            //     });
+            CallPrintBillById({ invoice_number: selectDataShowbill.number });
         } else {
             if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length === 0) {
                 onGetInvoices({
@@ -284,40 +290,48 @@ export default function index() {
                     fetchPolicy: 'no-cache',
                 }).then((res) => {
                     const newData = res?.data?.merchantGetOrderInvoices;
-                    onPrintBill({
-                        variables: {
-                            invoice_number: newData.invoice[0]?.number,
-                        },
-                    })
-                        .then(() => {
-                            notification.success({
-                                message: 'Receipt sent to printer',
-                                description:
-                                    'Please go to printer to take the bill!',
-                            });
-                        })
-                        .catch((e) => {
-                            console.log(e);
-                        });
+                    CallPrintBillById({
+                        invoice_number: newData.invoice[0]?.number,
+                    });
+                    // onPrintBill({
+                    //     variables: {
+                    //         invoice_number: newData.invoice[0]?.number,
+                    //     },
+                    // })
+                    //     .then(() => {
+                    //         notification.success({
+                    //             message: 'Receipt sent to printer',
+                    //             description:
+                    //                 'Please go to printer to take the bill!',
+                    //         });
+                    //     })
+                    //     .catch((e) => {
+                    //         console.log(e);
+                    //     });
                 });
                 return;
             }
-            onPrintBill({
-                variables: {
-                    invoice_number:
-                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
-                            ?.number,
-                },
-            })
-                .then(() => {
-                    notification.success({
-                        message: 'Receipt sent to printer',
-                        description: 'Please go to printer to take the bill!',
-                    });
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
+            CallPrintBillById({
+                invoice_number:
+                    dataSplitBill?.merchantGetOrderInvoices?.invoice[0]?.number,
+            });
+
+            // onPrintBill({
+            //     variables: {
+            //         invoice_number:
+            //             dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+            //                 ?.number,
+            //     },
+            // })
+            //     .then(() => {
+            //         notification.success({
+            //             message: 'Receipt sent to printer',
+            //             description: 'Please go to printer to take the bill!',
+            //         });
+            //     })
+            //     .catch((e) => {
+            //         console.log(e);
+            //     });
         }
         // }
     };
@@ -667,7 +681,7 @@ export default function index() {
                                     <ButtonBill
                                         title="Print"
                                         onPress={PrintBillApi}
-                                        loading={loadingPrint}
+                                        loading={loadingPrint || loadingReceipt}
                                     />
                                     <ButtonBill
                                         title="Email"
