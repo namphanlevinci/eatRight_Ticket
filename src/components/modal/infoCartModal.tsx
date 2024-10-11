@@ -193,7 +193,6 @@ export default function InfoCartModal({
                         name="numberOfCustomer"
                         rules={[
                             {
-                                required: true,
                                 message: 'Please input number of guests!',
                             },
                         ]}
