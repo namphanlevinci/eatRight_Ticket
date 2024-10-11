@@ -11,8 +11,7 @@ const ReportByPayment = () => {
         data,
         reportResponse,
         loading,
-        methodName,
-        handleBack,
+
         handlePageChange,
         handlePerPageChange,
         handleChangeTable,

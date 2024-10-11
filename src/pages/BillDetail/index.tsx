@@ -1,12 +1,12 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import { App, Modal, notification, Row, Spin } from 'antd';
+import { App, Modal, notification, Spin } from 'antd';
 import { Button } from 'components/atom/Button';
 import { TextDark } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_ORDER_DETAIL } from 'graphql/orders/orderDetail';
 import { ButtonContainer, ButtonLeftContainer, Container } from './styled';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import ModalPaymentPending from 'components/modal/ModalPaymentPending';
 import { RETRY_PAY_CASH } from 'graphql/orders/repayment';
@@ -16,8 +16,6 @@ import ModalPosDevices from 'pages/TableBill/components/ModalPosDevices';
 import LoadingModalPayment from 'components/modal/loadingModalPayment';
 import { emitter } from 'graphql/client';
 import { useTheme } from 'context/themeContext';
-import BreadCrum from 'components/atom/BreadCrum/BreadCrum';
-import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { GET_INVOICES } from 'graphql/cart/splitBill';
 import ModalInput from 'components/modal/ModalInput';
 import {

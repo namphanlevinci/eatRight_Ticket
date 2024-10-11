@@ -1,9 +1,7 @@
 import { Col, Layout, Row } from 'antd';
 import AvatarUpdate from 'components/atom/Avartar';
 import { ButtonSelect } from 'components/atom/Button/ButtonSelect';
-import Header from 'components/atom/Header/header';
 import { Text } from 'components/atom/Text';
-import { BASE_ROUTER } from 'constants/router';
 import React from 'react';
 import CustomerGeneral from './components/CustomerGeneral';
 import CustomerOrder from './components/CustomerOrder';
