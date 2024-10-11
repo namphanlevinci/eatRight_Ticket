@@ -210,19 +210,26 @@ function Header(props) {
     );
     const [onOpenCashier] = useMutation(OPEN_CASHIER);
     const openCashier = () => {
-        onOpenCashier()
-            .then((res) => {
-                if (res) {
-                    notification.success({
-                        message: 'Open Cashier Successful',
-                        description:
-                            'Please wait for few seconds to open Cashier',
-                    });
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        // onOpenCashier()
+        //     .then((res) => {
+        //         if (res) {
+        //             notification.success({
+        //                 message: 'Open Cashier Successful',
+        //                 description:
+        //                     'Please wait for few seconds to open Cashier',
+        //             });
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
+        if (window?.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'openCashier',
+                }),
+            );
+        }
     };
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     const dispatch = useDispatch();
