@@ -217,28 +217,32 @@ export default function ColRight({
                         setModalDiscount(false);
                     }}
                 />
-                <ModalTip
-                    isModalOpen={modalTip}
-                    onCancel={() => {
-                        setModalTip(false);
-                    }}
-                    onSubmit={async (values: any) => {
-                        setTip(values);
-                        setTipPercent(
-                            values /
-                                ((cart?.prices.grand_total.value || 0) -
-                                    (cart?.prices?.total_canceled?.value || 0)),
-                        );
+                {modalTip && (
+                    <ModalTip
+                        isModalOpen={modalTip}
+                        onCancel={() => {
+                            setModalTip(false);
+                        }}
+                        onSubmit={async (values: any) => {
+                            setTip(values);
+                            setTipPercent(
+                                values /
+                                    ((cart?.prices.grand_total.value || 0) -
+                                        (cart?.prices?.total_canceled?.value ||
+                                            0)),
+                            );
 
-                        await handleSetTip(values);
-                        setModalTip(false);
-                    }}
-                    total={(totalMoney + totalDiscount) * (Tax + 1)}
-                    totalWithoutTax={
-                        total -
-                        (cart?.prices?.total_canceled_without_tax?.value || 0)
-                    }
-                />
+                            await handleSetTip(values);
+                            setModalTip(false);
+                        }}
+                        total={(totalMoney + totalDiscount) * (Tax + 1)}
+                        totalWithoutTax={
+                            total -
+                            (cart?.prices?.total_canceled_without_tax?.value ||
+                                0)
+                        }
+                    />
+                )}
                 {isVisibleModalPos && (
                     <ModalPosDevices
                         isVisibleModalPos={isVisibleModalPos}
@@ -281,43 +285,6 @@ export default function ColRight({
                         title="Subtotal"
                         value={`$${formatNumberWithCommas(totalMoney)}`}
                     />
-
-                    {cart?.prices?.discounts && (
-                        <RenderDiscountRow
-                            title="Discount"
-                            value={
-                                cart?.prices?.discounts.length > 0
-                                    ? cart?.prices?.discounts[0].label
-                                    : 'ADD CODE'
-                            }
-                            textRightStyle={{
-                                color:
-                                    cart?.prices?.discounts.length > 0
-                                        ? theme.sUCCESS2Default
-                                        : theme.pRIMARY6Primary,
-                            }}
-                            valueDiscount={totalDiscount}
-                            onRightClick={() => setModalDiscount(true)}
-                        />
-                    )}
-                    {cart?.prices?.applied_taxes &&
-                    cart?.prices?.applied_taxes[0]?.amount ? (
-                        <RenderBillInfomationRow
-                            title={`Tax (${Tax * 100}%)`}
-                            value={
-                                <Text
-                                    style={{
-                                        color: '#4A505C',
-                                        fontWeight: 600,
-                                    }}
-                                >{`$${formatNumberWithCommas(
-                                    (totalMoney + totalDiscount) * Tax,
-                                )}`}</Text>
-                            }
-                        />
-                    ) : (
-                        <></>
-                    )}
 
                     {cart?.prices?.discounts && (
                         <RenderBillInfomationRow

@@ -28,7 +28,7 @@ const Index = () => {
     const [apiGetMenuDetail] = useLazyQuery(GET_DETAIL_MENU);
     const [form] = Form.useForm();
 
-    const [isToggled, setIsToggled] = useState(false);
+    const [isToggled, setIsToggled] = useState(true);
 
     const [startTime, setStartTime] = useState(moment().format('hh:mm A'));
     const [endTime, setEndTime] = useState(moment().format('hh:mm A'));

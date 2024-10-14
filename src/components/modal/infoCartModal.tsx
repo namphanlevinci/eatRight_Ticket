@@ -70,13 +70,14 @@ export default function InfoCartModal({
         return names[randomIndex];
     }
     const [showChangeTable, setShowChangeTable] = useState(false);
-    console.log(value?.phoneNumber);
     return (
         <>
-            <ChangeTableModal
-                modalChangeTable={showChangeTable}
-                setModalChangeTableOpen={setShowChangeTable}
-            />
+            {showChangeTable && (
+                <ChangeTableModal
+                    modalChangeTable={showChangeTable}
+                    setModalChangeTableOpen={setShowChangeTable}
+                />
+            )}
             <Modal
                 title="Basic Modal"
                 open={isModalOpen}

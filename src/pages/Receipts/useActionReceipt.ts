@@ -40,6 +40,10 @@ export default function useActionReceipt() {
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
             );
+            notification.success({
+                message: 'Receipt sent to printer',
+                description: 'Please go to printer to take the bill!',
+            });
             // return;
         }
         onPrintBill({

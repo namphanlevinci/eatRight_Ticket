@@ -1,9 +1,8 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { App } from 'antd';
 import { BASE_ROUTER } from 'constants/router';
 import { emitter } from 'graphql/client';
 import { SOCKET } from 'graphql/socket/connect';
-import { GET_ALL_TABLE } from 'graphql/table/table';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +25,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         (state: RootState) => state.auth,
     );
     const [socketInitialized, setSocketInitialized] = useState(false);
-    const [onGetTable] = useLazyQuery(GET_ALL_TABLE);
     const navigation = useNavigate();
     const { notification } = App.useApp();
     const tableDataString = localStorage.getItem('tableData');
@@ -34,22 +32,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         if (isLogged && !socketInitialized && restaurant_id && isTableView) {
             let tableData = JSON.parse(tableDataString || '{}');
-            if (!tableDataString && restaurant_id) {
-                console.log('run 1');
-                onGetTable({
-                    variables: {
-                        storeId: restaurant_id,
-                    },
-                })
-                    .then((res) => {
-                        if (res?.data?.getTablesByStore) {
-                            tableData = res?.data?.getTablesByStore;
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            }
             const socketInstance = io(SocketURL);
 
             setSocket(socketInstance);
@@ -79,15 +61,21 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 if (msg?.additional_data?.payment_method === 'arise_pos') {
                     emitter.emit('arise_result', msg);
                 }
-                if (msg?.message?.toString?.()?.toLowerCase?.().includes?.("dish ready")) {
+                if (
+                    msg?.message
+                        ?.toString?.()
+                        ?.toLowerCase?.()
+                        .includes?.('dish ready')
+                ) {
                     playNotiSound();
                 }
                 if (msg?.item_type === 'QUOTE') {
                     notification.success({
-                        message: `Table ${tableData?.find(
-                            (item: any) => item?.id == msg?.quote?.table_id,
-                        )?.name
-                            }`,
+                        message: `Table ${
+                            tableData?.find(
+                                (item: any) => item?.id == msg?.quote?.table_id,
+                            )?.name
+                        }`,
                         description: msg?.message,
                         onClick: () => {
                             if (msg?.quote?.table_id) {
@@ -104,10 +92,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                 }
                 if (msg?.item_type === 'ORDER') {
                     notification.success({
-                        message: `Table ${tableData?.find(
-                            (item: any) => item?.id == msg?.table_id,
-                        )?.name
-                            }`,
+                        message: `Table ${
+                            tableData?.find(
+                                (item: any) => item?.id == msg?.table_id,
+                            )?.name
+                        }`,
                         description: msg?.message,
                         onClick: () => {
                             if (msg?.quote?.table_id) {

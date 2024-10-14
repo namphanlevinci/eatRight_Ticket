@@ -108,8 +108,8 @@ export const useTableBill = (isGoBack = true) => {
         setPos_Loading(false);
         navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${orderInfo?.order_id}`);
     };
+
     const showModalSuccess = (order_id: string, isGoToTable = true) => {
-        PrintMerchantCopy(dataInvoices?.createMerchantOrder.order.order_number);
         modal.success({
             title: !isGoToTable ? 'Payment Success' : 'Check Out Success',
             centered: true,
@@ -171,6 +171,7 @@ export const useTableBill = (isGoBack = true) => {
             });
     };
     const PrintMerchantCopy = (url: string) => {
+        console.log('PrintMerchantCopy', url);
         if (window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({
@@ -249,13 +250,39 @@ export const useTableBill = (isGoBack = true) => {
             },
         })
             .then((res) => {
+                console.log('res', res);
                 if (res.data.posSaleForMarchant) {
                     setModalPaySuccess(true);
                     setModalChange(false);
                     emitter.emit('REPAYMENT_SUCCESS');
+                    if (
+                        dataInvoices?.merchantGetOrderInvoices?.invoice[0]
+                            ?.invoice_image
+                    ) {
+                        PrintMerchantCopy(
+                            dataInvoices?.merchantGetOrderInvoices?.invoice[0]
+                                ?.invoice_image,
+                        );
+                    } else {
+                        ReGetInvoices({
+                            orderNumber:
+                                dataInvoices?.merchantGetOrderInvoices?.order
+                                    ?.order_number,
+                        });
+                    }
+
+                    showModalSuccess(
+                        `${
+                            orderDetail?.order_id
+                                ? orderDetail?.order_id
+                                : orderInfo?.order_id
+                        }`,
+                        isGoToTable,
+                    );
                 }
             })
             .catch(() => {
+                console.log('Erorr over thể modal');
                 onCancelCheckout({
                     variables: {
                         cart_id: orderDetail?.cart_id,
@@ -271,6 +298,29 @@ export const useTableBill = (isGoBack = true) => {
             })
             .finally(() => {
                 setPos_Loading(false);
+            });
+    };
+    const ReGetInvoices = ({ orderNumber }: { orderNumber: string }) => {
+        onGetInvoices({
+            variables: {
+                OrderNumber: orderNumber,
+            },
+            fetchPolicy:'no-cache'
+        })
+            .then((invoices) => {
+                if (
+                    invoices.data?.merchantGetOrderInvoices?.invoice[0]
+                        ?.invoice_image
+                ) {
+                    PrintMerchantCopy(
+                        invoices.data?.merchantGetOrderInvoices?.invoice[0]
+                            ?.invoice_image,
+                    );
+                }
+            })
+            .catch(() => {
+                console.log('Erorr over thể modal');
+                // ReGetInvoices({ orderNumber: orderNumber });
             });
     };
     const handlePOSPayment = (

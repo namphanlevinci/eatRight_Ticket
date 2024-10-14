@@ -18,7 +18,6 @@ import { roundTo } from 'utils/number';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CLEAN_UP_CART_TABLE } from 'graphql/table/cleanTable';
 import ModalInputNote from 'components/modal/ModalInputNote';
-import { useCartTable } from '../useGetCart';
 import ModalConfirm from 'components/modal/ModalConfirm';
 import { GET_INVOICES } from 'graphql/cart/splitBill';
 import { FoodCoverIcon } from 'assets/icons/foodCoverIcon';
@@ -29,11 +28,17 @@ export default function CartItemList({
     cartInfo,
     onClickChangeTable,
     table,
+    loadingCardTable,
+    removeItemOnCartServer,
+    updateStatusItemServer,
 }: {
     data: CartItemType | undefined;
     cartInfo: string;
     onClickChangeTable: any;
     table: any;
+    loadingCardTable: boolean;
+    removeItemOnCartServer: any;
+    updateStatusItemServer: any;
 }) {
     const {
         updateQuantityItemFromCart,
@@ -45,12 +50,6 @@ export default function CartItemList({
         removeCartIndex,
         onRemoveItem,
     } = useCart();
-
-    const {
-        loading: loadingCardTable,
-        removeItemOnCartServer,
-        updateStatusItemServer,
-    } = useCartTable(false, false);
 
     const [isOpenModalCancel, setIsOpenModalCancel] = useState(false);
     const [itemSelected, setItemSelected] = useState<{

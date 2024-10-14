@@ -338,6 +338,14 @@ export const BaseRouter = () => {
                     }
                 />
                 <Route
+                    path={BASE_ROUTER.RESTAURENT_ORDERING}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.RestaurentOrdering />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
                     path={BASE_ROUTER.MERCHANT_PAGE}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>

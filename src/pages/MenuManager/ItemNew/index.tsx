@@ -38,7 +38,7 @@ const Index = () => {
     const [apiMerchantDeleteProduct] = useMutation(DELETE_PRODUCT);
     const [apiGetProductDetail] = useLazyQuery(GET_PRODUCT_DETAIL);
     const [apiGetKitchenStation] = useLazyQuery(GET_LIST_KITCHEN_STATION);
-    const [isToggled, setIsToggled] = useState(false);
+    const [isToggled, setIsToggled] = useState(true);
     const [listImage, setListImage] = useState([]);
     const [is_in_stock, setIsInStock] = useState(true);
     const [isLoading, setLoading] = React.useState(false);
