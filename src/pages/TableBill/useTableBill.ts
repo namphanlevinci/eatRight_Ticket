@@ -114,7 +114,6 @@ export const useTableBill = (isGoBack = true) => {
             title: !isGoToTable ? 'Payment Success' : 'Check Out Success',
             centered: true,
             onOk: () => {
-                console.log('=== 3 ===');
                 navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${order_id}`);
                 emitter.emit('REPAYMENT_SUCCESS');
             },
@@ -143,7 +142,6 @@ export const useTableBill = (isGoBack = true) => {
         });
     };
     const goTable = () => {
-        console.log('=== 4 ===');
         navigation(`${BASE_ROUTER.TABLE}?tableId=${tableId}`);
     };
     const showModalAlertPayment = (order_id: string) => {
@@ -160,13 +158,11 @@ export const useTableBill = (isGoBack = true) => {
                 }
             })
             .catch((err) => {
-                console.log(err);
                 modal.error({
                     title: 'Get Link Payment Failed',
                     centered: true,
                     content: 'go to detail bill',
                     onOk: () => {
-                        console.log('=== 5 ===');
                         navigation(
                             `${BASE_ROUTER.BILL_DETAIL}?orderId=${order_id}`,
                         );
@@ -366,7 +362,6 @@ export const useTableBill = (isGoBack = true) => {
                 setTotal(tmp_total);
                 setCount(tmp_count);
             } else {
-                console.log('=== 8 ===');
                 navigation(
                     `${BASE_ROUTER.TABLE}?tableId=${tableId}&cartIndex=${cartIndex}`,
                 );

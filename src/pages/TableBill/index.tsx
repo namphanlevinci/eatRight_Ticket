@@ -30,7 +30,7 @@ export default function TableBill() {
     const [openModalConfirmCloseSplitBill, setCloseSplitBill] = useState(false);
     const navigation = useNavigate();
     const { theme } = useTheme();
-    console.log({ isModalPaySuccess });
+
     const RenderHeader = () => {
         return (
             <div

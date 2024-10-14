@@ -14,8 +14,6 @@ import {
     PAY_SPLIT_BILL_POS_DJV,
     PAY_SPLITBILL,
 } from 'graphql/cart/paySplitbill';
-import { useNavigate } from 'react-router';
-import { BASE_ROUTER } from 'constants/router';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevices from 'pages/TableBill/components/ModalPosDevices';
@@ -99,6 +97,7 @@ export default function TableSplitBillCheckOut() {
                 },
             })
                 .then((res) => {
+                    console.log({ res });
                     if (
                         res.data.merchantPayInvoice.invoice.number ===
                         selectGuest?.number
@@ -295,17 +294,7 @@ export default function TableSplitBillCheckOut() {
             centered: true,
         });
     };
-    const navigation = useNavigate();
-    useEffect(() => {
-        if (data) {
-            const isAllPay = data.invoice.find((item) => item.state !== 'PAID');
-            if (!isAllPay) {
-                navigation(
-                    `${BASE_ROUTER.BILL_DETAIL}?orderId=${data.order.order_id}`,
-                );
-            }
-        }
-    }, [data]);
+
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <Layout
