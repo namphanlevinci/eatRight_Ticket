@@ -14,7 +14,7 @@ import {
 import './index.scss';
 import { formatNumberWithCommas } from 'utils/format';
 import useSette from './useSette';
-import ModalConfirm from 'components/modal/ModalConfirm';
+import ModalConfirm from './ModalConfirm';
 
 export default function BatchSettlements() {
     const {
