@@ -20,8 +20,7 @@ import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import { SwitchContainer } from 'layouts/styled';
 import { useMediaQuery } from 'react-responsive';
-import { OPEN_CASHIER } from 'graphql/printer';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { GET_NOTIFICATION } from 'graphql/notification';
 import { changeModeTableView } from 'features/auth/authSlice';
 import { useDispatch } from 'react-redux';
@@ -208,7 +207,6 @@ function Header(props) {
             </Col>
         </Row>
     );
-    const [onOpenCashier] = useMutation(OPEN_CASHIER);
     const openCashier = () => {
         // onOpenCashier()
         //     .then((res) => {

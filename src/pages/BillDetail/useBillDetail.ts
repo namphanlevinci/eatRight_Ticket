@@ -16,7 +16,6 @@ import {
 } from 'graphql/orders/printBill';
 
 import { useMediaQuery } from 'react-responsive';
-import { PRINT_BILL } from 'graphql/printer';
 import {
     API_REFUND_INVOICE,
     API_REFUND_INVOICE_POS,

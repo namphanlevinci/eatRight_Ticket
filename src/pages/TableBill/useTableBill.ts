@@ -157,7 +157,7 @@ export const useTableBill = (isGoBack = true) => {
                         res.data.getAppotaPayPaymentURL.pay_url;
                 }
             })
-            .catch((err) => {
+            .catch(() => {
                 modal.error({
                     title: 'Get Link Payment Failed',
                     centered: true,
@@ -309,7 +309,7 @@ export const useTableBill = (isGoBack = true) => {
             variables: {
                 OrderNumber: orderNumber,
             },
-            fetchPolicy:'no-cache'
+            fetchPolicy: 'no-cache',
         })
             .then((invoices) => {
                 if (

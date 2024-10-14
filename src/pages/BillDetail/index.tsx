@@ -28,7 +28,6 @@ import { ButtonBill } from './components/ButtonBill';
 import { ButtonSelectBill } from './components/ButtonSelectBill';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
-import { PRINT_BILL } from 'graphql/printer';
 import {
     API_REFUND_INVOICE,
     API_REFUND_INVOICE_POS,
@@ -225,7 +224,6 @@ export default function index() {
     //         });
     //     }
     // };
-    const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
     const [getReceiptDetail, { loading: loadingReceipt }] = useLazyQuery<
         data_MerchantGetReceiptResponse,
         var_ReceiptDetail
@@ -680,7 +678,7 @@ export default function index() {
                                     <ButtonBill
                                         title="Print"
                                         onPress={PrintBillApi}
-                                        loading={loadingPrint || loadingReceipt}
+                                        loading={loadingReceipt}
                                     />
                                     <ButtonBill
                                         title="Email"
