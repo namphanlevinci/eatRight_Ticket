@@ -112,6 +112,8 @@ export type VAR_REPORTS_BY_PAYMENT = {
     date_from?: string;
     date_to?: string;
     method: string;
+    field: string;
+    direction: string;
     currentPage: number;
     pageSize: number;
 };
@@ -140,6 +142,8 @@ export const GET_REPORTS_BY_PAYMENT = gql`
         $method: PaymentTypeEnum!
         $currentPage: Int
         $pageSize: Int
+        $field: String!
+        $direction: SortEnum
     ) {
         merchantSalesReportByPaymentMethods(
             filter: {
@@ -149,6 +153,7 @@ export const GET_REPORTS_BY_PAYMENT = gql`
             }
             currentPage: $currentPage
             pageSize: $pageSize
+            sort: { field: $field, direction: $direction }
         ) {
             total_items
             items {

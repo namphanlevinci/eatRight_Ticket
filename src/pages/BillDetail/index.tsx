@@ -1,12 +1,12 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import { App, Modal, notification, Row, Spin } from 'antd';
+import { App, Modal, notification, Spin } from 'antd';
 import { Button } from 'components/atom/Button';
 import { TextDark } from 'components/atom/Text';
 import React, { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_ORDER_DETAIL } from 'graphql/orders/orderDetail';
 import { ButtonContainer, ButtonLeftContainer, Container } from './styled';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import ModalPaymentPending from 'components/modal/ModalPaymentPending';
 import { RETRY_PAY_CASH } from 'graphql/orders/repayment';
@@ -16,8 +16,6 @@ import ModalPosDevices from 'pages/TableBill/components/ModalPosDevices';
 import LoadingModalPayment from 'components/modal/loadingModalPayment';
 import { emitter } from 'graphql/client';
 import { useTheme } from 'context/themeContext';
-import BreadCrum from 'components/atom/BreadCrum/BreadCrum';
-import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { GET_INVOICES } from 'graphql/cart/splitBill';
 import ModalInput from 'components/modal/ModalInput';
 import {
@@ -38,6 +36,13 @@ import {
     API_REFUND_ORDER_POS,
 } from 'graphql/orders/refund';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
+import {
+    data_MerchantGetReceiptResponse,
+    gqlGetReceiptDetail,
+    var_ReceiptDetail,
+} from 'graphql/receipts';
 declare global {
     interface Window {
         ReactNativeWebView?: {
@@ -63,6 +68,7 @@ export default function index() {
     const orderId = searchParams.get('orderId');
     const order_ID = searchParams.get('order_id');
     const [loadingPosResult, setLoadingPosResult] = useState(false);
+    const { isMerchant } = useSelector((state: RootState) => state.auth);
     let intervalId: any = null;
     useEffect(() => {
         if (loadingPosResult) {
@@ -151,7 +157,6 @@ export default function index() {
             }
         }
     }, [dataSplitBill]);
-    console.log({ dataSplitBill });
     const handleSendBill = (
         type: string,
         value: string,
@@ -221,26 +226,31 @@ export default function index() {
     //     }
     // };
     const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
-
-    const PrintBillApi = () => {
+    const [getReceiptDetail, { loading: loadingReceipt }] = useLazyQuery<
+        data_MerchantGetReceiptResponse,
+        var_ReceiptDetail
+    >(gqlGetReceiptDetail, {
+        fetchPolicy: 'no-cache',
+    });
+    const CallPrintBillById = ({
+        invoice_number,
+    }: {
+        invoice_number: string;
+    }) => {
         if (window?.ReactNativeWebView) {
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({
-                    type: 'print',
-                    data: data?.orderDetail,
-                    selectDataShowbill: selectDataShowbill,
-                    dataInvoice:
-                        dataSplitBill?.merchantGetOrderInvoices?.invoice,
-                }),
-            );
-        }
-        if (childBill.length) {
-            onPrintBill({
+            getReceiptDetail({
                 variables: {
-                    invoice_number: selectDataShowbill.number,
+                    invoice_number: invoice_number,
                 },
             })
-                .then(() => {
+                .then((res) => {
+                    window?.ReactNativeWebView?.postMessage(
+                        JSON.stringify({
+                            type: 'Customer',
+                            imageUrl:
+                                res.data?.merchantGetReceipt.invoice_image,
+                        }),
+                    );
                     notification.success({
                         message: 'Receipt sent to printer',
                         description: 'Please go to printer to take the bill!',
@@ -249,6 +259,27 @@ export default function index() {
                 .catch((e) => {
                     console.log(e);
                 });
+        }
+    };
+    const PrintBillApi = () => {
+        // else {
+
+        if (childBill.length) {
+            // onPrintBill({
+            //     variables: {
+            //         invoice_number: selectDataShowbill.number,
+            //     },
+            // })
+            //     .then(() => {
+            //         notification.success({
+            //             message: 'Receipt sent to printer',
+            //             description: 'Please go to printer to take the bill!',
+            //         });
+            //     })
+            //     .catch((e) => {
+            //         console.log(e);
+            //     });
+            CallPrintBillById({ invoice_number: selectDataShowbill.number });
         } else {
             if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length === 0) {
                 onGetInvoices({
@@ -258,41 +289,50 @@ export default function index() {
                     fetchPolicy: 'no-cache',
                 }).then((res) => {
                     const newData = res?.data?.merchantGetOrderInvoices;
-                    onPrintBill({
-                        variables: {
-                            invoice_number: newData.invoice[0]?.number,
-                        },
-                    })
-                        .then(() => {
-                            notification.success({
-                                message: 'Receipt sent to printer',
-                                description:
-                                    'Please go to printer to take the bill!',
-                            });
-                        })
-                        .catch((e) => {
-                            console.log(e);
-                        });
+                    CallPrintBillById({
+                        invoice_number: newData.invoice[0]?.number,
+                    });
+                    // onPrintBill({
+                    //     variables: {
+                    //         invoice_number: newData.invoice[0]?.number,
+                    //     },
+                    // })
+                    //     .then(() => {
+                    //         notification.success({
+                    //             message: 'Receipt sent to printer',
+                    //             description:
+                    //                 'Please go to printer to take the bill!',
+                    //         });
+                    //     })
+                    //     .catch((e) => {
+                    //         console.log(e);
+                    //     });
                 });
                 return;
             }
-            onPrintBill({
-                variables: {
-                    invoice_number:
-                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
-                            ?.number,
-                },
-            })
-                .then(() => {
-                    notification.success({
-                        message: 'Receipt sent to printer',
-                        description: 'Please go to printer to take the bill!',
-                    });
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
+            CallPrintBillById({
+                invoice_number:
+                    dataSplitBill?.merchantGetOrderInvoices?.invoice[0]?.number,
+            });
+
+            // onPrintBill({
+            //     variables: {
+            //         invoice_number:
+            //             dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+            //                 ?.number,
+            //     },
+            // })
+            //     .then(() => {
+            //         notification.success({
+            //             message: 'Receipt sent to printer',
+            //             description: 'Please go to printer to take the bill!',
+            //         });
+            //     })
+            //     .catch((e) => {
+            //         console.log(e);
+            //     });
         }
+        // }
     };
     const showSuccess = ({
         title,
@@ -542,18 +582,6 @@ export default function index() {
                 }}
                 type="tel"
             />
-            <Row
-                style={{ marginBlock: 10, position: 'relative' }}
-                align={'middle'}
-            >
-                <Link to={BASE_ROUTER.HOME}>
-                    <BreadCrum>Home</BreadCrum>
-                </Link>
-                <ArrowRightIcon />
-                <Link to={BASE_ROUTER.BILL}>
-                    <BreadCrum>Receipts</BreadCrum>
-                </Link>
-            </Row>
             <Container
                 style={{
                     background: theme.pRIMARY1,
@@ -583,6 +611,7 @@ export default function index() {
                         handlePOSPayment(pos_id, {
                             order_number: data?.orderDetail?.order_number,
                             order_id: orderId ? orderId : btoa(order_ID || ''),
+                            cart_id: data?.orderDetail?.cart_id,
                         });
                     }}
                 />
@@ -599,6 +628,7 @@ export default function index() {
                                     order_id: orderId
                                         ? orderId
                                         : btoa(order_ID || ''),
+                                    cart_id: data?.orderDetail?.cart_id,
                                 },
                                 false,
                             );
@@ -650,7 +680,7 @@ export default function index() {
                                     <ButtonBill
                                         title="Print"
                                         onPress={PrintBillApi}
-                                        loading={loadingPrint}
+                                        loading={loadingPrint || loadingReceipt}
                                     />
                                     <ButtonBill
                                         title="Email"
@@ -700,7 +730,13 @@ export default function index() {
                                     border: `2px solid ${theme.pRIMARY6Primary}`,
                                     padding: '0 16px',
                                 }}
-                                onClick={() => navigation(BASE_ROUTER.BILL)}
+                                onClick={() => {
+                                    navigation(
+                                        isMerchant
+                                            ? BASE_ROUTER.RECEIPTS
+                                            : BASE_ROUTER.BILL,
+                                    );
+                                }}
                                 background={theme.nEUTRALPrimary}
                             >
                                 <TextDark

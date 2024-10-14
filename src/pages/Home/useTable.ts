@@ -52,11 +52,6 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
         }
     }, [searchText]);
     useEffect(() => {
-        if (!data?.getTablesByStore) {
-            refetch();
-        }
-    }, [data?.getTablesByStore]);
-    useEffect(() => {
         let tableData = data?.getTablesByStore;
         if (data?.getTablesByStore) {
             localStorage.setItem(

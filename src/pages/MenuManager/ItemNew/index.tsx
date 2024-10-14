@@ -38,7 +38,7 @@ const Index = () => {
     const [apiMerchantDeleteProduct] = useMutation(DELETE_PRODUCT);
     const [apiGetProductDetail] = useLazyQuery(GET_PRODUCT_DETAIL);
     const [apiGetKitchenStation] = useLazyQuery(GET_LIST_KITCHEN_STATION);
-    const [isToggled, setIsToggled] = useState(false);
+    const [isToggled, setIsToggled] = useState(true);
     const [listImage, setListImage] = useState([]);
     const [is_in_stock, setIsInStock] = useState(true);
     const [isLoading, setLoading] = React.useState(false);
@@ -378,12 +378,27 @@ const Index = () => {
                                         }}
                                         placeholder="Select a group"
                                         defaultActiveFirstOption
+                                        onSelect={(value) => console.log(value)}
                                     >
-                                        {menuList?.map?.((m: any) => (
-                                            <Option key={m?.id} value={m?.id}>
-                                                {m?.name}
-                                            </Option>
-                                        ))}
+                                        {menuList?.map?.((m: any) => {
+                                            return (
+                                                <Option
+                                                    key={m?.id}
+                                                    value={m?.id}
+                                                >
+                                                    <div
+                                                        onClick={() => {
+                                                            form.setFieldValue(
+                                                                'kitchen_station',
+                                                                `${m?.kitchen_station}`,
+                                                            );
+                                                        }}
+                                                    >
+                                                        {m?.name}
+                                                    </div>
+                                                </Option>
+                                            );
+                                        })}
                                     </Select>
                                 </Form.Item>
                             </Col>

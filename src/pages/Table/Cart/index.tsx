@@ -23,6 +23,8 @@ export default function OrderCart({ table }: { table: any }) {
         setSelectedCart,
         tableId,
         removeCartIndex,
+        removeItemOnCartServer,
+        updateStatusItemServer,
     } = useCartTable();
     const { setShowMenu } = useMenuContext();
     const [modalChangeTable, setModalChangeTableOpen] = useState(false);
@@ -66,10 +68,12 @@ export default function OrderCart({ table }: { table: any }) {
     return (
         <div style={{ marginBottom: 20 }}>
             <LoadingModal showLoading={loading} />
-            <ChangeTableModal
-                modalChangeTable={modalChangeTable}
-                setModalChangeTableOpen={setModalChangeTableOpen}
-            />
+            {modalChangeTable && (
+                <ChangeTableModal
+                    modalChangeTable={modalChangeTable}
+                    setModalChangeTableOpen={setModalChangeTableOpen}
+                />
+            )}
             <Row style={{ overflow: 'auto', flexFlow: 'row' }}>
                 {listCart.map((item, index) => {
                     const isCartNeedServed = cartItems[indexTable]?.carts[
@@ -138,6 +142,9 @@ export default function OrderCart({ table }: { table: any }) {
                         setModalChangeTableOpen(true);
                     }}
                     table={table}
+                    loadingCardTable={loading}
+                    removeItemOnCartServer={removeItemOnCartServer}
+                    updateStatusItemServer={updateStatusItemServer}
                 />
             )}
         </div>

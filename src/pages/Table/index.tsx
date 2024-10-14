@@ -55,7 +55,7 @@ export const TablePage: React.FC = () => {
     );
     const [cleanTable, { loading: loading3 }] = useMutation(CLEAR_TABLE);
     const onCheckIn = () => {
-        if ((table && table?.cartIds.length > 0) || isHaveCart) {
+        if (table && isHaveCart) {
             return;
         }
         if (table?.status == '0') {
@@ -82,6 +82,7 @@ export const TablePage: React.FC = () => {
                             setTable({
                                 ...table,
                                 status: '0',
+                                note: '',
                             });
                         })
                         .catch((err) => {

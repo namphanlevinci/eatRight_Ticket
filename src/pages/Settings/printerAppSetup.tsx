@@ -2,8 +2,8 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { Button, Layout, notification, Row, Switch } from 'antd';
 import RadioBtnSelected from 'assets/icons/radioBtnSelected';
 import { Text } from 'components/atom/Text';
-
 import { useTheme } from 'context/themeContext';
+
 import { POS_DEVICE_LIST_DJV } from 'graphql/orders/paymentMethod';
 import {
     GET_CONFIG_PRINTER,
@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 export default function PrinterAppSetUpPage() {
-    const { theme } = useTheme();
     const { isMerchant } = useSelector((state: RootState) => state.auth);
     const [onGetListPrinterDevice] = useLazyQuery(LIST_PRINTER_DEVICES);
     const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST_DJV);
@@ -35,6 +34,28 @@ export default function PrinterAppSetUpPage() {
     const [onSetTerminalPrinter] = useMutation(SELECT_TERMINAL_PRINTER_DEVICE);
     const [list, setList] = useState<any>([]);
     const [selectedOption, setSelectedOption] = useState<any>(null);
+    const { theme } = useTheme();
+    const handleChange = (item: any): void => {
+        setSelectedOption(item);
+    };
+    const OpenMenuPrinter = () => {
+        if (window?.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'openMenuPrinter',
+                }),
+            );
+        }
+    };
+    const pushMsgOffPrinter = () => {
+        if (window?.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'MsgOffPrinter',
+                }),
+            );
+        }
+    };
     const handleOk = (): void => {
         if (selectedOption) {
             if (switchPrinterMode) {
@@ -52,6 +73,7 @@ export default function PrinterAppSetUpPage() {
                             'printer_id',
                             selectedOption?.id.toString(),
                         );
+                        pushMsgOffPrinter();
                     })
                     .catch(() => {
                         console.log('error');
@@ -81,15 +103,32 @@ export default function PrinterAppSetUpPage() {
         }
         // setVisibleMoalPrinter(false);
     };
+    const handleSelectPrinter = (id: string) => {
+        onSetPrinterDevice({
+            variables: {
+                printer_id: id,
+            },
+        })
+            .then(() => {
+                notification.success({
+                    message: 'Success',
+                    description: 'Set up printer successfully',
+                });
+                localStorage.setItem(
+                    'printer_id',
+                    selectedOption?.id.toString(),
+                );
+            })
+            .catch(() => {
+                console.log('error');
+            });
+    };
     useEffect(() => {
         onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then((res: any) => {
             setList(res?.data?.merchantGetListDevice?.prints ?? []);
         });
     }, []);
 
-    const handleChange = (item: any): void => {
-        setSelectedOption(item);
-    };
     useEffect(() => {
         if (data?.merchantGetPrinterConfig) {
             const idDevice = data?.merchantGetPrinterConfig?.printer_id;
@@ -110,10 +149,47 @@ export default function PrinterAppSetUpPage() {
         }
     }, [data, list]);
     const [switchPrinterMode, setSwitchPrinterMode] = useState(false);
+    const [printerFromReactNative, setPrinterFromReactNative] = useState(
+        localStorage.getItem('printer_name') || '',
+    );
+    useEffect(() => {
+        const handleMessage = (event: any) => {
+            try {
+                const data = JSON.parse(event.data);
+                notification.success({
+                    message: 'Connected Printer successfully',
+                    description: data.data.deviceName,
+                });
+                setPrinterFromReactNative(data.data.deviceName);
+                localStorage.setItem('printer_name', data.data.deviceName);
+                onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then(
+                    (res: any) => {
+                        const list = res?.data?.merchantGetListDevice?.prints;
+                        const printer = list.find(
+                            (item: any) =>
+                                item?.printer_name == data.data.deviceName,
+                        );
+                        handleSelectPrinter(printer?.id);
+                    },
+                );
+            } catch (error) {
+                notification.error({
+                    message: 'Error',
+                    description: 'Connect Printer fail',
+                });
+            }
+        };
+
+        document.addEventListener('message', handleMessage);
+
+        return () => {
+            document.removeEventListener('message', handleMessage);
+        };
+    }, []);
     const RenderEPSONPrinter = () => {
         return (
             <div style={{ paddingTop: 8 }}>
-                {list?.map?.((Printer: any) => (
+                {/* {list?.map?.((Printer: any) => (
                     <Button
                         key={`Printer ${Printer?.id}`}
                         style={{
@@ -144,10 +220,17 @@ export default function PrinterAppSetUpPage() {
                         <Text>{Printer?.printer_name}</Text>
                     </Button>
                 ))}
-
                 <ButtonSubmit
-                    title="Select"
+                    title="Select Printer"
                     onClick={handleOk}
+                    loading={loading}
+                /> */}
+                {printerFromReactNative && (
+                    <Text>Connected Printer : {printerFromReactNative}</Text>
+                )}
+                <ButtonSubmit
+                    title="Select Printer"
+                    onClick={OpenMenuPrinter}
                     loading={loading}
                 />
             </div>

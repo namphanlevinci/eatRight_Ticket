@@ -9,7 +9,6 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { useLocation } from 'react-router';
-import { Link } from 'react-router-dom';
 
 type Props = {
     children: React.ReactNode;
@@ -28,33 +27,17 @@ export default function SettingLayout(props: Props) {
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
     const isSelected = location.pathname.includes('/settings/');
+    const sendReactNativeLogout = () => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: 'logout' }),
+            );
+        }
+    };
     return (
         <DarkLayout>
             {contextHolder}
             <Layout style={{ background: theme.nEUTRALPrimary, padding: 16 }}>
-                <Row align={'middle'} style={{ gap: 16 }}>
-                    {isSelected && (
-                        <Link to={BASE_ROUTER.SETTINGS}>
-                            <Row align={'middle'} style={{ gap: 16 }}>
-                                <ArrawLeftIcon />
-                                <Text
-                                    style={{
-                                        fontSize: 16,
-                                        color: theme.pRIMARY6Primary,
-                                    }}
-                                >
-                                    Settings
-                                </Text>
-                            </Row>
-                        </Link>
-                    )}
-                    {isSelected && (
-                        <>
-                            <Text>/</Text>{' '}
-                            <Text> {location.pathname.split('/')[2]}</Text>
-                        </>
-                    )}
-                </Row>
                 <Row style={{ marginTop: 36 }}>
                     {isSelected && isMobile ? (
                         <></>
@@ -103,6 +86,7 @@ export default function SettingLayout(props: Props) {
                                         await modal.confirm(config);
                                     if (confirmed) {
                                         dispatch(updateStatusLogout());
+                                        sendReactNativeLogout();
                                     }
                                 }}
                             />

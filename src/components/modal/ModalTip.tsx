@@ -26,7 +26,8 @@ export default function ModalTip({
     const [value, setValue] = React.useState<string>('0');
     const [tips, setTips] = React.useState([10, 15, 20]);
     const [selectTip, setSelectTip] = React.useState(0);
-    const [onGetTips, { data }] = useLazyQuery(GET_TIPS);
+    const [onGetTips, { data, loading }] = useLazyQuery(GET_TIPS);
+    const [tipType, setType] = React.useState<'fixed' | 'percent'>('fixed');
     useEffect(() => {
         onGetTips({
             fetchPolicy: 'no-cache',
@@ -35,11 +36,12 @@ export default function ModalTip({
     useEffect(() => {
         if (data) {
             const tip_option = data?.tipRestaurant?.tip_option;
-            const tip_percent = tip_option?.find(
-                (item: any) => item?.type === 'percent',
+            const tip_select_type = tip_option?.find(
+                (item: any) => item?.is_selected === true,
             );
-            if (tip_percent?.amount_option?.length > 2) {
-                setTips(tip_percent?.amount_option);
+            if (tip_select_type) {
+                setTips(tip_select_type?.amount_option);
+                setType(tip_select_type?.type);
             }
         }
     }, [data]);
@@ -52,10 +54,16 @@ export default function ModalTip({
     }, [isModalOpen]);
     useEffect(() => {
         if (selectTip !== 0 && total !== 0) {
-            if (data?.tipRestaurant?.include_tax_in_tip) {
-                setValue(`${roundTo((total * selectTip) / 100, 3)}`);
+            if (tipType === 'fixed') {
+                setValue(`${selectTip}`);
             } else {
-                setValue(`${roundTo((totalWithoutTax * selectTip) / 100, 3)}`);
+                if (data?.tipRestaurant?.include_tax_in_tip) {
+                    setValue(`${roundTo((total * selectTip) / 100, 3)}`);
+                } else {
+                    setValue(
+                        `${roundTo((totalWithoutTax * selectTip) / 100, 3)}`,
+                    );
+                }
             }
         }
     }, [selectTip, total]);
@@ -164,7 +172,8 @@ export default function ModalTip({
                                 fontWeight: '600',
                             }}
                         >
-                            {tip}%
+                            {tip}
+                            {tipType === 'fixed' ? '$' : '%'}
                         </Text>
                     </Button>
                 ))}
@@ -183,6 +192,7 @@ export default function ModalTip({
                 title="Confirm"
                 onClick={onFinish}
                 marginTop="20px"
+                isLoading={loading}
             />
         </Modal>
     );

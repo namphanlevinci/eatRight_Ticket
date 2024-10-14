@@ -81,6 +81,7 @@ export default function CartInfo({ table }: { table?: any }) {
                         numberOfCustomer: number;
                         phoneNumber?: string;
                     }) => {
+                        console.log(e);
                         setName(e.username);
                         setNoC(e.numberOfCustomer);
                         setPhone(e.phoneNumber);

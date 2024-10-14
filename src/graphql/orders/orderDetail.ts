@@ -16,6 +16,7 @@ export const GET_ORDER_DETAIL = gql`
             lastname
             phone
             address
+            table_id
             restaurant_address
             restaurant_name
             restaurant_phone

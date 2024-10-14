@@ -26,9 +26,12 @@ import { GET_NOTIFICATION } from 'graphql/notification';
 import { changeModeTableView } from 'features/auth/authSlice';
 import { useDispatch } from 'react-redux';
 import HomeIconMerchant from '../assets/icons/homeIconMerchant';
+import FilterIcon from '../assets/FilterIcon';
+import DownIcon from '../assets/downIcon';
+import CheckBoxOption from '../components/CheckBoxOption';
 
 function Header(props) {
-    const { setSearchValue, isSearch } = props;
+    const { setSearchValue, isSearch, onFilterChange } = props;
     const history = useNavigate();
     const [listNotifications, setListNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -207,22 +210,74 @@ function Header(props) {
     );
     const [onOpenCashier] = useMutation(OPEN_CASHIER);
     const openCashier = () => {
-        onOpenCashier()
-            .then((res) => {
-                if (res) {
-                    notification.success({
-                        message: 'Open Cashier Successful',
-                        description:
-                            'Please wait for few seconds to open Cashier',
-                    });
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        // onOpenCashier()
+        //     .then((res) => {
+        //         if (res) {
+        //             notification.success({
+        //                 message: 'Open Cashier Successful',
+        //                 description:
+        //                     'Please wait for few seconds to open Cashier',
+        //             });
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
+        if (window?.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'openCashier',
+                }),
+            );
+        }
     };
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     const dispatch = useDispatch();
+    const [fillter, setFillter] = useState({
+        dine_in: localStorage.getItem('is_dine_in') !== 'false',
+        eat_out: localStorage.getItem('is_eat_out') !== 'false',
+    });
+    useEffect(() => {
+        if (onFilterChange) {
+            onFilterChange(fillter);
+        }
+    }, [fillter]);
+    const content = (
+        <div style={{ width: 200 }}>
+            <Row
+                style={{
+                    alignItems: 'center',
+                    gap: 12,
+                }}
+            >
+                <CheckBoxOption
+                    isChecked={fillter.dine_in}
+                    name="Dine-in"
+                    onChange={(value) => {
+                        setFillter({
+                            ...fillter,
+                            dine_in: value,
+                        });
+                        localStorage.setItem('is_dine_in', value.toString());
+                    }}
+                />
+            </Row>
+            <Row style={{ alignItems: 'center', gap: 12 }}>
+                <CheckBoxOption
+                    isChecked={fillter.eat_out}
+                    name="Eat Out"
+                    onChange={(value) => {
+                        setFillter({
+                            ...fillter,
+                            eat_out: value,
+                        });
+                        localStorage.setItem('is_eat_out', value.toString());
+                    }}
+                />
+            </Row>
+        </div>
+    );
+
     return (
         <>
             <div className="header">
@@ -263,7 +318,9 @@ function Header(props) {
                         {isSearch && (
                             <InputSearch
                                 onChange={(e) => {
-                                    setSearchValue(e.target.value);
+                                    setSearchValue(
+                                        e.target.value.toLowerCase(),
+                                    );
                                 }}
                                 placeholder={
                                     is_dine_in
@@ -271,6 +328,27 @@ function Header(props) {
                                         : 'Order Number'
                                 }
                             />
+                        )}
+                        {isSearch && (
+                            <Popover content={content} title="" trigger="click">
+                                <div
+                                    style={{
+                                        height: 46,
+                                        width: 132,
+                                        borderRadius: 4,
+                                        border: `1px solid ${theme.nEUTRALLine}`,
+                                        background: theme.nEUTRALBase,
+                                        display: 'flex',
+                                        justifyContent: 'space-around',
+                                        alignItems: 'center',
+                                        marginLeft: 24,
+                                    }}
+                                >
+                                    <FilterIcon />
+                                    Filter
+                                    <DownIcon />
+                                </div>
+                            </Popover>
                         )}
                         <Row style={{ gap: 30 }}>
                             <Button

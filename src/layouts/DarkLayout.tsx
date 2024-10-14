@@ -2,7 +2,7 @@ import {
     Button,
     Col,
     Layout,
-    notification,
+    // notification,
     Popover,
     Row,
     Spin,
@@ -16,7 +16,7 @@ import { Colors } from 'themes/colors';
 // import HelpIcon from 'assets/icons/help';
 import { Link, useNavigate } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { USER_INFO } from 'graphql/auth/login';
 import { useDispatch } from 'react-redux';
 import {
@@ -39,7 +39,7 @@ import {
 import DrawerMenu from './components/DrawerMenu';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
-import { OPEN_CASHIER } from 'graphql/printer';
+// import { OPEN_CASHIER } from 'graphql/printer';
 import HomeIcon from 'assets/icons/homeIcon';
 
 type Props = {
@@ -60,7 +60,7 @@ export const DarkLayout = (props: Props) => {
     const [onGetInfo] = useLazyQuery(USER_INFO);
     const [onGetRestaurent] = useLazyQuery(GET_RESTAURANT);
     const [getNotification] = useLazyQuery(GET_NOTIFICATION);
-    const [onOpenCashier] = useMutation(OPEN_CASHIER);
+    // const [onOpenCashier] = useMutation(OPEN_CASHIER);
     const dispatch = useDispatch();
 
     const { Header, Footer } = Layout;
@@ -83,6 +83,15 @@ export const DarkLayout = (props: Props) => {
                         'store_view_code',
                         res?.data?.getMerchantInfo?.store_view_code,
                     );
+                    if (window?.ReactNativeWebView) {
+                        window.ReactNativeWebView.postMessage(
+                            JSON.stringify({
+                                type: 'StoreCode',
+                                code: res?.data?.getMerchantInfo
+                                    ?.restaurant_code,
+                            }),
+                        );
+                    }
                 }
             });
             onGetRestaurent({ fetchPolicy: 'no-cache' }).then((res) => {
@@ -222,19 +231,26 @@ export const DarkLayout = (props: Props) => {
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     const openCashier = () => {
-        onOpenCashier()
-            .then((res) => {
-                if (res) {
-                    notification.success({
-                        message: 'Open Cashier Successful',
-                        description:
-                            'Please wait for few seconds to open Cashier',
-                    });
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        // onOpenCashier()
+        //     .then((res) => {
+        //         if (res) {
+        //             notification.success({
+        //                 message: 'Open Cashier Successful',
+        //                 description:
+        //                     'Please wait for few seconds to open Cashier',
+        //             });
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
+        if (window?.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'openCashier',
+                }),
+            );
+        }
     };
     const navigation = useNavigate();
     const onToggleView = () => {
@@ -281,18 +297,7 @@ export const DarkLayout = (props: Props) => {
                             gap: 10,
                         }}
                     >
-                        <div
-                            style={{
-                                borderRadius: 300,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                background: '#F1F3F7',
-                                padding: 5,
-                            }}
-                        >
-                            <HomeIcon />
-                        </div>
+                        <HomeIcon />
                         <span style={{ fontSize: 20 }}>Home</span>
                     </Link>
                     <Row style={{ gap: 10 }} align={'middle'}>

@@ -5,8 +5,13 @@ import { useCart } from 'context/cartContext';
 import { CartItemType, ItemType } from 'context/cartType';
 import { GET_CART_BY_ID } from 'graphql/cart/getCart';
 import { PLACE_ORDER, SET_TIPS } from 'graphql/cart/placeOrder';
-import { SPLIT_BILL_BY_ITEM, SPLIT_BILL_EVENLY } from 'graphql/cart/splitBill';
+import {
+    GET_INVOICES,
+    SPLIT_BILL_BY_ITEM,
+    SPLIT_BILL_EVENLY,
+} from 'graphql/cart/splitBill';
 import { emitter } from 'graphql/client';
+import { CANCEL_CHECKOUT } from 'graphql/orders/cancelCheckout';
 import {
     GET_APPOTA_URL,
     POS_PAYMENT,
@@ -56,13 +61,13 @@ export const useTableBill = (isGoBack = true) => {
     const [onSetTips, { data, loading: tips_Loading }] = useMutation(SET_TIPS);
     const navigation = useNavigate();
     const [pos_Loading, setPos_Loading] = React.useState<boolean>(false);
-    useEffect(() => {
-        if (pos_Loading) {
-            setTimeout(() => {
-                onCloseProcessingPayment();
-            }, 60000);
-        }
-    }, [pos_Loading]);
+    // useEffect(() => {
+    //     if (pos_Loading) {
+    //         setTimeout(() => {
+    //             onCloseProcessingPayment();
+    //         }, 60000);
+    //     }
+    // }, [pos_Loading]);
     useEffect(() => {
         emitter.on('arise_result', (msg: any) => {
             if (orderInfo?.order_number === msg?.additional_data.order_number) {
@@ -101,6 +106,7 @@ export const useTableBill = (isGoBack = true) => {
         navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${orderInfo?.order_id}`);
     };
     const showModalSuccess = (order_id: string, isGoToTable = true) => {
+        PrintMerchantCopy(dataInvoices?.createMerchantOrder.order.order_number);
         modal.success({
             title: !isGoToTable ? 'Payment Success' : 'Check Out Success',
             centered: true,
@@ -162,6 +168,17 @@ export const useTableBill = (isGoBack = true) => {
                 });
             });
     };
+    const PrintMerchantCopy = (url: string) => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'merchant',
+                    imageUrl: url,
+                }),
+            );
+        }
+    };
+    const [onGetInvoices, { data: dataInvoices }] = useLazyQuery(GET_INVOICES);
     const handleCheckOut = async () => {
         placeOrder({
             variables: {
@@ -172,32 +189,51 @@ export const useTableBill = (isGoBack = true) => {
             },
         })
             .then((res) => {
-                if (paymentMethod === 'cashondelivery') {
-                    navigation(
-                        `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data.createMerchantOrder.order.order_id}`,
-                    );
-                    emitter.emit('REPAYMENT_SUCCESS');
-                } else if (paymentMethod === 'pos') {
-                    setVisibleMoalPos(true);
-                    setOrderInfo(res.data.createMerchantOrder.order);
-                } else if (paymentMethod === 'pos_djv') {
-                    setVisibleMoalPosDJV(true);
-                    setOrderInfo(res.data.createMerchantOrder.order);
-                } else {
-                    showModalAlertPayment(
-                        res.data.createMerchantOrder.order.order_id,
-                    );
-                }
+                onGetInvoices({
+                    variables: {
+                        OrderNumber:
+                            res.data.createMerchantOrder.order.order_number,
+                    },
+                })
+                    .then((invoices) => {
+                        if (paymentMethod === 'cashondelivery') {
+                            navigation(
+                                `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data.createMerchantOrder.order.order_id}`,
+                            );
+                            PrintMerchantCopy(
+                                invoices.data?.merchantGetOrderInvoices
+                                    ?.invoice[0]?.invoice_image,
+                            );
+                            emitter.emit('REPAYMENT_SUCCESS');
+                        } else if (paymentMethod === 'pos') {
+                            setVisibleMoalPos(true);
+                            setOrderInfo(res.data.createMerchantOrder.order);
+                        } else if (paymentMethod === 'pos_djv') {
+                            setVisibleMoalPosDJV(true);
+                            setOrderInfo(res.data.createMerchantOrder.order);
+                        } else {
+                            showModalAlertPayment(
+                                res.data.createMerchantOrder.order.order_id,
+                            );
+                        }
+                    })
+                    .catch(() => {
+                        showModalErrorPayment(
+                            res.data.createMerchantOrder.order.order_id,
+                        );
+                    });
             })
             .catch((err) => {
                 console.log(err);
             });
     };
+    const [onCancelCheckout] = useMutation(CANCEL_CHECKOUT);
     const handlePOSPaymentWithDJV = (
         posId: number,
         orderDetail?: {
-            order_number: number;
-            order_id: any;
+            order_number?: number;
+            order_id?: any;
+            cart_id?: any;
         },
         isGoToTable = true,
     ) => {
@@ -216,19 +252,26 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
-                        `${orderDetail?.order_id
-                            ? orderDetail?.order_id
-                            : orderInfo?.order_id
+                        `${
+                            orderDetail?.order_id
+                                ? orderDetail?.order_id
+                                : orderInfo?.order_id
                         }`,
                         isGoToTable,
                     );
                 }
             })
             .catch(() => {
+                onCancelCheckout({
+                    variables: {
+                        cart_id: orderDetail?.cart_id,
+                    },
+                });
                 showModalErrorPayment(
-                    `${orderDetail?.order_id
-                        ? orderDetail?.order_id
-                        : orderInfo?.order_id
+                    `${
+                        orderDetail?.order_id
+                            ? orderDetail?.order_id
+                            : orderInfo?.order_id
                     }`,
                 );
             })
@@ -241,6 +284,7 @@ export const useTableBill = (isGoBack = true) => {
         orderDetail?: {
             order_number: number;
             order_id: any;
+            cart_id: any;
         },
     ) => {
         setPos_Loading(true);
@@ -258,19 +302,25 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
                     showModalSuccess(
-                        `${orderDetail?.order_id
-                            ? orderDetail?.order_id
-                            : orderInfo?.order_id
+                        `${
+                            orderDetail?.order_id
+                                ? orderDetail?.order_id
+                                : orderInfo?.order_id
                         }`,
                     );
                 }
             })
-            .catch((err) => {
-                console.log(err);
+            .catch(() => {
+                onCancelCheckout({
+                    variables: {
+                        cart_id: orderDetail?.cart_id,
+                    },
+                });
                 showModalErrorPayment(
-                    `${orderDetail?.order_id
-                        ? orderDetail?.order_id
-                        : orderInfo?.order_id
+                    `${
+                        orderDetail?.order_id
+                            ? orderDetail?.order_id
+                            : orderInfo?.order_id
                     }`,
                 );
             })
@@ -279,14 +329,12 @@ export const useTableBill = (isGoBack = true) => {
             });
     };
 
-    const handleOtherPayment = (
-        note: string,
-    ) => {
+    const handleOtherPayment = (note: string) => {
         placeOrder({
             variables: {
                 cartId: cartItems[indexTable].carts[cartIndex].id,
-                paymentMethod: "purchaseorder",
-                po_number: note
+                paymentMethod: 'purchaseorder',
+                po_number: note,
             },
         })
             .then((res) => {
@@ -480,6 +528,6 @@ export const useTableBill = (isGoBack = true) => {
         isVisibleModalOtherMethod,
         setVisibleModalOtherMethod,
         handleOtherPayment,
-        setOrderInfo
+        setOrderInfo,
     };
 };

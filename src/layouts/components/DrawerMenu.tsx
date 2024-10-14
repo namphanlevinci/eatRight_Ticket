@@ -30,7 +30,7 @@ import { useMediaQuery } from 'react-responsive';
 import { OPEN_CASHIER } from 'graphql/printer';
 import { useMutation } from '@apollo/client';
 const urlKitchen = process.env.REACT_APP_KITCHENURL;
-const MenuMerchant = [
+const MenuMerchant = ({ isMerchant }: { isMerchant?: boolean }) => [
     // {
     //     title: 'Restaurant Manager',
     //     icon: <StoreIcon />,
@@ -50,7 +50,7 @@ const MenuMerchant = [
     {
         title: 'Order History',
         icon: <HistoryOutlined style={{ fontSize: 34 }} />,
-        to: BASE_ROUTER.BILL,
+        to: isMerchant ? BASE_ROUTER.RECEIPTS : BASE_ROUTER.BILL,
     },
     {
         title: 'Batch Settlements',
@@ -131,13 +131,20 @@ export default function DrawerMenu() {
     >(MenuList);
     useEffect(() => {
         if (isMerchant) {
-            setMenuData(MenuMerchant);
+            setMenuData(MenuMerchant({ isMerchant: isMerchant }));
         } else {
             setMenuData(MenuList);
         }
     }, [isMerchant]);
     const [modal, contextHolder] = Modal.useModal();
     const dispatch = useDispatch();
+    const sendReactNativeLogout = () => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: 'logout' }),
+            );
+        }
+    };
     const onLogout = async () => {
         const confirmed = await modal.confirm({
             title: 'Are you sure to logout ?',
@@ -146,6 +153,7 @@ export default function DrawerMenu() {
         });
         if (confirmed) {
             dispatch(updateStatusLogout());
+            sendReactNativeLogout();
         }
     };
     const { theme } = useTheme();
@@ -212,13 +220,6 @@ export default function DrawerMenu() {
                                 if (item?.isGo) {
                                     window.location.href = item.to;
                                     return;
-                                }
-                                if (item?.sendToReactNative) {
-                                    if (window?.ReactNativeWebView) {
-                                        window.ReactNativeWebView.postMessage(
-                                            'openMenu',
-                                        );
-                                    }
                                 }
                                 navigation(item.to);
                             }}

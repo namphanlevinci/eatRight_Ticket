@@ -9,6 +9,7 @@ import {
 } from 'features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
+import { useMediaQuery } from 'react-responsive';
 
 export const useLogin = () => {
     const [onLogin] = useMutation(LOGIN);
@@ -16,6 +17,9 @@ export const useLogin = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [remember, setRemember] = useState(false);
+    const isMobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     const handleLogin = async ({
         username,
         password,
@@ -43,7 +47,7 @@ export const useLogin = () => {
                     );
                     dispatch(
                         updateStatusLoginForMerchant({
-                            isTableView: isView,
+                            isTableView: isMobile ? true : isView,
                         }),
                     );
                 } else if (

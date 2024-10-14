@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { SorterResult } from 'antd/es/table/interface';
 import {
     DATA_REPORTS_BY_PAYMENT,
     GET_REPORTS_BY_PAYMENT,
@@ -6,16 +7,21 @@ import {
     VAR_REPORTS_BY_PAYMENT,
 } from 'graphql/salesReport';
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import removeTypename from 'utils/removeTypename';
 
 const useReportByPayment = () => {
     const { method } = useParams();
+    const navigate = useNavigate();
     const {
         state: { startDate, endDate },
     } = useLocation();
 
     const [data, setData] = useState<MerchantSalesReportByPayment[]>([]);
+    const [sorter, setSorter] = useState<Record<string, string>>({
+        field: 'gross_sales',
+        direction: 'DESC',
+    });
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
 
@@ -26,9 +32,14 @@ const useReportByPayment = () => {
         variables: {
             date_from: startDate,
             date_to: endDate,
-            method: method?.toUpperCase() as string,
+            method:
+                method?.toUpperCase() === 'OTHERS'
+                    ? 'OTHER'
+                    : (method?.toUpperCase() as string),
             currentPage,
             pageSize,
+            field: sorter?.field as string,
+            direction: sorter?.direction as string,
         },
     });
     const getReportByPayment = (reportResponse: DATA_REPORTS_BY_PAYMENT) => {
@@ -40,6 +51,15 @@ const useReportByPayment = () => {
             [];
         const reportArr = [totalsItem, ...items];
         setData(reportArr);
+    };
+
+    const handleBack = () => {
+        navigate('/report', {
+            state: {
+                startDate,
+                endDate,
+            },
+        });
     };
 
     useEffect(() => {
@@ -57,12 +77,25 @@ const useReportByPayment = () => {
         setCurrentPage(page);
     };
 
+    const handleChangeTable = (
+        sorter:
+            | SorterResult<MerchantSalesReportByPayment>
+            | SorterResult<MerchantSalesReportByPayment>[],
+    ) => {
+        const { field, order } =
+            sorter as SorterResult<MerchantSalesReportByPayment>;
+        if (field && order) {
+            const direction = order === 'ascend' ? 'ASC' : 'DESC';
+            setSorter({ field: field as string, direction });
+        }
+    };
 
     const getReportNameFormated = (reportName: string) => {
         const keyItem = reportName as keyof typeof namesForted;
         const namesForted = {
             cash: 'Cash',
             credit_card: 'Credit Card',
+            others: 'Others',
         };
         return namesForted[keyItem];
     };
@@ -72,8 +105,10 @@ const useReportByPayment = () => {
         loading,
         reportResponse,
         methodName: getReportNameFormated(method as string),
+        handleBack,
         handlePageChange,
         handlePerPageChange,
+        handleChangeTable,
     };
 };
 

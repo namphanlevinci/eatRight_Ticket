@@ -1,9 +1,7 @@
 import { Col, Layout, Row } from 'antd';
 import AvatarUpdate from 'components/atom/Avartar';
 import { ButtonSelect } from 'components/atom/Button/ButtonSelect';
-import Header from 'components/atom/Header/header';
 import { Text } from 'components/atom/Text';
-import { BASE_ROUTER } from 'constants/router';
 import React from 'react';
 import CustomerGeneral from './components/CustomerGeneral';
 import CustomerOrder from './components/CustomerOrder';
@@ -28,12 +26,6 @@ export default function CustomerDetail() {
                 padding: 20,
             }}
         >
-            <Header
-                rootTitle="Customer Information"
-                rootUrl={BASE_ROUTER.CUSTOMER_LIST}
-                title="Customer Detail"
-            />
-
             <Row style={isMobile ? { flexDirection: 'column' } : {}}>
                 <Col style={{ width: 260 }}>
                     <Row>

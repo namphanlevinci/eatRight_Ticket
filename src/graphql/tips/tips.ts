@@ -8,6 +8,7 @@ export const GET_TIPS = gql`
             tip_option {
                 type
                 amount_option
+                is_selected
             }
         }
     }

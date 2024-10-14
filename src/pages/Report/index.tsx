@@ -4,7 +4,6 @@ import Columns from './Columns';
 import Table from 'components/Table';
 import { DatePicker, Spin } from 'antd';
 import Header from 'pages/Merchant/Header';
-import ic_back from 'assets/icons/icon_back.svg';
 
 import './index.css';
 import dayjs from 'dayjs';
@@ -19,17 +18,6 @@ const SalesReport = () => {
             <Header />
             <div className="container-box body_history">
                 <div className="rangePicker">
-                    <h2
-                        className="header-bottom-left"
-                        onClick={() => history.back()}
-                    >
-                        <img
-                            style={{ cursor: 'pointer' }}
-                            src={ic_back}
-                            alt="icon"
-                        />
-                        Sales Report
-                    </h2>
                     <DatePicker.RangePicker
                         allowClear={false}
                         defaultValue={rangDate}
@@ -51,17 +39,18 @@ const SalesReport = () => {
                     rowPerPage={0}
                     scroll={{ x: 1067 }}
                     onRowClick={(record) => {
-                        if (
-                            record.payment === 'total' ||
-                            record.payment === 'others'
-                        ) {
+                        if (record.payment === 'total') {
                             return null;
                         }
                         navigate(`${record.payment}`, {
                             state: {
-                                startDate: dayjs(rangDate?.[0]).format('YYYY-MM-DD'),
-                                endDate: dayjs(rangDate?.[1]).format('YYYY-MM-DD')
-                            }
+                                startDate: dayjs(rangDate?.[0]).format(
+                                    'YYYY-MM-DD',
+                                ),
+                                endDate: dayjs(rangDate?.[1]).format(
+                                    'YYYY-MM-DD',
+                                ),
+                            },
                         });
                     }}
                 />

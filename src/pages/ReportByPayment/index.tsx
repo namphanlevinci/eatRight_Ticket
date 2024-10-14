@@ -11,24 +11,16 @@ const ReportByPayment = () => {
         data,
         reportResponse,
         loading,
-        methodName,
+
         handlePageChange,
         handlePerPageChange,
+        handleChangeTable,
     } = useReportByPayment();
 
     return (
         <Spin spinning={loading}>
             <Header />
             <div className="container-box body_history">
-                <div className="rangePicker">
-                    <h2
-                        className="header-bottom-left"
-                        onClick={() => history.back()}
-                    >
-                        <p>Sales Report / {methodName}</p>
-                    </h2>
-                </div>
-
                 <Table
                     rowKey={'reportByPayment1'}
                     data={data}
@@ -52,6 +44,7 @@ const ReportByPayment = () => {
                     scroll={{ x: 1067 }}
                     onPageChange={handlePageChange}
                     onPerPageChange={handlePerPageChange}
+                    onTableChange={handleChangeTable}
                 />
             </div>
         </Spin>

@@ -72,10 +72,12 @@ export default function InfoCartModal({
     const [showChangeTable, setShowChangeTable] = useState(false);
     return (
         <>
-            <ChangeTableModal
-                modalChangeTable={showChangeTable}
-                setModalChangeTableOpen={setShowChangeTable}
-            />
+            {showChangeTable && (
+                <ChangeTableModal
+                    modalChangeTable={showChangeTable}
+                    setModalChangeTableOpen={setShowChangeTable}
+                />
+            )}
             <Modal
                 title="Basic Modal"
                 open={isModalOpen}
@@ -170,31 +172,28 @@ export default function InfoCartModal({
                         label="Phone number"
                         name="phoneNumber"
                     >
-                        <div style={{ width: '100%' }}>
-                            <PatternFormat
-                                placeholder="Phone number"
-                                name="phoneNumber"
-                                format="(###) ### ####"
-                                style={{
-                                    height: 56,
-                                    backgroundColor: theme.nEUTRALBase,
-                                    color: theme.tEXTPrimary,
-                                    padding: '0 10px',
-                                    border: `1px solid ${theme.nEUTRALLine}`,
-                                    width: '94%',
-                                    borderRadius: 8,
-                                    outline: 'none',
-                                    fontSize: 15,
-                                }}
-                            />
-                        </div>
+                        <PatternFormat
+                            placeholder="Phone number"
+                            name="phoneNumber"
+                            format="(###) ### ####"
+                            style={{
+                                height: 56,
+                                backgroundColor: theme.nEUTRALBase,
+                                color: theme.tEXTPrimary,
+                                padding: '0 10px',
+                                border: `1px solid ${theme.nEUTRALLine}`,
+                                width: '94%',
+                                borderRadius: 8,
+                                outline: 'none',
+                                fontSize: 15,
+                            }}
+                        />
                     </Form.Item>
                     <Form.Item<FieldType>
                         label="Number of guests"
                         name="numberOfCustomer"
                         rules={[
                             {
-                                required: true,
                                 message: 'Please input number of guests!',
                             },
                         ]}

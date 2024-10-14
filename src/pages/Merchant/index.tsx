@@ -82,6 +82,10 @@ export default function MerchantPage() {
         };
     }, [currentPage, loading2]);
     const [isCompletedOrder, setIsCompletedOrder] = useState(false);
+    const [filterValue, setFilterValue] = useState({
+        dine_in: localStorage.getItem('is_dine_in') !== 'false',
+        eat_out: localStorage.getItem('is_eat_out') !== 'false',
+    });
     return (
         <div onDragEnd={(e) => console.log(e)}>
             {/* Thêm nội dung cho DragDropContext ở đây */}
@@ -95,6 +99,7 @@ export default function MerchantPage() {
                     refundOrderList={refundOrderList}
                     setSearchValue={setSearchValue}
                     isSearch={true}
+                    onFilterChange={(value: any) => setFilterValue(value)}
                 />
                 {renderList ? (
                     <div className="home-board">
@@ -102,6 +107,36 @@ export default function MerchantPage() {
                             <div className="board-wrapper">
                                 {STATUS_COLUMNS?.map((item, index) => {
                                     const list_order = renderList
+                                        .filter((order) => {
+                                            if (
+                                                filterValue.dine_in &&
+                                                filterValue.eat_out
+                                            ) {
+                                                return order;
+                                            }
+                                            if (
+                                                filterValue.dine_in &&
+                                                !filterValue.eat_out
+                                            ) {
+                                                return (
+                                                    order.order_source ===
+                                                        'DINING' ||
+                                                    order.type ===
+                                                        'dining-quotes'
+                                                );
+                                            }
+                                            if (
+                                                !filterValue.dine_in &&
+                                                filterValue.eat_out
+                                            ) {
+                                                return (
+                                                    order.order_source !==
+                                                        'DINING' &&
+                                                    order.type !==
+                                                        'dining-quotes'
+                                                );
+                                            }
+                                        })
                                         .filter(
                                             (order) =>
                                                 order?.order_number?.includes?.(

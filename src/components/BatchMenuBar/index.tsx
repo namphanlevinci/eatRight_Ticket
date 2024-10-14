@@ -1,10 +1,10 @@
 import React from 'react';
-import ic_back from 'assets/icons/icon_back.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './index.scss';
 import { BASE_ROUTER } from 'constants/router';
 
 export const BatchMenuBar = ({ title = '' }) => {
+    console.log(title);
     const location = useLocation();
     const pathname = location.pathname;
     const navigate = useNavigate();
@@ -29,7 +29,7 @@ export const BatchMenuBar = ({ title = '' }) => {
 
     return (
         <div className="header-bottom">
-            <h3 className="header-bottom-left">
+            {/* <h3 className="header-bottom-left">
                 <img
                     style={{ cursor: 'pointer' }}
                     src={ic_back}
@@ -37,7 +37,7 @@ export const BatchMenuBar = ({ title = '' }) => {
                     onClick={() => history.back()}
                 />
                 <p>{title}</p>
-            </h3>
+            </h3> */}
             <div className="header-bottom-right">
                 {menuBar.map((menu) => {
                     const isActive = pathname?.includes?.(menu.key);

@@ -91,6 +91,13 @@ export default function ModalInputQuantity({
                     ref={inputRef}
                     value={value}
                     onChange={(e) => {
+                        const numberRegex = /^\d+$/;
+                        if (e.target.value === '') {
+                            setValue(e.target.value);
+                        }
+                        if (!numberRegex.test(e.target.value)) {
+                            return;
+                        }
                         setValue(e.target.value);
                     }}
                     style={{

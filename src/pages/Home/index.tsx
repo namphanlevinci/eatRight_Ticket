@@ -125,7 +125,8 @@ const HomePage: React.FC = () => {
                                                 color: theme.pRIMARY6Primary,
                                             }}
                                         >
-                                            Quick Order
+                                            {counterTable?.name ||
+                                                `Quick Order`}
                                         </h2>
                                         <div />
                                     </CounterTakeAway>
@@ -152,7 +153,8 @@ const HomePage: React.FC = () => {
                                                 color: theme.pRIMARY6Primary,
                                             }}
                                         >
-                                            Quick Order
+                                            {counterTable?.name ||
+                                                `Quick Order`}
                                         </h2>
                                         <div />
                                     </CounterTakeAway>
