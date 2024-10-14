@@ -14,6 +14,7 @@ import KitchenStationIcon from './icons/Restaurent/kitchen_station_icon';
 
 import PaymentIcon from './icons/Restaurent/payment_icon';
 import GeneralIcon from './icons/Restaurent/general_icon';
+import OrderingIcon from './icons/Restaurent/orderingIcon';
 
 type Props = {
     children: React.ReactNode;
@@ -97,6 +98,17 @@ export default function RestaurentManagementLayout(props: Props) {
                 <PaymentIcon
                     isSelected={
                         location.pathname === BASE_ROUTER.RESTAURENT_TERMINAL
+                    }
+                />
+            ),
+        },
+        {
+            title: 'Ordering',
+            path: BASE_ROUTER.RESTAURENT_ORDERING,
+            icon: (
+                <OrderingIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_ORDERING
                     }
                 />
             ),
