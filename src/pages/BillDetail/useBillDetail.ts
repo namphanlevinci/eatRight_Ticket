@@ -218,8 +218,8 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
         }
     }, [loadingPrint]);
     const PrintBillApi = () => {
+        setLoadingPrint(true);
         if (window?.ReactNativeWebView) {
-            setLoadingPrint(true);
             const imageUrl = selectDataShowbill
                 ? selectDataShowbill.invoice_image
                 : dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
@@ -227,6 +227,10 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
             );
+            notification.success({
+                message: 'Receipt sent to printer',
+                description: 'Please go to printer to take the bill!',
+            });
         }
         // else {
 
