@@ -204,6 +204,10 @@ export const useTableBill = (isGoBack = true) => {
                             setModalPaySuccess(true);
                             setOrderInfo(res?.data?.createMerchantOrder?.order);
                             setModalChange(false);
+                            PrintMerchantCopy(
+                                invoices.data?.merchantGetOrderInvoices
+                                    ?.invoice[0]?.invoice_image,
+                            );
                             emitter.emit('REPAYMENT_SUCCESS');
                         } else if (paymentMethod === 'pos') {
                             setVisibleMoalPos(true);
