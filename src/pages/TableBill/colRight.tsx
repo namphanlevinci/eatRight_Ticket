@@ -75,7 +75,6 @@ export default function ColRight({
         setModalPaySuccess,
         modalChange,
         setModalChange,
-        PrinIvoice,
         orderInfo,
     } = useTableBill();
 

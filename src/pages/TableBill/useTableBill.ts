@@ -50,7 +50,6 @@ export const useTableBill = (isGoBack = true) => {
     const [isVisibleModalOtherMethod, setVisibleModalOtherMethod] =
         React.useState<boolean>(false);
     const [modalChange, setModalChange] = React.useState(false);
-    const [invoicePaySuccess, setInvoicePaySuccess] = React.useState<any>(null);
 
     const [orderInfo, setOrderInfo] = React.useState<{
         order_number?: number;
@@ -186,13 +185,6 @@ export const useTableBill = (isGoBack = true) => {
         }
     };
 
-    const PrinIvoice = () => {
-        PrintMerchantCopy(
-            invoicePaySuccess?.data?.merchantGetOrderInvoices?.invoice[0]
-                ?.invoice_image,
-        );
-    };
-
     const [onGetInvoices, { data: dataInvoices }] = useLazyQuery(GET_INVOICES);
     const handleCheckOut = async () => {
         placeOrder({
@@ -215,7 +207,6 @@ export const useTableBill = (isGoBack = true) => {
                             setModalPaySuccess(true);
                             setOrderInfo(res?.data?.createMerchantOrder?.order);
                             setModalChange(false);
-                            setInvoicePaySuccess(invoices);
                             emitter.emit('REPAYMENT_SUCCESS');
                         } else if (paymentMethod === 'pos') {
                             setVisibleMoalPos(true);
@@ -265,7 +256,6 @@ export const useTableBill = (isGoBack = true) => {
                 if (res.data.posSaleForMarchant) {
                     setModalPaySuccess(true);
                     setModalChange(false);
-                    setInvoicePaySuccess(dataInvoices);
                     emitter.emit('REPAYMENT_SUCCESS');
                 }
             })
@@ -311,7 +301,6 @@ export const useTableBill = (isGoBack = true) => {
                 if (res.data.posSaleForMarchant) {
                     setModalPaySuccess(true);
                     setModalChange(false);
-                    setInvoicePaySuccess(dataInvoices);
                     emitter.emit('REPAYMENT_SUCCESS');
                 }
             })
@@ -343,24 +332,16 @@ export const useTableBill = (isGoBack = true) => {
             },
         })
             .then((res) => {
-                onGetInvoices({
-                    variables: {
-                        OrderNumber:
-                            res.data.createMerchantOrder.order.order_number,
-                    },
-                }).then((invoices) => {
-                    if (paymentMethod === 'other') {
-                        setModalPaySuccess(true);
-                        setOrderInfo(res?.data?.createMerchantOrder?.order);
-                        setModalChange(false);
-                        setInvoicePaySuccess(invoices);
-                        emitter.emit('REPAYMENT_SUCCESS');
-                    } else {
-                        showModalAlertPayment(
-                            res.data.createMerchantOrder.order.order_id,
-                        );
-                    }
-                });
+                if (paymentMethod === 'other') {
+                    setModalPaySuccess(true);
+                    setOrderInfo(res?.data?.createMerchantOrder?.order);
+                    setModalChange(false);
+                    emitter.emit('REPAYMENT_SUCCESS');
+                } else {
+                    showModalAlertPayment(
+                        res.data.createMerchantOrder.order.order_id,
+                    );
+                }
             })
             .catch((err) => {
                 console.log(err);
@@ -546,7 +527,6 @@ export const useTableBill = (isGoBack = true) => {
         setModalPaySuccess,
         modalChange,
         setModalChange,
-        PrinIvoice,
         orderInfo,
     };
 };
