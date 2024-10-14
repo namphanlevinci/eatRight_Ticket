@@ -211,28 +211,30 @@ export default function ColRight({
                     setModalDiscount(false);
                 }}
             />
-            <ModalTip
-                isModalOpen={modalTip}
-                onCancel={() => {
-                    setModalTip(false);
-                }}
-                onSubmit={async (values: any) => {
-                    setTip(values);
-                    setTipPercent(
-                        values /
-                            ((cart?.prices.grand_total.value || 0) -
-                                (cart?.prices?.total_canceled?.value || 0)),
-                    );
+            {modalTip && (
+                <ModalTip
+                    isModalOpen={modalTip}
+                    onCancel={() => {
+                        setModalTip(false);
+                    }}
+                    onSubmit={async (values: any) => {
+                        setTip(values);
+                        setTipPercent(
+                            values /
+                                ((cart?.prices.grand_total.value || 0) -
+                                    (cart?.prices?.total_canceled?.value || 0)),
+                        );
 
-                    await handleSetTip(values);
-                    setModalTip(false);
-                }}
-                total={(totalMoney + totalDiscount) * (Tax + 1)}
-                totalWithoutTax={
-                    total -
-                    (cart?.prices?.total_canceled_without_tax?.value || 0)
-                }
-            />
+                        await handleSetTip(values);
+                        setModalTip(false);
+                    }}
+                    total={(totalMoney + totalDiscount) * (Tax + 1)}
+                    totalWithoutTax={
+                        total -
+                        (cart?.prices?.total_canceled_without_tax?.value || 0)
+                    }
+                />
+            )}
             {isVisibleModalPos && (
                 <ModalPosDevices
                     isVisibleModalPos={isVisibleModalPos}
