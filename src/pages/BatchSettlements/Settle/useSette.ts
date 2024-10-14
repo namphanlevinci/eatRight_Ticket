@@ -21,6 +21,7 @@ import { BASE_ROUTER } from 'constants/router';
 const useSette = () => {
     const navigate = useNavigate();
     const [finalTotal, setFinalTotal] = useState<TFinalTotal[]>();
+    const [showModalConfirm, setShowModalConfirm] = useState(false);
     const [batchInvoices, setBatchInvoices] = useState<{
         data: TInvoice[];
         total: number;
@@ -133,8 +134,10 @@ const useSette = () => {
             message.error('Something went wrong');
         }
     };
-
-    const confirmSettles = async () => {
+    const confirmSettles = () => {
+        setShowModalConfirm(true);
+    };
+    const onConfirmSettles = async () => {
         try {
             const response = await confirmSettlesAPI();
             if (response?.data?.posSettleMerchant) {
@@ -177,6 +180,9 @@ const useSette = () => {
         finalTotal,
         handleTableChange,
         confirmSettles,
+        onConfirmSettles,
+        showModalConfirm,
+        setShowModalConfirm,
     };
 };
 
