@@ -137,9 +137,13 @@ const useSette = () => {
     const confirmSettles = () => {
         setShowModalConfirm(true);
     };
-    const onConfirmSettles = async () => {
+    const onConfirmSettles = async (isSelect: boolean) => {
         try {
-            const response = await confirmSettlesAPI();
+            const response = await confirmSettlesAPI({
+                variables: {
+                    markdone_item: isSelect,
+                },
+            });
             if (response?.data?.posSettleMerchant) {
                 message.success('Settlement completed successfully');
                 navigate(BASE_ROUTER.BATCH_HISTORY);

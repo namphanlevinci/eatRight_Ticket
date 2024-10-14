@@ -37,8 +37,10 @@ export default function BatchSettlements() {
                 isModalOpen={showModalConfirm}
                 onCancel={() => setShowModalConfirm(false)}
                 onSubmit={onConfirmSettles}
-                title="Confirm Settle"
+                title="Confirm Close Batch"
                 content="Do you want to settle this batch?"
+                okText="Settle"
+                isLoading={isLoading}
             />
             <div className="container-box body_history">
                 <BatchMenuBar title="Batch Settlements / Settle" />
