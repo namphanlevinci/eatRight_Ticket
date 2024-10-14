@@ -38,6 +38,8 @@ export const useTableBill = (isGoBack = true) => {
         }[]
     >([]);
     const [numbersSplit, setNumbersSplit] = React.useState<number>(1);
+    const [isModalPaySuccess, setModalPaySuccess] =
+        React.useState<boolean>(false);
     const [paymentMethod, setPaymentMethod] =
         React.useState<string>('cashondelivery');
 
@@ -47,6 +49,7 @@ export const useTableBill = (isGoBack = true) => {
         React.useState<boolean>(false);
     const [isVisibleModalOtherMethod, setVisibleModalOtherMethod] =
         React.useState<boolean>(false);
+    const [modalChange, setModalChange] = React.useState(false);
 
     const [orderInfo, setOrderInfo] = React.useState<{
         order_number?: number;
@@ -155,7 +158,6 @@ export const useTableBill = (isGoBack = true) => {
                 }
             })
             .catch((err) => {
-                console.log(err);
                 modal.error({
                     title: 'Get Link Payment Failed',
                     centered: true,
@@ -179,6 +181,7 @@ export const useTableBill = (isGoBack = true) => {
             );
         }
     };
+
     const [onGetInvoices, { data: dataInvoices }] = useLazyQuery(GET_INVOICES);
     const handleCheckOut = async () => {
         placeOrder({
@@ -198,13 +201,9 @@ export const useTableBill = (isGoBack = true) => {
                 })
                     .then((invoices) => {
                         if (paymentMethod === 'cashondelivery') {
-                            navigation(
-                                `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data.createMerchantOrder.order.order_id}`,
-                            );
-                            PrintMerchantCopy(
-                                invoices.data?.merchantGetOrderInvoices
-                                    ?.invoice[0]?.invoice_image,
-                            );
+                            setModalPaySuccess(true);
+                            setOrderInfo(res?.data?.createMerchantOrder?.order);
+                            setModalChange(false);
                             emitter.emit('REPAYMENT_SUCCESS');
                         } else if (paymentMethod === 'pos') {
                             setVisibleMoalPos(true);
@@ -253,6 +252,9 @@ export const useTableBill = (isGoBack = true) => {
             .then((res) => {
                 console.log('res', res);
                 if (res.data.posSaleForMarchant) {
+                    setModalPaySuccess(true);
+                    setModalChange(false);
+                    emitter.emit('REPAYMENT_SUCCESS');
                     if (
                         dataInvoices?.merchantGetOrderInvoices?.invoice[0]
                             ?.invoice_image
@@ -343,13 +345,9 @@ export const useTableBill = (isGoBack = true) => {
         })
             .then((res) => {
                 if (res.data.posSaleForMarchant) {
-                    showModalSuccess(
-                        `${
-                            orderDetail?.order_id
-                                ? orderDetail?.order_id
-                                : orderInfo?.order_id
-                        }`,
-                    );
+                    setModalPaySuccess(true);
+                    setModalChange(false);
+                    emitter.emit('REPAYMENT_SUCCESS');
                 }
             })
             .catch(() => {
@@ -380,11 +378,10 @@ export const useTableBill = (isGoBack = true) => {
             },
         })
             .then((res) => {
-                console.log('response other payment : ', res);
                 if (paymentMethod === 'other') {
-                    navigation(
-                        `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data.createMerchantOrder.order.order_id}`,
-                    );
+                    setModalPaySuccess(true);
+                    setOrderInfo(res?.data?.createMerchantOrder?.order);
+                    setModalChange(false);
                     emitter.emit('REPAYMENT_SUCCESS');
                 } else {
                     showModalAlertPayment(
@@ -571,5 +568,10 @@ export const useTableBill = (isGoBack = true) => {
         setVisibleModalOtherMethod,
         handleOtherPayment,
         setOrderInfo,
+        isModalPaySuccess,
+        setModalPaySuccess,
+        modalChange,
+        setModalChange,
+        orderInfo,
     };
 };

@@ -22,12 +22,15 @@ export default function TableBill() {
         listItems,
         numbersSplit,
         setCart,
+        isModalPaySuccess,
+        setModalPaySuccess,
     } = useTableBill();
     const [splitBill, setSplitBill] = useState(false);
     const [openModalSplitBill, setOpenModalSplitBill] = useState(false);
     const [openModalConfirmCloseSplitBill, setCloseSplitBill] = useState(false);
     const navigation = useNavigate();
     const { theme } = useTheme();
+
     const RenderHeader = () => {
         return (
             <div
