@@ -1,184 +1,51 @@
-import { Modal, Row, notification } from 'antd';
+import { Modal, Spin } from 'antd';
 import { useTheme } from 'context/themeContext';
 import styled from 'styled-components';
-import React from 'react';
 import SmsIcon from 'assets/icons/smsIcon';
 import PrintIcon from 'assets/icons/printIcon';
 import EmailIcon from 'assets/icons/emailIcon';
 import CloseXIcon from 'assets/icons/closeIcon';
 import SuccessIcon from 'assets/icons/successIcon';
 import ModalInput from 'components/modal/ModalInput';
-import {
-    SEND_RECEIPT_TO_EMAIL,
-    SEND_RECEIPT_TO_PHONENUMBER,
-} from 'graphql/orders/printBill';
-import { PRINT_BILL } from 'graphql/printer';
-import { GET_INVOICES } from 'graphql/cart/splitBill';
-import { GET_ORDER_DETAIL } from 'graphql/orders/orderDetail';
+import { useNavigate } from 'react-router-dom';
+import { BASE_ROUTER } from 'constants/router';
+import { useBillDetail } from 'pages/BillDetail/useBillDetail';
 
-import { useMutation, useLazyQuery } from '@apollo/client';
-
-export default function ModalPaySuccess() {
+export default function ModalPaySuccess({
+    isVisible = false,
+    onClose,
+    order_id,
+}: {
+    isVisible: boolean;
+    onClose: () => void;
+    order_id: any;
+}) {
+    const navigation = useNavigate();
     const { theme } = useTheme();
-    const [modalInputEmail, setModalInputEmail] = React.useState(false);
-    const [onSendBillToEmail, { loading: sendLoading1 }] = useMutation(
-        SEND_RECEIPT_TO_EMAIL,
-    );
-    const [onSendBillToPhone, { loading: sendLoading2 }] = useMutation(
-        SEND_RECEIPT_TO_PHONENUMBER,
-    );
-    const [onGetInvoices, { data: dataSplitBill }] = useLazyQuery(
-        GET_INVOICES,
-        {
-            fetchPolicy: 'cache-and-network',
-        },
-    );
-    const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
-    const [getOrderDetail, { data, loading, refetch }] = useLazyQuery(
-        GET_ORDER_DETAIL,
-        {
-            fetchPolicy: 'cache-and-network',
-        },
-    );
 
-    const [selectDataShowbill, setSelectDataShowbill] = React.useState<any>();
-    const [childBill, setChildBill] = React.useState<any>([]);
+    const {
+        PrintBillApi,
+        loadingPrint,
+        modalInputEmail,
+        modalInputPhone,
+        setModalInputEmail,
+        setModalInputPhone,
+        handleSendBill,
+        selectDataShowbill,
+        dataSplitBill,
+        sendLoading1,
+        sendLoading2,
+    } = useBillDetail({ order_id });
 
-    const showSuccess = ({
-        title,
-        content,
-    }: {
-        title: string;
-        content: string;
-    }) => {
-        notification.success({
-            message: title,
-            description: content,
-        });
-    };
-
-    const PrintBillApi = () => {
-        if (window?.ReactNativeWebView) {
-            const imageUrl = selectDataShowbill
-                ? selectDataShowbill.invoice_image
-                : dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
-                      .invoice_image;
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
-            );
-        }
-        // else {
-
-        if (childBill.length) {
-            onPrintBill({
-                variables: {
-                    invoice_number: selectDataShowbill.number,
-                },
-            })
-                .then(() => {
-                    notification.success({
-                        message: 'Receipt sent to printer',
-                        description: 'Please go to printer to take the bill!',
-                    });
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-        } else {
-            if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length === 0) {
-                onGetInvoices({
-                    variables: {
-                        OrderNumber: data?.orderDetail?.order_number,
-                    },
-                    fetchPolicy: 'no-cache',
-                }).then((res) => {
-                    const newData = res?.data?.merchantGetOrderInvoices;
-                    onPrintBill({
-                        variables: {
-                            invoice_number: newData.invoice[0]?.number,
-                        },
-                    })
-                        .then(() => {
-                            notification.success({
-                                message: 'Receipt sent to printer',
-                                description:
-                                    'Please go to printer to take the bill!',
-                            });
-                        })
-                        .catch((e) => {
-                            console.log(e);
-                        });
-                });
-                return;
-            }
-            onPrintBill({
-                variables: {
-                    invoice_number:
-                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
-                            ?.number,
-                },
-            })
-                .then(() => {
-                    notification.success({
-                        message: 'Receipt sent to printer',
-                        description: 'Please go to printer to take the bill!',
-                    });
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-        }
-        // }
-    };
-
-    const handleSendBill = (
-        type: string,
-        value: string,
-        invoiceNumber: string,
-    ) => {
-        if (!invoiceNumber) {
-            return;
-        }
-        if (type === 'email') {
-            onSendBillToEmail({
-                variables: {
-                    invoiceNumber: invoiceNumber,
-                    email: value,
-                },
-            })
-                .then(() => {
-                    showSuccess({
-                        title: 'Success',
-                        content: `Send to ${value} success.`,
-                    });
-                })
-                .catch((err: any) => {
-                    console.log(err);
-                });
-        } else {
-            onSendBillToPhone({
-                variables: {
-                    invoiceNumber: `${invoiceNumber}`,
-                    phoneNumber: value,
-                    region_code: '+1',
-                },
-            })
-                .then(() => {
-                    showSuccess({
-                        title: 'Success',
-                        content: `Send to ${value} success.`,
-                    });
-                })
-                .catch((err: any) => {
-                    console.log(err);
-                });
-        }
+    const closeModal = () => {
+        onClose();
+        navigation(BASE_ROUTER.HOME);
     };
 
     return (
         <Modal
             title="Basic Modal"
-            open={true}
+            open={isVisible}
             styles={{
                 footer: {
                     display: 'none',
@@ -197,25 +64,45 @@ export default function ModalPaySuccess() {
         >
             <Header>
                 <p>Receipt Options</p>
-                <CloseXIcon />
+                <div style={{ cursor: 'pointer' }} onClick={closeModal}>
+                    <CloseXIcon />
+                </div>
             </Header>
             <Body>
-                <Item>
+                <Item onClick={() => !loadingPrint && PrintBillApi()}>
                     <div>
-                        <PrintIcon />
-                        <p>Print</p>
+                        {loadingPrint ? (
+                            <Spin />
+                        ) : (
+                            <>
+                                <PrintIcon />
+                                <p>Print</p>
+                            </>
+                        )}
                     </div>
                 </Item>
-                <Item onClick={() => setModalInputEmail(true)}>
+                <Item onClick={() => !sendLoading1 && setModalInputEmail(true)}>
                     <div>
-                        <EmailIcon />
-                        <p>Email</p>
+                        {sendLoading1 ? (
+                            <Spin />
+                        ) : (
+                            <>
+                                <EmailIcon />
+                                <p>Email</p>
+                            </>
+                        )}
                     </div>
                 </Item>
-                <Item>
+                <Item onClick={() => !sendLoading2 && setModalInputPhone(true)}>
                     <div>
-                        <SmsIcon />
-                        <p>Refund</p>
+                        {sendLoading2 ? (
+                            <Spin />
+                        ) : (
+                            <>
+                                <SmsIcon />
+                                <p>Sms</p>
+                            </>
+                        )}
                     </div>
                 </Item>
             </Body>
@@ -242,6 +129,25 @@ export default function ModalPaySuccess() {
                     setModalInputEmail(false);
                 }}
                 type="email"
+            />
+            <ModalInput
+                isModalOpen={modalInputPhone}
+                title="Input customer PhoneNumber"
+                onSubmit={(value: string) => {
+                    handleSendBill(
+                        'tel',
+                        value,
+                        selectDataShowbill
+                            ? selectDataShowbill?.number
+                            : dataSplitBill?.merchantGetOrderInvoices
+                                  ?.invoice[0]?.number,
+                    );
+                    setModalInputPhone(false);
+                }}
+                onCancel={() => {
+                    setModalInputPhone(false);
+                }}
+                type="tel"
             />
         </Modal>
     );

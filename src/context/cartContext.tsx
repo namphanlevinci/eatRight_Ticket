@@ -88,7 +88,6 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                 const newCart = item.map((currentCart) =>
                     calcCanceled(currentCart),
                 );
-                console.log('newCart', newCart);
                 updateCart(newCart, indexTable);
             }
 
