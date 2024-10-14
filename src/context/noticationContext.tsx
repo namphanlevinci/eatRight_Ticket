@@ -1,9 +1,8 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { App } from 'antd';
 import { BASE_ROUTER } from 'constants/router';
 import { emitter } from 'graphql/client';
 import { SOCKET } from 'graphql/socket/connect';
-import { GET_ALL_TABLE } from 'graphql/table/table';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +25,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         (state: RootState) => state.auth,
     );
     const [socketInitialized, setSocketInitialized] = useState(false);
-    const [onGetTable] = useLazyQuery(GET_ALL_TABLE);
     const navigation = useNavigate();
     const { notification } = App.useApp();
     const tableDataString = localStorage.getItem('tableData');
@@ -34,22 +32,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         if (isLogged && !socketInitialized && restaurant_id && isTableView) {
             let tableData = JSON.parse(tableDataString || '{}');
-            if (!tableDataString && restaurant_id) {
-                console.log('getTable call from Notification');
-                onGetTable({
-                    variables: {
-                        storeId: restaurant_id,
-                    },
-                })
-                    .then((res) => {
-                        if (res?.data?.getTablesByStore) {
-                            tableData = res?.data?.getTablesByStore;
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            }
             const socketInstance = io(SocketURL);
 
             setSocket(socketInstance);
