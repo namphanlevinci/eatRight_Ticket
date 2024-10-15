@@ -8,9 +8,9 @@ export interface authStateType {
     restaurant_address: string;
     restaurant_id: string;
     floor: {
-        id: string;
+        id: number;
         name: string;
-        status: string;
+        status: number;
     }[];
     isMerchant: boolean;
     is_dine_in: boolean;

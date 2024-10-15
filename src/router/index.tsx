@@ -165,7 +165,11 @@ export const BaseRouter = () => {
                     path={BASE_ROUTER.HOME}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.Home />
+                            {isMerchant ? (
+                                <Container.MerchantHome />
+                            ) : (
+                                <Container.Home />
+                            )}
                         </PrivateRoute>
                     }
                 />
