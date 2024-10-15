@@ -120,7 +120,7 @@ const Index = () => {
         <div style={{ padding: 16 }}>
             <Header />
             <div className="container-box body_history">
-                <MenuBar title="Menu Management / Items" />
+                <MenuBar />
                 <div
                     style={{
                         display: 'flex',

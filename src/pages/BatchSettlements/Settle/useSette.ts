@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { message, TablePaginationConfig } from 'antd';
 import {
     data_GetBatchInvoices,
@@ -17,6 +17,7 @@ import {
 } from './Columns_v2';
 import { useNavigate } from 'react-router';
 import { BASE_ROUTER } from 'constants/router';
+import { GET_KITCHEN } from 'graphql/kitchen';
 
 const useSette = () => {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ const useSette = () => {
         data: TPaymentMethods[];
         total: number;
     }>();
-
+    const { data: dataKitchen } = useQuery(GET_KITCHEN);
     const [
         getReportByPaymentMethodsAPI,
         {
@@ -135,7 +136,21 @@ const useSette = () => {
         }
     };
     const confirmSettles = () => {
-        setShowModalConfirm(true);
+        if (dataKitchen?.kitchenGetAllItems) {
+            const quotes = dataKitchen?.kitchenGetAllItems.quote_items;
+            const orders = dataKitchen?.kitchenGetAllItems.order_items;
+            const itemsNotDone = quotes?.find(
+                (item: { status: string }) => item.status !== 'done',
+            );
+            const ordersNotDone = orders?.find(
+                (item: { status: string }) => item.status !== 'done',
+            );
+            if (itemsNotDone || ordersNotDone) {
+                setShowModalConfirm(true);
+                return;
+            }
+        }
+        onConfirmSettles(true);
     };
     const onConfirmSettles = async (isSelect: boolean) => {
         try {

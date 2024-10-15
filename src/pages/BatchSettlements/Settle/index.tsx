@@ -43,7 +43,7 @@ export default function BatchSettlements() {
                 isLoading={isLoading}
             />
             <div className="container-box body_history">
-                <BatchMenuBar title="Batch Settlements / Settle" />
+                <BatchMenuBar />
                 {batchInvoices?.lastSettleDate && (
                     <div
                         style={{

@@ -3,8 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './index.scss';
 import { BASE_ROUTER } from 'constants/router';
 
-const MenuBar = ({ title = '' }) => {
-    console.log(title);
+const MenuBar = () => {
     const location = useLocation();
     const pathname = location.pathname;
     const navigate = useNavigate();
