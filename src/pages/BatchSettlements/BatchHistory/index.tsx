@@ -5,6 +5,8 @@ import useBatchHistory from './useBatchHistory';
 import { useTheme } from 'context/themeContext';
 import Header from 'pages/Merchant/Header';
 import '../Settle/index.scss';
+import { useState } from 'react';
+import ModalPrint from './ModalPrint';
 const { RangePicker } = DatePicker;
 
 const windowHeight = window.innerHeight;
@@ -21,10 +23,17 @@ export default function BatchHistory() {
         handleTableChange,
         handleTextChange,
     } = useBatchHistory();
-
+    const [batchId, setBatchId] = useState('');
+    const [modal, setModal] = useState(false);
     return (
         <Spin spinning={loading}>
             <Header />
+            <ModalPrint
+                isModalOpen={modal}
+                onCancel={() => setModal(false)}
+                okText="Print"
+                batchId={batchId}
+            />
             <div className="container-box body_history">
                 <BatchMenuBar />
                 <div
@@ -82,7 +91,10 @@ export default function BatchHistory() {
                     <Table
                         loading={loading}
                         rowKey="order_number"
-                        columns={Columns()}
+                        columns={Columns({
+                            setData: setBatchId,
+                            setShowModal: setModal,
+                        })}
                         dataSource={data?.merchantGetBatchSettles.items}
                         className="table-menu"
                         rowClassName={'row-table-menu'}

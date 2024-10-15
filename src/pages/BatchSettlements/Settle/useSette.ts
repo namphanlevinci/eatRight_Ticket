@@ -150,13 +150,13 @@ const useSette = () => {
                 return;
             }
         }
-        onConfirmSettles(true);
+        onConfirmSettles();
     };
-    const onConfirmSettles = async (isSelect: boolean) => {
+    const onConfirmSettles = async () => {
         try {
             const response = await confirmSettlesAPI({
                 variables: {
-                    markdone_item: isSelect,
+                    markdone_item: false,
                 },
             });
             if (response?.data?.posSettleMerchant) {
