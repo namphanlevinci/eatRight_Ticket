@@ -29,7 +29,7 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
                 onGetTableFloor({
                     variables: {
                         storeId: restaurant_id,
-                        floorId: floor[floorActive].id,
+                        floorId: floorActive,
                     },
                     fetchPolicy: cache ? 'cache-only' : 'cache-and-network',
                 });

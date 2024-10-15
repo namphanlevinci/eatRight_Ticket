@@ -19,6 +19,7 @@ const WaitingListButton = ({ count, onClick }: IProps) => {
                 padding: '12px 16px',
                 height: 'fit-content',
                 borderRadius: 6,
+                cursor: 'pointer',
             }}
             onClick={onClick}
         >

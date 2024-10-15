@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
-import { Layout } from 'antd';
+import React, { useEffect } from 'react';
+import { Layout, Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllTable } from './useTable';
 import {
@@ -9,7 +9,6 @@ import {
     ContainerTableBody,
     // CountAvailable,
 } from './styled';
-import Table from './components/Table';
 import { BASE_ROUTER } from 'constants/router';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
@@ -22,10 +21,9 @@ const { Content } = Layout;
 
 const MerchantHomePage: React.FC = () => {
     const navigation = useNavigate();
-    const { data, counterTable, floorActive, handleActiveFloor } =
-        useGetAllTable({
-            cache: false,
-        });
+    const { loading, data, floorActive, handleActiveFloor } = useGetAllTable({
+        cache: false,
+    });
     const { floor: floors, isTableView } = useSelector(
         (state: RootState) => state.auth,
     );
@@ -34,7 +32,6 @@ const MerchantHomePage: React.FC = () => {
             navigation(BASE_ROUTER.MERCHANT_PAGE);
         }
     }, [isTableView]);
-    const memoizedTables = useMemo(() => data, [data]);
     // const { theme } = useTheme();
     // const ismobile = useMediaQuery({
     //     query: '(max-width: 768px)',
@@ -44,21 +41,22 @@ const MerchantHomePage: React.FC = () => {
     const renderContent = () => {
         console.log(data);
         return (
-            <ContainerTable style={{ background: '#f4f4f4' }}>
-                <ContainerTableHeader>
-                    <Floors
-                        floorActive={floorActive}
-                        floors={floors}
-                        onFloorActive={handleActiveFloor}
-                    />
-                    <WaitingListButton
-                        count={41}
-                        onClick={() => console.log('Clicked')}
-                    />
-                </ContainerTableHeader>
-                {/* <SearchTable onChangeText={(e: string) => setSearchText(e)} /> */}
-                <ContainerTableBody>
-                    {/* {data.map(
+            <Spin spinning={loading}>
+                <ContainerTable style={{ background: '#f4f4f4', paddingBottom: 80 }}>
+                    <ContainerTableHeader>
+                        <Floors
+                            floorActive={floorActive}
+                            floors={floors}
+                            onFloorActive={handleActiveFloor}
+                        />
+                        <WaitingListButton
+                            count={41}
+                            onClick={() => console.log('Clicked')}
+                        />
+                    </ContainerTableHeader>
+                    {/* <SearchTable onChangeText={(e: string) => setSearchText(e)} /> */}
+                    <ContainerTableBody>
+                        {/* {data.map(
                         (dt: any) =>
                             dt && (
                                 <Table
@@ -72,9 +70,14 @@ const MerchantHomePage: React.FC = () => {
                                 />
                             ),
                     )} */}
-                   {data?.length ?  <Tables tables={data} />: <div>Notfound tables</div>}
-                </ContainerTableBody>
-            </ContainerTable>
+                        {data?.length ? (
+                            <Tables tables={data} />
+                        ) : (
+                            <div>Not found any table</div>
+                        )}
+                    </ContainerTableBody>
+                </ContainerTable>
+            </Spin>
         );
     };
 

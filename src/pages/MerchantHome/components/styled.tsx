@@ -33,29 +33,80 @@ export const SFloorItem = styled.div<IFloorItem>`
 
 export const STableContainer = styled.div<{
     width: string;
+    height: string;
     maxWidth: string;
     minWidth: string;
+    backgroundColor: string;
+    borderColor: string;
 }>`
-    border: 10px solid #9be0ff;
-    background-color: #15b7ff;
-    margin-top: 48px;
+    border: ${(props) => `10px solid ${props.borderColor}`};
+    background-color: ${(props) => props.backgroundColor};
+    margin-top: 80px;
     border-radius: 20px;
     text-align: center;
     position: relative;
     z-index: 2;
     width: ${(props) => props.width};
+    height: ${(props) => props.height};
     max-width: ${(props) => props.maxWidth};
     min-width: ${(props) => props.minWidth};
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;
 
-export const SSideBar = styled.div<{ left?: boolean }>`
+export const SSideBar = styled.div<{
+    position: 'top' | 'left' | 'right' | 'bottom';
+    empty?: boolean;
+    top?: string;
+    left?: string;
+    backgroundColor: string;
+}>`
     position: absolute;
-    background: #15b7ff;
+    background-color: ${(props) =>
+        props.empty ? '#f4f4f4' : props.backgroundColor};
     height: 68px;
     width: 11px;
-    top: 25%;
-    border-radius: ${(props) => (props.left ? '6px 0 0 6px' : '0 6px 6px 0')};
-    ${(props) => (props.left ? 'left: -20px;' : 'right: -20px;')}
+    border: ${(props) =>
+        props.empty ? `3px solid ${props.backgroundColor}` : ''};
+    ${(props) => getPropsByPosition(props.position, 'radius')};
+    ${(props) => getPropsByPosition(props.position, 'borderNone')}
+    ${(props) => getPropsByPosition(props.position, 'rotate')}
+    ${(props) => getPropsByPosition(props.position, 'position')}
+`;
+
+export const STopSideBar = styled(SSideBar)`
+    position: absolute;
+    top: -49px;
+    left: 50%;
+    transform: rotate(90deg);
+    ${(props) => `left: ${props.left ?? '50%'}`}
+`;
+
+export const SLeftSideBar = styled(SSideBar)`
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    ${(props) => `top: ${props.top ?? '50%'}`}
+`;
+
+export const SRightSideBar = styled(SSideBar)`
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    ${(props) => `top: ${props.top ?? '50%'}`}
+`;
+
+export const SBottomSideBar = styled(SSideBar)`
+    position: absolute;
+    bottom: -49px;
+    left: 50%;
+    transform: rotate(90deg);
+    ${(props) => `left: ${props.left ?? '50%'}`}
 `;
 
 export const STitle = styled.div`
@@ -65,6 +116,8 @@ export const STitle = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    line-clamp: 2;
+    margin-top: 20px;
 `;
 
 export const SSubtitle = styled.div`
@@ -72,6 +125,7 @@ export const SSubtitle = styled.div`
     font-weight: 600;
     color: white;
     text-overflow: ellipsis;
+    line-clamp: 2;
     overflow: hidden;
     white-space: nowrap;
 `;
@@ -83,3 +137,42 @@ export const SDuration = styled.div`
     padding: 4px 8px;
     border-radius: 8px;
 `;
+
+const getPropsByPosition = (
+    position: 'top' | 'left' | 'right' | 'bottom',
+    prop: string,
+) => {
+    const radiusObj = {
+        top: 'border-radius: 6px 0 0 6px; ',
+        left: 'border-radius: 6px 0 0 6px;',
+        right: 'border-radius: 0 6px 6px 0;',
+        bottom: 'border-radius: 0 6px 6px 0;',
+    };
+    const borderObj = {
+        top: 'border-right: none;',
+        left: 'border-right: none;',
+        right: 'border-left: none;',
+        bottom: 'border-left: none;',
+    };
+    const rotateObj = {
+        top: 'transform: rotate(-90deg);',
+        left: 'transform: rotate(0deg);',
+        right: 'transform: rotate(0deg);',
+        bottom: 'transform: rotate(90deg);',
+    };
+    const positionObj = {
+        top: 'top: -49px;',
+        left: 'left: -20px;',
+        right: 'right: -20px;',
+        bottom: 'bottom: -49px;',
+    };
+
+    const propsObj: Record<string, any> = {
+        radius: radiusObj,
+        borderNone: borderObj,
+        rotate: rotateObj,
+        position: positionObj,
+    };
+
+    return propsObj[prop][position];
+};

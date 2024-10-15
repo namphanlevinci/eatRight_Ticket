@@ -41,6 +41,7 @@ import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
 // import { OPEN_CASHIER } from 'graphql/printer';
 import HomeIcon from 'assets/icons/homeIcon';
+import { TABLE_STATUS } from 'constants/table';
 
 type Props = {
     children: React.ReactNode;
@@ -401,6 +402,7 @@ export const DarkLayout = (props: Props) => {
                             paddingBlock: isMobile ? 10 : 16,
                         }}
                     >
+                        {isTableView && isMerchant && <AdditionalTableView />}
                         <Row justify={'space-between'}>
                             <Col style={{ textAlign: 'left' }}>
                                 <Text style={{ fontWeight: '600' }}>
@@ -474,5 +476,52 @@ export const DarkLayout = (props: Props) => {
                 </div>
             )}
         </Layout>
+    );
+};
+
+const AdditionalTableView = () => {
+    return (
+        <Row
+            style={{
+                borderBottom: '1px solid #E1E6EF',
+                paddingBottom: 8,
+                marginBottom: 8,
+            }}
+        >
+            <Row
+                style={{
+                    width: 'fit-content',
+                    display: 'flex',
+                    gap: 80,
+                    margin: '0 auto',
+                }}
+            >
+                {Object.values(TABLE_STATUS).map((value, idx) => {
+                    return (
+                        <Row key={idx} justify="space-between" align="middle">
+                            <div
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                    backgroundColor: value.primaryColor,
+                                    border: `4px solid ${value.secondaryColor}`,
+                                    borderRadius: 6,
+                                    marginRight: 8,
+                                }}
+                            />
+                            <Text
+                                style={{
+                                    fontWeight: 600,
+                                    fontSize: 18,
+                                    color: Colors.grey3,
+                                }}
+                            >
+                                {value.label}
+                            </Text>
+                        </Row>
+                    );
+                })}
+            </Row>
+        </Row>
     );
 };
