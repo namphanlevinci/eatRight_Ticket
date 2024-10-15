@@ -106,7 +106,7 @@ export const useTableBill = (isGoBack = true) => {
     };
     const onCloseProcessingPayment = () => {
         setPos_Loading(false);
-        navigation(`${BASE_ROUTER.BILL_DETAIL}?orderId=${orderInfo?.order_id}`);
+        goTable();
     };
 
     const showModalSuccess = (order_id: string, isGoToTable = true) => {
