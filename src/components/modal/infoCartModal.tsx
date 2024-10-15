@@ -192,11 +192,6 @@ export default function InfoCartModal({
                     <Form.Item<FieldType>
                         label="Number of guests"
                         name="numberOfCustomer"
-                        rules={[
-                            {
-                                message: 'Please input number of guests!',
-                            },
-                        ]}
                     >
                         <Input
                             type="number"
