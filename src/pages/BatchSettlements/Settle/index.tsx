@@ -14,6 +14,7 @@ import {
 import './index.scss';
 import { formatNumberWithCommas } from 'utils/format';
 import useSette from './useSette';
+import ModalConfirm from './ModalConfirm';
 
 export default function BatchSettlements() {
     const {
@@ -24,13 +25,25 @@ export default function BatchSettlements() {
         finalTotal,
         handleTableChange,
         confirmSettles,
+        onConfirmSettles,
+        setShowModalConfirm,
+        showModalConfirm,
     } = useSette();
 
     return (
         <Spin spinning={isLoading}>
             <Header isSearch={false} />
+            <ModalConfirm
+                isModalOpen={showModalConfirm}
+                onCancel={() => setShowModalConfirm(false)}
+                onSubmit={onConfirmSettles}
+                title="Confirm Close Batch"
+                content="Do you want to settle this batch?"
+                okText="Settle"
+                isLoading={isLoading}
+            />
             <div className="container-box body_history">
-                <BatchMenuBar title="Batch Settlements / Settle" />
+                <BatchMenuBar />
                 {batchInvoices?.lastSettleDate && (
                     <div
                         style={{

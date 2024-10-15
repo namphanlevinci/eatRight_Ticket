@@ -205,13 +205,7 @@ const Index = () => {
             )}
             <Header />
             <div className="container-box body_history">
-                <MenuBar
-                    title={
-                        pathname?.includes?.('edit_category')
-                            ? 'Menu Management / Categories / Edit Category'
-                            : 'Menu Management / Categories / Create New Category'
-                    }
-                />
+                <MenuBar />
                 <Form
                     form={form}
                     layout="vertical"

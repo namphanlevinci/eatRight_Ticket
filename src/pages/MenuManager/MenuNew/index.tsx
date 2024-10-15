@@ -180,13 +180,7 @@ const Index = () => {
             )}
             <Header />
             <div className="container-box body_history">
-                <MenuBar
-                    title={
-                        pathname?.includes?.('edit_menu')
-                            ? 'Menu Management / Menus / Edit Menu'
-                            : 'Menu Management / Menus / Create News Menu'
-                    }
-                />
+                <MenuBar />
                 <Form
                     form={form}
                     layout="vertical"

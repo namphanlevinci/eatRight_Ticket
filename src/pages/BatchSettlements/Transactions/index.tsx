@@ -28,7 +28,7 @@ export default function Transactions() {
         <Spin spinning={loading}>
             <Header />
             <div className="container-box body_history">
-                <BatchMenuBar title="Batch Settlements / Batch History" />
+                <BatchMenuBar />
                 <div
                     style={{
                         display: 'flex',
