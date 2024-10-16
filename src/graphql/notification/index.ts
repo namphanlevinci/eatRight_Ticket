@@ -19,3 +19,11 @@ export const GET_NOTIFICATION = gql`
         }
     }
 `;
+
+export const MARK_REAL_ALL_NOTIFICATION = gql`
+    mutation {
+        markReadAllNotification {
+            result
+        }
+    }
+`;
