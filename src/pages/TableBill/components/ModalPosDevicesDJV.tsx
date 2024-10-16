@@ -51,8 +51,6 @@ const ModalPosDevicesDJV = ({
         setSelectedOption(item);
     };
 
-    console.log(selectedOption);
-
     const { theme } = useTheme();
     return (
         <>
@@ -83,7 +81,7 @@ const ModalPosDevicesDJV = ({
                             marginBottom: 24,
                         }}
                     >
-                        Terminals
+                        Select another terminal
                     </p>
                     {posDeviceList?.map?.((pos: any) => (
                         <Button

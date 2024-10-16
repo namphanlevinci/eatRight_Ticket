@@ -10,6 +10,7 @@ import {
     LIST_PRINTER_DEVICES,
     SELECT_PRINTER_DEVICE,
     SELECT_TERMINAL_PRINTER_DEVICE,
+    SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT,
 } from 'graphql/printer';
 import ButtonSubmit from 'pages/TableBill/components/buttonSubmit';
 import { useEffect, useState } from 'react';
@@ -32,6 +33,9 @@ export default function PrinterAppSetUpPage() {
         SELECT_PRINTER_DEVICE,
     );
     const [onSetTerminalPrinter] = useMutation(SELECT_TERMINAL_PRINTER_DEVICE);
+    const [onSetTerminalPrinterMerchant] = useMutation(
+        SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT,
+    );
     const [list, setList] = useState<any>([]);
     const [selectedOption, setSelectedOption] = useState<any>(null);
     const { theme } = useTheme();
@@ -59,25 +63,47 @@ export default function PrinterAppSetUpPage() {
     const handleOk = (): void => {
         if (selectedOption) {
             if (switchPrinterMode) {
-                onSetTerminalPrinter({
-                    variables: {
-                        pos_id: selectedOption.entity_id,
-                    },
-                })
-                    .then(() => {
-                        notification.success({
-                            message: 'Success',
-                            description: 'Set up printer successfully',
-                        });
-                        localStorage.setItem(
-                            'printer_id',
-                            selectedOption?.id.toString(),
-                        );
-                        pushMsgOffPrinter();
+                if (isMerchant) {
+                    onSetTerminalPrinterMerchant({
+                        variables: {
+                            pos_id: selectedOption.entity_id,
+                        },
                     })
-                    .catch(() => {
-                        console.log('error');
-                    });
+                        .then(() => {
+                            notification.success({
+                                message: 'Success',
+                                description: 'Set up printer successfully',
+                            });
+                            localStorage.setItem(
+                                'printer_id',
+                                selectedOption?.id.toString(),
+                            );
+                            pushMsgOffPrinter();
+                        })
+                        .catch(() => {
+                            console.log('error');
+                        });
+                } else {
+                    onSetTerminalPrinter({
+                        variables: {
+                            pos_id: selectedOption.entity_id,
+                        },
+                    })
+                        .then(() => {
+                            notification.success({
+                                message: 'Success',
+                                description: 'Set up printer successfully',
+                            });
+                            localStorage.setItem(
+                                'printer_id',
+                                selectedOption?.id.toString(),
+                            );
+                            pushMsgOffPrinter();
+                        })
+                        .catch(() => {
+                            console.log('error');
+                        });
+                }
             } else {
                 onSetPrinterDevice({
                     variables: {
@@ -293,17 +319,11 @@ export default function PrinterAppSetUpPage() {
             <Text>Printer App Setup</Text>
             <Row style={{ gap: 20 }}>
                 <Text>EPSON Printer</Text>
-                {!isMerchant && (
-                    <>
-                        <Switch
-                            onChange={() =>
-                                setSwitchPrinterMode(!switchPrinterMode)
-                            }
-                            value={switchPrinterMode}
-                        />
-                        <Text>Terminal Printer</Text>{' '}
-                    </>
-                )}
+                <Switch
+                    onChange={() => setSwitchPrinterMode(!switchPrinterMode)}
+                    value={switchPrinterMode}
+                />
+                <Text>Terminal Printer</Text>{' '}
             </Row>
             {switchPrinterMode ? (
                 <RenderTerminalPrinter />

@@ -75,6 +75,7 @@ export default function ColRight({
         modalChange,
         setModalChange,
         orderInfo,
+        onCancelCheckout,
     } = useTableBill();
 
     // useEffect(() => {
@@ -269,6 +270,11 @@ export default function ColRight({
                         }}
                         onCancel={() => {
                             showModalErrorPayment();
+                            onCancelCheckout({
+                                variables: {
+                                    cart_id: cart?.id,
+                                },
+                            });
                         }}
                     />
                 )}
@@ -497,6 +503,7 @@ export default function ColRight({
                     />
                 </div>
             </ColStyled>
+
             <ModalPaySuccess
                 isVisible={isModalPaySuccess}
                 onClose={() => {

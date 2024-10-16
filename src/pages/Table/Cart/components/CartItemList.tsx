@@ -280,11 +280,17 @@ export default function CartItemList({
             },
         })
             .then((res) => {
-                localStorage.setItem(
-                    'split_bill_data',
-                    JSON.stringify(res.data?.merchantGetOrderInvoices),
-                );
-                navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+                if (res.data?.merchantGetOrderInvoices?.invoice?.length > 0) {
+                    localStorage.setItem(
+                        'split_bill_data',
+                        JSON.stringify(res.data?.merchantGetOrderInvoices),
+                    );
+                    navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+                } else {
+                    navigation(
+                        `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data?.merchantGetOrderInvoices?.order?.order_id}`,
+                    );
+                }
             })
             .catch(() => {
                 console.log('error');
