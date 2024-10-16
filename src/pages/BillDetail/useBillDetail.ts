@@ -93,6 +93,9 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
         };
     }, [data?.orderDetail]);
     const GetDataWithId = (orderId: string) => {
+        if (!orderId) {
+            return;
+        }
         getOrderDetail({ variables: { id: orderId } })
             .then((res) => {
                 onGetInvoices({
