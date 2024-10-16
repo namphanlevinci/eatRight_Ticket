@@ -17,8 +17,14 @@ import {
     POS_PAYMENT,
     POS_PAYMENT_WITH_DJV,
 } from 'graphql/orders/paymentMethod';
+import {
+    GET_MERCHANT_RESTAURANT_CONFIG,
+    GET_PRIMARY_TERMINAL_WAITER,
+} from 'graphql/setups';
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { RootState } from 'store';
 
 export const useTableBill = (isGoBack = true) => {
     const [searchParams] = useSearchParams();
@@ -28,6 +34,7 @@ export const useTableBill = (isGoBack = true) => {
     const { cartItems, indexTable, updateCartIndex } = useCart();
     const [onGetCart, { loading: loadingGetCart }] =
         useLazyQuery(GET_CART_BY_ID);
+    const { isMerchant } = useSelector((state: RootState) => state.auth);
     const [cart, setCart] = React.useState<CartItemType>();
     const [total, setTotal] = React.useState<number>(0);
     const [count, setCount] = React.useState<number>(0);
@@ -64,6 +71,11 @@ export const useTableBill = (isGoBack = true) => {
     const [onSetTips, { data, loading: tips_Loading }] = useMutation(SET_TIPS);
     const navigation = useNavigate();
     const [pos_Loading, setPos_Loading] = React.useState<boolean>(false);
+    const [onGetTerminalMerchant] = useLazyQuery(
+        GET_MERCHANT_RESTAURANT_CONFIG,
+    );
+
+    const [onGetTerminalWaiter] = useLazyQuery(GET_PRIMARY_TERMINAL_WAITER);
     // useEffect(() => {
     //     if (pos_Loading) {
     //         setTimeout(() => {
@@ -183,6 +195,16 @@ export const useTableBill = (isGoBack = true) => {
     };
 
     const [onGetInvoices, { data: dataInvoices }] = useLazyQuery(GET_INVOICES);
+    const onSelectTerminalPrimary = (terminalId: number) => {
+        handlePOSPaymentWithDJV(
+            terminalId,
+            {
+                cart_id: cart?.id,
+            },
+            true,
+            true,
+        );
+    };
     const handleCheckOut = async () => {
         placeOrder({
             variables: {
@@ -213,8 +235,44 @@ export const useTableBill = (isGoBack = true) => {
                             setVisibleMoalPos(true);
                             setOrderInfo(res.data.createMerchantOrder.order);
                         } else if (paymentMethod === 'pos_djv') {
-                            setVisibleMoalPosDJV(true);
                             setOrderInfo(res.data.createMerchantOrder.order);
+                            if (isMerchant) {
+                                onGetTerminalMerchant()
+                                    .then((res) => {
+                                        if (
+                                            res?.data
+                                                ?.merchantGetRestaurantConfig
+                                                ?.primary_terminal_setting
+                                        ) {
+                                            onSelectTerminalPrimary(
+                                                res?.data
+                                                    ?.merchantGetRestaurantConfig
+                                                    ?.primary_terminal_setting,
+                                            );
+                                        } else {
+                                            setVisibleMoalPosDJV(true);
+                                        }
+                                    })
+                                    .catch(() => {
+                                        setVisibleMoalPosDJV(true);
+                                    });
+                            } else {
+                                onGetTerminalWaiter()
+                                    .then((res) => {
+                                        if (
+                                            res?.data?.waiterPosDevice
+                                                ?.entity_id
+                                        ) {
+                                            onSelectTerminalPrimary(
+                                                res?.data?.waiterPosDevice
+                                                    ?.entity_id,
+                                            );
+                                        }
+                                    })
+                                    .catch(() => {
+                                        setVisibleMoalPosDJV(true);
+                                    });
+                            }
                         } else {
                             showModalAlertPayment(
                                 res.data.createMerchantOrder.order.order_id,
@@ -240,11 +298,18 @@ export const useTableBill = (isGoBack = true) => {
             cart_id?: any;
         },
         isGoToTable = true,
+        isSelectAnotherPos = false,
     ) => {
         setPos_Loading(true);
         if (orderDetail) {
             setOrderInfo(orderDetail);
         }
+        console.log({
+            orderId: orderDetail?.order_number
+                ? orderDetail?.order_number
+                : orderInfo?.order_number,
+            posId: posId,
+        });
         onPosDJV({
             variables: {
                 orderId: orderDetail?.order_number
@@ -287,11 +352,6 @@ export const useTableBill = (isGoBack = true) => {
             })
             .catch(() => {
                 console.log('Erorr over thể modal');
-                onCancelCheckout({
-                    variables: {
-                        cart_id: orderDetail?.cart_id,
-                    },
-                });
                 showModalErrorPayment(
                     `${
                         orderDetail?.order_id
@@ -299,6 +359,15 @@ export const useTableBill = (isGoBack = true) => {
                             : orderInfo?.order_id
                     }`,
                 );
+                if (isSelectAnotherPos) {
+                    setVisibleMoalPosDJV(true);
+                    return;
+                }
+                onCancelCheckout({
+                    variables: {
+                        cart_id: orderDetail?.cart_id,
+                    },
+                });
             })
             .finally(() => {
                 setPos_Loading(false);

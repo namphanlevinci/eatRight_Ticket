@@ -51,8 +51,6 @@ const ModalPosDevicesDJV = ({
         setSelectedOption(item);
     };
 
-    console.log(selectedOption);
-
     const { theme } = useTheme();
     return (
         <>

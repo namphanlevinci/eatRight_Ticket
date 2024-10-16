@@ -17,7 +17,6 @@ import ModalInput from 'components/modal/ModalInput';
 import { useCouponCart } from 'pages/Table/Cart/useCouponCart';
 import ModalTip from 'components/modal/ModalTip';
 import { useTheme } from 'context/themeContext';
-import RenderDiscountRow from './components/renderDiscountRow';
 import { useMediaQuery } from 'react-responsive';
 import ModalPosDevicesDJV from './components/ModalPosDevicesDJV';
 import ModalOtherMethod from './components/ModalOtherMethod';
