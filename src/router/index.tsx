@@ -28,7 +28,7 @@ export const BaseRouter = () => {
     const { error } = Modal;
     const [needLogout, setNeedLogout] = useState(false);
     const [noStore, setNoStore] = useState(false);
-    const { isLogged, isMerchant } = useSelector(
+    const { isLogged, isMerchant, isTableView } = useSelector(
         (state: RootState) => state.auth,
     );
     const [urlParams] = useSearchParams();
@@ -165,7 +165,11 @@ export const BaseRouter = () => {
                     path={BASE_ROUTER.HOME}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.Home />
+                            {isMerchant && isTableView ? (
+                                <Container.MerchantHome />
+                            ) : (
+                                <Container.Home />
+                            )}
                         </PrivateRoute>
                     }
                 />

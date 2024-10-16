@@ -1,5 +1,21 @@
 import { gql } from '@apollo/client';
 
+export type TTable = {
+    cartIds: { cartId: string }[];
+    hasReadyItem: boolean;
+    id: number;
+    is_counter: number;
+    name: string;
+    note: string | null;
+    numberOfCustomer: number;
+    size: number;
+    status: string;
+};
+
+export type DATA_ALL_TABLE = {
+    getTablesByStore: TTable[];
+};
+
 export const GET_ALL_TABLE_Floor = gql`
     query ($storeId: Int!, $floorId: Int!) {
         getTablesByStore(storeId: $storeId, floorId: $floorId) {

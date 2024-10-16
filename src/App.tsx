@@ -11,6 +11,8 @@ import { App as AppProvider } from 'antd';
 import { SocketProvider } from 'context/noticationContext';
 import { ThemeProvider } from 'context/themeContext';
 import { AlertProvider } from 'context/alertContext';
+import './themes/style.css';
+
 function App() {
     const client = setupGraphQlClient();
     return (
