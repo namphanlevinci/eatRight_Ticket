@@ -202,7 +202,6 @@ export default function TableSplitBillCheckOut() {
                 return;
             }
             if (msg?.additional_data?.payment_status === 'success') {
-                showModalSuccess();
                 ReloadInvoice({});
             } else {
                 setLoading(false);
