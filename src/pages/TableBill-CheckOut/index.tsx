@@ -79,6 +79,16 @@ export default function TableSplitBillCheckOut() {
             );
         }
     };
+
+    const checkShowModalPaySuccess = (data: any) => {
+        const allPaid = data?.invoices?.every(
+            (invoice: any) => invoice?.status === 'PAID',
+        );
+        if (allPaid) {
+            setModalPaySuccess(true);
+        }
+    };
+
     const handlePayment = (
         paymentMethod: string,
         po_number?: string | undefined | null,
@@ -117,7 +127,7 @@ export default function TableSplitBillCheckOut() {
                         };
                         // PrintMerchantCopy(result.invoice_image);
                         setData(newData);
-                        setModalPaySuccess(true);
+                        checkShowModalPaySuccess(newData);
                         localStorage.setItem(
                             'split_bill_data',
                             JSON.stringify(newData),
@@ -296,6 +306,9 @@ export default function TableSplitBillCheckOut() {
     };
 
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+
+    console.log('data : ', data);
+
     return (
         <Layout
             style={{
