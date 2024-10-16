@@ -1,58 +1,39 @@
-import { Input, Modal, Row } from 'antd';
+import { Modal, Row } from 'antd';
 import CloseXIcon from 'assets/icons/closeIcon';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import CloseInputIcon from 'assets/icons/closeInputIcon';
+import { CURRENTCY } from 'constants/currency';
 
 export default function ModalEditPrice({
     isModalOpen,
     onCancel,
     onSubmit,
-    title,
-    type,
 }: {
     isModalOpen: boolean;
     onCancel: any;
     onSubmit: any;
-    title: string;
-    type?: 'tel' | 'email';
 }) {
     const inputRef = useRef<any>(null);
-    const [value, setValue] = React.useState('');
     useEffect(() => {
-        // Kiểm tra xem modal có mở không
         if (isModalOpen && inputRef.current) {
-            // Nếu có, thì focus vào input
             inputRef.current.focus();
-        } else {
-            setValue('');
         }
     }, [isModalOpen]);
-    const onFinish = () => {
-        if (validateInput(value)) {
-            onSubmit(value);
-        }
-    };
+
     const { theme } = useTheme();
-    const [error, setError] = React.useState<string | null>(null);
-    const validateInput = (value: string): boolean => {
-        if (type === 'email') {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(value)) {
-                setError('Invalid email address');
-                return false;
-            }
-        } else if (type === 'tel') {
-            const phoneRegex = /^\d+$/; // Chỉ kiểm tra số điện thoại cơ bản, bạn có thể tùy chỉnh theo yêu cầu
-            if (!phoneRegex.test(value)) {
-                setError('Invalid phone number');
-                return false;
-            }
+
+    const [price, setPrice] = useState<any>(0);
+
+    const handlechangePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (!isNaN(Number(value))) {
+            setPrice(value);
         }
-        setError(null);
-        return true;
     };
+
     return (
         <Modal
             title="Basic Modal"
@@ -71,40 +52,70 @@ export default function ModalEditPrice({
             closeIcon={<></>}
             closable={false}
             centered
+            width={537}
         >
-            <Row justify={'space-between'} align={'middle'}>
-                <Text>{title}</Text>
-                <div style={{ cursor: 'pointer' }} onClick={onCancel}>
+            <Row>
+                <Text style={{ fontWeight: '600', fontSize: 18 }}>
+                    Edit Price
+                </Text>
+                <div
+                    style={{
+                        cursor: 'pointer',
+                        position: 'absolute',
+                        top: 10,
+                        right: 20,
+                    }}
+                    onClick={onCancel}
+                >
                     <CloseXIcon />
                 </div>
             </Row>
-
-            <Row align={'middle'} style={{ gap: 10, marginTop: 20 }}>
-                <Input
+            <div
+                style={{
+                    width: '95%',
+                    height: '56px',
+                    border: '1px solid #0455BF',
+                    background: ' #F8F9FC',
+                    borderRadius: 8,
+                    display: 'flex',
+                    alignItems: 'center',
+                    paddingLeft: 16,
+                    marginTop: 24,
+                }}
+            >
+                <div style={{ fontWeight: 600, fontSize: 18 }}>{CURRENTCY}</div>
+                <input
                     ref={inputRef}
-                    value={value}
-                    onChange={(e) => {
-                        setValue(e.target.value);
-                    }}
                     style={{
                         flex: 1,
-                        height: 56,
-                        backgroundColor: theme.nEUTRALBase,
-                        color: theme.tEXTPrimary,
-                        border: `1px solid ${theme.nEUTRALLine}`,
+                        background: 'transparent',
+                        marginLeft: 16,
+                        outline: 'none',
+                        fontSize: 18,
+                        fontWeight: 600,
                     }}
-                    inputMode={type}
+                    value={price}
+                    onChange={handlechangePrice}
                 />
+                <div
+                    onClick={() => setPrice(0)}
+                    style={{ marginRight: 16, cursor: 'pointer' }}
+                >
+                    <CloseInputIcon />
+                </div>
+            </div>
+            <Row
+                align={'middle'}
+                style={{ gap: 10, marginTop: 20 }}
+                justify={'center'}
+            >
                 <ButtonPrimary
-                    title="Send"
-                    onClick={onFinish}
-                    width="110px"
+                    title={'Update'}
+                    onClick={onSubmit}
+                    width="37%"
                     marginTop="0px"
                 />
             </Row>
-            {error && (
-                <Text style={{ color: 'red', marginTop: 10 }}>{error}</Text>
-            )}
         </Modal>
     );
 }

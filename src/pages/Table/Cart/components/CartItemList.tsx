@@ -23,6 +23,7 @@ import { GET_INVOICES } from 'graphql/cart/splitBill';
 import { FoodCoverIcon } from 'assets/icons/foodCoverIcon';
 import RenderAction from './RenderAction';
 import RenderItemNew from './RenderItem_New';
+import ModalEditPrice from 'components/modal/ModalEditPrice';
 export default function CartItemList({
     data,
     cartInfo,
@@ -227,6 +228,12 @@ export default function CartItemList({
         show: false,
         index: 0,
     });
+
+    const [showEditPrice, setShowEditPrice] = useState({
+        show: false,
+        price: 0,
+    });
+
     const goViewBill = (id: string) => {
         navigation(`${BASE_ROUTER.BILL_DETAIL}?order_id=${id}`);
     };
@@ -290,6 +297,18 @@ export default function CartItemList({
                 console.log('error');
             });
     };
+
+    const onSubmitEditPrice = (item: any) => {
+        console.log({ item });
+    };
+
+    const onEditOpenPrice = (item: any) => {
+        setShowEditPrice({
+            show: true,
+            price: 0,
+        });
+    };
+
     return data ? (
         <StyledCartBorder
             style={{
@@ -299,6 +318,13 @@ export default function CartItemList({
                 border: ismobile ? '0px' : `1px solid ${theme.nEUTRALLine}`,
             }}
         >
+            <ModalEditPrice
+                isModalOpen={showEditPrice.show}
+                onCancel={() => {
+                    setShowEditPrice({ show: false, price: 0 });
+                }}
+                onSubmit={onSubmitEditPrice}
+            />
             <LoadingModal showLoading={loading || loadingClean} />
             {showNoteModal.show && (
                 <ModalInputNote
@@ -349,6 +375,7 @@ export default function CartItemList({
                                 updateStatusItemServer={updateStatusItemServer}
                                 key={index}
                                 onRemoveItem={onRemoveItem}
+                                onEditOpenPrice={onEditOpenPrice}
                             />
                         );
                     })}

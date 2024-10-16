@@ -10,6 +10,7 @@ import RenderNote from './RenderNote';
 import { NoteTableIcon } from 'assets/icons/noteTableIcon';
 import { CURRENTCY } from 'constants/currency';
 import UpDownNumberV2 from 'components/UpdownNumber/index2';
+import EditPriceIcon from 'assets/icons/editPriceIcon';
 
 export default function RenderItemNew({
     item,
@@ -28,6 +29,7 @@ export default function RenderItemNew({
     setItemSelected,
     updateStatusItemServer,
     onRemoveItem,
+    onEditOpenPrice,
 }: {
     item: ItemType;
     index: number;
@@ -45,6 +47,7 @@ export default function RenderItemNew({
     setItemSelected: any;
     updateStatusItemServer: any;
     onRemoveItem: any;
+    onEditOpenPrice?: any;
 }) {
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
@@ -115,7 +118,7 @@ export default function RenderItemNew({
                     style={{ width: ismobile ? 240 : 400 }}
                     justify={'space-between'}
                 >
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {/* <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Text
                             style={{
                                 marginLeft: 24,
@@ -125,6 +128,38 @@ export default function RenderItemNew({
                             {CURRENTCY}
                             {formatNumberWithCommas(item.prices.price.value)}
                         </Text>
+                    </div> */}
+                    <div>
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                            }}
+                            onClick={onEditOpenPrice}
+                        >
+                            <EditPriceIcon />
+                            <p
+                                style={{
+                                    color: '#737B89',
+                                    fontWeight: '500',
+                                    fontSize: 16,
+                                    fontFamily: 'Montserrat',
+                                    marginLeft: 16,
+                                }}
+                            >
+                                Enter price
+                            </p>
+                        </div>
+                        <div
+                            style={{
+                                fontFamily: 'Montserrat',
+                                color: 'red',
+                                marginTop: 8,
+                            }}
+                        >
+                            * Please enter price
+                        </div>
                     </div>
                     <div>
                         {item.isUnsend ? (
