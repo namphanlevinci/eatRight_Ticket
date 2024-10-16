@@ -11,6 +11,8 @@ import {
 } from './styled';
 import { TABLE_STATUS } from 'constants/table';
 import React from 'react';
+import { useNavigate } from 'react-router';
+import { BASE_ROUTER } from 'constants/router';
 
 interface ITable {
     cartIds: { cartId: string }[];
@@ -81,8 +83,15 @@ interface IChairsTable {
 }
 
 const Table = ({ tableData, size, status }: IPropsTable & ISize) => {
+    const navigation = useNavigate();
     return (
-        <STableContainer {...SIZES[size]} {...STATUS[status]}>
+        <STableContainer
+            {...SIZES[size]}
+            {...STATUS[status]}
+            onClick={() =>
+                navigation(`${BASE_ROUTER.TABLE}?tableId=${tableData.id}`)
+            }
+        >
             <Chairs size={size} status={status} />
             <STitle>{tableData?.name || 'Table name'}</STitle>
             <SSubtitle>Emily Nguyen</SSubtitle>

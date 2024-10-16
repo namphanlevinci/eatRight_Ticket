@@ -1,12 +1,13 @@
 import { Col, Layout, Row } from 'antd';
 import { Text } from 'components/atom/Text';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { useMediaQuery } from 'react-responsive';
 import { Colors } from 'themes/colors';
 import { TABLE_STATUS } from 'constants/table';
 import { useTheme } from 'context/themeContext';
+import { useLocation } from 'react-router';
 
 const Footer = () => {
     const {
@@ -19,7 +20,9 @@ const Footer = () => {
         isTableView,
     } = useSelector((state: RootState) => state.auth);
     const { theme } = useTheme();
+    const location = useLocation();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const isHomePage = useMemo(() => location.pathname === '/', []);
 
     const [isOnline, setIsOnline] = useState(window.navigator.onLine);
 
@@ -54,7 +57,9 @@ const Footer = () => {
                             paddingBlock: isMobile ? 10 : 16,
                         }}
                     >
-                        {isTableView && isMerchant && <AdditionalTableView />}
+                        {isHomePage && isTableView && isMerchant && (
+                            <AdditionalTableView />
+                        )}
                         <Row justify={'space-between'}>
                             <Col style={{ textAlign: 'left' }}>
                                 <Text style={{ fontWeight: '600' }}>
