@@ -81,8 +81,8 @@ export default function TableSplitBillCheckOut() {
     };
 
     const checkShowModalPaySuccess = (data: any) => {
-        const allPaid = data?.invoices?.every(
-            (invoice: any) => invoice?.status === 'PAID',
+        const allPaid = data?.invoice?.every(
+            (invoice: any) => invoice?.state === 'PAID',
         );
         if (allPaid) {
             setModalPaySuccess(true);
