@@ -177,6 +177,7 @@ export default function TableSplitBillCheckOut() {
             },
         })
             .then(() => {
+                setLoading(false);
                 setModalPaySuccess(true);
             })
             .catch((err) => {
@@ -194,6 +195,7 @@ export default function TableSplitBillCheckOut() {
         })
             .then(() => {
                 // showModalSuccess();
+                setLoading(false);
                 setModalPaySuccess(true);
                 // ReloadInvoice({ printInVoice: selectGuest?.number });
             })
