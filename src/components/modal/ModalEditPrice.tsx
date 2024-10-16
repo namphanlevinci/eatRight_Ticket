@@ -11,17 +11,21 @@ export default function ModalEditPrice({
     isModalOpen,
     onCancel,
     onSubmit,
+    custom_price,
 }: {
     isModalOpen: boolean;
     onCancel: any;
     onSubmit: any;
+    custom_price: number;
 }) {
     const inputRef = useRef<any>(null);
+
     useEffect(() => {
         if (isModalOpen && inputRef.current) {
             inputRef.current.focus();
         }
-    }, [isModalOpen]);
+        setPrice(custom_price);
+    }, [isModalOpen, custom_price]);
 
     const { theme } = useTheme();
 

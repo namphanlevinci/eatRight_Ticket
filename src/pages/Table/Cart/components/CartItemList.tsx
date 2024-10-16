@@ -234,6 +234,7 @@ export default function CartItemList({
     const [showEditPrice, setShowEditPrice] = useState({
         show: false,
         price: 0,
+        item: null,
     });
 
     const goViewBill = (id: string) => {
@@ -300,14 +301,20 @@ export default function CartItemList({
             });
     };
 
-    const onSubmitEditPrice = (item: any) => {
-        customOpenPriceForItem(item);
+    const onSubmitEditPrice = () => {
+        customOpenPriceForItem(showEditPrice.item);
+        setShowEditPrice({
+            show: false,
+            price: 0,
+            item: null,
+        });
     };
 
     const onEditOpenPrice = (item: any) => {
         setShowEditPrice({
             show: true,
-            price: 0,
+            price: item?.custom_price ?? 0,
+            item,
         });
     };
 
@@ -323,9 +330,10 @@ export default function CartItemList({
             <ModalEditPrice
                 isModalOpen={showEditPrice.show}
                 onCancel={() => {
-                    setShowEditPrice({ show: false, price: 0 });
+                    setShowEditPrice({ show: false, price: 0, item: null });
                 }}
                 onSubmit={onSubmitEditPrice}
+                custom_price={showEditPrice.price}
             />
             <LoadingModal showLoading={loading || loadingClean} />
             {showNoteModal.show && (
@@ -377,7 +385,7 @@ export default function CartItemList({
                                 updateStatusItemServer={updateStatusItemServer}
                                 key={index}
                                 onRemoveItem={onRemoveItem}
-                                onEditOpenPrice={onEditOpenPrice}
+                                onEditOpenPrice={() => onEditOpenPrice(item)}
                             />
                         );
                     })}

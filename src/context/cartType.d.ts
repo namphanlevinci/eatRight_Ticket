@@ -106,6 +106,7 @@ export type ItemType = {
     guestId?: string;
     is_bundle?: boolean;
     is_configurable?: boolean;
+    custom_price?: number;
     configurable_options?: {
         id: number | string;
         option_label: string;
