@@ -1,5 +1,5 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { Modal } from 'antd';
+import { Modal, notification } from 'antd';
 import { BASE_ROUTER } from 'constants/router';
 import { useCart } from 'context/cartContext';
 import { CartItemType, ItemType } from 'context/cartType';
@@ -71,11 +71,13 @@ export const useTableBill = (isGoBack = true) => {
     const [onSetTips, { data, loading: tips_Loading }] = useMutation(SET_TIPS);
     const navigation = useNavigate();
     const [pos_Loading, setPos_Loading] = React.useState<boolean>(false);
-    const [onGetTerminalMerchant] = useLazyQuery(
+    const [onGetTerminalMerchant, { loading: merchant_Loading }] = useLazyQuery(
         GET_MERCHANT_RESTAURANT_CONFIG,
     );
 
-    const [onGetTerminalWaiter] = useLazyQuery(GET_PRIMARY_TERMINAL_WAITER);
+    const [onGetTerminalWaiter, { loading: waiter_Loading }] = useLazyQuery(
+        GET_PRIMARY_TERMINAL_WAITER,
+    );
     // useEffect(() => {
     //     if (pos_Loading) {
     //         setTimeout(() => {
@@ -195,17 +197,30 @@ export const useTableBill = (isGoBack = true) => {
     };
 
     const [onGetInvoices, { data: dataInvoices }] = useLazyQuery(GET_INVOICES);
-    const onSelectTerminalPrimary = (terminalId: number) => {
+    const onSelectTerminalPrimary = (terminalId: number, order: any) => {
         handlePOSPaymentWithDJV(
             terminalId,
             {
                 cart_id: cart?.id,
+                order_id: order?.order_id,
+                order_number: order?.order_number,
             },
             true,
             true,
         );
     };
+    const notiPleaseSelectAnotherTerminal = () => {
+        notification.info({
+            message: 'Please select terminal',
+            placement: 'topRight',
+            duration: 10,
+        });
+        setVisibleMoalPosDJV(true);
+    };
+    const [checkOutLoading, setCheckOutLoading] =
+        React.useState<boolean>(false);
     const handleCheckOut = async () => {
+        setCheckOutLoading(true);
         placeOrder({
             variables: {
                 cartId: cartItems[indexTable].carts[cartIndex].id,
@@ -215,6 +230,7 @@ export const useTableBill = (isGoBack = true) => {
             },
         })
             .then((res) => {
+                setOrderInfo(res.data.createMerchantOrder.order);
                 onGetInvoices({
                     variables: {
                         OrderNumber:
@@ -224,7 +240,7 @@ export const useTableBill = (isGoBack = true) => {
                     .then((invoices) => {
                         if (paymentMethod === 'cashondelivery') {
                             setModalPaySuccess(true);
-                            setOrderInfo(res?.data?.createMerchantOrder?.order);
+
                             setModalChange(false);
                             PrintMerchantCopy(
                                 invoices.data?.merchantGetOrderInvoices
@@ -233,11 +249,12 @@ export const useTableBill = (isGoBack = true) => {
                             emitter.emit('REPAYMENT_SUCCESS');
                         } else if (paymentMethod === 'pos') {
                             setVisibleMoalPos(true);
-                            setOrderInfo(res.data.createMerchantOrder.order);
                         } else if (paymentMethod === 'pos_djv') {
-                            setOrderInfo(res.data.createMerchantOrder.order);
+                            const order = res.data.createMerchantOrder.order;
                             if (isMerchant) {
-                                onGetTerminalMerchant()
+                                onGetTerminalMerchant({
+                                    fetchPolicy: 'no-cache',
+                                })
                                     .then((res) => {
                                         if (
                                             res?.data
@@ -248,29 +265,41 @@ export const useTableBill = (isGoBack = true) => {
                                                 res?.data
                                                     ?.merchantGetRestaurantConfig
                                                     ?.primary_terminal_setting,
+                                                order,
                                             );
                                         } else {
-                                            setVisibleMoalPosDJV(true);
+                                            notiPleaseSelectAnotherTerminal();
                                         }
                                     })
-                                    .catch(() => {
-                                        setVisibleMoalPosDJV(true);
+                                    .catch((err) => {
+                                        console.log(err);
+                                        notiPleaseSelectAnotherTerminal();
+                                    })
+                                    .finally(() => {
+                                        setCheckOutLoading(false);
                                     });
                             } else {
-                                onGetTerminalWaiter()
+                                onGetTerminalWaiter({ fetchPolicy: 'no-cache' })
                                     .then((res) => {
                                         if (
-                                            res?.data?.waiterPosDevice
+                                            res?.data?.waiterPrimaryPosDevice
                                                 ?.entity_id
                                         ) {
                                             onSelectTerminalPrimary(
-                                                res?.data?.waiterPosDevice
+                                                res?.data
+                                                    ?.waiterPrimaryPosDevice
                                                     ?.entity_id,
+                                                order,
                                             );
+                                        } else {
+                                            notiPleaseSelectAnotherTerminal();
                                         }
                                     })
                                     .catch(() => {
-                                        setVisibleMoalPosDJV(true);
+                                        notiPleaseSelectAnotherTerminal();
+                                    })
+                                    .finally(() => {
+                                        setCheckOutLoading(false);
                                     });
                             }
                         } else {
@@ -304,12 +333,6 @@ export const useTableBill = (isGoBack = true) => {
         if (orderDetail) {
             setOrderInfo(orderDetail);
         }
-        console.log({
-            orderId: orderDetail?.order_number
-                ? orderDetail?.order_number
-                : orderInfo?.order_number,
-            posId: posId,
-        });
         onPosDJV({
             variables: {
                 orderId: orderDetail?.order_number
@@ -340,14 +363,15 @@ export const useTableBill = (isGoBack = true) => {
                         });
                     }
 
-                    showModalSuccess(
-                        `${
-                            orderDetail?.order_id
-                                ? orderDetail?.order_id
-                                : orderInfo?.order_id
-                        }`,
-                        isGoToTable,
-                    );
+                    // showModalSuccess(
+                    //     `${
+                    //         orderDetail?.order_id
+                    //             ? orderDetail?.order_id
+                    //             : orderInfo?.order_id
+                    //     }`,
+                    //     isGoToTable,
+                    // );
+                    setModalPaySuccess(true);
                 }
             })
             .catch(() => {
@@ -612,7 +636,10 @@ export const useTableBill = (isGoBack = true) => {
             split_items_loading ||
             tips_Loading ||
             loadingGetCart ||
-            djv_Loading,
+            djv_Loading ||
+            merchant_Loading ||
+            waiter_Loading ||
+            checkOutLoading,
         pos_Loading,
         contextHolder,
         paymentMethod,
@@ -646,5 +673,6 @@ export const useTableBill = (isGoBack = true) => {
         modalChange,
         setModalChange,
         orderInfo,
+        onCancelCheckout,
     };
 };

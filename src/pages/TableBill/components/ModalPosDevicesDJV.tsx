@@ -81,7 +81,7 @@ const ModalPosDevicesDJV = ({
                             marginBottom: 24,
                         }}
                     >
-                        Terminals
+                        Select another terminal
                     </p>
                     {posDeviceList?.map?.((pos: any) => (
                         <Button
