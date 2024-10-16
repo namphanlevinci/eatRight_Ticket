@@ -146,12 +146,16 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Non-Cash Adjustment :</TextDark>
-                    <TextDark>
-                        {CURRENTCY} {data?.non_cash_amount}
-                    </TextDark>
-                </RowStyled>
+                {!isEmpty(data?.non_cash_amount) && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>
+                            Non-Cash Adjustment :
+                        </TextDark>
+                        <TextDark>
+                            {CURRENTCY} {data?.non_cash_amount}
+                        </TextDark>
+                    </RowStyled>
+                )}
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Tip:</TextDark>
                     <TextDark>
