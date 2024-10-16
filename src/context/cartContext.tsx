@@ -41,6 +41,7 @@ interface CartContextType {
         bundleIndex: number,
     ) => void;
     onRemoveItem: (index: number) => void;
+    customOpenPriceForItem: (item: any) => void;
 }
 
 // Tạo Context cho giỏ hàng
@@ -387,6 +388,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
      * updateQuantityItemFromCart({index: 0, type: 'decrea'})
      */
     /******  87df525e-d550-4813-9aae-5bb297b9dea8  *******/
+
+    const customOpenPriceForItem = (item: any) => {
+        console.log({ item });
+    };
+
     const updateQuantityItemFromCart = ({
         index,
         type,
@@ -515,6 +521,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
         onRemoveItem,
+        customOpenPriceForItem,
     };
     const [isModalConfirm, setIsModalConfirm] = React.useState<boolean>(false);
     const [idx, setIdx] = React.useState<any>('');

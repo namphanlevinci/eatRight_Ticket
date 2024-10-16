@@ -53,6 +53,7 @@ export default function RenderItemNew({
         query: '(max-width: 768px)',
     });
     const { theme } = useTheme();
+
     return (
         <div key={index}>
             {/* <Row align={'middle'} justify={'space-between'}> */}

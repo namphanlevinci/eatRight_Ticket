@@ -32,6 +32,7 @@ export default function CartItemList({
     loadingCardTable,
     removeItemOnCartServer,
     updateStatusItemServer,
+    customOpenPriceForItem,
 }: {
     data: CartItemType | undefined;
     cartInfo: string;
@@ -40,6 +41,7 @@ export default function CartItemList({
     loadingCardTable: boolean;
     removeItemOnCartServer: any;
     updateStatusItemServer: any;
+    customOpenPriceForItem: (item: any) => void;
 }) {
     const {
         updateQuantityItemFromCart,
@@ -299,7 +301,7 @@ export default function CartItemList({
     };
 
     const onSubmitEditPrice = (item: any) => {
-        console.log({ item });
+        customOpenPriceForItem(item);
     };
 
     const onEditOpenPrice = (item: any) => {

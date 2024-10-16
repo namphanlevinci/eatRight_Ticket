@@ -14,7 +14,13 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
     const [searchParams] = useSearchParams();
     const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
     const [selectedCart, setSelectedCart] = useState(cartIndex || 0);
-    const { cartItems, addCart, indexTable, removeCartIndex } = useCart();
+    const {
+        cartItems,
+        addCart,
+        indexTable,
+        removeCartIndex,
+        customOpenPriceForItem,
+    } = useCart();
     const location = useLocation();
     const isGetAllCart =
         location.pathname.includes('table') &&
@@ -216,5 +222,6 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
         removeItemOnCartServer,
         updateStatusItemServer,
         removeCartIndex,
+        customOpenPriceForItem,
     };
 };

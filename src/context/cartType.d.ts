@@ -12,6 +12,7 @@ export type CartItemType = {
     firstname: string;
     phonenumber?: string;
     numberOfCustomer: number;
+    custom_price?: number;
     is_paid?: boolean;
     order?: {
         items?: OrderItemType[];
