@@ -6,10 +6,11 @@ import { useState, forwardRef, useImperativeHandle } from 'react';
  * @type {React.FC<{
  *   name?: string;
  *   ref?: React.Ref<CustomModalHandle>;
+ *   customStyle?: any;
  * }>}
  */
 
-const CheckBoxOption = forwardRef(({ name = '' }, ref) => {
+const CheckBoxOption = forwardRef(({ name = '', customStyle }, ref) => {
     const [checked, setChecked] = useState(false);
 
     const handleChange = () => {
@@ -29,7 +30,12 @@ const CheckBoxOption = forwardRef(({ name = '' }, ref) => {
         <Row
             ref={ref}
             align={'middle'}
-            style={{ cursor: 'pointer', gap: 16, marginTop: 16 }}
+            style={{
+                cursor: 'pointer',
+                gap: 16,
+                marginTop: 16,
+                ...customStyle,
+            }}
             onClick={handleChange}
         >
             {checked ? <IconCheck /> : <IconUnCheck />} {name}

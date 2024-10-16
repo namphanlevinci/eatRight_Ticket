@@ -30,6 +30,8 @@ import {
     UPDATE_PRODUCT,
 } from 'graphql/product/CRUD';
 import { BASE_ROUTER } from 'constants/router';
+import QuestionIcon from 'assets/icons/questionIcon';
+import './index.scss';
 
 const Index = () => {
     const [apiGetCategory] = useLazyQuery(GET_CATEGORY_LIST);
@@ -501,9 +503,12 @@ const Index = () => {
                                     }}
                                 />
                             </Form.Item>
-                            {/* <div style={{ marginTop: -24, marginLeft: 50 }}>
-                <CheckBoxOption ref={openPriceRef} name="Open price" />
-              </div> */}
+                            <div style={{ marginTop: -24, marginLeft: 50 }}>
+                                <CheckBoxOption
+                                    ref={openPriceRef}
+                                    name="Open price"
+                                />
+                            </div>
                         </div>
                         <p className="menu_new_name">Quantity</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -540,9 +545,36 @@ const Index = () => {
                                     style={{ height: 30, paddingInline: 12 }}
                                 />
                             </Form.Item>
-                            {/* <div style={{ marginTop: -24, marginLeft: 50 }}>
-                <CheckBoxOption ref={openPriceRef} name="Open price" />
-              </div> */}
+                            <div
+                                style={{
+                                    marginTop: -24,
+                                    marginLeft: 50,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <CheckBoxOption
+                                    ref={openPriceRef}
+                                    name="Open price"
+                                    customStyle={{
+                                        fontWeight: '600',
+                                    }}
+                                />
+                                <div
+                                    style={{
+                                        marginLeft: 16,
+                                        marginTop: 22,
+                                        cursor: 'pointer',
+                                        position: 'relative',
+                                    }}
+                                >
+                                    <QuestionIcon />
+                                    <div className="explain_open_price">
+                                        Allow custom pricing at checkout. Set
+                                        price used as editable default.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <p className="menu_new_name">Channel</p>
                         <CheckBoxOption ref={dineInRef} name="Dine-in" />
