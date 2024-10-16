@@ -8,9 +8,10 @@ import {
     GET_MERCHANT_RESTAURANT_CONFIG,
     SET_MERCHANT_RESTAURANT_CONFIG,
 } from 'graphql/setups';
+import LoadingModal from 'components/modal/loadingModal';
 export default function TableOrdering() {
     const [open, setOpen] = React.useState(false);
-    const [onGetRestaurantConfig] = useLazyQuery(
+    const [onGetRestaurantConfig, { loading }] = useLazyQuery(
         GET_MERCHANT_RESTAURANT_CONFIG,
     );
     const [onSetRestaurantConfig] = useMutation(SET_MERCHANT_RESTAURANT_CONFIG);
@@ -41,6 +42,7 @@ export default function TableOrdering() {
 
     return (
         <Row justify={'space-between'} align={'middle'}>
+            <LoadingModal showLoading={loading} />
             <Row>
                 <Text style={{ fontSize: 18, fontWeight: '500' }}>
                     Auto confirm items at checkout

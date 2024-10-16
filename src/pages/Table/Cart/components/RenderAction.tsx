@@ -241,7 +241,10 @@ export default function RenderAction({
                         isDisable={
                             config?.merchantGetRestaurantConfig
                                 ?.auto_confirm_item
-                                ? false
+                                ? cartItems[indexTable]?.carts[selectedCart]
+                                      ?.items?.length === 0
+                                    ? true
+                                    : false
                                 : isCartIdFromLocal(
                                       cartItems[indexTable]?.carts[selectedCart]
                                           ?.id,
