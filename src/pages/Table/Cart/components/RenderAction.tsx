@@ -6,6 +6,8 @@ import { useTheme } from 'context/themeContext';
 import { Text } from 'components/atom/Text';
 import { isCartIdFromLocal } from 'utils/isNumericId';
 import styled from 'styled-components';
+import { useQuery } from '@apollo/client';
+import { GET_MERCHANT_RESTAURANT_CONFIG } from 'graphql/setups';
 export default function RenderAction({
     isNewItem,
     SendCart,
@@ -23,7 +25,7 @@ export default function RenderAction({
     selectedCart,
 }: {
     isNewItem: boolean;
-    SendCart: () => void;
+    SendCart: (isSendThenGo?: boolean) => void;
     data: any;
     onClickChangeTable: any;
     isAllDone: boolean;
@@ -41,6 +43,7 @@ export default function RenderAction({
         query: '(max-width: 768px)',
     });
     const { theme } = useTheme();
+    const { data: config } = useQuery(GET_MERCHANT_RESTAURANT_CONFIG);
     return (
         <Col
             style={
@@ -143,8 +146,22 @@ export default function RenderAction({
                                 background: theme.sUCCESS2Default,
                                 border: 0,
                             }}
-                            onClick={goBill}
-                            isDisable={isNewItem || data?.items?.length === 0}
+                            onClick={() => {
+                                if (
+                                    config?.merchantGetRestaurantConfig
+                                        ?.auto_confirm_item
+                                ) {
+                                    isNewItem ? SendCart(true) : goBill();
+                                } else {
+                                    goBill();
+                                }
+                            }}
+                            isDisable={
+                                config?.merchantGetRestaurantConfig
+                                    ?.auto_confirm_item
+                                    ? false
+                                    : isNewItem || data?.items?.length === 0
+                            }
                         >
                             Checkout
                         </Button>
@@ -203,18 +220,35 @@ export default function RenderAction({
                             background: theme.sUCCESS2Default,
                             border: 0,
                         }}
-                        onClick={() =>
-                            !cartItems[indexTable]?.carts[
-                                selectedCart
-                            ]?.firstname?.includes('Guest') && goTableBill()
-                        }
+                        onClick={() => {
+                            if (
+                                config?.merchantGetRestaurantConfig
+                                    ?.auto_confirm_item
+                            ) {
+                                isNewItem
+                                    ? SendCart(true)
+                                    : !cartItems[indexTable]?.carts[
+                                          selectedCart
+                                      ]?.firstname?.includes('Guest') &&
+                                      goTableBill();
+                            } else {
+                                !cartItems[indexTable]?.carts[
+                                    selectedCart
+                                ]?.firstname?.includes('Guest') &&
+                                    goTableBill();
+                            }
+                        }}
                         isDisable={
-                            isCartIdFromLocal(
-                                cartItems[indexTable]?.carts[selectedCart]?.id,
-                            ) ||
-                            cartItems[indexTable]?.carts[selectedCart]?.items
-                                ?.length === 0 ||
-                            isNewItem
+                            config?.merchantGetRestaurantConfig
+                                ?.auto_confirm_item
+                                ? false
+                                : isCartIdFromLocal(
+                                      cartItems[indexTable]?.carts[selectedCart]
+                                          ?.id,
+                                  ) ||
+                                  cartItems[indexTable]?.carts[selectedCart]
+                                      ?.items?.length === 0 ||
+                                  isNewItem
                         }
                     >
                         Checkout
