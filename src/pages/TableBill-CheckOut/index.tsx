@@ -212,7 +212,7 @@ export default function TableSplitBillCheckOut() {
                 return;
             }
             if (msg?.additional_data?.payment_status === 'success') {
-                showModalSuccess();
+                // showModalSuccess();
                 ReloadInvoice({});
             } else {
                 setLoading(false);
@@ -234,6 +234,7 @@ export default function TableSplitBillCheckOut() {
             .then((res) => {
                 const newData = res?.data?.merchantGetOrderInvoices;
                 setData(newData);
+                checkShowModalPaySuccess(newData);
                 if (printInVoice) {
                     const FindInvoice = newData.invoice.find(
                         (value: InvoiceWithSplit) =>
