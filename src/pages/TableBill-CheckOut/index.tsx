@@ -80,15 +80,6 @@ export default function TableSplitBillCheckOut() {
         }
     };
 
-    const checkShowModalPaySuccess = (data: any) => {
-        const allPaid = data?.invoice?.every(
-            (invoice: any) => invoice?.state === 'PAID',
-        );
-        if (allPaid) {
-            setModalPaySuccess(true);
-        }
-    };
-
     const handlePayment = (
         paymentMethod: string,
         po_number?: string | undefined | null,
@@ -127,7 +118,7 @@ export default function TableSplitBillCheckOut() {
                         };
                         // PrintMerchantCopy(result.invoice_image);
                         setData(newData);
-                        checkShowModalPaySuccess(newData);
+                        setModalPaySuccess(true);
                         localStorage.setItem(
                             'split_bill_data',
                             JSON.stringify(newData),
@@ -234,7 +225,6 @@ export default function TableSplitBillCheckOut() {
             .then((res) => {
                 const newData = res?.data?.merchantGetOrderInvoices;
                 setData(newData);
-                checkShowModalPaySuccess(newData);
                 if (printInVoice) {
                     const FindInvoice = newData.invoice.find(
                         (value: InvoiceWithSplit) =>
@@ -307,8 +297,6 @@ export default function TableSplitBillCheckOut() {
     };
 
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
-
-    console.log('data : ', data);
 
     return (
         <Layout
@@ -427,6 +415,7 @@ export default function TableSplitBillCheckOut() {
                         setModalPaySuccess(false);
                     }}
                     order_id={data.order.order_id}
+                    isBackHome={false}
                 />
             </Container>
         </Layout>
