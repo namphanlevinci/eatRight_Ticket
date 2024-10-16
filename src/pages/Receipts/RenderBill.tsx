@@ -14,6 +14,7 @@ import {
 import React from 'react';
 import { convertMethod } from 'utils/format';
 import { ReceiptDetail } from 'graphql/receipts';
+import { isEmpty } from 'lodash';
 
 const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
     const totalDiscount = data?.total?.discounts?.reduce(
@@ -26,6 +27,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
     if (!data) {
         return <div />;
     }
+
     return (
         <div
             style={{
@@ -109,7 +111,6 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
             </div>
             <div id="billFooter">
                 <DividedDashed />
-
                 <RowStyled>
                     <TextDark style={text16}>Subtotal:</TextDark>
                     <TextDark>
@@ -133,7 +134,6 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 ) : (
                     <></>
                 )}
-
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Base total:</TextDark>
                     <TextDark>
@@ -146,14 +146,12 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
-
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Non-Cash Adjustment :</TextDark>
                     <TextDark>
                         {CURRENTCY} {data?.non_cash_amount}
                     </TextDark>
                 </RowStyled>
-
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Tip:</TextDark>
                     <TextDark>
@@ -192,7 +190,14 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                         {convertMethod(data.payment_method.title)}
                     </TextDark>
                 </RowStyled>
-
+                {!isEmpty(data.payment_method.po_number) &&
+                    data.payment_method.po_number !== 'none' && (
+                        <RowStyled>
+                            <TextDark style={text16}>
+                                {data.payment_method.po_number}
+                            </TextDark>
+                        </RowStyled>
+                    )}
                 {data?.payment_method && data?.payment_method.card_type && (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>
@@ -202,7 +207,6 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                         </TextDark>
                     </RowStyled>
                 )}
-
                 <DividedDashed />
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Signature:</TextDark>
