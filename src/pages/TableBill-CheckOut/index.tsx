@@ -80,6 +80,13 @@ export default function TableSplitBillCheckOut() {
         }
     };
 
+    const checkShowModalPaySuccess = () => {
+        const allPaid = data?.invoice?.every(
+            (invoice: any) => invoice?.state === 'PAID',
+        );
+        return allPaid;
+    };
+
     const handlePayment = (
         paymentMethod: string,
         po_number?: string | undefined | null,
@@ -415,7 +422,7 @@ export default function TableSplitBillCheckOut() {
                         setModalPaySuccess(false);
                     }}
                     order_id={data.order.order_id}
-                    isBackHome={false}
+                    isBackHome={checkShowModalPaySuccess() ? true : false}
                 />
             </Container>
         </Layout>
