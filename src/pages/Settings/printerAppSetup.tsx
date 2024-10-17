@@ -98,6 +98,10 @@ export default function PrinterAppSetUpPage() {
                                 'printer_id',
                                 selectedOption?.id.toString(),
                             );
+                            localStorage.setItem(
+                                'merchantGetPrinterConfig',
+                                `true`,
+                            );
                             pushMsgOffPrinter();
                         })
                         .catch(() => {
@@ -175,9 +179,7 @@ export default function PrinterAppSetUpPage() {
         }
     }, [data, list]);
     const [switchPrinterMode, setSwitchPrinterMode] = useState(false);
-    const [printerFromReactNative, setPrinterFromReactNative] = useState(
-        localStorage.getItem('printer_name') || '',
-    );
+
     useEffect(() => {
         const handleMessage = (event: any) => {
             try {
@@ -186,7 +188,7 @@ export default function PrinterAppSetUpPage() {
                     message: 'Connected Printer successfully',
                     description: data.data.deviceName,
                 });
-                setPrinterFromReactNative(data.data.deviceName);
+                localStorage.setItem('merchantGetPrinterConfig', `false`);
                 localStorage.setItem('printer_name', data.data.deviceName);
                 onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then(
                     (res: any) => {
@@ -215,45 +217,42 @@ export default function PrinterAppSetUpPage() {
     const RenderEPSONPrinter = () => {
         return (
             <div style={{ paddingTop: 8 }}>
-                {/* {list?.map?.((Printer: any) => (
-                    <Button
-                        key={`Printer ${Printer?.id}`}
-                        style={{
-                            height: 56,
-                            width: '100%',
-                            background: theme.nEUTRALBase,
+                {localStorage.getItem('printer_name') &&
+                    list?.map?.(
+                        (Printer: any) =>
+                            Printer?.id === selectedOption?.id && (
+                                <Button
+                                    key={`Printer ${Printer?.id}`}
+                                    style={{
+                                        height: 56,
+                                        width: '100%',
+                                        background: theme.nEUTRALBase,
 
-                            borderRadius: 8,
-                            border: `1px solid ${theme.nEUTRALLine}`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            marginBottom: 12,
-                        }}
-                        onClick={() => handleChange(Printer)}
-                    >
-                        <div
-                            style={{
-                                width: 30,
-                                display: 'flex',
-                                alignItems: 'center',
-                            }}
-                        >
-                            {Printer?.id == selectedOption?.id && (
-                                <RadioBtnSelected />
-                            )}
-                        </div>
-                        <Text>{Printer?.printer_name}</Text>
-                    </Button>
-                ))}
-                <ButtonSubmit
-                    title="Select Printer"
-                    onClick={handleOk}
-                    loading={loading}
-                /> */}
-                {printerFromReactNative && (
-                    <Text>Connected Printer : {printerFromReactNative}</Text>
-                )}
+                                        borderRadius: 8,
+                                        border: `1px solid ${theme.nEUTRALLine}`,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'flex-start',
+                                        marginBottom: 12,
+                                    }}
+                                    onClick={() => handleChange(Printer)}
+                                >
+                                    <div
+                                        style={{
+                                            width: 30,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        {Printer?.id == selectedOption?.id && (
+                                            <RadioBtnSelected />
+                                        )}
+                                    </div>
+                                    <Text>{Printer?.printer_name}</Text>
+                                </Button>
+                            ),
+                    )}
+
                 <ButtonSubmit
                     title="Select Printer"
                     onClick={OpenMenuPrinter}

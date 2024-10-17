@@ -222,19 +222,27 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
     }, [loadingPrint]);
     const PrintBillApi = () => {
         setLoadingPrint(true);
-        if (window?.ReactNativeWebView) {
-            const imageUrl = selectDataShowbill
-                ? selectDataShowbill.invoice_image
-                : dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
-                      .invoice_image;
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
-            );
-            notification.success({
-                message: 'Receipt sent to printer',
-                description: 'Please go to printer to take the bill!',
-            });
+        const is_used_terminal =
+            localStorage.getItem('merchantGetPrinterConfig') === 'true'
+                ? true
+                : false;
+        if (!is_used_terminal) {
+            if (window?.ReactNativeWebView) {
+                const imageUrl = selectDataShowbill
+                    ? selectDataShowbill.invoice_image
+                    : dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                          .invoice_image;
+                window.ReactNativeWebView.postMessage(
+                    JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
+                );
+                notification.success({
+                    message: 'Receipt sent to printer',
+                    description: 'Please go to printer to take the bill!',
+                });
+                return;
+            }
         }
+
         // else {
 
         if (childBill.length) {

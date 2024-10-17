@@ -22,6 +22,8 @@ import {
 } from 'features/auth/authSlice';
 import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
+import { GET_CONFIG_PRINTER } from 'graphql/printer';
+import { useLazyQuery } from '@apollo/client';
 export const BaseRouter = () => {
     const { notification } = App.useApp();
     const dispatch = useDispatch();
@@ -41,6 +43,7 @@ export const BaseRouter = () => {
             );
         }
     };
+    const [onGetConfig] = useLazyQuery(GET_CONFIG_PRINTER);
     useEffect(() => {
         if (isMerchant) {
             document.title = 'EatRight Merchant';
@@ -147,6 +150,16 @@ export const BaseRouter = () => {
     useEffect(() => {
         if (isLogged) {
             setNeedLogout(false);
+            onGetConfig().then((res: any) => {
+                const { data } = res;
+                if (data) {
+                    localStorage.setItem(
+                        'merchantGetPrinterConfig',
+
+                        `${data.merchantGetPrinterConfig.is_used_terminal}`,
+                    );
+                }
+            });
         }
     }, [isLogged]);
     return (

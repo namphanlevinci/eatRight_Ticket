@@ -186,13 +186,19 @@ export const useTableBill = (isGoBack = true) => {
     };
     const PrintMerchantCopy = (url: string) => {
         console.log('PrintMerchantCopy', url);
-        if (window.ReactNativeWebView) {
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({
-                    type: 'merchant',
-                    imageUrl: url,
-                }),
-            );
+        const is_used_terminal =
+            localStorage.getItem('merchantGetPrinterConfig') === 'true'
+                ? true
+                : false;
+        if (!is_used_terminal) {
+            if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(
+                    JSON.stringify({
+                        type: 'merchant',
+                        imageUrl: url,
+                    }),
+                );
+            }
         }
     };
 

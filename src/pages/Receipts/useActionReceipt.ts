@@ -34,18 +34,25 @@ export default function useActionReceipt() {
         if (!data) {
             return;
         }
-        if (window?.ReactNativeWebView) {
-            setLoading(true);
-            const imageUrl = data.invoice_image;
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
-            );
-            notification.success({
-                message: 'Receipt sent to printer',
-                description: 'Please go to printer to take the bill!',
-            });
-            // return;
+        const is_used_terminal =
+            localStorage.getItem('merchantGetPrinterConfig') === 'true'
+                ? true
+                : false;
+        if (!is_used_terminal) {
+            if (window?.ReactNativeWebView) {
+                setLoading(true);
+                const imageUrl = data.invoice_image;
+                window.ReactNativeWebView.postMessage(
+                    JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
+                );
+                notification.success({
+                    message: 'Receipt sent to printer',
+                    description: 'Please go to printer to take the bill!',
+                });
+                return;
+            }
         }
+
         onPrintBill({
             variables: {
                 invoice_number: data.increment_id,
