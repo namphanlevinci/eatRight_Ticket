@@ -7,6 +7,7 @@ import { RootState } from 'store';
 import HeaderV2 from './Header_v2';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router';
+import { BASE_ROUTER } from 'constants/router';
 
 type Props = {
     children: React.ReactNode;
@@ -19,7 +20,12 @@ export const DarkLayout = ({ children }: Props) => {
         (state: RootState) => state.auth,
     );
 
-    const isHomePage = useMemo(() => location.pathname === '/', []);
+    const isShowNewHeader = useMemo(
+        () =>
+            location.pathname === '/' ||
+            location.pathname === BASE_ROUTER.TABLE,
+        [location],
+    );
 
     return (
         <Layout
@@ -30,7 +36,7 @@ export const DarkLayout = ({ children }: Props) => {
                 paddingBottom: 100,
             }}
         >
-            {isMerchant && isTableView && isHomePage ? (
+            {isMerchant && isTableView && isShowNewHeader ? (
                 <HeaderV2 />
             ) : (
                 <Header />

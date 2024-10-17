@@ -36,6 +36,7 @@ export const STableContainer = styled.div<{
     height: string;
     maxWidth: string;
     minWidth: string;
+    aspectRatio: string;
     backgroundColor: string;
     borderColor: string;
 }>`
@@ -46,6 +47,7 @@ export const STableContainer = styled.div<{
     text-align: center;
     position: relative;
     z-index: 2;
+    aspect-ratio: ${(props) => props.aspectRatio};
     width: ${(props) => props.width};
     height: ${(props) => props.height};
     max-width: ${(props) => props.maxWidth};

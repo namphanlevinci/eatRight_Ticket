@@ -14,10 +14,10 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
     const { restaurant_id, floor } = useSelector(
         (state: RootState) => state.auth,
     );
-    const [onGetTable, { data, loading, refetch }] =
+    const [onGetTable, { data, loading: loadingTable, refetch }] =
         useLazyQuery<DATA_ALL_TABLE>(GET_ALL_TABLE);
 
-    const [onGetTableFloor, { data: data2, loading: loading2 }] =
+    const [onGetTableFloor, { data: data2, loading: loadingFloorStatus }] =
         useLazyQuery(GET_ALL_TABLE_Floor);
     const [floorActive, setFloorActive] = useState<number>(-1);
     const [tableList, setTableList] = useState<TTable[]>([]);
@@ -122,7 +122,8 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
     ]);
     return {
         data: tableList,
-        loading: loading || loading2,
+        loadingTable,
+        loadingFloorStatus,
         counterTable,
         setSearchText,
         tables: data?.getTablesByStore,
