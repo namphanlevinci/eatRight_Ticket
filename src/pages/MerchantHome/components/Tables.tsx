@@ -200,7 +200,7 @@ const SIZES: Record<
         maxWidth: 'min(25%,196px)',
         minWidth: 'max(12%,196px)',
         height: '196px',
-        aspectRatio: 'in',
+        aspectRatio: '1 / 1',
     },
     large: {
         width: 'auto',
