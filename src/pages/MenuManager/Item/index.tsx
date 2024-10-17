@@ -117,7 +117,7 @@ const Index = () => {
         history(`/menuManager/edit_item/${record.id}`);
     };
     return (
-        <div style={{ padding: 16 }}>
+        <div>
             <Header />
             <div className="container-box body_history">
                 <MenuBar />

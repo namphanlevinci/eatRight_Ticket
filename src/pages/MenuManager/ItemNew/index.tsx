@@ -256,7 +256,7 @@ const Index = () => {
         setLoading(false);
     }, [productId, menuList]);
     return (
-        <div style={{ padding: 16 }}>
+        <div>
             <Loading loading={isLoading} />
             <Header />
             <div className="container-box body_history">

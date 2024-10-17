@@ -81,7 +81,7 @@ const Index = () => {
     }, [search]);
 
     return (
-        <div style={{ padding: 16 }}>
+        <div>
             <Header />
             <div className="container-box body_history">
                 <MenuBar />

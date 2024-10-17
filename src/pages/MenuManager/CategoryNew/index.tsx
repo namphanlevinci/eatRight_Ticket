@@ -204,7 +204,7 @@ const Index = () => {
     const { Option } = Select;
 
     return (
-        <div style={{ padding: 16 }}>
+        <div>
             {showModalChangeStation && (
                 <ModalConfirmChangeStation
                     isModalConfirm={showModalChangeStation}

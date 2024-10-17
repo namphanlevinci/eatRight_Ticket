@@ -101,6 +101,7 @@ export type ItemType = {
         sku: string;
         __typename: string;
     };
+    open_price?: boolean;
     quantity: number;
     quantityText?: string;
     guestId?: string;

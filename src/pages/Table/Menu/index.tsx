@@ -58,7 +58,7 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
         }
     }, [categoryIndex]);
     const { theme } = useTheme();
-    const onClickAddToCart = (item: any) => {
+    const onClickAddToCart = (item: ProductType) => {
         if (
             item.__typename === 'SimpleProduct' ||
             item.__typename === 'VirtualProduct'
@@ -73,6 +73,7 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                 product: item,
                 quantity: 1,
                 isUnsend: true,
+                open_price: item.open_price,
             };
             addToCart(Item);
             notification.success({

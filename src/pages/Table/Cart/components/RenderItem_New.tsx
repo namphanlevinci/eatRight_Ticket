@@ -9,7 +9,8 @@ import { formatNumberWithCommas } from 'utils/format';
 import RenderNote from './RenderNote';
 import { NoteTableIcon } from 'assets/icons/noteTableIcon';
 import UpDownNumberV2 from 'components/UpdownNumber/index2';
-import EditPriceIcon from 'assets/icons/editPriceIcon';
+import { CURRENTCY } from 'constants/currency';
+import RenderOpenPrice from './RenderOpenPrice';
 
 export default function RenderItemNew({
     item,
@@ -118,49 +119,26 @@ export default function RenderItemNew({
                     style={{ width: ismobile ? 240 : 400 }}
                     justify={'space-between'}
                 >
-                    {/* <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Text
-                            style={{
-                                marginLeft: 24,
-                                fontSize: 18,
-                            }}
-                        >
-                            {CURRENTCY}
-                            {formatNumberWithCommas(item.prices.price.value)}
-                        </Text>
-                    </div> */}
-                    <div>
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                cursor: 'pointer',
-                            }}
-                            onClick={onEditOpenPrice}
-                        >
-                            <EditPriceIcon />
-                            <p
+                    {!item.open_price ? (
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <Text
                                 style={{
-                                    color: '#737B89',
-                                    fontWeight: '500',
-                                    fontSize: 16,
-                                    fontFamily: 'Montserrat',
-                                    marginLeft: 16,
+                                    marginLeft: 24,
+                                    fontSize: 18,
                                 }}
                             >
-                                Enter price
-                            </p>
+                                {CURRENTCY}
+                                {formatNumberWithCommas(
+                                    item.prices.price.value,
+                                )}
+                            </Text>
                         </div>
-                        <div
-                            style={{
-                                fontFamily: 'Montserrat',
-                                color: 'red',
-                                marginTop: 8,
-                            }}
-                        >
-                            * Please enter price
-                        </div>
-                    </div>
+                    ) : (
+                        <RenderOpenPrice
+                            value={item.custom_price}
+                            onEditOpenPrice={onEditOpenPrice}
+                        />
+                    )}
                     <div>
                         {item.isUnsend ? (
                             <UpDownNumberV2
