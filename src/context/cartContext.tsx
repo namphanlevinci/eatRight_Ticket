@@ -395,8 +395,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const old_price =
             newCartItems[cartIndex].items[index].prices.price.value;
         const quantity = newCartItems[cartIndex].items[index].quantity;
-        newCartItems[cartIndex].items[index].custom_price = custom_price;
-        newCartItems[cartIndex].items[index].prices.price.value = custom_price;
+        newCartItems[cartIndex].items[index].custom_price = parseInt(
+            `${custom_price}`,
+        );
+        newCartItems[cartIndex].items[index].prices.price.value = parseInt(
+            `${custom_price}`,
+        );
 
         // help me update total price
         let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;

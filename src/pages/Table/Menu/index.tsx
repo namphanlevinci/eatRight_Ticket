@@ -134,45 +134,6 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                     />
                     <Col xs={{ span: 12 }} md={{ span: 18 }}>
                         <Row>
-                            <Col
-                                xs={{ span: 24 }}
-                                md={{ span: 8 }}
-                                style={
-                                    isMobile
-                                        ? {
-                                              display: 'flex',
-                                              justifyContent: 'end',
-                                          }
-                                        : {}
-                                }
-                            >
-                                <div onClick={() => onClickAddToCart(TestData)}>
-                                    <MenuItem
-                                        isSubCategory={
-                                            TestData.__typename !==
-                                            'SimpleProduct'
-                                        }
-                                        isProduct={
-                                            TestData.__typename ===
-                                            'SimpleProduct'
-                                        }
-                                    >
-                                        {TestData.name}
-                                        {TestData.__typename ===
-                                            'SimpleProduct' && (
-                                            <p>
-                                                {TestData.open_price
-                                                    ? 'Open Price'
-                                                    : formatNumberWithCommas(
-                                                          TestData.price
-                                                              .regularPrice
-                                                              .amount.value,
-                                                      )}
-                                            </p>
-                                        )}
-                                    </MenuItem>
-                                </div>
-                            </Col>
                             {search
                                 ? searchProductByName(search, data).map(
                                       (item: ProductType, index: number) => {
@@ -324,10 +285,12 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                                                                       color: theme.pRIMARY6Primary,
                                                                   }}
                                                               >
-                                                                  ${' '}
-                                                                  {item.price.regularPrice.amount.value.toFixed(
+                                                                  {item.open_price
+                                                                      ? 'Open Price'
+                                                                      : ` $ 
+                                                                  ${item.price.regularPrice.amount.value.toFixed(
                                                                       2,
-                                                                  )}
+                                                                  )}`}
                                                               </p>
                                                           )}
                                                       </MenuItem>

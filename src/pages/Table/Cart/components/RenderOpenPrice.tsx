@@ -23,14 +23,14 @@ export default function RenderOpenPrice({
                 <EditPriceIcon />
                 <p
                     style={{
-                        color: '#737B89',
+                        color: value ? '#1D2433' : '#737B89',
                         fontWeight: '500',
-                        fontSize: 16,
+                        fontSize: value ? 20 : 16,
                         fontFamily: 'Montserrat',
                         marginLeft: 16,
                     }}
                 >
-                    {value ? value : 'Enter price'}
+                    {value ? `$ ${value}` : 'Enter price'}
                 </p>
             </div>
             {isNeedInput && (

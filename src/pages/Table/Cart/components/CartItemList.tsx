@@ -240,7 +240,7 @@ export default function CartItemList({
     const [showEditPrice, setShowEditPrice] = useState({
         show: false,
         price: 0,
-        index: 0,
+        index: -1,
     });
 
     const goViewBill = (id: string) => {
@@ -316,11 +316,11 @@ export default function CartItemList({
         });
     };
 
-    const onEditOpenPrice = (item: any) => {
+    const onEditOpenPrice = (index: number, item: ItemType) => {
         setShowEditPrice({
             show: true,
             price: item?.custom_price ?? 0,
-            index: item?.index ?? 0,
+            index: index ?? 0,
         });
     };
 
@@ -336,7 +336,7 @@ export default function CartItemList({
             <ModalEditPrice
                 isModalOpen={showEditPrice.show}
                 onCancel={() => {
-                    setShowEditPrice({ show: false, price: 0, index: 0 });
+                    setShowEditPrice({ show: false, price: 0, index: -1 });
                 }}
                 onSubmit={onSubmitEditPrice}
                 custom_price={showEditPrice.price}
@@ -391,7 +391,9 @@ export default function CartItemList({
                                 updateStatusItemServer={updateStatusItemServer}
                                 key={index}
                                 onRemoveItem={onRemoveItem}
-                                onEditOpenPrice={() => onEditOpenPrice(item)}
+                                onEditOpenPrice={() =>
+                                    onEditOpenPrice(index, item)
+                                }
                             />
                         );
                     })}

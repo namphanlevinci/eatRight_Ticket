@@ -124,7 +124,9 @@ export default function RenderItemNew({
                             <Text
                                 style={{
                                     marginLeft: 24,
-                                    fontSize: 18,
+                                    fontSize: 20,
+                                    color: '#1D2433',
+                                    fontWeight: 500,
                                 }}
                             >
                                 {CURRENTCY}
