@@ -69,11 +69,12 @@ export default function TableSplitBillCheckOut() {
             }
         };
     }, [loadingPosResult, intervalId]);
-    const PrintMerchantCopy = (url: string) => {
+    const PrintMerchantCopy = (url: string, isOpenCashier = false) => {
         if (window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({
                     type: 'merchant',
+                    isOpenCashier: isOpenCashier,
                     imageUrl: url,
                 }),
             );
@@ -125,7 +126,10 @@ export default function TableSplitBillCheckOut() {
                             }),
                         };
                         if (result?.invoice_image) {
-                            PrintMerchantCopy(result.invoice_image);
+                            PrintMerchantCopy(
+                                result.invoice_image,
+                                paymentMethod === 'cash' ? true : false,
+                            );
                         }
                         setDataPaymentSuccess({
                             invoice_number: result.number,

@@ -184,8 +184,7 @@ export const useTableBill = (isGoBack = true) => {
                 });
             });
     };
-    const PrintMerchantCopy = (url: string) => {
-        console.log('PrintMerchantCopy', url);
+    const PrintMerchantCopy = (url: string, isOpenCashier = false) => {
         const is_used_terminal =
             localStorage.getItem('merchantGetPrinterConfig') === 'true'
                 ? true
@@ -196,6 +195,7 @@ export const useTableBill = (isGoBack = true) => {
                     JSON.stringify({
                         type: 'merchant',
                         imageUrl: url,
+                        isOpenCashier: isOpenCashier,
                     }),
                 );
             }
@@ -251,6 +251,7 @@ export const useTableBill = (isGoBack = true) => {
                             PrintMerchantCopy(
                                 invoices.data?.merchantGetOrderInvoices
                                     ?.invoice[0]?.invoice_image,
+                                true,
                             );
                             emitter.emit('REPAYMENT_SUCCESS');
                         } else if (paymentMethod === 'pos') {
@@ -484,6 +485,10 @@ export const useTableBill = (isGoBack = true) => {
                 if (paymentMethod === 'other') {
                     setModalPaySuccess(true);
                     setOrderInfo(res?.data?.createMerchantOrder?.order);
+                    ReGetInvoices({
+                        orderNumber:
+                            res?.data?.createMerchantOrder?.order?.order_number,
+                    });
                     setModalChange(false);
                     emitter.emit('REPAYMENT_SUCCESS');
                 } else {
