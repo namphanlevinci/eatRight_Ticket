@@ -289,12 +289,6 @@ export default function TableSplitBillCheckOut() {
             });
         }
     };
-    const showModalSuccess = () => {
-        modal.success({
-            title: 'Payment Success',
-            centered: true,
-        });
-    };
     const [modal, contextHolder] = Modal.useModal();
     const showError = (msg: string) => {
         modal.error({

@@ -301,12 +301,11 @@ export default function CartItemList({
             });
     };
 
-    const onSubmitEditPrice = () => {
-        customOpenPriceForItem(showEditPrice.item);
+    const onSubmitEditPrice = (price: number) => {
         setShowEditPrice({
+            ...showEditPrice,
             show: false,
-            price: 0,
-            item: null,
+            price: price,
         });
     };
 

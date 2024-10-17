@@ -19,6 +19,7 @@ export type ProductType = {
     name: string;
     sku: string;
     url_key: string;
+    open_price: boolean;
     price: {
         regularPrice: {
             amount: {

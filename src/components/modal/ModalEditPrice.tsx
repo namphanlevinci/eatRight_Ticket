@@ -115,7 +115,9 @@ export default function ModalEditPrice({
             >
                 <ButtonPrimary
                     title={'Update'}
-                    onClick={onSubmit}
+                    onClick={() => {
+                        onSubmit(price);
+                    }}
                     width="37%"
                     marginTop="0px"
                 />

@@ -8,7 +8,6 @@ import { useMediaQuery } from 'react-responsive';
 import { formatNumberWithCommas } from 'utils/format';
 import RenderNote from './RenderNote';
 import { NoteTableIcon } from 'assets/icons/noteTableIcon';
-import { CURRENTCY } from 'constants/currency';
 import UpDownNumberV2 from 'components/UpdownNumber/index2';
 import EditPriceIcon from 'assets/icons/editPriceIcon';
 

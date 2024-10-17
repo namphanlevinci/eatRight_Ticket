@@ -1,6 +1,15 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { useState, useRef, useEffect } from 'react';
-import { Form, Input, Button, Switch, Checkbox, Spin, Select } from 'antd';
+import {
+    Form,
+    Input,
+    Button,
+    Switch,
+    Checkbox,
+    Spin,
+    Select,
+    Tooltip,
+} from 'antd';
 import { useLocation } from 'react-router-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AlertContext } from 'context/alertContext';
@@ -21,6 +30,7 @@ import { GET_MENU_LIST } from 'graphql/menu';
 import { GET_LIST_KITCHEN_STATION } from 'containers/Kitchen/printer';
 import { BASE_ROUTER } from 'constants/router';
 import ModalConfirm from 'components/modal/ModalConfirm';
+import QuestionIcon from 'assets/icons/questionIcon';
 
 interface ICategory {
     name: string;
@@ -38,6 +48,7 @@ const Index = () => {
     const [apiGetMenu] = useLazyQuery(GET_MENU_LIST);
     const [apiGetKitchenStation] = useLazyQuery(GET_LIST_KITCHEN_STATION);
     const [isToggled, setIsToggled] = useState(true);
+    const [openPriceToggle, setOpenPriceToggle] = useState(false);
     const [data, setData] = useState<ICategory>();
     const [menuList, setMenuList] = useState<any>([]);
     const [isLoading, setLoading] = useState(false);
@@ -91,6 +102,7 @@ const Index = () => {
         const payload = {
             ...values,
             is_active: isToggled ? true : false,
+            open_price: openPriceToggle ? true : false,
         };
 
         setLoading(true);
@@ -148,6 +160,8 @@ const Index = () => {
                         ),
                         kitchen_station: `${detail?.kitchen_station ?? ''}`,
                     });
+
+                    setOpenPriceToggle(detail?.open_price ?? false);
                     setIsToggled(detail?.is_active);
                     setData(detail);
                     setLoading(false);
@@ -317,7 +331,7 @@ const Index = () => {
                             style={{ background: 'transparent' }}
                         >
                             <Switch
-                                checked={isToggled}
+                                value={isToggled}
                                 onChange={handleToggle}
                                 style={{
                                     backgroundColor: isToggled
@@ -358,6 +372,52 @@ const Index = () => {
                                         ),
                                 )}
                             </Checkbox.Group>
+                        </Form.Item>
+                        <p className="menu_new_name">
+                            Open Price{' '}
+                            <Tooltip
+                                placement="bottomLeft"
+                                title={
+                                    ' Allow custom pricing at checkout. Set price used as editable default.'
+                                }
+                                arrow={true}
+                                color="#fff"
+                                style={{
+                                    color: '#000',
+                                }}
+                                overlayInnerStyle={{ color: '#000' }}
+                            >
+                                <Button
+                                    ghost
+                                    style={{
+                                        height: 40,
+                                        width: 40,
+                                        borderRadius: 100,
+                                        padding: 0,
+                                    }}
+                                >
+                                    <QuestionIcon />
+                                </Button>
+                            </Tooltip>
+                        </p>
+                        <Form.Item
+                            className="custom-form-item"
+                            name="open_price"
+                            valuePropName="checked"
+                            style={{ background: 'transparent' }}
+                        >
+                            <Switch
+                                value={openPriceToggle}
+                                onChange={(value) => {
+                                    setOpenPriceToggle(value);
+                                }}
+                                style={{
+                                    backgroundColor: openPriceToggle
+                                        ? 'var(--primary-6)'
+                                        : '#d9d9d9',
+                                }}
+                                size="default"
+                            />
                         </Form.Item>
 
                         <p className="menu_new_name">Kitchen Station</p>

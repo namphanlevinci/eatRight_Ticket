@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable curly */
 import React, { useState, useRef, useEffect } from 'react';
-import { Row, Col, Switch, Form, Input, Select, Button } from 'antd';
+import { Row, Col, Switch, Form, Input, Select, Button, Tooltip } from 'antd';
 import { NumericFormat } from 'react-number-format';
 import { useLocation } from 'react-router-dom';
 import PopupAction from '../Components/PopupAction';
@@ -97,7 +97,6 @@ const Index = () => {
             };
         });
         let quantity = values?.quantity;
-        console.log('quantity', quantity);
         if (quantity && typeof quantity === 'string') {
             quantity = quantity?.replaceAll(',', '');
         }
@@ -107,7 +106,7 @@ const Index = () => {
             is_in_stock,
             price: formatPrice(values?.price),
             status: values?.status ? 1 : 2,
-            open_price: false,
+            open_price: openPriceRef?.current?.getValue(),
             media_gallery_entries,
             quantity: quantity,
             kitchen_station: values?.kitchen_station || null,
@@ -503,11 +502,46 @@ const Index = () => {
                                     }}
                                 />
                             </Form.Item>
-                            <div style={{ marginTop: -24, marginLeft: 50 }}>
+                            <div
+                                style={{
+                                    marginTop: -24,
+                                    marginLeft: 50,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                            >
                                 <CheckBoxOption
                                     ref={openPriceRef}
                                     name="Open price"
+                                    customStyle={{
+                                        fontWeight: '600',
+                                        marginTop: 0,
+                                    }}
                                 />
+                                <Tooltip
+                                    placement="bottomLeft"
+                                    title={
+                                        ' Allow custom pricing at checkout. Set price used as editable default.'
+                                    }
+                                    arrow={true}
+                                    color="#fff"
+                                    style={{
+                                        color: '#000',
+                                    }}
+                                    overlayInnerStyle={{ color: '#000' }}
+                                >
+                                    <Button
+                                        ghost
+                                        style={{
+                                            height: 40,
+                                            width: 40,
+                                            borderRadius: 100,
+                                            padding: 0,
+                                        }}
+                                    >
+                                        <QuestionIcon />
+                                    </Button>
+                                </Tooltip>
                             </div>
                         </div>
                         <p className="menu_new_name">Quantity</p>
@@ -545,36 +579,6 @@ const Index = () => {
                                     style={{ height: 30, paddingInline: 12 }}
                                 />
                             </Form.Item>
-                            <div
-                                style={{
-                                    marginTop: -24,
-                                    marginLeft: 50,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <CheckBoxOption
-                                    ref={openPriceRef}
-                                    name="Open price"
-                                    customStyle={{
-                                        fontWeight: '600',
-                                    }}
-                                />
-                                <div
-                                    style={{
-                                        marginLeft: 16,
-                                        marginTop: 22,
-                                        cursor: 'pointer',
-                                        position: 'relative',
-                                    }}
-                                >
-                                    <QuestionIcon />
-                                    <div className="explain_open_price">
-                                        Allow custom pricing at checkout. Set
-                                        price used as editable default.
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <p className="menu_new_name">Channel</p>
                         <CheckBoxOption ref={dineInRef} name="Dine-in" />
