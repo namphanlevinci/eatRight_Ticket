@@ -11,7 +11,7 @@ import { BASE_ROUTER } from 'constants/router';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import Floors from './components/Floors';
-import WaitingListButton from './components/WaitingListButton';
+// import WaitingListButton from './components/WaitingListButton';
 import Tables from './components/Tables';
 const { Content } = Layout;
 
@@ -42,10 +42,10 @@ const MerchantHomePage: React.FC = () => {
                             floors={floors}
                             onFloorActive={handleActiveFloor}
                         />
-                        <WaitingListButton
+                        {/* <WaitingListButton
                             count={41}
                             onClick={() => console.log('Clicked')}
-                        />
+                        /> */}
                     </ContainerTableHeader>
                     <ContainerTableBody>
                         {data?.length ? (

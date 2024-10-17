@@ -35,7 +35,7 @@ import DrawerMenuV2 from './components/DrawerMenu_v2';
 import SearchIcon from 'assets/icons_v2/SearchIcon';
 
 const HeaderV2 = () => {
-    const { isLogged, isMerchant, isTableView } = useSelector(
+    const { isLogged, isMerchant, isTableView, counterTable } = useSelector(
         (state: RootState) => state.auth,
     );
     const [onGetInfo] = useLazyQuery(USER_INFO);
@@ -220,8 +220,8 @@ const HeaderV2 = () => {
     };
 
     const onToggleView = () => {
-        dispatch(changeModeTableView());
         navigation(BASE_ROUTER.MERCHANT_PAGE);
+        dispatch(changeModeTableView());
     };
     return (
         <>
@@ -309,14 +309,18 @@ const HeaderV2 = () => {
                         {isLogged && (
                             <>
                                 {isMerchant && !isMobile && (
-                                    <ButtonV2
-                                        style={{
-                                            backgroundColor: Colors.teal,
-                                        }}
-                                        onClick={() => openCashier()}
+                                    <Link
+                                        to={`${BASE_ROUTER.TABLE}?tableId=${counterTable?.id}`}
                                     >
-                                        New Order
-                                    </ButtonV2>
+                                        <ButtonV2
+                                            style={{
+                                                backgroundColor: Colors.teal,
+                                            }}
+                                            onClick={() => openCashier()}
+                                        >
+                                            New Order
+                                        </ButtonV2>
+                                    </Link>
                                 )}
                                 {isMerchant && !isMobile && (
                                     <ButtonV2 onClick={() => openCashier()}>
