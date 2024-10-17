@@ -41,7 +41,7 @@ export default function CartItemList({
     loadingCardTable: boolean;
     removeItemOnCartServer: any;
     updateStatusItemServer: any;
-    customOpenPriceForItem: (item: any) => void;
+    customOpenPriceForItem: (item: any, custom_price: number) => void;
 }) {
     const {
         updateQuantityItemFromCart,
@@ -301,11 +301,12 @@ export default function CartItemList({
             });
     };
 
-    const onSubmitEditPrice = (price: number) => {
+    const onSubmitEditPrice = (custom_price: number) => {
+        customOpenPriceForItem(showEditPrice.item, custom_price);
         setShowEditPrice({
             ...showEditPrice,
             show: false,
-            price: price,
+            price: custom_price,
         });
     };
 

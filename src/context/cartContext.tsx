@@ -41,7 +41,7 @@ interface CartContextType {
         bundleIndex: number,
     ) => void;
     onRemoveItem: (index: number) => void;
-    customOpenPriceForItem: (item: any) => void;
+    customOpenPriceForItem: (item: any, custom_price: number) => void;
 }
 
 // Tạo Context cho giỏ hàng
@@ -389,8 +389,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
      */
     /******  87df525e-d550-4813-9aae-5bb297b9dea8  *******/
 
-    const customOpenPriceForItem = (item: any) => {
-        console.log({ item });
+    const customOpenPriceForItem = (item: any, custom_price: number) => {
+        console.log({ item, cartItems });
     };
 
     const updateQuantityItemFromCart = ({

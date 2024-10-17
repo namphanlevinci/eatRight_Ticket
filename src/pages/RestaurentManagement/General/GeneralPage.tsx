@@ -65,11 +65,22 @@ export default function RestaurentGeneralPage() {
             >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Text>Open Pricing for All Items</Text>
-                    <div style={{ marginLeft: 16 }}>
+                    <div style={{ marginLeft: 16, marginTop: -16 }}>
                         <Tooltip
-                            title="Allow custom pricing at checkout. Set price used as
-                            editable default"
+                            title={
+                                <div
+                                    style={{
+                                        color: '#000',
+                                    }}
+                                >
+                                    Allow custom pricing at checkout. Set price
+                                    used as editable default
+                                </div>
+                            }
+                            placement="top"
+                            color="white"
                         >
+                            <div>&nbsp;</div>
                             <QuestionIcon />
                         </Tooltip>
                     </div>

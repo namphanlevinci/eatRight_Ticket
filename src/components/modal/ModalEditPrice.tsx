@@ -38,6 +38,10 @@ export default function ModalEditPrice({
         }
     };
 
+    const onHandleSubmit = () => {
+        onSubmit(price);
+    };
+
     return (
         <Modal
             title="Basic Modal"
