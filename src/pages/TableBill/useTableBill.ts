@@ -354,21 +354,21 @@ export const useTableBill = (isGoBack = true) => {
                     setModalPaySuccess(true);
                     setModalChange(false);
                     emitter.emit('REPAYMENT_SUCCESS');
-                    if (
-                        dataInvoices?.merchantGetOrderInvoices?.invoice[0]
-                            ?.invoice_image
-                    ) {
-                        PrintMerchantCopy(
-                            dataInvoices?.merchantGetOrderInvoices?.invoice[0]
-                                ?.invoice_image,
-                        );
-                    } else {
-                        ReGetInvoices({
-                            orderNumber:
-                                dataInvoices?.merchantGetOrderInvoices?.order
-                                    ?.order_number,
-                        });
-                    }
+                    // if (
+                    //     dataInvoices?.merchantGetOrderInvoices?.invoice[0]
+                    //         ?.invoice_image
+                    // ) {
+                    //     PrintMerchantCopy(
+                    //         dataInvoices?.merchantGetOrderInvoices?.invoice[0]
+                    //             ?.invoice_image,
+                    //     );
+                    // } else {
+                    //     ReGetInvoices({
+                    //         orderNumber:
+                    //             dataInvoices?.merchantGetOrderInvoices?.order
+                    //                 ?.order_number,
+                    //     });
+                    // }
 
                     // showModalSuccess(
                     //     `${

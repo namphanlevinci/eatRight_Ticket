@@ -34,10 +34,11 @@ export default function useActionReceipt() {
         if (!data) {
             return;
         }
-        const is_used_terminal =
-            localStorage.getItem('merchantGetPrinterConfig') === 'true'
-                ? true
-                : false;
+        const is_used_terminal = data.terminal_name
+            ? true
+            : localStorage.getItem('merchantGetPrinterConfig') === 'true'
+              ? true
+              : false;
         if (!is_used_terminal) {
             if (window?.ReactNativeWebView) {
                 setLoading(true);
