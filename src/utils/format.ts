@@ -1,6 +1,10 @@
 export function formatNumberWithCommas(number: number) {
-    const formattedNumber = number?.toFixed(2);
-    return formattedNumber;
+    try {
+        const formattedNumber = number?.toFixed(2);
+        return formattedNumber;
+    } catch (error) {
+        return `${number}`;
+    }
 }
 
 // Xoá dấu của tiếng việt
