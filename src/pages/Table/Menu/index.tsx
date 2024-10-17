@@ -73,7 +73,7 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                 product: item,
                 quantity: 1,
                 isUnsend: true,
-                open_price: item.open_price,
+                open_price: item.open_price || false,
             };
             addToCart(Item);
             notification.success({
@@ -83,6 +83,31 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
         } else {
             setProduct(item);
         }
+    };
+    const TestData = {
+        __typename: 'SimpleProduct',
+        id: 294,
+        name: 'Handez Test Open Price',
+        sku: 'Handez Test Open Price',
+        url_key: 'handez-test-open-price-1',
+        display_platforms: ['dine_in'],
+        open_price: 1,
+        small_image: {
+            __typename: 'ProductImage',
+            url: 'https://staging-consumer.eatrightpos.com/static/version1729071142/frontend/fnb/default/en_US/Magento_Catalog/images/product/placeholder/small_image.jpg',
+            label: 'Handez Test Open Price',
+        },
+        price: {
+            __typename: 'ProductPrices',
+            regularPrice: {
+                __typename: 'Price',
+                amount: {
+                    __typename: 'Money',
+                    value: 20,
+                    currency: 'USD',
+                },
+            },
+        },
     };
     return data.length < 1 ? (
         <Spin />
@@ -109,6 +134,45 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                     />
                     <Col xs={{ span: 12 }} md={{ span: 18 }}>
                         <Row>
+                            <Col
+                                xs={{ span: 24 }}
+                                md={{ span: 8 }}
+                                style={
+                                    isMobile
+                                        ? {
+                                              display: 'flex',
+                                              justifyContent: 'end',
+                                          }
+                                        : {}
+                                }
+                            >
+                                <div onClick={() => onClickAddToCart(TestData)}>
+                                    <MenuItem
+                                        isSubCategory={
+                                            TestData.__typename !==
+                                            'SimpleProduct'
+                                        }
+                                        isProduct={
+                                            TestData.__typename ===
+                                            'SimpleProduct'
+                                        }
+                                    >
+                                        {TestData.name}
+                                        {TestData.__typename ===
+                                            'SimpleProduct' && (
+                                            <p>
+                                                {TestData.open_price
+                                                    ? 'Open Price'
+                                                    : formatNumberWithCommas(
+                                                          TestData.price
+                                                              .regularPrice
+                                                              .amount.value,
+                                                      )}
+                                            </p>
+                                        )}
+                                    </MenuItem>
+                                </div>
+                            </Col>
                             {search
                                 ? searchProductByName(search, data).map(
                                       (item: ProductType, index: number) => {
@@ -163,12 +227,15 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                                                           {item.__typename ===
                                                               'SimpleProduct' && (
                                                               <p>
-                                                                  {formatNumberWithCommas(
-                                                                      item.price
-                                                                          .regularPrice
-                                                                          .amount
-                                                                          .value,
-                                                                  )}
+                                                                  {item.open_price
+                                                                      ? 'Open Price'
+                                                                      : formatNumberWithCommas(
+                                                                            item
+                                                                                .price
+                                                                                .regularPrice
+                                                                                .amount
+                                                                                .value,
+                                                                        )}
                                                               </p>
                                                           )}
                                                       </MenuItem>
