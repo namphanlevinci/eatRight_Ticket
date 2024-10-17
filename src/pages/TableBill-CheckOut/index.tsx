@@ -105,7 +105,6 @@ export default function TableSplitBillCheckOut() {
                 },
             })
                 .then((res) => {
-                    console.log({ res });
                     if (
                         res.data.merchantPayInvoice.invoice.number ===
                         selectGuest?.number
@@ -438,6 +437,7 @@ export default function TableSplitBillCheckOut() {
                     }}
                     order_id={data.order.order_id}
                     isBackHome={checkShowModalPaySuccess() ? true : false}
+                    invoice_number={selectGuest?.number}
                 />
             </Container>
         </Layout>

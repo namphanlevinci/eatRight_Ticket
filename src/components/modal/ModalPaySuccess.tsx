@@ -10,17 +10,26 @@ import ModalInput from 'components/modal/ModalInput';
 import { useNavigate } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import { useBillDetail } from 'pages/BillDetail/useBillDetail';
+import useActionReceipt from 'pages/Receipts/useActionReceipt';
+import {
+    data_MerchantGetReceiptResponse,
+    gqlGetReceiptDetail,
+    var_ReceiptDetail,
+} from 'graphql/receipts';
+import { useLazyQuery } from '@apollo/client';
 
 export default function ModalPaySuccess({
     isVisible = false,
     onClose,
     order_id,
     isBackHome = true,
+    invoice_number,
 }: {
     isVisible: boolean;
     onClose: () => void;
     order_id: any;
     isBackHome?: boolean;
+    invoice_number?: string;
 }) {
     const navigation = useNavigate();
     const { theme } = useTheme();
@@ -38,7 +47,28 @@ export default function ModalPaySuccess({
         sendLoading1,
         sendLoading2,
     } = useBillDetail({ order_id });
-
+    const { PrintBillApi: PrintReceipt } = useActionReceipt();
+    const [getReceiptDetail, { loading: loadingReceipt }] = useLazyQuery<
+        data_MerchantGetReceiptResponse,
+        var_ReceiptDetail
+    >(gqlGetReceiptDetail, {
+        fetchPolicy: 'no-cache',
+    });
+    const Print = () => {
+        if (invoice_number) {
+            getReceiptDetail({
+                variables: {
+                    invoice_number: invoice_number,
+                },
+            }).then((res) => {
+                if (res.data) {
+                    PrintReceipt(res.data.merchantGetReceipt);
+                }
+            });
+        } else {
+            PrintBillApi();
+        }
+    };
     const closeModal = () => {
         onClose();
         isBackHome && navigation(BASE_ROUTER.HOME);
@@ -71,7 +101,11 @@ export default function ModalPaySuccess({
                 </div>
             </Header>
             <Body>
-                <Item onClick={() => !loadingPrint && PrintBillApi()}>
+                <Item
+                    onClick={() =>
+                        (!loadingPrint || !loadingReceipt) && Print()
+                    }
+                >
                     <div>
                         {loadingPrint ? (
                             <Spin />

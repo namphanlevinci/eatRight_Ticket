@@ -240,7 +240,7 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
         if (childBill.length) {
             onPrintBill({
                 variables: {
-                    invoice_number: selectDataShowbill.number,
+                    invoice_number: selectDataShowbill?.number,
                 },
             })
                 .then(() => {
