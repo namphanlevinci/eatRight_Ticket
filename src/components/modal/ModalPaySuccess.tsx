@@ -47,7 +47,8 @@ export default function ModalPaySuccess({
         sendLoading1,
         sendLoading2,
     } = useBillDetail({ order_id });
-    const { PrintBillApi: PrintReceipt } = useActionReceipt();
+    const { PrintBillApi: PrintReceipt, loadingPrint: loadingPrint2 } =
+        useActionReceipt();
     const [getReceiptDetail, { loading: loadingReceipt }] = useLazyQuery<
         data_MerchantGetReceiptResponse,
         var_ReceiptDetail
@@ -103,11 +104,12 @@ export default function ModalPaySuccess({
             <Body>
                 <Item
                     onClick={() =>
-                        (!loadingPrint || !loadingReceipt) && Print()
+                        (!loadingPrint || !loadingReceipt || loadingPrint2) &&
+                        Print()
                     }
                 >
                     <div>
-                        {loadingPrint || loadingReceipt ? (
+                        {loadingPrint || loadingReceipt || loadingPrint2 ? (
                             <Spin />
                         ) : (
                             <>
