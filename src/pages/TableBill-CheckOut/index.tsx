@@ -197,7 +197,7 @@ export default function TableSplitBillCheckOut() {
                 // showModalSuccess();
                 setLoading(false);
                 setModalPaySuccess(true);
-                // ReloadInvoice({ printInVoice: selectGuest?.number });
+                ReloadInvoice({ printInVoice: selectGuest?.number });
             })
             .catch((err) => {
                 console.log(err);
