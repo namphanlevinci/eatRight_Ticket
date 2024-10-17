@@ -210,6 +210,7 @@ export default function TableSplitBillCheckOut() {
             .then(async () => {
                 // showModalSuccess();
                 ReloadInvoice({
+                    printInVoice: selectGuest?.number,
                     isPayTerminal: true,
                 });
             })
@@ -239,10 +240,10 @@ export default function TableSplitBillCheckOut() {
         };
     }, [selectGuest]);
     const ReloadInvoice = ({
-        printInVoice = '',
+        printInVoice,
         isPayTerminal = false,
     }: {
-        printInVoice?: string;
+        printInVoice?: any;
         isPayTerminal?: boolean;
     }) => {
         onGetInvoices({
