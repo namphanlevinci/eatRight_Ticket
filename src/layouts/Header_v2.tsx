@@ -26,7 +26,7 @@ import HomeIcon from 'assets/icons_v2/HomeIcon';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { useMediaQuery } from 'react-responsive';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import { Colors } from 'themes/colors';
