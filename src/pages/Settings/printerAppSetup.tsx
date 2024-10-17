@@ -22,7 +22,7 @@ export default function PrinterAppSetUpPage() {
     const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST_DJV);
     const [onGetConfig, { data }] = useLazyQuery(GET_CONFIG_PRINTER);
     const [posDeviceList, setPosDeviceList] = useState<any>([]);
-
+    const [printer, setPrinter] = useState('');
     useEffect(() => {
         onGetConfig({ fetchPolicy: 'no-cache' });
         onGetPosDeviceList({ fetchPolicy: 'no-cache' }).then((res: any) => {
@@ -215,10 +215,16 @@ export default function PrinterAppSetUpPage() {
             document.removeEventListener('message', handleMessage);
         };
     }, []);
+    useEffect(() => {
+        const printerName = localStorage.getItem('printer_name');
+        if (printerName) {
+            setPrinter(printerName);
+        }
+    }, []);
     const RenderEPSONPrinter = () => {
         return (
             <div style={{ paddingTop: 8 }}>
-                {localStorage.getItem('printer_name') &&
+                {printer &&
                     list?.map?.(
                         (Printer: any) =>
                             Printer?.id === selectedOption?.id && (

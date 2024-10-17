@@ -107,7 +107,7 @@ export default function ModalPaySuccess({
                     }
                 >
                     <div>
-                        {loadingPrint ? (
+                        {loadingPrint || loadingReceipt ? (
                             <Spin />
                         ) : (
                             <>

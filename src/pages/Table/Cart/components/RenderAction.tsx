@@ -1,5 +1,5 @@
 import { Col } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'components/atom/Button';
 import { useMediaQuery } from 'react-responsive';
 import { useTheme } from 'context/themeContext';
@@ -44,6 +44,7 @@ export default function RenderAction({
     });
     const { theme } = useTheme();
     const { data: config } = useQuery(GET_MERCHANT_RESTAURANT_CONFIG);
+    const [loading, setLoading] = useState(false);
     return (
         <Col
             style={
@@ -204,9 +205,13 @@ export default function RenderAction({
                                 height: 44,
                                 border: `0px solid ${theme.pRIMARY6Primary}`,
                             }}
-                            onClick={() => goFinishPayment(data?.order_number)}
+                            onClick={() => {
+                                setLoading(true);
+                                goFinishPayment(data?.order_number);
+                            }}
                             background={theme.pRIMARY6Primary}
                             color={theme.nEUTRALBase}
+                            loading={loading}
                         >
                             Finish Payment
                         </Button>

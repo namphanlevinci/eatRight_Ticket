@@ -176,6 +176,7 @@ export default function TableSplitBillCheckOut() {
     const handlePaymentWithPOS = (id: string) => {
         setLoading(true);
         setLoadingPosResult(true);
+        const invoice_number = selectGuest?.number || '';
         onPaymentWithPOS({
             variables: {
                 invoice_number: selectGuest?.number,
@@ -183,6 +184,9 @@ export default function TableSplitBillCheckOut() {
             },
         })
             .then(() => {
+                setDataPaymentSuccess({
+                    invoice_number: invoice_number,
+                });
                 setLoading(false);
                 setModalPaySuccess(true);
             })
