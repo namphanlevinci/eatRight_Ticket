@@ -50,7 +50,7 @@ const Index = () => {
     const dineInRef = useRef<any>();
     const takeAwayRef = useRef<any>();
     const openPriceRef = useRef<any>();
-
+    const [openPrice, setOpenPrice] = useState(false);
     const history = useNavigate();
     const { id: productId } = useParams();
     const { openModal } = useContext(AlertContext);
@@ -104,7 +104,7 @@ const Index = () => {
             ...values,
             display_platforms,
             is_in_stock,
-            price: formatPrice(values?.price),
+            price: formatPrice(values?.price || '0'),
             status: values?.status ? 1 : 2,
             open_price: openPriceRef?.current?.getValue(),
             media_gallery_entries,
@@ -465,25 +465,29 @@ const Index = () => {
                             <Form.Item
                                 style={{ width: '35%' }}
                                 name="price"
-                                rules={[
-                                    {
-                                        validator: (_, value) => {
-                                            if (!value) {
-                                                return Promise.reject(
-                                                    'Please enter price',
-                                                );
-                                            }
-                                            const formatedValue =
-                                                formatPrice(value);
-                                            if (formatedValue >= 0) {
-                                                return Promise.resolve();
-                                            }
-                                            return Promise.reject(
-                                                'Please enter a number 0 or greater in this field',
-                                            );
-                                        },
-                                    },
-                                ]}
+                                rules={
+                                    openPrice
+                                        ? []
+                                        : [
+                                              {
+                                                  validator: (_, value) => {
+                                                      if (!value) {
+                                                          return Promise.reject(
+                                                              'Please enter price',
+                                                          );
+                                                      }
+                                                      const formatedValue =
+                                                          formatPrice(value);
+                                                      if (formatedValue >= 0) {
+                                                          return Promise.resolve();
+                                                      }
+                                                      return Promise.reject(
+                                                          'Please enter a number 0 or greater in this field',
+                                                      );
+                                                  },
+                                              },
+                                          ]
+                                }
                             >
                                 <NumericFormat
                                     prefix="$"
@@ -517,6 +521,9 @@ const Index = () => {
                                         fontWeight: '600',
                                         marginTop: 0,
                                     }}
+                                    onChange={(value: boolean) =>
+                                        setOpenPrice(value)
+                                    }
                                 />
                                 <Tooltip
                                     placement="bottomLeft"

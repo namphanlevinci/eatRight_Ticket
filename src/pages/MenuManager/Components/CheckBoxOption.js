@@ -7,41 +7,47 @@ import { useState, forwardRef, useImperativeHandle } from 'react';
  *   name?: string;
  *   ref?: React.Ref<CustomModalHandle>;
  *   customStyle?: any;
+ *   onChange?: (value: boolean) => void;
  * }>}
  */
 
-const CheckBoxOption = forwardRef(({ name = '', customStyle }, ref) => {
-    const [checked, setChecked] = useState(false);
+const CheckBoxOption = forwardRef(
+    ({ name = '', customStyle, onChange }, ref) => {
+        const [checked, setChecked] = useState(false);
 
-    const handleChange = () => {
-        setChecked(!checked);
-    };
+        const handleChange = () => {
+            setChecked(!checked);
+            if (onChange) {
+                onChange(!checked);
+            }
+        };
 
-    useImperativeHandle(ref, () => ({
-        getValue: () => {
-            return checked;
-        },
-        setValue: (isboolean) => {
-            setChecked(isboolean);
-        },
-    }));
+        useImperativeHandle(ref, () => ({
+            getValue: () => {
+                return checked;
+            },
+            setValue: (isboolean) => {
+                setChecked(isboolean);
+            },
+        }));
 
-    return (
-        <Row
-            ref={ref}
-            align={'middle'}
-            style={{
-                cursor: 'pointer',
-                gap: 16,
-                marginTop: 16,
-                ...customStyle,
-            }}
-            onClick={handleChange}
-        >
-            {checked ? <IconCheck /> : <IconUnCheck />} {name}
-        </Row>
-    );
-});
+        return (
+            <Row
+                ref={ref}
+                align={'middle'}
+                style={{
+                    cursor: 'pointer',
+                    gap: 16,
+                    marginTop: 16,
+                    ...customStyle,
+                }}
+                onClick={handleChange}
+            >
+                {checked ? <IconCheck /> : <IconUnCheck />} {name}
+            </Row>
+        );
+    },
+);
 
 export default CheckBoxOption;
 
