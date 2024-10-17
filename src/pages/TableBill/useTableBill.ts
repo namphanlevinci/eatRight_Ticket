@@ -680,5 +680,6 @@ export const useTableBill = (isGoBack = true) => {
         setModalChange,
         orderInfo,
         onCancelCheckout,
+        dataInvoices,
     };
 };

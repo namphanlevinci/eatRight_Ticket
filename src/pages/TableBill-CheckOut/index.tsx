@@ -86,7 +86,9 @@ export default function TableSplitBillCheckOut() {
         );
         return allPaid;
     };
-
+    const [dataPaymentSuccess, setDataPaymentSuccess] = useState({
+        invoice_number: '',
+    });
     const handlePayment = (
         paymentMethod: string,
         po_number?: string | undefined | null,
@@ -125,7 +127,9 @@ export default function TableSplitBillCheckOut() {
                         if (result?.invoice_image) {
                             PrintMerchantCopy(result.invoice_image);
                         }
-
+                        setDataPaymentSuccess({
+                            invoice_number: result.number,
+                        });
                         setData(newData);
                         setModalPaySuccess(true);
                         localStorage.setItem(
@@ -303,12 +307,6 @@ export default function TableSplitBillCheckOut() {
             });
         }
     };
-    const showModalSuccess = () => {
-        modal.success({
-            title: 'Payment Success',
-            centered: true,
-        });
-    };
     const [modal, contextHolder] = Modal.useModal();
     const showError = (msg: string) => {
         modal.error({
@@ -437,7 +435,7 @@ export default function TableSplitBillCheckOut() {
                     }}
                     order_id={data.order.order_id}
                     isBackHome={checkShowModalPaySuccess() ? true : false}
-                    invoice_number={selectGuest?.number}
+                    invoice_number={dataPaymentSuccess?.invoice_number}
                 />
             </Container>
         </Layout>

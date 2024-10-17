@@ -76,6 +76,7 @@ export default function ColRight({
         setModalChange,
         orderInfo,
         onCancelCheckout,
+        dataInvoices,
     } = useTableBill();
 
     // useEffect(() => {
@@ -510,6 +511,9 @@ export default function ColRight({
                     setModalPaySuccess(false);
                 }}
                 order_id={orderInfo?.order_id}
+                invoice_number={
+                    dataInvoices?.merchantGetOrderInvoices?.invoice[0]?.number
+                }
             />
         </>
     );
