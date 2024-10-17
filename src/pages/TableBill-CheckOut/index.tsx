@@ -239,7 +239,7 @@ export default function TableSplitBillCheckOut() {
         };
     }, [selectGuest]);
     const ReloadInvoice = ({
-        printInVoice,
+        printInVoice = '',
         isPayTerminal = false,
     }: {
         printInVoice?: string;
