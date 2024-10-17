@@ -187,19 +187,27 @@ const Chairs = ({ status, size }: IChairsTable & ISize) => {
 
 const SIZES: Record<
     string,
-    { width: string; maxWidth: string; minWidth: string; height: string }
+    {
+        width: string;
+        maxWidth: string;
+        minWidth: string;
+        height: string;
+        aspectRatio: string;
+    }
 > = {
     small: {
-        width: '20%',
-        maxWidth: '220px',
-        minWidth: '220px',
-        height: '220px',
+        width: 'auto',
+        maxWidth: 'min(25%,196px)',
+        minWidth: 'max(12%,196px)',
+        height: '196px',
+        aspectRatio: '1 / 1',
     },
     large: {
-        width: '30%',
-        maxWidth: '400px',
-        minWidth: '400px',
-        height: '220px',
+        width: 'auto',
+        maxWidth: 'min(30%,280px)',
+        minWidth: 'max(20%,280px)',
+        height: '196px',
+        aspectRatio: '3 / 4',
     },
 };
 
