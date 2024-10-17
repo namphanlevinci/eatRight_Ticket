@@ -1,11 +1,14 @@
 import { useLazyQuery } from '@apollo/client';
+import { updateCounterTable } from 'features/auth/authSlice';
 import { emitter } from 'graphql/client';
 import { GET_ALL_TABLE, GET_ALL_TABLE_Floor } from 'graphql/table/table';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 
 export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
+    const dispatch = useDispatch();
     const { restaurant_id, floor } = useSelector(
         (state: RootState) => state.auth,
     );
@@ -97,6 +100,7 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
 
             if (counterTable) {
                 setCounterTable(counterTable);
+                dispatch(updateCounterTable({ counterTable }));
                 localStorage.setItem(
                     'counterTable',
                     JSON.stringify(counterTable),

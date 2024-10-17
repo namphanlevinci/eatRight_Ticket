@@ -40,7 +40,6 @@ const Tables = ({ tables }: IProps) => {
                 width: '100%',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between',
                 flexWrap: 'wrap',
                 gap: '5%',
                 rowGap: '5%',
@@ -197,16 +196,16 @@ const SIZES: Record<
 > = {
     small: {
         width: 'auto',
-        maxWidth: 'min(25%,196px)',
-        minWidth: 'max(12%,196px)',
-        height: '196px',
+        maxWidth: 'min(25%,204px)',
+        minWidth: 'max(12%,204px)',
+        height: '204px',
         aspectRatio: '1 / 1',
     },
     large: {
         width: 'auto',
-        maxWidth: 'min(30%,280px)',
-        minWidth: 'max(20%,280px)',
-        height: '196px',
+        maxWidth: 'min(30%,288px)',
+        minWidth: 'max(20%,288px)',
+        height: '204px',
         aspectRatio: '3 / 4',
     },
 };
