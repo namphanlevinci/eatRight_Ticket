@@ -80,13 +80,11 @@ export default function TableSplitBillCheckOut() {
         }
     };
 
-    const checkShowModalPaySuccess = (data: any) => {
+    const checkShowModalPaySuccess = () => {
         const allPaid = data?.invoice?.every(
             (invoice: any) => invoice?.state === 'PAID',
         );
-        if (allPaid) {
-            setModalPaySuccess(true);
-        }
+        return allPaid;
     };
 
     const handlePayment = (
@@ -127,7 +125,7 @@ export default function TableSplitBillCheckOut() {
                         };
                         // PrintMerchantCopy(result.invoice_image);
                         setData(newData);
-                        checkShowModalPaySuccess(newData);
+                        setModalPaySuccess(true);
                         localStorage.setItem(
                             'split_bill_data',
                             JSON.stringify(newData),
@@ -179,6 +177,7 @@ export default function TableSplitBillCheckOut() {
             },
         })
             .then(() => {
+                setLoading(false);
                 setModalPaySuccess(true);
             })
             .catch((err) => {
@@ -194,10 +193,11 @@ export default function TableSplitBillCheckOut() {
                 pos_id: id,
             },
         })
-            .then(() => {
+            .then(async () => {
                 // showModalSuccess();
-                setModalPaySuccess(true);
-                // ReloadInvoice({ printInVoice: selectGuest?.number });
+                ReloadInvoice({
+                    isPayTerminal: true,
+                });
             })
             .catch((err) => {
                 console.log(err);
@@ -224,7 +224,13 @@ export default function TableSplitBillCheckOut() {
             emitter.off('arise_result');
         };
     }, [selectGuest]);
-    const ReloadInvoice = ({ printInVoice }: { printInVoice?: string }) => {
+    const ReloadInvoice = ({
+        printInVoice,
+        isPayTerminal = false,
+    }: {
+        printInVoice?: string;
+        isPayTerminal?: boolean;
+    }) => {
         onGetInvoices({
             variables: {
                 OrderNumber: data.order.order_number,
@@ -234,7 +240,10 @@ export default function TableSplitBillCheckOut() {
             .then((res) => {
                 const newData = res?.data?.merchantGetOrderInvoices;
                 setData(newData);
-                checkShowModalPaySuccess(newData);
+                if (isPayTerminal) {
+                    setLoading(false);
+                    setModalPaySuccess(true);
+                }
                 if (printInVoice) {
                     const FindInvoice = newData.invoice.find(
                         (value: InvoiceWithSplit) =>
@@ -307,8 +316,6 @@ export default function TableSplitBillCheckOut() {
     };
 
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
-
-    console.log('data : ', data);
 
     return (
         <Layout
@@ -427,6 +434,7 @@ export default function TableSplitBillCheckOut() {
                         setModalPaySuccess(false);
                     }}
                     order_id={data.order.order_id}
+                    isBackHome={checkShowModalPaySuccess() ? true : false}
                 />
             </Container>
         </Layout>

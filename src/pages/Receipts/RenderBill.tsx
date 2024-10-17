@@ -28,6 +28,18 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
         return <div />;
     }
 
+    console.log('total : ', data?.total);
+
+    console.log(
+        'test total : ',
+        Math.abs(
+            data?.total?.grand_total?.value -
+                (data?.total?.subtotal?.value -
+                    (totalDiscount || 0) +
+                    data?.total?.total_tax?.value),
+        ).toFixed(2),
+    );
+
     return (
         <div
             style={{
@@ -138,11 +150,12 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     <TextDark style={text16}>Base total:</TextDark>
                     <TextDark>
                         {CURRENTCY}{' '}
-                        {(
-                            data?.total?.subtotal?.value -
-                            (totalDiscount || 0) +
-                            data?.total?.total_tax?.value
-                        )?.toFixed(2)}
+                        {Math.abs(
+                            data?.total?.grand_total?.value -
+                                (data?.total?.subtotal?.value -
+                                    (totalDiscount || 0) +
+                                    data?.total?.total_tax?.value),
+                        ).toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
@@ -156,11 +169,11 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     <TextDark style={text16}>Tip:</TextDark>
                     <TextDark>
                         {CURRENTCY}{' '}
-                        {(
+                        {Math.abs(
                             data?.total?.grand_total?.value -
-                            (data?.total?.subtotal?.value -
-                                (totalDiscount || 0) +
-                                data?.total?.total_tax?.value)
+                                (data?.total?.subtotal?.value -
+                                    (totalDiscount || 0) +
+                                    data?.total?.total_tax?.value),
                         ).toFixed(2)}
                     </TextDark>
                 </RowStyled>

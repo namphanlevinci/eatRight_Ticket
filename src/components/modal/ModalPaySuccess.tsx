@@ -15,10 +15,12 @@ export default function ModalPaySuccess({
     isVisible = false,
     onClose,
     order_id,
+    isBackHome = true,
 }: {
     isVisible: boolean;
     onClose: () => void;
     order_id: any;
+    isBackHome?: boolean;
 }) {
     const navigation = useNavigate();
     const { theme } = useTheme();
@@ -39,7 +41,7 @@ export default function ModalPaySuccess({
 
     const closeModal = () => {
         onClose();
-        navigation(BASE_ROUTER.HOME);
+        isBackHome && navigation(BASE_ROUTER.HOME);
     };
 
     return (
