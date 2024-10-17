@@ -61,7 +61,7 @@ export default function TableSplitBillCheckOut() {
     let intervalId: any = null;
     useEffect(() => {
         if (loadingPosResult) {
-            intervalId = setInterval(ReloadInvoice, 30000);
+            intervalId = setInterval(() => ReloadInvoice({}), 30000);
         }
         return () => {
             if (intervalId) {
@@ -201,6 +201,7 @@ export default function TableSplitBillCheckOut() {
     const handlePaymentWithPOSDJV = (id: any) => {
         setLoading(true);
         setLoadingPosResult(true);
+        const invoice_number = selectGuest?.number || '';
         onPaymentWithPOSDJV({
             variables: {
                 invoice_number: selectGuest?.number,
@@ -209,8 +210,11 @@ export default function TableSplitBillCheckOut() {
         })
             .then(async () => {
                 // showModalSuccess();
+                setDataPaymentSuccess({
+                    invoice_number: invoice_number,
+                });
                 ReloadInvoice({
-                    printInVoice: selectGuest?.number,
+                    printInVoice: invoice_number,
                     isPayTerminal: true,
                 });
             })
@@ -259,13 +263,15 @@ export default function TableSplitBillCheckOut() {
                     setLoading(false);
                     setModalPaySuccess(true);
                 }
-                if (printInVoice) {
+                if (printInVoice !== undefined) {
                     const FindInvoice = newData.invoice.find(
                         (value: InvoiceWithSplit) =>
                             value.number === printInVoice,
                     );
                     if (FindInvoice) {
-                        PrintMerchantCopy(FindInvoice.invoice_image);
+                        if (!isPayTerminal) {
+                            PrintMerchantCopy(FindInvoice.invoice_image);
+                        }
                     }
                 }
 
