@@ -208,9 +208,10 @@ export default function PrinterAppSetUpPage() {
             }
         };
 
+        window.addEventListener('message', handleMessage);
         document.addEventListener('message', handleMessage);
-
         return () => {
+            window.removeEventListener('message', handleMessage);
             document.removeEventListener('message', handleMessage);
         };
     }, []);
