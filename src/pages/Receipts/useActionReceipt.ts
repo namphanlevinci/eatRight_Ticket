@@ -10,6 +10,7 @@ import {
     API_REFUND_ORDER,
     API_REFUND_ORDER_POS,
 } from 'graphql/orders/refund';
+import { PRINT_BILL } from 'graphql/printer';
 import { ReceiptDetail } from 'graphql/receipts';
 import { useEffect, useState } from 'react';
 
@@ -20,6 +21,7 @@ export default function useActionReceipt() {
     const [onSendBillToPhone, { loading: sendLoading2 }] = useMutation(
         SEND_RECEIPT_TO_PHONENUMBER,
     );
+    const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         if (loading) {
@@ -44,20 +46,20 @@ export default function useActionReceipt() {
             });
             // return;
         }
-        // onPrintBill({
-        //     variables: {
-        //         invoice_number: data.increment_id,
-        //     },
-        // })
-        //     .then(() => {
-        //         notification.success({
-        //             message: 'Receipt sent to printer',
-        //             description: 'Please go to printer to take the bill!',
-        //         });
-        //     })
-        //     .catch((e) => {
-        //         console.log(e);
-        //     });
+        onPrintBill({
+            variables: {
+                invoice_number: data.increment_id,
+            },
+        })
+            .then(() => {
+                notification.success({
+                    message: 'Receipt sent to printer',
+                    description: 'Please go to printer to take the bill!',
+                });
+            })
+            .catch((e) => {
+                console.log(e);
+            });
     };
     const handleSendBill = (
         type: string,
@@ -232,7 +234,7 @@ export default function useActionReceipt() {
     };
     return {
         PrintBillApi,
-        loadingPrint: loading,
+        loadingPrint: loading || loadingPrint,
         loading:
             sendLoading1 ||
             sendLoading2 ||

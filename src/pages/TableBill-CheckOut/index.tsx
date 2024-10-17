@@ -123,7 +123,10 @@ export default function TableSplitBillCheckOut() {
                                 return value;
                             }),
                         };
-                        // PrintMerchantCopy(result.invoice_image);
+                        if (result?.invoice_image) {
+                            PrintMerchantCopy(result.invoice_image);
+                        }
+
                         setData(newData);
                         setModalPaySuccess(true);
                         localStorage.setItem(
