@@ -200,7 +200,6 @@ export default function TableSplitBillCheckOut() {
     };
     const handlePaymentWithPOSDJV = (id: any) => {
         setLoading(true);
-        setLoadingPosResult(true);
         const invoice_number = selectGuest?.number || '';
         onPaymentWithPOSDJV({
             variables: {
@@ -221,7 +220,6 @@ export default function TableSplitBillCheckOut() {
             .catch((err) => {
                 console.log(err);
                 setLoading(false);
-                setLoadingPosResult(false);
             });
     };
     const [onGetInvoices] = useLazyQuery(GET_INVOICES);
