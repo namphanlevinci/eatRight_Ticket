@@ -38,6 +38,10 @@ export default function ModalEditPrice({
         }
     };
 
+    const onHandleSubmit = () => {
+        onSubmit(price);
+    };
+
     return (
         <Modal
             title="Basic Modal"
@@ -115,7 +119,7 @@ export default function ModalEditPrice({
             >
                 <ButtonPrimary
                     title={'Update'}
-                    onClick={onSubmit}
+                    onClick={onHandleSubmit}
                     width="37%"
                     marginTop="0px"
                 />
