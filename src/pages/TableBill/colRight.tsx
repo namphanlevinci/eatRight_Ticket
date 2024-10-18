@@ -239,7 +239,7 @@ export default function ColRight({
                         //     );
                         //     return;
                         // }
-                        // handleAddCoupon(cart?.id || '', values);
+                        handleAddCoupon(cart?.id || '', values);
                         setModalDiscount(false);
                     }}
                 />
