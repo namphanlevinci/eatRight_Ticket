@@ -36,7 +36,7 @@ const HomePage: React.FC = () => {
         if (!isTableView && isMerchant) {
             navigation(BASE_ROUTER.MERCHANT_ORDERLIST);
         }
-        if (isTableView && isMerchant) {
+        if (isTableView && isMerchant && !ismobile) {
             navigation(BASE_ROUTER.MERCHANT_TABLEVIEW);
         }
     }, [isTableView, isMerchant, location]);

@@ -278,7 +278,7 @@ const HeaderV2 = () => {
                     <Row align="middle">
                         <Link
                             to={
-                                isMerchant
+                                isMerchant && !isMobile
                                     ? isTableView
                                         ? BASE_ROUTER.MERCHANT_TABLEVIEW
                                         : BASE_ROUTER.MERCHANT_ORDERLIST
