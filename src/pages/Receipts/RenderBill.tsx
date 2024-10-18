@@ -15,6 +15,7 @@ import React from 'react';
 import { convertMethod } from 'utils/format';
 import { ReceiptDetail } from 'graphql/receipts';
 import { isEmpty } from 'lodash';
+// import moment from 'moment';
 
 const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
     const totalDiscount = data?.total?.discounts?.reduce(
@@ -24,20 +25,25 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
         },
         0,
     );
+
     if (!data) {
         return <div />;
     }
 
-    console.log('total : ', data?.total);
+    const address = data?.restaurant_address?.split(', ')?.[0];
 
-    console.log(
-        'test total : ',
-        Math.abs(
-            data?.total?.grand_total?.value -
-                (data?.total?.subtotal?.value -
-                    (totalDiscount || 0) +
-                    data?.total?.total_tax?.value),
-        ).toFixed(2),
+    const baseTotal = Math.abs(
+        data?.total?.grand_total?.value -
+            (data?.total?.subtotal?.value -
+                (totalDiscount || 0) +
+                data?.total?.total_tax?.value),
+    );
+
+    const tip = Math.abs(
+        data?.total?.grand_total?.value -
+            (data?.total?.subtotal?.value -
+                (totalDiscount || 0) +
+                data?.total?.total_tax?.value),
     );
 
     return (
@@ -56,10 +62,16 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     {data?.restaurant_name}
                 </TextDark>
                 <TextDark style={{ ...text16W, marginTop: 16 }}>
-                    {data?.restaurant_address}
+                    {`${address?.substring?.(0, 42)} ${address?.length > 42 && ' ...'}`}
+                </TextDark>
+                <TextDark style={{ ...text16W, marginTop: 16 }}>
+                    {data?.restaurant_address
+                        ?.split?.(',')
+                        .slice?.(1)
+                        ?.toString?.()}
                 </TextDark>
                 <TextDark style={{ ...text16W, marginTop: 8 }}>
-                    Hotline: {data?.restaurant_phone_number}
+                    {data?.restaurant_phone_number}
                 </TextDark>
 
                 <DividedDashed />
@@ -72,16 +84,12 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     RECEIPT
                 </TextDark>
 
-                <RowStyled>
+                {/* <RowStyled>
                     <TextDark>
                         <BoldText>Date: </BoldText>
-                        {data?.order_date}
+                        {`${moment(data?.order_date, ['YYYY-MM-DD']).format('MM/DD/YYYY')} ${moment(data?.order_time, ['HH:mm:ss']).format('hh:mm A')}`}
                     </TextDark>
-                    <TextDark>
-                        <BoldText>Time: </BoldText>
-                        {data?.order_time}
-                    </TextDark>
-                </RowStyled>
+                </RowStyled> */}
                 <RowStyled>
                     <TextDark>{data?.order_type}</TextDark>
                     <TextDark>
@@ -103,8 +111,8 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                                 textOverflow: 'ellipsis',
                             }}
                         >
-                            <BoldText>Server: </BoldText>
-                            {data?.serve_name}
+                            <BoldText>Waiter: </BoldText>
+                            {data?.serve_name?.split?.(',')?.[0]}
                         </TextDark>
                     </RowStyled>
                 ) : (
@@ -129,13 +137,18 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                         {CURRENTCY} {data.total?.subtotal?.value?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
-                <RowStyled>
-                    <TextDark style={text16}>Discount:</TextDark>
-                    <TextDark>
-                        - {CURRENTCY} {totalDiscount?.toFixed(2)}
-                    </TextDark>
-                </RowStyled>
-                {data?.total?.total_tax?.value ? (
+                {totalDiscount && totalDiscount > 0 ? (
+                    <RowStyled>
+                        <TextDark style={text16}>Discount:</TextDark>
+                        <TextDark>
+                            - {CURRENTCY} {totalDiscount?.toFixed(2)}
+                        </TextDark>
+                    </RowStyled>
+                ) : (
+                    <div />
+                )}
+                {data?.total?.total_tax?.value &&
+                data?.total?.total_tax?.value > 0 ? (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>Tax</TextDark>
                         <TextDark>
@@ -149,13 +162,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Base total:</TextDark>
                     <TextDark>
-                        {CURRENTCY}{' '}
-                        {Math.abs(
-                            data?.total?.grand_total?.value -
-                                (data?.total?.subtotal?.value -
-                                    (totalDiscount || 0) +
-                                    data?.total?.total_tax?.value),
-                        ).toFixed(2)}
+                        {CURRENTCY} {Math.abs(baseTotal).toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
@@ -170,35 +177,34 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     </RowStyled>
                 )}
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Tip:</TextDark>
-                    <TextDark>
-                        {CURRENTCY}{' '}
-                        {Math.abs(
-                            data?.total?.grand_total?.value -
-                                (data?.total?.subtotal?.value -
-                                    (totalDiscount || 0) +
-                                    data?.total?.total_tax?.value),
-                        ).toFixed(2)}
-                    </TextDark>
-                </RowStyled>
-                <RowStyled align={'middle'}>
                     <TextDark style={text16}>Total:</TextDark>
                     <TextDark>
                         {CURRENTCY}{' '}
                         {(
-                            parseFloat(
-                                `${data?.total?.grand_total?.value || 0} `,
-                            ) + parseFloat(`${data?.non_cash_amount || 0}`)
+                            parseFloat(`${baseTotal || 0} `) +
+                            parseFloat(`${data?.non_cash_amount || 0}`)
                         )?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Tip:$</TextDark>
-                    <TextDark>_______________________________</TextDark>
+                    <TextDark style={text16}>Tip:</TextDark>
+                    {tip > 0 ? (
+                        <TextDark>_______________________________</TextDark>
+                    ) : (
+                        <TextDark>
+                            {CURRENTCY} {tip.toFixed(2)}
+                        </TextDark>
+                    )}
                 </RowStyled>
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Grand Total:$</TextDark>
-                    <TextDark>______________________</TextDark>
+                    {tip > 0 ? (
+                        <TextDark>
+                            {CURRENTCY} {data?.total?.grand_total?.value + tip}
+                        </TextDark>
+                    ) : (
+                        <TextDark>______________________</TextDark>
+                    )}
                 </RowStyled>
                 <DividedDashed />
                 <RowStyled align={'middle'}>
