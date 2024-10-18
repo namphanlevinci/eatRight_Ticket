@@ -347,7 +347,9 @@ const HeaderV2 = () => {
                                     overlayInnerStyle={{
                                         background: '#fff',
                                     }}
-                                    placement="bottomRight"
+                                    placement={
+                                        isMobile ? 'bottom' : 'bottomRight'
+                                    }
                                 >
                                     <div
                                         style={{
