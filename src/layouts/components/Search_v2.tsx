@@ -23,8 +23,9 @@ const SearchV2 = () => {
                     backgroundColor: theme.nEUTRALLine,
                     height: 40,
                     outline: 'none',
+                    width: 150
                 }}
-                placeholder="Order number, table..."
+                placeholder="Order number..."
                 value={searchTextOrder}
                 onChange={(e) => {
                     dispatch(
