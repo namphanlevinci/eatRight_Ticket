@@ -225,6 +225,7 @@ const Index = () => {
                     openPriceRef?.current?.setValue(
                         detail?.open_price ? true : false,
                     );
+                    setOpenPrice(detail?.open_price ? true : false);
                     if (detail?.display_platforms?.includes?.('dine_in')) {
                         dineInRef?.current?.setValue(true);
                     }
