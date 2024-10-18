@@ -32,19 +32,13 @@ export default function ModalPrint({
     }, [batchId]);
     const HandlePrint = (url: string) => {
         setLoading(true);
-        const is_used_terminal =
-            localStorage.getItem('merchantGetPrinterConfig') === 'true'
-                ? true
-                : false;
-        if (!is_used_terminal) {
-            if (window.ReactNativeWebView) {
-                window.ReactNativeWebView.postMessage(
-                    JSON.stringify({
-                        type: 'merchant',
-                        imageUrl: url,
-                    }),
-                );
-            }
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'merchant',
+                    imageUrl: url,
+                }),
+            );
         }
     };
     const [loading, setLoading] = React.useState(false);
