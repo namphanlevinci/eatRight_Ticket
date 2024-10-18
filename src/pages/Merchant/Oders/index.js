@@ -3,7 +3,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import ButtonTime from '../components/Button/ButtonTime';
 import './index.scss';
 import moment from 'moment';
-import dayjs from 'dayjs';
 const statusConvertData = {
     pending: '1',
     received: '2',

@@ -22,6 +22,7 @@ import ModalPosDevicesDJV from './components/ModalPosDevicesDJV';
 import ModalOtherMethod from './components/ModalOtherMethod';
 import ChangeModal from 'components/modal/ChangeModal';
 import ModalPaySuccess from 'components/modal/ModalPaySuccess';
+import RenderDiscountRow from './components/renderDiscountRow';
 
 export default function ColRight({
     cart,
@@ -86,7 +87,11 @@ export default function ColRight({
     const [tipPercent, setTipPercent] = useState(0);
     const [modalDiscount, setModalDiscount] = useState(false);
     const [modalTip, setModalTip] = useState(false);
-    const { handleAddCoupon } = useCouponCart();
+    const {
+        handleAddCoupon,
+        handleRemoveCoupon,
+        loading: loadingCoupon,
+    } = useCouponCart();
     const { theme } = useTheme();
     const [value, setValue] = React.useState('');
     const [isClickProceed, setIsClickProceed] = useState(false);
@@ -213,8 +218,28 @@ export default function ColRight({
                     onCancel={() => {
                         setModalDiscount(false);
                     }}
-                    onSubmit={(values: any) => {
-                        handleAddCoupon(cart?.id || '', values);
+                    onSubmit={async (values: any) => {
+                        // if (
+                        //     cart?.applied_coupons &&
+                        //     cart?.applied_coupons?.length > 0
+                        // ) {
+                        //     await handleRemoveCoupon(cart?.id || '').then(
+                        //         () => {
+                        //             handleAddCoupon(cart?.id || '', values)
+                        //                 .catch(() => {
+                        //                     handleAddCoupon(
+                        //                         cart?.id || '',
+                        //                         values,
+                        //                     );
+                        //                 })
+                        //                 .finally(() => {
+                        //                     setModalDiscount(false);
+                        //                 });
+                        //         },
+                        //     );
+                        //     return;
+                        // }
+                        // handleAddCoupon(cart?.id || '', values);
                         setModalDiscount(false);
                     }}
                 />
@@ -280,7 +305,7 @@ export default function ColRight({
                     />
                 )}
                 {contextHolder}
-                <LoadingModal showLoading={loading} />
+                <LoadingModal showLoading={loading || loadingCoupon} />
                 <LoadingModalPayment
                     showLoading={pos_Loading}
                     title="Processing ..."
@@ -291,6 +316,43 @@ export default function ColRight({
                         title="Subtotal"
                         value={`$${formatNumberWithCommas(totalMoney)}`}
                     />
+
+                    {cart?.prices?.discounts && (
+                        <RenderDiscountRow
+                            title="Discount"
+                            value={
+                                cart?.prices?.discounts.length > 0
+                                    ? cart?.prices?.discounts[0].label
+                                    : 'ADD CODE'
+                            }
+                            textRightStyle={{
+                                color:
+                                    cart?.prices?.discounts.length > 0
+                                        ? theme.sUCCESS2Default
+                                        : theme.pRIMARY6Primary,
+                            }}
+                            valueDiscount={totalDiscount}
+                            onRightClick={() => setModalDiscount(true)}
+                        />
+                    )}
+                    {cart?.prices?.applied_taxes &&
+                    cart?.prices?.applied_taxes[0]?.amount ? (
+                        <RenderBillInfomationRow
+                            title={`Tax (${Tax * 100}%)`}
+                            value={
+                                <Text
+                                    style={{
+                                        color: '#4A505C',
+                                        fontWeight: 600,
+                                    }}
+                                >{`$${formatNumberWithCommas(
+                                    (totalMoney + totalDiscount) * Tax,
+                                )}`}</Text>
+                            }
+                        />
+                    ) : (
+                        <></>
+                    )}
 
                     {cart?.prices?.discounts && (
                         <RenderBillInfomationRow
