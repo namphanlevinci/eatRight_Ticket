@@ -22,8 +22,12 @@ import {
 } from 'features/auth/authSlice';
 import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
-import { GET_CONFIG_PRINTER } from 'graphql/printer';
-import { useLazyQuery } from '@apollo/client';
+import {
+    GET_CONFIG_PRINTER,
+    LIST_PRINTER_DEVICES,
+    SELECT_PRINTER_DEVICE,
+} from 'graphql/printer';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import MerchantRoute from './MerchantRoute';
 export const BaseRouter = () => {
     const { notification } = App.useApp();
@@ -129,6 +133,65 @@ export const BaseRouter = () => {
             });
         }
     }, [noStore]);
+    const [onSetPrinterDevice] = useMutation(SELECT_PRINTER_DEVICE);
+    const [onGetListPrinterDevice] = useLazyQuery(LIST_PRINTER_DEVICES);
+    const handleSelectPrinter = (id: string) => {
+        onSetPrinterDevice({
+            variables: {
+                printer_id: id,
+            },
+        })
+            .then(() => {
+                notification.success({
+                    message: 'Success',
+                    description: 'Set up printer successfully',
+                });
+                localStorage.setItem('printer_id', id);
+            })
+            .catch(() => {
+                console.log('error');
+            });
+    };
+    useEffect(() => {
+        if (!isLogged) {
+            return;
+        }
+        const handleMessage = (event: any) => {
+            try {
+                const data = JSON.parse(event.data);
+                notification.success({
+                    message: 'Connected Printer successfully',
+                    description: data.data.deviceName,
+                });
+
+                localStorage.setItem('printer_name', data.data.deviceName);
+                emitter.emit('printer_name', data.data.deviceName);
+                onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then(
+                    (res: any) => {
+                        const list = res?.data?.merchantGetListDevice?.prints;
+                        const printer = list.find(
+                            (item: any) =>
+                                item?.printer_name == data.data.deviceName,
+                        );
+                        handleSelectPrinter(printer?.id);
+                        localStorage.setItem(
+                            'merchantGetPrinterConfig',
+                            `false`,
+                        );
+                    },
+                );
+            } catch (error) {
+                console.log('error');
+            }
+        };
+
+        window.addEventListener('message', handleMessage);
+        document.addEventListener('message', handleMessage);
+        return () => {
+            window.removeEventListener('message', handleMessage);
+            document.removeEventListener('message', handleMessage);
+        };
+    }, [isLogged]);
     useEffect(() => {
         if (needLogout) {
             console.log('needLogout', needLogout);

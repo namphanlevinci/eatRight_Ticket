@@ -395,7 +395,6 @@ export const useTableBill = (isGoBack = true) => {
                     //     }`,
                     //     isGoToTable,
                     // );
-                    setModalPaySuccess(true);
                 }
             })
             .catch(() => {
