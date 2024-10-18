@@ -201,10 +201,7 @@ export default function PrinterAppSetUpPage() {
                     },
                 );
             } catch (error) {
-                notification.error({
-                    message: 'Error',
-                    description: 'Connect Printer fail',
-                });
+                console.log('error');
             }
         };
 
