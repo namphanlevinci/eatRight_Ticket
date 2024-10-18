@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import ButtonTime from '../components/Button/ButtonTime';
 import './index.scss';
 import moment from 'moment';
+import dayjs from 'dayjs';
 const statusConvertData = {
     pending: '1',
     received: '2',
@@ -66,7 +67,7 @@ function Order(props) {
     }, []);
 
     const timeOver = moment
-        .utc(order?.created_at)
+        .utc(order?.created_at, 'MM-DD-YYYY hh:mm:ss')
         .local()
         .add(order?.notification_time, 'minutes')
         .format('YYYY-MM-DD  hh:mm:ss A');
@@ -233,7 +234,10 @@ function Order(props) {
                         </div>
                         <span className="text-light-14">
                             {moment
-                                .utc(order?.created_at)
+                                .utc(
+                                    `${order?.created_at}`,
+                                    'MM-DD-YYYY hh:mm:ss',
+                                )
                                 .local()
                                 .format('hh:mm A')}
                         </span>
