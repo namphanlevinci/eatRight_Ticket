@@ -339,6 +339,7 @@ export const useTableBill = (isGoBack = true) => {
     };
     const [onCancelCheckout] = useMutation(CANCEL_CHECKOUT);
     const [PosIdTmp, setPosIdTmp] = useState<any>('');
+
     const handlePOSPaymentWithDJV = (
         posId: number,
         orderDetail?: {
@@ -371,20 +372,27 @@ export const useTableBill = (isGoBack = true) => {
                     setModalPaySuccess(true);
                     setModalChange(false);
                     emitter.emit('REPAYMENT_SUCCESS');
-                    if (
-                        dataInvoices?.merchantGetOrderInvoices?.invoice[0]
-                            ?.invoice_image
-                    ) {
-                        PrintMerchantCopy(
+                    const is_used_terminal =
+                        localStorage.getItem('merchantGetPrinterConfig') ===
+                        'true'
+                            ? true
+                            : false;
+                    if (!is_used_terminal) {
+                        if (
                             dataInvoices?.merchantGetOrderInvoices?.invoice[0]
-                                ?.invoice_image,
-                        );
-                    } else {
-                        ReGetInvoices({
-                            orderNumber:
-                                dataInvoices?.merchantGetOrderInvoices?.order
-                                    ?.order_number,
-                        });
+                                ?.invoice_image
+                        ) {
+                            PrintMerchantCopy(
+                                dataInvoices?.merchantGetOrderInvoices
+                                    ?.invoice[0]?.invoice_image,
+                            );
+                        } else {
+                            ReGetInvoices({
+                                orderNumber:
+                                    dataInvoices?.merchantGetOrderInvoices
+                                        ?.order?.order_number,
+                            });
+                        }
                     }
 
                     // showModalSuccess(

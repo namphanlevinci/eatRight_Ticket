@@ -56,19 +56,27 @@ export default function ModalPaySuccess({
         fetchPolicy: 'no-cache',
     });
     const Print = () => {
-        // if (invoice_number) {
-        //     getReceiptDetail({
-        //         variables: {
-        //             invoice_number: invoice_number,
-        //         },
-        //     }).then((res) => {
-        //         if (res.data) {
-        //             PrintReceipt(res.data.merchantGetReceipt);
-        //         }
-        //     });
-        // } else {
-        PrintBillApi();
-        // }
+        const is_used_terminal =
+            localStorage.getItem('merchantGetPrinterConfig') === 'true'
+                ? true
+                : false;
+        if (!is_used_terminal) {
+            PrintBillApi();
+            return;
+        }
+        if (invoice_number) {
+            getReceiptDetail({
+                variables: {
+                    invoice_number: invoice_number,
+                },
+            }).then((res) => {
+                if (res.data) {
+                    PrintReceipt(res.data.merchantGetReceipt);
+                }
+            });
+        } else {
+            PrintBillApi();
+        }
     };
     const closeModal = () => {
         onClose();
