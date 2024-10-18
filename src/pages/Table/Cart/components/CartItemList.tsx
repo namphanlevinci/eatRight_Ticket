@@ -71,6 +71,7 @@ export default function CartItemList({
     const [isAllDone, setIsAllDone] = useState(false);
     const [searchParams] = useSearchParams();
     const selectedCart = parseInt(searchParams.get('cartIndex') || '0');
+    const [isNeedRequire, setIsNeedRequire] = useState(false);
     const isNewItem = data?.items?.find((item: ItemType) => item.isUnsend)
         ? true
         : false;
@@ -144,14 +145,29 @@ export default function CartItemList({
     }) => {
         const items: ItemType[] =
             data?.items.filter((item: ItemType) => item.isUnsend) || [];
+        let isNeedInput = false;
         const carts = items.map((item: ItemType) => {
             if (item.is_configurable) {
-                return {
+                let result: any = {
                     sku: item.id,
                     quantity: item.quantity,
                     parent_sku: item.product.sku,
                     note: item.note,
                 };
+                if (item?.open_price) {
+                    const custom_price =
+                        item?.custom_price || item.prices.price.value;
+                    if (custom_price > 0) {
+                        result = {
+                            ...result,
+                            custom_price:
+                                item?.custom_price || item.prices.price.value,
+                        };
+                    } else {
+                        isNeedInput = true;
+                    }
+                }
+                return result;
             }
             if (item.bundle_options && item.bundle_options.length > 0) {
                 return {
@@ -184,12 +200,30 @@ export default function CartItemList({
                     }),
                 };
             }
-            return {
+            let result: any = {
                 sku: item.product.sku,
                 quantity: item.quantity,
                 note: item.note,
             };
+            if (item?.open_price) {
+                const custom_price =
+                    item?.custom_price || item.prices.price.value;
+                if (custom_price > 0) {
+                    result = {
+                        ...result,
+                        custom_price:
+                            item?.custom_price || item.prices.price.value,
+                    };
+                } else {
+                    isNeedInput = true;
+                }
+            }
+            return result;
         });
+        if (isNeedInput) {
+            setIsNeedRequire(true);
+            return;
+        }
         if (isCartIdFromLocal(data?.id || '')) {
             addCart(
                 carts,
@@ -394,6 +428,7 @@ export default function CartItemList({
                                 onEditOpenPrice={() =>
                                     onEditOpenPrice(index, item)
                                 }
+                                isNeedRequire={isNeedRequire}
                             />
                         );
                     })}

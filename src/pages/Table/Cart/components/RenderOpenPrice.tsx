@@ -33,7 +33,7 @@ export default function RenderOpenPrice({
                     {value ? `$ ${value}` : 'Enter price'}
                 </p>
             </div>
-            {isNeedInput && (
+            {isNeedInput && !value && (
                 <div
                     style={{
                         fontFamily: 'Montserrat',

@@ -30,6 +30,7 @@ export default function RenderItemNew({
     updateStatusItemServer,
     onRemoveItem,
     onEditOpenPrice,
+    isNeedRequire,
 }: {
     item: ItemType;
     index: number;
@@ -48,6 +49,7 @@ export default function RenderItemNew({
     updateStatusItemServer: any;
     onRemoveItem: any;
     onEditOpenPrice?: any;
+    isNeedRequire?: boolean;
 }) {
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
@@ -137,8 +139,9 @@ export default function RenderItemNew({
                         </div>
                     ) : (
                         <RenderOpenPrice
-                            value={item.custom_price}
+                            value={item.custom_price || item.prices.price.value}
                             onEditOpenPrice={onEditOpenPrice}
+                            isNeedInput={isNeedRequire}
                         />
                     )}
                     <div>
