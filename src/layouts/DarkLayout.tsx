@@ -12,9 +12,7 @@ type Props = {
 
 export const DarkLayout = ({ children }: Props) => {
     const { theme } = useTheme();
-    const { isMerchant, isTableView } = useSelector(
-        (state: RootState) => state.auth,
-    );
+    const { isMerchant } = useSelector((state: RootState) => state.auth);
     return (
         <Layout
             style={{
@@ -24,7 +22,7 @@ export const DarkLayout = ({ children }: Props) => {
                 paddingBottom: 100,
             }}
         >
-            {isMerchant && isTableView ? <HeaderV2 /> : <Header />}
+            {isMerchant ? <HeaderV2 /> : <Header />}
             <div style={{ width: '100%' }}>{children}</div>
             <Footer />
         </Layout>

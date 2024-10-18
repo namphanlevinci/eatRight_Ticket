@@ -30,8 +30,8 @@ const HomePage: React.FC = () => {
         (state: RootState) => state.auth,
     );
     useEffect(() => {
-        if (!isTableView) {
-            navigation(BASE_ROUTER.MERCHANT_PAGE);
+        if (isTableView) {
+            navigation(BASE_ROUTER.MERCHANT_TABLEVIEW);
         }
     }, [isTableView]);
     const memoizedTables = useMemo(() => data, [data]);

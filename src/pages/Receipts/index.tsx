@@ -2,7 +2,6 @@
 import { DatePicker, Table, Input, Spin, Row, Col } from 'antd';
 import { Columns } from './Column_v2';
 import useReceipts from './useReceipts';
-import Header from 'pages/Merchant/Header';
 import SearchIcon from 'assets/icons/search';
 import { getCurrentMonthDates } from 'utils/date';
 import dayjs from 'dayjs';
@@ -96,7 +95,6 @@ export default function ReceiptsPage() {
                 }}
                 type="email"
             />
-            <Header />
             <div
                 style={{
                     display: 'flex',
