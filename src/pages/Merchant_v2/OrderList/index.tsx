@@ -13,11 +13,12 @@ import { debounce } from 'lodash';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 export default function MerchantOrderList() {
-    const { filterOrder } = useSelector((state: RootState) => state.global);
+    const { filterOrder, searchText } = useSelector(
+        (state: RootState) => state.global,
+    );
 
     const {
         isLoadingApp,
-        searchValue,
         renderList,
         handleSubmitRecievedOrder,
         setIsLoadingApp,
@@ -83,7 +84,6 @@ export default function MerchantOrderList() {
         };
     }, [currentPage, loading2]);
     const [isCompletedOrder, setIsCompletedOrder] = useState(false);
-
     return (
         <div onDragEnd={(e) => console.log(e)}>
             {/* Thêm nội dung cho DragDropContext ở đây */}
@@ -135,21 +135,31 @@ export default function MerchantOrderList() {
                                                 );
                                             }
                                         })
-                                        .filter(
-                                            (order) =>
-                                                order?.order_number?.includes?.(
-                                                    searchValue,
+                                        .filter((order) => {
+                                            const lowerSearchText =
+                                                searchText?.order?.toLowerCase();
+
+                                            if (!lowerSearchText) return true;
+
+                                            return (
+                                                order?.order_number?.includes(
+                                                    lowerSearchText,
                                                 ) ||
                                                 order?.table
                                                     ?.toLowerCase()
-                                                    ?.includes?.(searchValue) ||
+                                                    ?.includes(
+                                                        lowerSearchText,
+                                                    ) ||
                                                 order?.first_name
                                                     ?.toLowerCase()
-                                                    ?.includes?.(searchValue) ||
-                                                order?.phone_number?.includes?.(
-                                                    searchValue,
-                                                ),
-                                        )
+                                                    ?.includes(
+                                                        lowerSearchText,
+                                                    ) ||
+                                                order?.phone_number?.includes(
+                                                    lowerSearchText,
+                                                )
+                                            );
+                                        })
                                         ?.map((order_item) => {
                                             if (
                                                 order_item?.status?.toLowerCase?.() ===
@@ -246,20 +256,24 @@ export default function MerchantOrderList() {
                                             ?.filter(
                                                 (order: any) =>
                                                     order?.order_number?.includes?.(
-                                                        searchValue,
+                                                        searchText?.order?.toLowerCase(),
                                                     ) ||
                                                     order?.table
                                                         ?.toLowerCase()
                                                         ?.includes?.(
-                                                            searchValue?.toLowerCase(),
+                                                            searchText?.order
+                                                                ?.toLowerCase()
+                                                                ?.toLowerCase(),
                                                         ) ||
                                                     order?.first_name
                                                         ?.toLowerCase()
                                                         ?.includes?.(
-                                                            searchValue?.toLowerCase(),
+                                                            searchText?.order
+                                                                ?.toLowerCase()
+                                                                ?.toLowerCase(),
                                                         ) ||
                                                     order?.phone_number?.includes?.(
-                                                        searchValue,
+                                                        searchText?.order?.toLowerCase(),
                                                     ),
                                             )
                                             .map((order: any, i: number) => {

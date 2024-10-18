@@ -17,7 +17,7 @@ const { Content } = Layout;
 
 const MerchantTableView: React.FC = () => {
     const navigation = useNavigate();
-    const { searchTextOrder } = useSelector((state: RootState) => state.global);
+    const { searchText } = useSelector((state: RootState) => state.global);
     const { loadingTable, data, floorActive, handleActiveFloor } =
         useGetAllTable({
             cache: false,
@@ -25,7 +25,6 @@ const MerchantTableView: React.FC = () => {
     const { floor: floors, isTableView } = useSelector(
         (state: RootState) => state.auth,
     );
-    console.log(data, searchTextOrder);
     useEffect(() => {
         console.log({ isTableView });
         if (!isTableView) {
@@ -36,8 +35,10 @@ const MerchantTableView: React.FC = () => {
         data?.filter(
             (d) =>
                 d?.name &&
-                searchTextOrder &&
-                d.name?.toLowerCase().includes(searchTextOrder?.toLowerCase()),
+                searchText?.table &&
+                d.name
+                    ?.toLowerCase()
+                    .includes(searchText?.table?.toLowerCase()),
         ) || [],
     );
     const renderContent = () => {
@@ -61,15 +62,15 @@ const MerchantTableView: React.FC = () => {
                         {data?.length ? (
                             <Tables
                                 tables={
-                                    searchTextOrder
+                                    searchText?.table
                                         ? data?.filter(
                                               (d) =>
                                                   d?.name &&
-                                                  searchTextOrder &&
+                                                  searchText?.table &&
                                                   d.name
                                                       ?.toLowerCase()
                                                       .includes(
-                                                          searchTextOrder?.toLowerCase(),
+                                                          searchText?.table?.toLowerCase(),
                                                       ),
                                           )
                                         : data
