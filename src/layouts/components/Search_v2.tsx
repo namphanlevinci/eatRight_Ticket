@@ -1,12 +1,18 @@
 import SearchIcon from 'assets/icons_v2/SearchIcon';
+import { BASE_ROUTER } from 'constants/router';
 import { useTheme } from 'context/themeContext';
 import { updateSearchOrder } from 'features/global/globalSlice';
+import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
 
 const SearchV2 = () => {
     const { theme } = useTheme();
-    const { searchTextOrder } = useSelector((state: RootState) => state.global);
+    const { searchText } = useSelector((state: RootState) => state.global);
+    const isTableView = useMemo(
+        () => location.pathname === BASE_ROUTER.MERCHANT_TABLEVIEW,
+        [location],
+    );
     const dispatch = useDispatch();
     return (
         <div
@@ -23,14 +29,17 @@ const SearchV2 = () => {
                     backgroundColor: theme.nEUTRALLine,
                     height: 40,
                     outline: 'none',
-                    width: 150
+                    width: 150,
                 }}
-                placeholder="Order number..."
-                value={searchTextOrder}
+                placeholder={isTableView ? 'Table name...' : 'Order number...'}
+                value={isTableView ? searchText?.table : searchText?.order}
                 onChange={(e) => {
+                    const key = isTableView ? 'table' : 'order';
                     dispatch(
                         updateSearchOrder({
-                            searchTextOrder: e.target.value,
+                            searchText: {
+                                [key]: e.target.value,
+                            },
                         }),
                     );
                 }}

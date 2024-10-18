@@ -1,7 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface globalStateType {
-    searchTextOrder: string;
+    searchText: {
+        order: string;
+        table: string;
+    };
     filterOrder: {
         is_dine_in: boolean;
         is_eat_out: boolean;
@@ -9,7 +12,10 @@ export interface globalStateType {
 }
 
 const initialState: globalStateType = {
-    searchTextOrder: '',
+    searchText: {
+        order: '',
+        table: '',
+    },
     filterOrder: {
         is_dine_in: true,
         is_eat_out: true,
@@ -21,7 +27,7 @@ export const globalSlice = createSlice({
     initialState,
     reducers: {
         updateSearchOrder: (state, action) => {
-            state.searchTextOrder = action.payload.searchTextOrder;
+            state.searchText = action.payload.searchText;
         },
         updateFilterOrder: (state, action) => {
             state.filterOrder = action.payload.filterOrder;
