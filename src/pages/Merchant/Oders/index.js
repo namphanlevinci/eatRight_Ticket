@@ -232,13 +232,10 @@ function Order(props) {
                             </span>
                         </div>
                         <span className="text-light-14">
-                            {moment
-                                .utc(
-                                    `${order?.created_at}`,
-                                    'MM-DD-YYYY hh:mm:ss',
-                                )
-                                .local()
-                                .format('hh:mm A')}
+                            {moment(
+                                order?.created_at,
+                                'MM-DD-YYYY hh:mm:ss',
+                            ).format('hh:mm A')}
                         </span>
                     </div>
                 </div>

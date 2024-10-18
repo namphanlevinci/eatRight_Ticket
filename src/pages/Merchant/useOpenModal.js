@@ -287,13 +287,10 @@ const ModalDetail = React.memo(
                                 <div>
                                     <span>
                                         Ordered at{' '}
-                                        {moment
-                                            .utc(
-                                                headerData?.created_at,
-                                                'MM-DD-YYYY hh:mm:ss',
-                                            )
-                                            .local()
-                                            .format('YYYY-MM-DD  HH:mm')}
+                                        {moment(
+                                            headerData?.created_at,
+                                            'MM-DD-YYYY hh:mm:ss',
+                                        ).format('YYYY-MM-DD  HH:mm')}
                                     </span>
                                 </div>
                             </div>
