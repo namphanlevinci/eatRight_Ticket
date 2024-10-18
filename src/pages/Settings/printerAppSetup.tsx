@@ -75,12 +75,17 @@ export default function PrinterAppSetUpPage() {
                                 description: 'Set up printer successfully',
                             });
                             localStorage.setItem(
+                                'merchantGetPrinterConfig',
+                                `true`,
+                            );
+                            localStorage.setItem(
                                 'printer_id',
-                                selectedOption?.id.toString(),
+                                selectedOption?.id?.toString(),
                             );
                             pushMsgOffPrinter();
                         })
-                        .catch(() => {
+                        .catch((err) => {
+                            console.log(err);
                             console.log('error');
                         });
                 } else {
@@ -96,7 +101,7 @@ export default function PrinterAppSetUpPage() {
                             });
                             localStorage.setItem(
                                 'printer_id',
-                                selectedOption?.id.toString(),
+                                selectedOption?.id?.toString(),
                             );
                             localStorage.setItem(
                                 'merchantGetPrinterConfig',
@@ -188,7 +193,7 @@ export default function PrinterAppSetUpPage() {
                     message: 'Connected Printer successfully',
                     description: data.data.deviceName,
                 });
-                localStorage.setItem('merchantGetPrinterConfig', `false`);
+
                 localStorage.setItem('printer_name', data.data.deviceName);
                 onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then(
                     (res: any) => {
@@ -198,6 +203,10 @@ export default function PrinterAppSetUpPage() {
                                 item?.printer_name == data.data.deviceName,
                         );
                         handleSelectPrinter(printer?.id);
+                        localStorage.setItem(
+                            'merchantGetPrinterConfig',
+                            `false`,
+                        );
                     },
                 );
             } catch (error) {
