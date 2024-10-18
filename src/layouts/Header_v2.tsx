@@ -250,6 +250,9 @@ const HeaderV2 = () => {
             navigation(BASE_ROUTER.MERCHANT_ORDERLIST);
         }
     };
+    const isWidthSmallThanMobile = useMediaQuery({
+        query: '(min-width: 1023px)',
+    });
     return (
         <>
             <div
@@ -338,23 +341,24 @@ const HeaderV2 = () => {
                             </SwitchContainer>
                         )}
                     </Row>
-                    <Row style={{ gap: 16 }} align={'middle'}>
+                    <Row style={{ gap: 12 }} align={'middle'}>
                         {isLogged && (
                             <>
-                                {showOnHeader.newOrder && (
-                                    <ButtonV2
-                                        style={{
-                                            backgroundColor: Colors.teal,
-                                        }}
-                                        onClick={() =>
-                                            navigation(
-                                                `${BASE_ROUTER.TABLE}?tableId=${counterTable?.id}`,
-                                            )
-                                        }
-                                    >
-                                        New Order
-                                    </ButtonV2>
-                                )}
+                                {isWidthSmallThanMobile &&
+                                    showOnHeader.newOrder && (
+                                        <ButtonV2
+                                            style={{
+                                                backgroundColor: Colors.teal,
+                                            }}
+                                            onClick={() =>
+                                                navigation(
+                                                    `${BASE_ROUTER.TABLE}?tableId=${counterTable?.id}`,
+                                                )
+                                            }
+                                        >
+                                            New Order
+                                        </ButtonV2>
+                                    )}
                                 {showOnHeader.cashier && (
                                     <ButtonV2 onClick={() => openCashier()}>
                                         Open Cashier
