@@ -21,7 +21,7 @@ import {
     GET_MERCHANT_RESTAURANT_CONFIG,
     GET_PRIMARY_TERMINAL_WAITER,
 } from 'graphql/setups';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { RootState } from 'store';
@@ -338,6 +338,7 @@ export const useTableBill = (isGoBack = true) => {
             });
     };
     const [onCancelCheckout] = useMutation(CANCEL_CHECKOUT);
+    const [PosIdTmp, setPosIdTmp] = useState<any>('');
     const handlePOSPaymentWithDJV = (
         posId: number,
         orderDetail?: {
@@ -348,10 +349,14 @@ export const useTableBill = (isGoBack = true) => {
         isGoToTable = true,
         isSelectAnotherPos = false,
     ) => {
-        setPos_Loading(true);
         if (orderDetail) {
             setOrderInfo(orderDetail);
         }
+        if (PosIdTmp === posId) {
+            return;
+        }
+        setPos_Loading(true);
+        setPosIdTmp(posId);
         onPosDJV({
             variables: {
                 orderId: orderDetail?.order_number
