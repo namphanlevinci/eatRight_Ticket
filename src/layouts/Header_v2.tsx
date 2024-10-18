@@ -266,7 +266,7 @@ const HeaderV2 = () => {
                         display: 'flex',
                         paddingRight: 0,
                         alignItems: 'center',
-                        height: 72,
+                        minHeight: 72,
                         background: theme.nEUTRALPrimary,
                         justifyContent: 'space-between',
                         boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Added box-shadow
@@ -274,7 +274,13 @@ const HeaderV2 = () => {
                 >
                     <Row align="middle">
                         <Link
-                            to={BASE_ROUTER.HOME}
+                            to={
+                                isMerchant
+                                    ? isTableView
+                                        ? BASE_ROUTER.MERCHANT_TABLEVIEW
+                                        : BASE_ROUTER.MERCHANT_ORDERLIST
+                                    : BASE_ROUTER.HOME
+                            }
                             style={{
                                 cursor: 'pointer',
                                 height: 40,
@@ -300,7 +306,7 @@ const HeaderV2 = () => {
                             <SwitchContainer
                                 style={{
                                     display: 'flex',
-                                    marginLeft: 32,
+                                    marginLeft: 16,
                                     alignItems: 'center',
                                 }}
                             >
@@ -310,7 +316,7 @@ const HeaderV2 = () => {
                                             fontSize: 20,
                                             color: Colors.grey3,
                                             fontWeight: 600,
-                                            marginRight: 16,
+                                            marginRight: 8,
                                         }}
                                     >
                                         Table View
