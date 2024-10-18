@@ -257,60 +257,70 @@ export const useTableBill = (isGoBack = true) => {
                         } else if (paymentMethod === 'pos') {
                             setVisibleMoalPos(true);
                         } else if (paymentMethod === 'pos_djv') {
-                            // const order = res.data.createMerchantOrder.order;
-                            setVisibleMoalPosDJV(true);
+                            const order = res.data.createMerchantOrder.order;
+
                             setCheckOutLoading(false);
-                            // if (isMerchant) {
-                            //     onGetTerminalMerchant({
-                            //         fetchPolicy: 'no-cache',
-                            //     })
-                            //         .then((res) => {
-                            //             if (
-                            //                 res?.data
-                            //                     ?.merchantGetRestaurantConfig
-                            //                     ?.primary_terminal_setting
-                            //             ) {
-                            //                 onSelectTerminalPrimary(
-                            //                     res?.data
-                            //                         ?.merchantGetRestaurantConfig
-                            //                         ?.primary_terminal_setting,
-                            //                     order,
-                            //                 );
-                            //             } else {
-                            //                 notiPleaseSelectAnotherTerminal();
-                            //             }
-                            //         })
-                            //         .catch((err) => {
-                            //             console.log(err);
-                            //             notiPleaseSelectAnotherTerminal();
-                            //         })
-                            //         .finally(() => {
-                            //             setCheckOutLoading(false);
-                            //         });
-                            // } else {
-                            //     onGetTerminalWaiter({ fetchPolicy: 'no-cache' })
-                            //         .then((res) => {
-                            //             if (
-                            //                 res?.data?.waiterPrimaryPosDevice
-                            //                     ?.entity_id
-                            //             ) {
-                            //                 onSelectTerminalPrimary(
-                            //                     res?.data
-                            //                         ?.waiterPrimaryPosDevice
-                            //                         ?.entity_id,
-                            //                     order,
-                            //                 );
-                            //             } else {
-                            //                 notiPleaseSelectAnotherTerminal();
-                            //             }
-                            //         })
-                            //         .catch(() => {
-                            //             notiPleaseSelectAnotherTerminal();
-                            //         })
-                            //         .finally(() => {
-                            //             setCheckOutLoading(false);
-                            //         });
-                            // }
+                            const is_used_terminal =
+                                localStorage.getItem(
+                                    'merchantGetPrinterConfig',
+                                ) === 'true'
+                                    ? true
+                                    : false;
+                            if (!is_used_terminal) {
+                                setVisibleMoalPosDJV(true);
+                                return;
+                            }
+                            if (isMerchant) {
+                                onGetTerminalMerchant({
+                                    fetchPolicy: 'no-cache',
+                                })
+                                    .then((res) => {
+                                        if (
+                                            res?.data
+                                                ?.merchantGetRestaurantConfig
+                                                ?.primary_terminal_setting
+                                        ) {
+                                            onSelectTerminalPrimary(
+                                                res?.data
+                                                    ?.merchantGetRestaurantConfig
+                                                    ?.primary_terminal_setting,
+                                                order,
+                                            );
+                                        } else {
+                                            notiPleaseSelectAnotherTerminal();
+                                        }
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                        notiPleaseSelectAnotherTerminal();
+                                    })
+                                    .finally(() => {
+                                        setCheckOutLoading(false);
+                                    });
+                            } else {
+                                onGetTerminalWaiter({ fetchPolicy: 'no-cache' })
+                                    .then((res) => {
+                                        if (
+                                            res?.data?.waiterPrimaryPosDevice
+                                                ?.entity_id
+                                        ) {
+                                            onSelectTerminalPrimary(
+                                                res?.data
+                                                    ?.waiterPrimaryPosDevice
+                                                    ?.entity_id,
+                                                order,
+                                            );
+                                        } else {
+                                            notiPleaseSelectAnotherTerminal();
+                                        }
+                                    })
+                                    .catch(() => {
+                                        notiPleaseSelectAnotherTerminal();
+                                    })
+                                    .finally(() => {
+                                        setCheckOutLoading(false);
+                                    });
+                            }
                         } else {
                             showModalAlertPayment(
                                 res.data.createMerchantOrder.order.order_id,
