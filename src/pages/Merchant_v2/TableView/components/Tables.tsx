@@ -13,6 +13,7 @@ import { TABLE_STATUS } from 'constants/table';
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { BASE_ROUTER } from 'constants/router';
+import moment from 'moment';
 
 interface ITable {
     cartIds: { cartId: string }[];
@@ -99,7 +100,12 @@ const Table = ({ tableData, size, status }: IPropsTable & ISize) => {
             <Chairs size={size} status={status} />
             <STitle>{tableData?.name || 'Table name'}</STitle>
             <SSubtitle>{tableData.customer_name}</SSubtitle>
-            <SDuration>{tableData.created_at}</SDuration>
+            <SDuration>
+                {moment
+                    .utc(tableData.created_at, 'YYYY-MM-DD HH:mm')
+                    .local()
+                    .format('hh:mm A')}
+            </SDuration>
         </STableContainer>
     );
 };
