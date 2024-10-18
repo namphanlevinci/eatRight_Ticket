@@ -188,7 +188,7 @@ export default function ReceiptsPage() {
                             justifyContent: 'center',
                             alignItems: 'center',
                             overflow: 'scroll',
-                            height: 'calc(100vh - 135px)',
+                            height: 'calc(100vh - 152px)',
                             background: 'var(--field-background)',
                             position: 'relative',
                         }}

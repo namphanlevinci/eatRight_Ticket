@@ -8,9 +8,10 @@ import HeaderV2 from './Header_v2';
 
 type Props = {
     children: React.ReactNode;
+    isFooter?: boolean;
 };
 
-export const DarkLayout = ({ children }: Props) => {
+export const DarkLayout = ({ children, isFooter = true }: Props) => {
     const { theme } = useTheme();
     const { isMerchant } = useSelector((state: RootState) => state.auth);
     return (
@@ -24,7 +25,7 @@ export const DarkLayout = ({ children }: Props) => {
         >
             {isMerchant ? <HeaderV2 /> : <Header />}
             <div style={{ width: '100%' }}>{children}</div>
-            <Footer />
+            {isFooter && <Footer />}
         </Layout>
     );
 };
