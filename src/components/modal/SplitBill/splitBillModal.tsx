@@ -53,7 +53,6 @@ export default function SplitBillModal({
             setMode(SplitBillMode.EVEN);
             setListItems([]);
             setListGuest([]);
-            setNumbers(2);
         }
     }, [visible]);
     const totalMoney = useMemo(
