@@ -10,6 +10,8 @@ export type TTable = {
     numberOfCustomer: number;
     size: number;
     status: string;
+    customer_name: string;
+    created_at: string;
 };
 
 export type DATA_ALL_TABLE = {
@@ -23,13 +25,15 @@ export const GET_ALL_TABLE_Floor = gql`
             name
             status
             size
-            hasReadyItem
-            is_counter
             numberOfCustomer
+            hasReadyItem
             cartIds {
                 cartId
             }
             note
+            is_counter
+            created_at
+            customer_name
         }
     }
 `;
@@ -40,13 +44,15 @@ export const GET_ALL_TABLE = gql`
             name
             status
             size
-            hasReadyItem
-            is_counter
             numberOfCustomer
+            hasReadyItem
             cartIds {
                 cartId
             }
             note
+            is_counter
+            created_at
+            customer_name
         }
     }
 `;

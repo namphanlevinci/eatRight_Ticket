@@ -8,6 +8,7 @@ import { Colors } from 'themes/colors';
 import { TABLE_STATUS } from 'constants/table';
 import { useTheme } from 'context/themeContext';
 import { useLocation } from 'react-router';
+import { BASE_ROUTER } from 'constants/router';
 
 const Footer = () => {
     const {
@@ -22,7 +23,7 @@ const Footer = () => {
     const { theme } = useTheme();
     const location = useLocation();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
-    const isHomePage = useMemo(() => location.pathname === '/', []);
+    const isHomePage = useMemo(() => location.pathname === BASE_ROUTER.MERCHANT_TABLEVIEW, [location]);
 
     const [isOnline, setIsOnline] = useState(window.navigator.onLine);
 

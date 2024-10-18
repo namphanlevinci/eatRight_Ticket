@@ -55,13 +55,13 @@ const MenuMerchant = ({ isMerchant }: { isMerchant?: boolean }) => [
     {
         title: 'Batch Settlements',
         icon: <BillIcon />,
-        to: BASE_ROUTER.SETTLE,
+        to: BASE_ROUTER.MERCHANT_SETTLE,
         isGo: true,
     },
     {
         title: 'Report',
         icon: <ReportIcon />,
-        to: BASE_ROUTER.SALES_REPORT,
+        to: BASE_ROUTER.MERCHANT_SALES_REPORT,
         isGo: true,
     },
     {

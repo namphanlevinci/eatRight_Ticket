@@ -218,7 +218,7 @@ const Header = () => {
 
     const onToggleView = () => {
         dispatch(changeModeTableView());
-        navigation(BASE_ROUTER.MERCHANT_PAGE);
+        navigation(BASE_ROUTER.MERCHANT_ORDERLIST);
     };
     return (
         <>

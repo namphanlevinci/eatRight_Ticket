@@ -12,17 +12,17 @@ export const BatchMenuBar = () => {
         {
             key: 'settle',
             title: 'Settle',
-            path: BASE_ROUTER.SETTLE,
+            path: BASE_ROUTER.MERCHANT_SETTLE,
         },
         {
             key: 'transactions',
             title: 'Credit/Debit Transactions',
-            path: BASE_ROUTER.TRANSACTIONS,
+            path: BASE_ROUTER.MERCHANT_TRANSACTIONS,
         },
         {
             key: 'batch-history',
             title: 'Batch History',
-            path: BASE_ROUTER.BATCH_HISTORY,
+            path: BASE_ROUTER.MERCHANT_BATCH_HISTORY,
         },
     ];
 
