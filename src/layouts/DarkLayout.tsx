@@ -5,6 +5,7 @@ import Footer from './Footer';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import HeaderV2 from './Header_v2';
+import { useMediaQuery } from 'react-responsive';
 
 type Props = {
     children: React.ReactNode;
@@ -14,6 +15,7 @@ type Props = {
 export const DarkLayout = ({ children, isFooter = true }: Props) => {
     const { theme } = useTheme();
     const { isMerchant } = useSelector((state: RootState) => state.auth);
+    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <Layout
             style={{
@@ -23,7 +25,7 @@ export const DarkLayout = ({ children, isFooter = true }: Props) => {
                 paddingBottom: !isFooter ? 0 : 100,
             }}
         >
-            {isMerchant ? <HeaderV2 /> : <Header />}
+            {isMerchant && !isMobile ? <HeaderV2 /> : <Header />}
             <div style={{ width: '100%' }}>{children}</div>
             {isFooter && <Footer />}
         </Layout>
