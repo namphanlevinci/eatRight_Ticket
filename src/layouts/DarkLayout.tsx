@@ -20,7 +20,7 @@ export const DarkLayout = ({ children, isFooter = true }: Props) => {
                 backgroundColor: theme.nEUTRALPrimary,
                 minHeight: '100vh',
                 paddingTop: 64,
-                paddingBottom: 100,
+                paddingBottom: !isFooter ? 0 : 100,
             }}
         >
             {isMerchant ? <HeaderV2 /> : <Header />}
