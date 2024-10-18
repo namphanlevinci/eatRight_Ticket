@@ -151,16 +151,6 @@ export const BaseRouter = () => {
     useEffect(() => {
         if (isLogged) {
             setNeedLogout(false);
-            onGetConfig().then((res: any) => {
-                const { data } = res;
-                if (data) {
-                    localStorage.setItem(
-                        'merchantGetPrinterConfig',
-
-                        `${data.merchantGetPrinterConfig.is_used_terminal}`,
-                    );
-                }
-            });
         }
     }, [isLogged]);
     return (
