@@ -1,6 +1,8 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import type { authStateType } from './features/auth/authSlice';
+import type { globalStateType } from './features/global/globalSlice';
 import authReducer from './features/auth/authSlice';
+import globalReducer from './features/global/globalSlice';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import {
@@ -13,6 +15,7 @@ import {
 } from 'redux-persist';
 export type globalStore = {
     auth: authStateType;
+    global: globalStateType;
 };
 const persistConfig = {
     key: 'root',
@@ -20,6 +23,7 @@ const persistConfig = {
 };
 const rootReducer = combineReducers({
     auth: authReducer,
+    global: globalReducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

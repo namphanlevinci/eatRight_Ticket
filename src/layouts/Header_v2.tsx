@@ -1,6 +1,6 @@
 import { Col, Layout, Popover, Row, Spin, Switch } from 'antd';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
 import { useLazyQuery } from '@apollo/client';
 import { USER_INFO } from 'graphql/auth/login';
@@ -26,15 +26,17 @@ import HomeIcon from 'assets/icons_v2/HomeIcon';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { useMediaQuery } from 'react-responsive';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import { Colors } from 'themes/colors';
 import ButtonV2 from './components/Button';
 import DrawerMenuV2 from './components/DrawerMenu_v2';
-import SearchIcon from 'assets/icons_v2/SearchIcon';
+import FilterV2 from './components/Filter_v2';
+import SearchV2 from './components/Search_v2';
 
 const HeaderV2 = () => {
+    const location = useLocation();
     const { isLogged, isMerchant, isTableView, counterTable } = useSelector(
         (state: RootState) => state.auth,
     );
@@ -53,6 +55,27 @@ const HeaderV2 = () => {
     const [isLoadMore, setLoadMore] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
     const [isOpenNoti, setOpenNoti] = useState(false);
+
+    const showOnHeader = useMemo(() => {
+        const isTablePage =
+            location.pathname === BASE_ROUTER.MERCHANT_TABLEVIEW;
+        const isOrderPage =
+            location.pathname === BASE_ROUTER.MERCHANT_ORDERLIST;
+        const allowPageShowHeader = isTablePage || isOrderPage;
+
+        const showNewOrder = isMerchant && !isMobile && allowPageShowHeader;
+        const showCasier = isMerchant && !isMobile;
+        const showFilter = isMerchant && !isMobile && isOrderPage;
+        const showSearch = isMerchant && !isMobile;
+        return {
+            newOrder: showNewOrder,
+            cashier: showCasier,
+            filter: showFilter,
+            search: showSearch,
+        };
+    }, [location, isMerchant, isMobile]);
+
+    console.log(showOnHeader);
 
     useEffect(() => {
         const isTokenValidated =
@@ -220,8 +243,12 @@ const HeaderV2 = () => {
     };
 
     const onToggleView = () => {
-        navigation(BASE_ROUTER.MERCHANT_PAGE);
         dispatch(changeModeTableView());
+        if (!isTableView) {
+            navigation(BASE_ROUTER.MERCHANT_TABLEVIEW);
+        } else {
+            navigation(BASE_ROUTER.MERCHANT_ORDERLIST);
+        }
     };
     return (
         <>
@@ -305,39 +332,42 @@ const HeaderV2 = () => {
                             </SwitchContainer>
                         )}
                     </Row>
-                    <Row style={{ gap: 24 }} align={'middle'}>
+                    <Row style={{ gap: 16 }} align={'middle'}>
                         {isLogged && (
                             <>
-                                {isMerchant && !isMobile && (
-                                    <Link
-                                        to={`${BASE_ROUTER.TABLE}?tableId=${counterTable?.id}`}
+                                {showOnHeader.newOrder && (
+                                    <ButtonV2
+                                        style={{
+                                            backgroundColor: Colors.teal,
+                                        }}
+                                        onClick={() =>
+                                            navigation(
+                                                `${BASE_ROUTER.TABLE}?tableId=${counterTable?.id}`,
+                                            )
+                                        }
                                     >
-                                        <ButtonV2
-                                            style={{
-                                                backgroundColor: Colors.teal,
-                                            }}
-                                            onClick={() => openCashier()}
-                                        >
-                                            New Order
-                                        </ButtonV2>
-                                    </Link>
+                                        New Order
+                                    </ButtonV2>
                                 )}
-                                {isMerchant && !isMobile && (
+                                {showOnHeader.cashier && (
                                     <ButtonV2 onClick={() => openCashier()}>
                                         Open Cashier
                                     </ButtonV2>
                                 )}
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        padding: 13,
-                                        backgroundColor: theme.nEUTRALLine,
-                                        borderRadius: 6,
-                                    }}
-                                >
-                                    <SearchIcon />
-                                </div>
+                                {showOnHeader.filter && (
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            padding: 13,
+                                            backgroundColor: theme.nEUTRALLine,
+                                            borderRadius: 6,
+                                        }}
+                                    >
+                                        <FilterV2 />
+                                    </div>
+                                )}
+                                {showOnHeader.search && <SearchV2 />}
                                 <Popover
                                     content={notificatonContent}
                                     title={notificationTitle}

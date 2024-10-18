@@ -1,6 +1,6 @@
 /* Using when you wantto override style antd */
 
 /* Custom style switch */
-#switchBtnTeal {
+#switchBtnTeal[aria-checked='true'] {
     background-color: #0aa699 !important;
 }

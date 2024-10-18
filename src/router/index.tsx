@@ -24,13 +24,14 @@ import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
 import { GET_CONFIG_PRINTER } from 'graphql/printer';
 import { useLazyQuery } from '@apollo/client';
+import MerchantRoute from './MerchantRoute';
 export const BaseRouter = () => {
     const { notification } = App.useApp();
     const dispatch = useDispatch();
     const { error } = Modal;
     const [needLogout, setNeedLogout] = useState(false);
     const [noStore, setNoStore] = useState(false);
-    const { isLogged, isMerchant, isTableView } = useSelector(
+    const { isLogged, isMerchant } = useSelector(
         (state: RootState) => state.auth,
     );
     const [urlParams] = useSearchParams();
@@ -178,11 +179,7 @@ export const BaseRouter = () => {
                     path={BASE_ROUTER.HOME}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
-                            {isMerchant && isTableView ? (
-                                <Container.MerchantHome />
-                            ) : (
-                                <Container.Home />
-                            )}
+                            <Container.Home />
                         </PrivateRoute>
                     }
                 />
@@ -363,51 +360,80 @@ export const BaseRouter = () => {
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.MERCHANT_PAGE}
+                    path={BASE_ROUTER.MERCHANT_TABLEVIEW}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.MerchantPage />
-                        </PrivateRoute>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
+                            <Container.Merchant.TableView />
+                        </MerchantRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.BATCH_HISTORY}
+                    path={BASE_ROUTER.MERCHANT_ORDERLIST}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.BatchHistory />
-                        </PrivateRoute>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
+                            <Container.Merchant.OrderList />
+                        </MerchantRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.SETTLE}
+                    path={BASE_ROUTER.MERCHANT_BATCH_HISTORY}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.Settle />
-                        </PrivateRoute>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
+                            <Container.Merchant.BatchHistory />
+                        </MerchantRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.TRANSACTIONS}
+                    path={BASE_ROUTER.MERCHANT_SETTLE}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.Transactions />
-                        </PrivateRoute>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
+                            <Container.Merchant.Settle />
+                        </MerchantRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.SALES_REPORT}
+                    path={BASE_ROUTER.MERCHANT_TRANSACTIONS}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
+                            <Container.Merchant.Transactions />
+                        </MerchantRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.MERCHANT_SALES_REPORT}
+                    element={
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
                             <Container.Report />
-                        </PrivateRoute>
+                        </MerchantRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.REPORT_BY_PAYMENT}
+                    path={BASE_ROUTER.MERCHANT_REPORT_BY_PAYMENT}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
                             <Container.ReportByPayment />
-                        </PrivateRoute>
+                        </MerchantRoute>
                     }
                 />
                 <Route
