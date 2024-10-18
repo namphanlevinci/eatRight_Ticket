@@ -16,7 +16,13 @@ export const GET_ORDER_DETAIL = gql`
             lastname
             phone
             address
+            table_id
+            restaurant_address
+            restaurant_name
+            restaurant_phone
             customer_comment
+            can_refund
+            is_refunded
             items {
                 name
                 qty
@@ -85,6 +91,7 @@ export const GET_ORDER_DETAIL = gql`
                     name
                     value
                 }
+                po_number
             }
             tip_amount {
                 value

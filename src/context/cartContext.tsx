@@ -1,6 +1,8 @@
+/* eslint-disable no-else-return */
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { CartItemType, CartTableType, ItemType } from './cartType';
 import { useSearchParams } from 'react-router-dom';
+import ModalConfirm from 'components/modal/ModalConfirm';
 
 // Định nghĩa loại dữ liệu cho sản phẩm trong giỏ hàng
 
@@ -10,7 +12,15 @@ interface CartContextType {
     cartItems: CartTableType[];
     addCart: (item: any) => void;
     addToCart(item: ItemType): void;
-    updateQuantityItemFromCart: (index: number, quantity: number) => void;
+    updateQuantityItemFromCart: ({
+        index,
+        type,
+        value,
+    }: {
+        index: number;
+        type: 'decrea' | 'increa';
+        value?: number;
+    }) => void;
     // clearCart: () => void;
     setSelectedCart: any;
     selectedCart: number;
@@ -18,6 +28,8 @@ interface CartContextType {
         name: string,
         cartIndex: number,
         indexTable: number,
+        numberOfCustomer?: number,
+        phonenumber?: string,
     ) => void;
     updateCartIndex: (cart: CartItemType) => void;
     removeCartIndex: (index?: number) => void;
@@ -25,9 +37,10 @@ interface CartContextType {
     InputNoteItemFromCart: (index: number, note: string) => void;
     InputNoteItemBundleFromCart: (
         index: number,
-        note: string,
+        note: string | any,
         bundleIndex: number,
     ) => void;
+    onRemoveItem: (index: number) => void;
 }
 
 // Tạo Context cho giỏ hàng
@@ -55,58 +68,83 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         setIndexTable(getIndexTable);
     }, [tableId, cartItems]);
     const addCart = (item: CartItemType[]) => {
-        const newCartItems = [...cartItems];
-        const indexTable = cartItems.findIndex(
-            (item) => item.tableId == tableId,
-        );
+        setCartItems((prevCartItems) => {
+            const newCartItems = [...prevCartItems];
+            const tableId = searchParams.get('tableId') || '0';
+            const indexTable = prevCartItems.findIndex(
+                (item) => item.tableId == tableId,
+            );
 
-        if (indexTable == -1) {
-            const newCart = item.map((currentCart) => {
-                const Tax =
-                    (currentCart.prices?.applied_taxes?.[0]?.tax_percent ||
-                        10) / 100;
-                const itemsCanceled = currentCart.items.filter((item) => {
-                    return item.status === 'cancel';
+            if (indexTable == -1) {
+                const newCart = item.map((currentCart) =>
+                    calcCanceled(currentCart),
+                );
+
+                newCartItems.push({
+                    tableId: tableId,
+                    carts: newCart,
                 });
-                return {
-                    ...currentCart,
-                    prices: {
-                        ...currentCart.prices,
-                        total_canceled: {
-                            value:
-                                itemsCanceled.reduce((total, item) => {
-                                    return (
-                                        total +
-                                        (item.prices.price.value *
-                                            item.quantity -
-                                            (item.prices?.total_item_discount
-                                                ?.value || 0) *
-                                                item.quantity)
-                                    );
-                                }, 0) *
-                                (Tax + 1),
-                        },
-                    },
-                };
-            });
+            } else {
+                const newCart = item.map((currentCart) =>
+                    calcCanceled(currentCart),
+                );
+                updateCart(newCart, indexTable);
+            }
 
-            newCartItems.push({
-                tableId: tableId,
-                carts: newCart,
+            return newCartItems;
+        });
+    };
+    const calcCanceled = (currentCart: CartItemType) => {
+        {
+            const Tax =
+                (currentCart?.prices?.applied_taxes?.[0]?.tax_percent || 0) /
+                100;
+            const itemsCanceled = currentCart.items.filter((item) => {
+                return item.status === 'cancel';
             });
-        } else {
-            updateCart(item, indexTable);
+            const total_canceled_without_tax = itemsCanceled.reduce(
+                (total, item) => {
+                    return total + item.prices.price.value * item.quantity;
+                },
+                0,
+            );
+            const total_canceled = total_canceled_without_tax * (Tax + 1);
+            const total_items_canceled_discount = itemsCanceled.reduce(
+                (total, item) => {
+                    return (
+                        total +
+                        (item.prices.total_item_discount?.value ||
+                            0 * item.quantity)
+                    );
+                },
+                0,
+            );
+            return {
+                ...currentCart,
+                prices: {
+                    ...currentCart.prices,
+                    total_canceled: {
+                        value: total_canceled,
+                    },
+                    total_canceled_without_tax: {
+                        value: total_canceled_without_tax,
+                    },
+                    total_items_canceled_discount: {
+                        value: total_items_canceled_discount,
+                    },
+                },
+            };
         }
-        setCartItems(newCartItems);
     };
     const updateCartIndex = (cart: CartItemType) => {
+        console.log('updateCartIndex');
         const getIndexTable = cartItems.findIndex(
             (item) => item.tableId == tableId,
         );
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems];
         newCartItems[getIndexTable].carts[cartIndex] = cart;
-        setCartItems(newCartItems);
+        updateCart(newCartItems[getIndexTable].carts, getIndexTable, true);
     };
     const removeCartIndex = (index?: number) => {
         const getIndexTable = cartItems.findIndex(
@@ -128,93 +166,122 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
             setCartItems(newCartItems);
         }
     };
-    const updateCart = (cartItemNew: CartItemType[], indexTable: number) => {
-        const currentCartItems = [...cartItems];
-        const result = currentCartItems[indexTable].carts.map((currentCart) => {
-            const itemsIsUnSend = currentCart.items.filter((item) => {
-                return item.isUnsend;
-            });
-            const newCarts = cartItemNew.find((itemNew) => {
-                return itemNew.id === currentCart.id;
-            });
-            const itemsCanceled = currentCart.items.filter((item) => {
-                return item.status === 'cancel';
-            });
-            const Tax =
-                (currentCart.prices?.applied_taxes?.[0]?.tax_percent || 10) /
-                100;
-            if (newCarts) {
-                if (newCarts?.items && newCarts?.items.length > 0) {
+    const updateCart = (
+        cartItemNew: CartItemType[],
+        indexTable: number,
+        isUpdate?: boolean,
+    ) => {
+        setCartItems((prevCartItems) => {
+            const currentCartItems = [...prevCartItems];
+            const result = currentCartItems[indexTable].carts.map(
+                (currentCart, index) => {
+                    const itemsIsUnSend = currentCart.items.filter((item) => {
+                        return item.isUnsend;
+                    });
+                    const newCarts = cartItemNew.find((itemNew) => {
+                        return itemNew.id === currentCart.id;
+                    });
+                    const itemsCanceled =
+                        cartItemNew[index]?.items?.filter((item) => {
+                            return item.status === 'cancel';
+                        }) ||
+                        currentCart.items.filter((item) => {
+                            return item.status === 'cancel';
+                        });
+                    const Tax =
+                        (currentCart?.prices?.applied_taxes?.[0]?.tax_percent ||
+                            0) / 100;
+
+                    const total_itemsCanceled_without_tax =
+                        itemsCanceled?.reduce((total, item) => {
+                            return (
+                                total + item.prices.price.value * item.quantity
+                            );
+                        }, 0);
+                    const total_itemsCanceled =
+                        total_itemsCanceled_without_tax * (Tax + 1);
+                    const total_items_canceled_discount = itemsCanceled?.reduce(
+                        (total, item) => {
+                            return (
+                                total +
+                                (item.prices.total_item_discount?.value ||
+                                    0 * item.quantity)
+                            );
+                        },
+                        0,
+                    );
+
+                    if (newCarts) {
+                        if (newCarts?.items && newCarts?.items.length > 0) {
+                            return {
+                                ...newCarts,
+                                items: isUpdate
+                                    ? newCarts.items
+                                    : [...newCarts.items, ...itemsIsUnSend],
+                                prices: {
+                                    ...newCarts.prices,
+                                    grand_total: {
+                                        value:
+                                            newCarts.prices.grand_total.value +
+                                            itemsIsUnSend.reduce(
+                                                (total, item) => {
+                                                    return (
+                                                        total +
+                                                        item.prices.price
+                                                            .value *
+                                                            item.quantity
+                                                    );
+                                                },
+                                                0,
+                                            ),
+                                    },
+                                    total_canceled: {
+                                        value: total_itemsCanceled,
+                                    },
+                                    total_canceled_without_tax: {
+                                        value: total_itemsCanceled_without_tax,
+                                    },
+                                    total_items_canceled_discount: {
+                                        value: total_items_canceled_discount,
+                                    },
+                                },
+                            };
+                        }
+                        return {
+                            ...newCarts,
+                            prices: {
+                                ...newCarts.prices,
+                                total_canceled: {
+                                    value: total_itemsCanceled,
+                                },
+                                total_canceled_without_tax: {
+                                    value: total_itemsCanceled_without_tax,
+                                },
+                                total_items_canceled_discount: {
+                                    value: total_items_canceled_discount,
+                                },
+                            },
+                        };
+                    }
+
                     return {
-                        ...newCarts,
-                        items: [...newCarts.items, ...itemsIsUnSend],
-                        prices: {
-                            ...newCarts.prices,
-                            grand_total: {
-                                value:
-                                    newCarts.prices.grand_total.value +
-                                    itemsIsUnSend.reduce((total, item) => {
-                                        return (
-                                            total +
-                                            item.prices.price.value *
-                                                item.quantity
-                                        );
-                                    }, 0),
-                            },
-                            total_canceled: {
-                                value:
-                                    itemsCanceled.reduce((total, item) => {
-                                        return (
-                                            total +
-                                            (item.prices.price.value *
-                                                item.quantity -
-                                                (item.prices
-                                                    ?.total_item_discount
-                                                    ?.value || 0) *
-                                                    item.quantity)
-                                        );
-                                    }, 0) *
-                                    (Tax + 1),
-                            },
-                        },
+                        ...currentCart,
                     };
+                },
+            );
+
+            // Kiểm tra xem cart này đã có tồn tại hay chưa , nếu chưa thì thêm mới
+            cartItemNew.forEach((newItem) => {
+                if (!result.find((item) => item.id === newItem.id)) {
+                    result.push(newItem);
                 }
-                return {
-                    ...newCarts,
-                    prices: {
-                        ...newCarts.prices,
-                        total_canceled: {
-                            value:
-                                itemsCanceled.reduce((total, item) => {
-                                    return (
-                                        total +
-                                        (item.prices.price.value *
-                                            item.quantity -
-                                            (item.prices?.total_item_discount
-                                                ?.value || 0) *
-                                                item.quantity)
-                                    );
-                                }, 0) *
-                                (Tax + 1),
-                        },
-                    },
-                };
-            }
+            });
 
-            return {
-                ...currentCart,
-            };
+            currentCartItems[indexTable].carts = result;
+            return currentCartItems;
         });
-        // Kiểm tra xem cart này đã có tồn tại hay chưa , nếu chưa thì thêm mới
-        cartItemNew.forEach((newItem) => {
-            if (!result.find((item) => item.id === newItem.id)) {
-                result.push(newItem);
-            }
-        });
-
-        currentCartItems[indexTable].carts = result;
-        setCartItems(currentCartItems);
     };
+
     const addToCart = (item: ItemType) => {
         const index = parseInt(searchParams.get('cartIndex') || '0');
         let newCartItems;
@@ -285,34 +352,98 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         newCartTable[indexTable].carts = newCartItems;
         setCartItems(newCartTable);
     };
-    const updateQuantityItemFromCart = (index: number, quantity: number) => {
+
+    const onRemoveItem = async (index: number) => {
+        setIdx(index);
+        setIsModalConfirm(true);
+    };
+    const RemoveItemFromCartIndex = (index: number) => {
+        {
+            const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
+            const newCartItems = [...cartItems[indexTable].carts];
+            let total =
+                newCartItems[cartIndex].prices?.new_items_total?.value || 0;
+            total -= newCartItems[cartIndex].items[index].prices.price.value;
+            newCartItems[cartIndex].items.splice(index, 1);
+            newCartItems[cartIndex].prices = {
+                ...newCartItems[cartIndex].prices,
+                new_items_total: {
+                    value: total,
+                },
+            };
+            const newCartTable = [...cartItems];
+            newCartTable[indexTable].carts = newCartItems;
+            setCartItems(newCartTable);
+        }
+    };
+    /*************  ✨ Codeium Command ⭐  *************/
+    /**
+     * @description Update quantity item from cart
+     * @param {Object} param - Param update quantity item from cart
+     * @param {number} param.index - Index item in cart
+     * @param {'increa' | 'decrea'} param.type - Type update quantity (increa or decrea)
+     * @example
+     * updateQuantityItemFromCart({index: 0, type: 'increa'})
+     * updateQuantityItemFromCart({index: 0, type: 'decrea'})
+     */
+    /******  87df525e-d550-4813-9aae-5bb297b9dea8  *******/
+    const updateQuantityItemFromCart = ({
+        index,
+        type,
+        value,
+    }: {
+        index: number;
+        type: 'increa' | 'decrea';
+        value?: number;
+    }) => {
         const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
         const newCartItems = [...cartItems[indexTable].carts];
         let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
-
-        if (quantity === 0) {
-            if (confirm('Bạn có muốn xóa sản phẩm này khỏi giỏ hàng?')) {
-                total -=
-                    newCartItems[cartIndex].items[index].prices.price.value;
-                newCartItems[cartIndex].items.splice(index, 1);
-            }
+        const cartItemExisted = newCartItems[cartIndex]?.items?.filter(
+            (item) =>
+                item.id === newCartItems[cartIndex]?.items[index].id &&
+                item.isUnsend,
+        )?.[0];
+        if (type === 'decrea' && cartItemExisted.quantity === 1) {
+            onRemoveItem(index);
+            return;
         } else {
-            if (newCartItems[cartIndex].items[index].quantity > quantity) {
+            // Total prices
+            if (type === 'decrea') {
                 total -=
                     newCartItems[cartIndex].items[index].prices.price.value;
             } else {
                 total +=
                     newCartItems[cartIndex].items[index].prices.price.value;
             }
-            if (!newCartItems[cartIndex]?.items[index]?.isUnsend) {
+            // Total quantity
+            if (cartItemExisted) {
+                const _newCartItems = newCartItems[cartIndex].items?.map(
+                    (item) => {
+                        if (
+                            item.id === cartItemExisted.id &&
+                            (item?.isUnsend || item?.status === 'new')
+                        ) {
+                            return {
+                                ...item,
+                                quantity: value
+                                    ? value
+                                    : type === 'decrea'
+                                      ? cartItemExisted.quantity - 1
+                                      : cartItemExisted.quantity + 1,
+                            };
+                        }
+                        return item;
+                    },
+                );
+                newCartItems[cartIndex].items = _newCartItems;
+            } else {
                 newCartItems[cartIndex].items.push({
                     ...newCartItems[cartIndex].items[index],
                     isUnsend: true,
                     quantity: 1,
                     status: 'new',
                 });
-            } else {
-                newCartItems[cartIndex].items[index].quantity = quantity;
             }
         }
         newCartItems[cartIndex].prices = {
@@ -323,7 +454,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         };
         const newCartTable = [...cartItems];
         newCartTable[indexTable].carts = newCartItems;
-        setCartItems(newCartTable);
+        setCartItems([...newCartTable]);
     };
 
     // const clearCart = async () => {
@@ -357,9 +488,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         name: string,
         selectedCart: number,
         indexTable: number,
+        numberOfCustomer = 1,
+        phonenumber?: string,
     ) => {
         const newCartItems = [...cartItems[indexTable].carts];
         newCartItems[selectedCart].firstname = name;
+        newCartItems[selectedCart].numberOfCustomer = numberOfCustomer;
+        newCartItems[selectedCart].phonenumber = phonenumber;
         const newCartTable = [...cartItems];
         newCartTable[indexTable].carts = newCartItems;
         setCartItems(newCartTable);
@@ -379,10 +514,26 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         removeItemFromCart,
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
+        onRemoveItem,
     };
-
+    const [isModalConfirm, setIsModalConfirm] = React.useState<boolean>(false);
+    const [idx, setIdx] = React.useState<any>('');
+    const onCancel = () => {
+        setIsModalConfirm(false);
+    };
+    const onSubmit = () => {
+        setIsModalConfirm(false);
+        RemoveItemFromCartIndex(idx);
+    };
     return (
         <CartContext.Provider value={cartContextValue}>
+            <ModalConfirm
+                isModalOpen={isModalConfirm}
+                onCancel={onCancel}
+                onSubmit={onSubmit}
+                title="Remove this item?"
+                content="Do you want to this item remove?"
+            />
             {children}
         </CartContext.Provider>
     );
@@ -418,6 +569,7 @@ export const getInitialTableState = (id: string, tableId: string | number) => {
 export const getInitialCartState = (id: string) => {
     return [
         {
+            is_active: true,
             id: id,
             items: [],
             applied_coupons: null,

@@ -37,7 +37,7 @@ export default function SplitBillConfirmMode({
     const groupedData = useMemo(() => {
         const grouped = listItems.reduce(
             (acc, item) => {
-                const guestId = item.guestId || 'Guest N'; // Gán 'Guest N' nếu không có guestId
+                const guestId = item.guestId || `Guest ${listItems.length}`;
                 if (!acc[guestId]) {
                     acc[guestId] = [];
                 }
@@ -57,12 +57,34 @@ export default function SplitBillConfirmMode({
         query: '(max-width: 768px)',
     });
     const { theme } = useTheme();
-    const Tax =
-        (cart?.prices?.applied_taxes?.[0]?.tax_percent || 10) / 100 || 0.1;
-    const total =
-        (cart?.prices.grand_total?.value || 0) -
-        (cart?.prices?.total_canceled?.value || 0);
+    const totalMoney = useMemo(
+        () =>
+            (cart?.prices?.subtotal_excluding_tax?.value || 0) -
+            (cart?.prices?.total_canceled_without_tax?.value || 0),
+        [cart],
+    );
 
+    const Tax = useMemo(
+        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 0) / 100,
+        [cart],
+    );
+
+    const totalDiscount = useMemo(
+        () =>
+            roundTo(
+                (cart?.prices?.discount?.amount?.value || 0) +
+                    (cart?.prices?.total_items_canceled_discount?.value || 0),
+                2,
+            ),
+        [cart],
+    );
+
+    const total = useMemo(
+        () =>
+            (totalMoney + totalDiscount) * (Tax + 1) + (cart?.tip_amount || 0),
+        [totalMoney, totalDiscount, Tax, cart],
+    );
+    const tip = cart?.tip_amount || 0;
     return (
         <div style={ismobile ? { width: '100%' } : { width: 450 }}>
             <Row justify={'space-between'}>
@@ -106,14 +128,12 @@ export default function SplitBillConfirmMode({
                               acc +
                               (item.status === 'cancel'
                                   ? 0
-                                  : (item.prices.price.value -
+                                  : (item.prices.price.value * item.quantity -
                                         (item.prices?.total_item_discount
                                             ?.value || 0)) *
-                                    item.quantity *
                                     (1 + Tax))
                           );
                       }, 0);
-                      const tip = cart?.tip_amount || 0;
                       return (
                           totalTmp > 0 && (
                               <RenderGuestTotal

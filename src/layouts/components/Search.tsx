@@ -7,18 +7,22 @@ export default function SearchSettings({
     onChangeText,
     allowClear,
     data,
+    placeholder,
+    width = '100%',
 }: {
     onChangeText?: any;
     height?: number;
     allowClear?: boolean;
     data?: string;
+    placeholder?: string;
+    width?: number | string;
 }) {
     const { theme } = useTheme();
     return (
         <div
             style={{
                 height: 40,
-                width: '100%',
+                width: width,
                 paddingInline: 16,
                 position: 'relative',
             }}
@@ -30,9 +34,9 @@ export default function SearchSettings({
                     border: `1px solid ${theme.nEUTRALLine}`,
                     color: theme.textTitle,
                     paddingInline: 16,
-                    paddingLeft: 46,
+                    paddingRight: 40,
                 }}
-                placeholder="Search "
+                placeholder={placeholder ? placeholder : 'Search '}
                 onChange={(e) => onChangeText && onChangeText(e.target.value)}
                 value={data}
             />
@@ -40,7 +44,7 @@ export default function SearchSettings({
                 <div
                     style={{
                         position: 'absolute',
-                        left: 30,
+                        right: 30,
                         top: 10,
                     }}
                 >

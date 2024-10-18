@@ -1,24 +1,28 @@
 /* eslint-disable no-unsafe-optional-chaining */
-import { Col, Row } from 'antd';
+import { Col } from 'antd';
 import { TextDark } from 'components/atom/Text';
-import Barcode from 'react-barcode';
 
 import { CURRENTCY } from 'constants/currency';
 import {
     DividedDashed,
     RowStyled,
     text24,
-    BarCodeContainer,
     text16,
     text16W,
     BoldText,
 } from '../styled';
-export const RenderBill = ({
+import React from 'react';
+import { convertMethod } from 'utils/format';
+import { isEmpty } from 'lodash';
+
+const RenderBillItem = ({
     data,
     selectDataShowbill,
+    dataInvoice,
 }: {
-    data: any;
+    data?: any;
     selectDataShowbill: any;
+    dataInvoice?: any;
 }) => {
     const totalDiscount = selectDataShowbill
         ? selectDataShowbill?.total?.discounts.reduce(
@@ -48,13 +52,13 @@ export const RenderBill = ({
         >
             <div id="billHeader">
                 <TextDark style={{ ...text24, fontWeight: '600' }}>
-                    {data?.firstname}
+                    {data?.restaurant_name}
                 </TextDark>
                 <TextDark style={{ ...text16W, marginTop: 16 }}>
-                    {data?.address}
+                    {data?.restaurant_address}
                 </TextDark>
                 <TextDark style={{ ...text16W, marginTop: 8 }}>
-                    Hotline: {data?.phone}
+                    Hotline: {data?.restaurant_phone}
                 </TextDark>
 
                 <DividedDashed />
@@ -81,30 +85,38 @@ export const RenderBill = ({
                     <TextDark>{data?.order_source}</TextDark>
                     <TextDark>
                         <BoldText>Bill: </BoldText>
-                        {data?.order_number}
+                        {selectDataShowbill
+                            ? selectDataShowbill?.number
+                            : dataInvoice?.length === 1
+                              ? dataInvoice[0]?.number
+                              : data?.order_number}
                     </TextDark>
                 </RowStyled>
-                <RowStyled>
-                    <TextDark>
-                        <BoldText>Table: </BoldText>
-                        {data?.table}
-                    </TextDark>
-                    <TextDark
-                        style={{
-                            width: 150,
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                        }}
-                    >
-                        <BoldText>Server: </BoldText>
-                        {data?.serve_name}
-                    </TextDark>
-                </RowStyled>
+                {data?.table ? (
+                    <RowStyled>
+                        <TextDark>
+                            <BoldText>Table: </BoldText>
+                            {data?.table}
+                        </TextDark>
+                        <TextDark
+                            style={{
+                                width: 150,
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                            }}
+                        >
+                            <BoldText>Server: </BoldText>
+                            {data?.serve_name}
+                        </TextDark>
+                    </RowStyled>
+                ) : (
+                    <></>
+                )}
                 <RowStyled>
                     <TextDark>
                         <BoldText>Customer: </BoldText>
-                        {data?.customer?.firstname || 'Guest'}
+                        {data?.firstname || 'Guest'}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
@@ -136,45 +148,21 @@ export const RenderBill = ({
                         - {CURRENTCY} {totalDiscount.toFixed(2)}
                     </TextDark>
                 </RowStyled>
-                {selectDataShowbill
-                    ? selectDataShowbill.total?.discounts.map(
-                          (discount: any, index: number) => {
-                              return (
-                                  <Row
-                                      justify={'end'}
-                                      key={`Discount-${index}`}
-                                  >
-                                      <TextDark style={{ fontSize: 14 }}>
-                                          {discount?.label} -{' '}
-                                          {discount?.amount?.value.toFixed(2)}
-                                      </TextDark>
-                                  </Row>
-                              );
-                          },
-                      )
-                    : data?.discount?.length > 0 &&
-                      data?.discount?.map((discount: any, index: number) => {
-                          return (
-                              <Row justify={'end'} key={`Discount-${index}`}>
-                                  <TextDark style={{ fontSize: 14 }}>
-                                      {discount?.label} -{' '}
-                                      {discount?.amount?.value.toFixed(2)}
-                                  </TextDark>
-                              </Row>
-                          );
-                      })}
-                {data?.total?.total_tax?.value && (
+                {data?.total?.total_tax?.value ? (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>Tax</TextDark>
                         <TextDark>
                             {CURRENTCY}{' '}
-                            {selectDataShowbill
+                            {(selectDataShowbill
                                 ? selectDataShowbill?.total?.total_tax?.value?.toFixed(
                                       2,
                                   )
-                                : data?.total?.total_tax?.value?.toFixed(2)}
+                                : data?.total?.total_tax?.value?.toFixed(2)) ||
+                                0}
                         </TextDark>
                     </RowStyled>
+                ) : (
+                    <></>
                 )}
 
                 {data?.total?.service_charge_amount?.value && (
@@ -196,19 +184,44 @@ export const RenderBill = ({
                     </RowStyled>
                 )}
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Total:</TextDark>
+                    <TextDark style={text16}>Base total:</TextDark>
                     <TextDark>
                         {CURRENTCY}{' '}
                         {selectDataShowbill
-                            ? selectDataShowbill?.total?.subtotal?.value -
-                              totalDiscount +
-                              selectDataShowbill?.total?.total_tax?.value
-                            : data?.total?.subtotal?.value -
-                              totalDiscount +
-                              data?.total?.total_tax?.value}
+                            ? (
+                                  selectDataShowbill?.total?.subtotal?.value -
+                                  totalDiscount +
+                                  selectDataShowbill?.total?.total_tax?.value
+                              )?.toFixed(2)
+                            : (
+                                  data?.total?.subtotal?.value -
+                                  totalDiscount +
+                                  data?.total?.total_tax?.value
+                              )?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
+
+                {dataInvoice?.length > 0 && dataInvoice[0]?.non_cash_amount && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>
+                            Non-Cash Adjustment :
+                        </TextDark>
+                        <TextDark>
+                            {CURRENTCY}{' '}
+                            {selectDataShowbill
+                                ? selectDataShowbill.non_cash_amount
+                                : dataInvoice?.length > 0
+                                  ? dataInvoice.reduce(
+                                        (a: any, b: any) =>
+                                            a + parseFloat(b?.non_cash_amount),
+                                        0,
+                                    ) || 0
+                                  : 0}
+                        </TextDark>
+                    </RowStyled>
+                )}
+
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Tip:</TextDark>
                     <TextDark>
@@ -226,52 +239,104 @@ export const RenderBill = ({
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Grand Total:</TextDark>
+                    <TextDark style={text16}>Total:</TextDark>
                     <TextDark>
                         {CURRENTCY}{' '}
                         {selectDataShowbill
-                            ? selectDataShowbill?.total?.grand_total?.value?.toFixed(
-                                  2,
-                              )
-                            : data?.grand_total?.toFixed(2)}
+                            ? (
+                                  parseFloat(
+                                      selectDataShowbill?.total?.grand_total
+                                          ?.value,
+                                  ) +
+                                  parseFloat(
+                                      selectDataShowbill?.non_cash_amount || 0,
+                                  )
+                              )?.toFixed(2)
+                            : (
+                                  parseFloat(data?.grand_total) +
+                                  (dataInvoice?.length > 0
+                                      ? dataInvoice.reduce(
+                                            (a: any, b: any) =>
+                                                a +
+                                                parseFloat(b?.non_cash_amount),
+                                            0,
+                                        ) || 0
+                                      : 0)
+                              )?.toFixed(2)}
                     </TextDark>
+                </RowStyled>
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Tip:$</TextDark>
+                    <TextDark>_______________________________</TextDark>
+                </RowStyled>
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Grand Total:$</TextDark>
+                    <TextDark>______________________</TextDark>
                 </RowStyled>
                 <DividedDashed />
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Payment Method:</TextDark>
-                    <TextDark>{data?.payment_method}</TextDark>
-                </RowStyled>
-
-                {data?.payment_methods &&
-                    data?.payment_methods[0]?.additional_data[1]?.value && (
-                        <RowStyled align={'middle'}>
-                            <TextDark style={text16}>Cart Type:</TextDark>
-                            <TextDark>
-                                {
-                                    data?.payment_methods[0]?.additional_data[1]
-                                        ?.value
-                                }
-                            </TextDark>
-                        </RowStyled>
-                    )}
-                {data?.payment_methods &&
-                    data?.payment_methods[0]?.additional_data[0]?.value && (
-                        <RowStyled align={'middle'}>
-                            <TextDark style={text16}>Last 4 Digits:</TextDark>
-                            <TextDark>
-                                {
-                                    data?.payment_methods[0]?.additional_data[0]
-                                        ?.value
-                                }
-                            </TextDark>
-                        </RowStyled>
-                    )}
-                <DividedDashed />
-                <TextDark>
-                    <TextDark style={text16}>
-                        Signature:_________________________
+                    <TextDark>
+                        {convertMethod(
+                            selectDataShowbill
+                                ? selectDataShowbill?.payment_methods[0]?.name
+                                : data?.payment_method,
+                        )}
                     </TextDark>
-                </TextDark>
+                </RowStyled>
+                {!isEmpty(dataInvoice?.[0]?.payment_methods?.[0]?.po_number) &&
+                    dataInvoice?.[0]?.payment_methods?.[0]?.po_number !==
+                        'none' && (
+                        <RowStyled align={'middle'}>
+                            <TextDark style={text16}>
+                                {
+                                    dataInvoice?.[0]?.payment_methods?.[0]
+                                        ?.po_number
+                                }
+                            </TextDark>
+                        </RowStyled>
+                    )}
+
+                {selectDataShowbill
+                    ? selectDataShowbill?.payment_methods &&
+                      selectDataShowbill?.payment_methods[0]?.additional_data[1]
+                          ?.value && (
+                          <RowStyled align={'middle'}>
+                              <TextDark style={text16}>
+                                  {
+                                      selectDataShowbill?.payment_methods[0]
+                                          ?.additional_data[1]?.value
+                                  }
+                                  {'  '}
+                                  {
+                                      selectDataShowbill?.payment_methods[0]
+                                          ?.additional_data[0]?.value
+                                  }
+                              </TextDark>
+                          </RowStyled>
+                      )
+                    : data?.payment_methods &&
+                      data?.payment_methods[0]?.additional_data[1]?.value && (
+                          <RowStyled align={'middle'}>
+                              <TextDark style={text16}>
+                                  {
+                                      data?.payment_methods[0]
+                                          ?.additional_data[1]?.value
+                                  }
+                                  {'  '}
+                                  {
+                                      data?.payment_methods[0]
+                                          ?.additional_data[0]?.value
+                                  }
+                              </TextDark>
+                          </RowStyled>
+                      )}
+
+                <DividedDashed />
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Signature:</TextDark>
+                    <TextDark>______________________</TextDark>
+                </RowStyled>
                 <DividedDashed />
                 <TextDark
                     style={{
@@ -287,15 +352,12 @@ export const RenderBill = ({
                 <TextDark style={{ marginTop: 10 }}>
                     Feedback/Contact us: {data?.feedback_url}
                 </TextDark>
-
-                <BarCodeContainer>
-                    <Barcode value={data?.order_number} />
-                </BarCodeContainer>
+                <div style={{ height: 24 }} />
             </div>
         </div>
     );
 };
-
+export const RenderBill = React.memo(RenderBillItem);
 const RenderItem = ({ data }: { data: any }) => {
     return data?.items?.map((item: any, index: number) => {
         return (
@@ -305,9 +367,9 @@ const RenderItem = ({ data }: { data: any }) => {
                         <span>{item?.qty}</span>
                     </Col>
                     <Col style={{ flex: 1 }}> {item?.name}</Col>
-                    <Col style={{ textAlign: 'end', width: 50 }}>
+                    <Col style={{ textAlign: 'end', width: 'auto' }}>
                         {CURRENTCY}
-                        {item?.price.toFixed(2)}
+                        {(item?.qty * item?.price).toFixed(2)}
                     </Col>
                 </RowStyled>
                 {item?.options?.map((option: any, idx: number) => {
@@ -334,9 +396,12 @@ const RenderItem2 = ({ data }: { data: any }) => {
                         <span>{item?.quantity_invoiced?.toFixed(2)}</span>
                     </Col>
                     <Col style={{ flex: 1 }}> {item?.product_name}</Col>
-                    <Col style={{ textAlign: 'end', width: 50 }}>
+                    <Col style={{ textAlign: 'end', width: 'auto' }}>
                         {CURRENTCY}
-                        {item?.product_sale_price?.value?.toFixed(2)}
+                        {(
+                            item?.quantity_invoiced *
+                            item?.product_sale_price?.value
+                        )?.toFixed(2)}
                     </Col>
                 </RowStyled>
             </>

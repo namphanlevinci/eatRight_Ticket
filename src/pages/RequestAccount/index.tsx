@@ -25,11 +25,12 @@ export const RequestAccountPage: React.FC = () => {
                 firstname: values.firstname,
                 lastname: values.lastname,
                 email: values.email,
+                description: values.description,
                 phone_number: values.phonenumber,
             },
         }).then(() => {
             modal.success({
-                title: 'Request Account Success',
+                title: 'Request Support Success',
                 content: 'Please wait for admin contact you',
                 centered: true,
                 onOk: () => {
@@ -42,29 +43,28 @@ export const RequestAccountPage: React.FC = () => {
     return (
         <div
             style={{
-                height: 760,
+                minHeight: 680,
                 width: 380,
                 background: theme.nEUTRALBase,
                 borderRadius: 16,
                 padding: 16,
-                paddingBlock: 32,
+                paddingBlock: 20,
                 alignSelf: 'center',
                 border: `1px solid ${theme.nEUTRALLine}`,
             }}
         >
             <LoadingModal showLoading={loading} />
-            <span
+            <h1
                 style={{
                     color: theme.pRIMARY6Primary,
-                    alignItems: 'center',
-                    display: 'flex',
-                    fontSize: 34,
+                    fontSize: 30,
                     fontWeight: '600',
                     fontFamily: 'Montserrat',
+                    textAlign: 'center',
                 }}
             >
-                Request account
-            </span>
+                Request Support
+            </h1>
 
             <Form
                 name="basic"
@@ -85,7 +85,7 @@ export const RequestAccountPage: React.FC = () => {
                             message: 'Please input your fullname!',
                         },
                     ]}
-                    required={false}
+                    required={true}
                     theme={theme}
                 >
                     <DarkInput
@@ -103,7 +103,7 @@ export const RequestAccountPage: React.FC = () => {
                             message: 'Please input your fullname!',
                         },
                     ]}
-                    required={false}
+                    required={true}
                 >
                     <DarkInput
                         placeholder="Last Name"
@@ -122,7 +122,7 @@ export const RequestAccountPage: React.FC = () => {
                                 message: 'Please input your email!',
                             },
                         ]}
-                        required={false}
+                        required={true}
                     >
                         <DarkInput
                             placeholder="Email"
@@ -140,13 +140,30 @@ export const RequestAccountPage: React.FC = () => {
                             message: 'Please input your phone number!',
                         },
                     ]}
-                    required={false}
+                    required={true}
                 >
                     <PhoneInputCustom
                         country={'us'}
                         value={''}
                         enableSearch
                         theme={theme}
+                    />
+                </FormItem>
+                <FormItem
+                    theme={theme}
+                    label="Description"
+                    name="description"
+                    required={true}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input description!',
+                        },
+                    ]}
+                >
+                    <DarkInput
+                        placeholder="Description"
+                        style={{ background: 'dark' }}
                     />
                 </FormItem>
 
@@ -179,18 +196,15 @@ export const RequestAccountPage: React.FC = () => {
             </Form>
 
             <Row justify={'center'} style={{ marginTop: 20 }}>
-                <Text>Already have an account?</Text>
-            </Row>
-            <Row justify={'center'} style={{ marginTop: 20 }}>
                 <Link to={BASE_ROUTER.LOGIN}>
                     <Text
                         style={{
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: '600',
                             color: theme.pRIMARY6Primary,
                         }}
                     >
-                        Log in
+                        Already have an account?
                     </Text>
                 </Link>
             </Row>

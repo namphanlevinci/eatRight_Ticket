@@ -7,6 +7,7 @@ import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import { GET_TIPS } from 'graphql/tips/tips';
 import React, { useEffect, useRef } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { roundTo } from 'utils/number';
 export default function ModalTip({
     isModalOpen,
@@ -22,10 +23,11 @@ export default function ModalTip({
     totalWithoutTax: number;
 }) {
     const inputRef = useRef<any>(null);
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState<string>('0');
     const [tips, setTips] = React.useState([10, 15, 20]);
-    const [selectTip, setSelectTip] = React.useState(10);
-    const [onGetTips, { data }] = useLazyQuery(GET_TIPS);
+    const [selectTip, setSelectTip] = React.useState(0);
+    const [onGetTips, { data, loading }] = useLazyQuery(GET_TIPS);
+    const [tipType, setType] = React.useState<'fixed' | 'percent'>('fixed');
     useEffect(() => {
         onGetTips({
             fetchPolicy: 'no-cache',
@@ -33,13 +35,13 @@ export default function ModalTip({
     }, []);
     useEffect(() => {
         if (data) {
-            console.log(data);
             const tip_option = data?.tipRestaurant?.tip_option;
-            const tip_percent = tip_option?.find(
-                (item: any) => item?.type === 'percent',
+            const tip_select_type = tip_option?.find(
+                (item: any) => item?.is_selected === true,
             );
-            if (tip_percent?.amount_option?.length > 2) {
-                setTips(tip_percent?.amount_option);
+            if (tip_select_type) {
+                setTips(tip_select_type?.amount_option);
+                setType(tip_select_type?.type);
             }
         }
     }, [data]);
@@ -52,17 +54,26 @@ export default function ModalTip({
     }, [isModalOpen]);
     useEffect(() => {
         if (selectTip !== 0 && total !== 0) {
-            if (data?.tipRestaurant?.include_tax_in_tip) {
-                setValue(roundTo((total * selectTip) / 100, 3));
+            if (tipType === 'fixed') {
+                setValue(`${selectTip}`);
             } else {
-                setValue(roundTo((totalWithoutTax * selectTip) / 100, 3));
+                if (data?.tipRestaurant?.include_tax_in_tip) {
+                    setValue(`${roundTo((total * selectTip) / 100, 3)}`);
+                } else {
+                    setValue(
+                        `${roundTo((totalWithoutTax * selectTip) / 100, 3)}`,
+                    );
+                }
             }
         }
     }, [selectTip, total]);
     const onFinish = () => {
-        onSubmit(value);
+        onSubmit(parseFloat(value));
     };
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     return (
         <Modal
             title="Basic Modal"
@@ -89,39 +100,47 @@ export default function ModalTip({
                 </div>
             </Row>
             <Text style={{ marginBlock: 16 }}>
-                Sub total : $ {totalWithoutTax.toFixed(2)}
+                Total : $ {totalWithoutTax.toFixed(2)}
             </Text>
             <Text style={{ marginBlock: 16 }}>
                 Total bill {`(Include Tax)`}: $ {total.toFixed(2)}
             </Text>
-            <Input
-                ref={inputRef}
-                value={value}
-                onChange={(e) => {
-                    setValue(parseFloat(e.target.value || '0'));
-                    setSelectTip(0);
-                }}
-                style={{
-                    flex: 1,
-                    height: 56,
-                    backgroundColor: theme.nEUTRALBase,
-                    color: theme.tEXTPrimary,
-                    border: `1px solid ${theme.nEUTRALLine}`,
-                }}
-                itemType="number"
-                prefix="$"
-                allowClear={false}
-                suffix={
-                    <div
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                            setValue(0), setSelectTip(0);
-                        }}
-                    >
-                        <ClearIcon />
-                    </div>
-                }
-            />
+            <Row align={'middle'}>
+                <Text style={{ marginRight: 16 }}>Tip amount</Text>
+                <Input
+                    ref={inputRef}
+                    value={value}
+                    onChange={(e) => {
+                        const inputValue = e.target.value;
+                        // Kiểm tra xem giá trị có phải là số thập phân hợp lệ không
+                        if (/^\d*\.?\d*$/.test(inputValue)) {
+                            setValue(inputValue); // Cập nhật giá trị nếu hợp lệ
+                        }
+                        setSelectTip(0);
+                    }}
+                    style={{
+                        flex: 1,
+                        height: 56,
+                        backgroundColor: theme.nEUTRALBase,
+                        color: theme.tEXTPrimary,
+                        border: `1px solid ${theme.nEUTRALLine}`,
+                    }}
+                    type="text" // Đổi thành type="text"
+                    prefix="$"
+                    allowClear={false}
+                    suffix={
+                        <div
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                                setValue('0'); // Đặt lại giá trị về 0
+                                setSelectTip(0);
+                            }}
+                        >
+                            <ClearIcon />
+                        </div>
+                    }
+                />
+            </Row>
             <Text style={{ marginBlock: 16 }}>Or pick predefined amount</Text>
 
             <Row justify={'space-between'}>
@@ -134,7 +153,8 @@ export default function ModalTip({
                         style={{
                             height: 56,
                             margin: 0,
-                            width: '30%',
+                            width: isMobile ? '25%' : '30%',
+                            minWidth: '70px',
                             border: `2px solid ${theme.pRIMARY6Primary}`,
                         }}
                         background={
@@ -152,7 +172,8 @@ export default function ModalTip({
                                 fontWeight: '600',
                             }}
                         >
-                            {tip}%
+                            {tip}
+                            {tipType === 'fixed' ? '$' : '%'}
                         </Text>
                     </Button>
                 ))}
@@ -162,13 +183,16 @@ export default function ModalTip({
                 Grand Total{' '}
                 <span style={{ fontSize: 18, fontWeight: '600' }}>
                     {' '}
-                    ${roundTo(total + value, 3)}{' '}
+                    ${roundTo(total + parseFloat(value || '0'), 3)?.toFixed(
+                        2,
+                    )}{' '}
                 </span>
             </Text>
             <ButtonPrimary
                 title="Confirm"
                 onClick={onFinish}
                 marginTop="20px"
+                isLoading={loading}
             />
         </Modal>
     );

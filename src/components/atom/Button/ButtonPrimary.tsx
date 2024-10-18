@@ -14,6 +14,9 @@ export default function ButtonPrimary({
     isDisable = false,
     backgroundColor,
     isLoading,
+    color,
+    borderColor,
+    maxWidth = '100%',
 }: {
     title: string;
     onClick: any;
@@ -25,6 +28,9 @@ export default function ButtonPrimary({
     isDisable?: boolean;
     backgroundColor?: string;
     isLoading?: boolean;
+    color?: string;
+    borderColor?: string;
+    maxWidth?: string;
 }) {
     const { theme } = useTheme();
     return (
@@ -51,6 +57,8 @@ export default function ButtonPrimary({
                 borderRadius: 8,
                 cursor: 'pointer',
                 width,
+                border: `${borderColor ? '2px' : '0px'} solid ${borderColor ? borderColor : theme.pRIMARY6Primary}`,
+                maxWidth: maxWidth,
             }}
             onClick={onClick}
         >
@@ -61,11 +69,13 @@ export default function ButtonPrimary({
                     style={{
                         fontSize: 18,
                         fontWeight: '600',
-                        color: isDisable
-                            ? theme.nEUTRALLine
-                            : isCancel
-                              ? theme.pRIMARY6Primary
-                              : theme.pRIMARY1,
+                        color: color
+                            ? color
+                            : isDisable
+                              ? theme.nEUTRALLine
+                              : isCancel
+                                ? theme.pRIMARY6Primary
+                                : theme.pRIMARY1,
                     }}
                 >
                     {title}

@@ -5,11 +5,16 @@ import { BASE_ROUTER } from 'constants/router';
 import React from 'react';
 import { useLocation } from 'react-router';
 import SearchSettings from './components/Search';
-import GeneralIcon from './icons/Restaurent/general_icon';
-import LocationIcon from './icons/Restaurent/locationIcon';
-import OpeningHoursIcon from './icons/Restaurent/openingHoursIcon';
+// import GeneralIcon from './icons/Restaurent/general_icon';
+// import LocationIcon from './icons/Restaurent/locationIcon';
+// import OpeningHoursIcon from './icons/Restaurent/openingHoursIcon';
 import TipIcon from './icons/tipIcon';
 import { useTheme } from 'context/themeContext';
+import KitchenStationIcon from './icons/Restaurent/kitchen_station_icon';
+
+import PaymentIcon from './icons/Restaurent/payment_icon';
+import GeneralIcon from './icons/Restaurent/general_icon';
+import OrderingIcon from './icons/Restaurent/orderingIcon';
 
 type Props = {
     children: React.ReactNode;
@@ -30,24 +35,47 @@ export default function RestaurentManagementLayout(props: Props) {
                 />
             ),
         },
+        // {
+        //     title: 'Location',
+        //     path: BASE_ROUTER.RESTAURENT_Location,
+        //     icon: (
+        //         <LocationIcon
+        //             isSelected={
+        //                 location.pathname === BASE_ROUTER.RESTAURENT_Location
+        //             }
+        //         />
+        //     ),
+        // },
+        // {
+        //     title: 'Opening Hours',
+        //     path: BASE_ROUTER.RESTAURENT_Opening,
+        //     icon: (
+        //         <OpeningHoursIcon
+        //             isSelected={
+        //                 location.pathname === BASE_ROUTER.RESTAURENT_Opening
+        //             }
+        //         />
+        //     ),
+        // },
+        // {
+        //     title: 'Reservation',
+        //     path: BASE_ROUTER.RESTAURENT_RESERVATION,
+        //     icon: (
+        //         <ReservationIcon
+        //             isSelected={
+        //                 location.pathname === BASE_ROUTER.RESTAURENT_RESERVATION
+        //             }
+        //         />
+        //     ),
+        // },
         {
-            title: 'Location',
-            path: BASE_ROUTER.RESTAURENT_Location,
+            title: 'Kitchen Station',
+            path: BASE_ROUTER.RESTAURENT_KITCHEN_STATION,
             icon: (
-                <LocationIcon
+                <KitchenStationIcon
                     isSelected={
-                        location.pathname === BASE_ROUTER.RESTAURENT_Location
-                    }
-                />
-            ),
-        },
-        {
-            title: 'Opening Hours',
-            path: BASE_ROUTER.RESTAURENT_Opening,
-            icon: (
-                <OpeningHoursIcon
-                    isSelected={
-                        location.pathname === BASE_ROUTER.RESTAURENT_Opening
+                        location.pathname ===
+                        BASE_ROUTER.RESTAURENT_KITCHEN_STATION
                     }
                 />
             ),
@@ -63,8 +91,31 @@ export default function RestaurentManagementLayout(props: Props) {
                 />
             ),
         },
+        {
+            title: 'Payment',
+            path: BASE_ROUTER.RESTAURENT_TERMINAL,
+            icon: (
+                <PaymentIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_TERMINAL
+                    }
+                />
+            ),
+        },
+        {
+            title: 'Ordering',
+            path: BASE_ROUTER.RESTAURENT_ORDERING,
+            icon: (
+                <OrderingIcon
+                    isSelected={
+                        location.pathname === BASE_ROUTER.RESTAURENT_ORDERING
+                    }
+                />
+            ),
+        },
     ];
     const { theme } = useTheme();
+
     return (
         <DarkLayout>
             {/* <Text>Restaurant management</Text> */}
@@ -75,16 +126,13 @@ export default function RestaurentManagementLayout(props: Props) {
                     display: 'flex',
                     justifyContent: 'center',
                     marginTop: 20,
+                    padding: '0 20px',
                 }}
             >
                 <Layout
                     style={{
-                        background: theme.pRIMARY1,
-                        maxWidth: 673,
+                        maxWidth: '100%',
                         minHeight: '80vh',
-                        borderRadius: 8,
-                        boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.08)',
-                        border: `1px solid ${theme.pRIMARY2}`,
                     }}
                 >
                     <Row
@@ -120,7 +168,17 @@ export default function RestaurentManagementLayout(props: Props) {
                                 ))}
                             </div>
                         </Col>
-                        <Col style={{ paddingLeft: 30, flex: 1 }}>
+                        <Col
+                            style={{
+                                padding: 20,
+                                flex: 1,
+                                background: theme.pRIMARY1,
+                                border: `1px solid ${theme.pRIMARY2}`,
+                                borderRadius: 8,
+                                boxShadow:
+                                    '0px 4px 8px 0px rgba(0, 0, 0, 0.08)',
+                            }}
+                        >
                             {children}
                         </Col>
                     </Row>

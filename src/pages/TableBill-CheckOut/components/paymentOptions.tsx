@@ -2,11 +2,17 @@ import { Text } from 'components/atom/Text';
 import React, { useEffect } from 'react';
 import ButtonOptions from './buttonOptions';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+import ChangeModal from 'components/modal/ChangeModal';
+import { InvoiceWithSplit } from '../IType';
 
 export default function PaymentOptions({
     onPayment,
+    isPaid = false,
+    selectedGuest,
 }: {
-    onPayment: (type: string) => void;
+    onPayment: (type: string, po_number: string) => void;
+    isPaid?: boolean;
+    selectedGuest?: InvoiceWithSplit;
 }) {
     const [paymentMethods, setPaymentMethods] = React.useState<
         {
@@ -16,6 +22,15 @@ export default function PaymentOptions({
     >([]);
     const [selectedPaymentMethod, setSelectedPaymentMethod] =
         React.useState('cash');
+    const [modalChange, setModalChange] = React.useState(false);
+
+    const [value, setValue] = React.useState('');
+    const handleChange = (e: any) => {
+        const value = e?.target?.value;
+        if (value?.length <= 50) {
+            setValue(e?.target.value);
+        }
+    };
 
     useEffect(() => {
         setPaymentMethods([
@@ -24,17 +39,21 @@ export default function PaymentOptions({
                 title: 'Cash',
             },
             {
-                id: 'credit_card',
+                id: 'pos',
                 title: 'Credit Card',
             },
             {
-                id: 'debit_card',
-                title: 'Debit Card',
+                id: 'other',
+                title: 'Other',
             },
-            {
-                id: 'e_wallet',
-                title: 'E-Wallet',
-            },
+            // {
+            //     id: 'debit_card',
+            //     title: 'Debit Card',
+            // },
+            // {
+            //     id: 'e_wallet',
+            //     title: 'E-Wallet',
+            // },
         ]);
     }, []);
     return (
@@ -45,7 +64,7 @@ export default function PaymentOptions({
                     marginBottom: 16,
                 }}
             >
-                Payment options
+                Payment method
             </Text>
             <div
                 style={{
@@ -61,13 +80,34 @@ export default function PaymentOptions({
                         title={item.title}
                         isSelected={selectedPaymentMethod === `${item.id}`}
                         onClick={() => setSelectedPaymentMethod(`${item.id}`)}
+                        selectedPaymentMethod={selectedPaymentMethod}
+                        note={value}
+                        onChangeNote={handleChange}
                     />
                 ))}
             </div>
             <ButtonPrimary
                 title="Proceed Payment"
-                onClick={() => onPayment(selectedPaymentMethod)}
+                onClick={() => {
+                    if (selectedPaymentMethod === 'cash') {
+                        setModalChange(true);
+                        return;
+                    }
+                    onPayment(selectedPaymentMethod, value);
+                }}
+                isDisable={isPaid}
             />
+            {modalChange && selectedPaymentMethod === 'cash' && (
+                <ChangeModal
+                    isModalOpen={modalChange}
+                    grandTotal={selectedGuest?.total.grand_total.value || 0}
+                    onClose={() => setModalChange(false)}
+                    onSubmit={() => {
+                        onPayment(selectedPaymentMethod, value);
+                        setModalChange(false);
+                    }}
+                />
+            )}
         </div>
     );
 }

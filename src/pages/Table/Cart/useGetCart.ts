@@ -8,7 +8,8 @@ import { findIndicesNotInArray } from 'utils/findIndicesNotInArray';
 import { REMOVE_ITEM_ON_CART } from 'graphql/cart/removeItemOnCart';
 import { UPDATE_STATUS_ITEM } from 'graphql/cart/updateStatusItem';
 import { emitter } from 'graphql/client';
-export const useCartTable = (isRefreshParams = true) => {
+import { isCartIdFromLocal } from 'utils/isNumericId';
+export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
     const [listCart, setListCart] = useState<string[]>([]);
     const [searchParams] = useSearchParams();
     const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
@@ -22,8 +23,10 @@ export const useCartTable = (isRefreshParams = true) => {
     const [removeItem, { loading: removeLoading }] =
         useMutation(REMOVE_ITEM_ON_CART);
     const tableId = parseInt(searchParams.get('tableId') || '0');
-    const [onGetCart, { loading }] = useLazyQuery(GET_CART_BY_ID);
-    const [onGetCartByTable] = useLazyQuery(GET_CARTS_BY_TABLE);
+    const [loading, setLoading] = useState(defaultLoading);
+    const [onGetCart] = useLazyQuery(GET_CART_BY_ID);
+    const [onGetCartByTable, { loading: getCartByTableLoading }] =
+        useLazyQuery(GET_CARTS_BY_TABLE);
     const [updateStatusItem, { loading: updateLoading }] =
         useMutation(UPDATE_STATUS_ITEM);
     useEffect(() => {
@@ -49,12 +52,15 @@ export const useCartTable = (isRefreshParams = true) => {
 
     const getCartsTable = async () => {
         if (tableId) {
+            setLoading(true);
+            console.log('call getCartByTable');
             const listCartId = await onGetCartByTable({
                 variables: {
                     tableId,
                 },
                 fetchPolicy: 'no-cache',
             });
+
             if (listCartId?.data?.getCartIdsByTable.length > 0) {
                 const list = listCartId?.data?.getCartIdsByTable;
                 const promises = list.map((item: any) => {
@@ -69,10 +75,14 @@ export const useCartTable = (isRefreshParams = true) => {
                     .then((carts) => {
                         // Lọc bỏ các cart trả về kết quả là null
                         handleDataGetCart(carts);
+                        setLoading(false);
                     })
                     .catch((error) => {
                         // Xử lý lỗi nếu có
                         console.error(error);
+                    })
+                    .finally(() => {
+                        setLoading(false);
                     });
             } else {
                 const indexTable = cartItems.findIndex(
@@ -85,6 +95,7 @@ export const useCartTable = (isRefreshParams = true) => {
                         }
                     });
                 }
+                setLoading(false);
             }
         }
     };
@@ -121,11 +132,7 @@ export const useCartTable = (isRefreshParams = true) => {
                 cartItems[indexTable]?.carts,
                 filterCarts,
             ).forEach((item) => {
-                if (
-                    !cartItems[indexTable].carts[item].firstname.includes(
-                        'Guest',
-                    )
-                ) {
+                if (!isCartIdFromLocal(cartItems[indexTable].carts[item].id)) {
                     removeCartIndex(item);
                 }
             });
@@ -173,10 +180,17 @@ export const useCartTable = (isRefreshParams = true) => {
                 }
             });
     };
-    const updateStatusItemServer = ({ cartId }: { cartId: string }) => {
+    const updateStatusItemServer = ({
+        cartId,
+        itemType = 'QUOTE',
+    }: {
+        cartId: string;
+        itemType?: string;
+    }) => {
         updateStatusItem({
             variables: {
-                id: cartId,
+                id: parseInt(cartId),
+                itemType,
             },
         })
             .catch((error) => console.error(error))
@@ -190,7 +204,7 @@ export const useCartTable = (isRefreshParams = true) => {
     };
     return {
         loading:
-            (listCart.length < 1 && loading) || removeLoading || updateLoading,
+            loading || removeLoading || updateLoading || getCartByTableLoading,
         listCart,
         setSelectedCart,
         setListCart,
@@ -201,5 +215,6 @@ export const useCartTable = (isRefreshParams = true) => {
         tableId,
         removeItemOnCartServer,
         updateStatusItemServer,
+        removeCartIndex,
     };
 };

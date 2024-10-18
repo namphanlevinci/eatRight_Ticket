@@ -8,6 +8,7 @@ import RenderItemSplit from './components/RenderItem';
 import ModalSplitItem from './components/ModalSplitItem';
 import { useSplitItem } from './useSplitItem';
 import { useTheme } from 'context/themeContext';
+import { useMediaQuery } from 'react-responsive';
 
 export default function SplitByItemMode({
     items,
@@ -66,6 +67,7 @@ export default function SplitByItemMode({
         );
     };
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <Container>
             {modalSplitItem && (
@@ -97,7 +99,7 @@ export default function SplitByItemMode({
 
                 <RenderListItem key={'list-item'} />
             </ItemsContainer>
-            <div style={{ flex: 1, overflow: 'auto' }}>
+            <div style={isMobile ? { width: '100%' } : { flex: 1 }}>
                 <BtnTitlte
                     style={
                         selected.length === 1 && itemFromGuest === ''
@@ -176,6 +178,11 @@ const Container = styled.div`
     margin-top: 16px;
     position: relative;
     overflow: auto;
+
+    @media (max-width: 767px) {
+        flex-direction: column;
+        width: auto;
+    }
 `;
 
 const ItemsContainer = styled.div`

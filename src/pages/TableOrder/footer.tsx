@@ -1,6 +1,5 @@
-import { Col, Divider, Row } from 'antd';
-import { Text } from 'components/atom/Text';
-import React, { useEffect } from 'react';
+import { App, Col, Divider, Row } from 'antd';
+import React, { useEffect, useMemo } from 'react';
 import { Colors } from 'themes/colors';
 import { CartItemType } from 'context/cartType';
 import { formatNumberWithCommas } from 'utils/format';
@@ -12,17 +11,22 @@ import ButtonSubmit from 'pages/TableBill/components/buttonSubmit';
 import { BASE_ROUTER } from 'constants/router';
 import { useNavigate } from 'react-router';
 import { useTheme } from 'context/themeContext';
+import { roundTo } from 'utils/number';
+import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
+import { CLEAN_UP_CART_TABLE } from 'graphql/table/cleanTable';
+import { useMutation } from '@apollo/client';
 
 export default function OrderFooter({
     cart,
-    total,
     loading,
     contextHolder,
+    tableId,
 }: {
     cart?: CartItemType;
     total: number;
     loading: boolean;
     contextHolder: any;
+    tableId?: any;
 }) {
     const [customerName, setCustomerName] = React.useState<any>(
         cart?.firstname,
@@ -34,11 +38,81 @@ export default function OrderFooter({
     const goTableBill = () => {
         navigation(`${BASE_ROUTER.TABLE_BILL}${window.location.search}`);
     };
+    const [onCleanUpCart, { loading: loadingClean }] =
+        useMutation(CLEAN_UP_CART_TABLE);
+    const { modal } = App.useApp();
+    const onCompleteService = () => {
+        modal.confirm({
+            title: 'Do you want to complete service ?',
+            onOk: () => {
+                onCleanUpCart({
+                    variables: {
+                        cartId: cart?.id,
+                        tableId: tableId,
+                    },
+                })
+                    .then(() => {
+                        modal.success({
+                            centered: true,
+                            title: 'Complete service successfully',
+                            onOk: () => {
+                                goBillDetail();
+                            },
+                            onCancel: () => {
+                                goTable();
+                            },
+                            okCancel: true,
+                            cancelText: 'Close',
+                        });
+                    })
+                    .catch((err) => {
+                        console.log('error', err);
+                    });
+            },
+            centered: true,
+        });
+    };
+    const goTable = () => {
+        navigation(`${BASE_ROUTER.TABLE}?tableId=${tableId}`);
+    };
+    const goBillDetail = () => {
+        navigation(`${BASE_ROUTER.BILL_DETAIL}?order_id=${cart?.order_id}`);
+    };
     const { theme } = useTheme();
+    const totalMoney = useMemo(
+        () =>
+            (cart?.prices?.subtotal_excluding_tax?.value || 0) -
+            (cart?.prices?.total_canceled_without_tax?.value || 0),
+        [cart],
+    );
+
+    const Tax = useMemo(
+        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 0) / 100,
+        [cart],
+    );
+
+    const totalDiscount = useMemo(
+        () =>
+            roundTo(
+                (cart?.prices?.discount?.amount?.value || 0) +
+                    (cart?.prices?.total_items_canceled_discount?.value || 0),
+                2,
+            ),
+        [cart],
+    );
+
+    const grandTotal = useMemo(
+        () =>
+            (totalMoney + totalDiscount) * (Tax + 1) + (cart?.tip_amount || 0),
+        [totalMoney, totalDiscount, Tax, cart],
+    );
+    const isAllItemDone = cart?.order?.items?.every(
+        (item) => item.serving_status === 'done',
+    );
     return (
         <Row style={{ marginTop: 20 }}>
             {contextHolder}
-            <LoadingModal showLoading={loading} />
+            <LoadingModal showLoading={loading || loadingClean} />
             <Col
                 md={{ span: 12 }}
                 xs={{ span: 24 }}
@@ -65,19 +139,16 @@ export default function OrderFooter({
                 style={{ paddingInline: 20 }}
             >
                 <div>
-                    <Text style={{ fontSize: 20 }}>Billing Information</Text>
                     <RenderBillInfomationRow
                         title="Total"
-                        value={`$ ${formatNumberWithCommas(total)}`}
+                        value={`$ ${formatNumberWithCommas(totalMoney)}`}
                     />
                     {cart?.prices?.discounts &&
                         cart?.prices?.discounts[0]?.amount.value && (
                             <RenderBillInfomationRow
                                 title="Discounted"
-                                value={`-$ ${formatNumberWithCommas(
-                                    parseInt(
-                                        `${cart?.prices.discounts[0]?.amount?.value}`,
-                                    ),
+                                value={`$ ${formatNumberWithCommas(
+                                    totalDiscount,
                                 )} `}
                             />
                         )}
@@ -85,25 +156,17 @@ export default function OrderFooter({
                     cart?.prices?.applied_taxes[0]?.amount ? (
                         <RenderBillInfomationRow
                             title="Tax"
-                            value={`$ ${cart?.prices?.applied_taxes[0]?.amount.value}`}
+                            value={`$ ${formatNumberWithCommas(
+                                (totalMoney + totalDiscount) * Tax,
+                            )}`}
                         />
                     ) : (
                         <></>
                     )}
                     {cart?.tip_amount && cart?.tip_amount ? (
                         <RenderBillInfomationRow
-                            title="Tax"
-                            value={`$ ${cart?.tip_amount}`}
-                        />
-                    ) : (
-                        <></>
-                    )}
-                    {cart?.prices?.total_canceled?.value ? (
-                        <RenderBillInfomationRow
-                            title="Canceled Item"
-                            value={`-
-                                   $ ${cart?.prices?.total_canceled?.value?.toFixed(2)}
-                            `}
+                            title="Tip"
+                            value={`$ ${cart?.tip_amount.toFixed(2)}`}
                         />
                     ) : (
                         <></>
@@ -115,10 +178,7 @@ export default function OrderFooter({
 
                     <RenderBillInfomationRow
                         title="To be paid"
-                        value={`$ ${formatNumberWithCommas(
-                            (cart?.prices.grand_total.value || 0) -
-                                (cart?.prices?.total_canceled?.value || 0),
-                        )} `}
+                        value={`$ ${formatNumberWithCommas(grandTotal)} `}
                         textRightStyle={{
                             fontSize: 24,
                             fontWeight: '600',
@@ -127,10 +187,26 @@ export default function OrderFooter({
                     />
                 </div>
                 <div>
-                    <ButtonSubmit
-                        title="Go Bill"
-                        onClick={() => goTableBill()}
-                    />
+                    {cart?.order_id && (
+                        <ButtonPrimary
+                            title="View Bill"
+                            onClick={() => goBillDetail()}
+                            backgroundColor="#fff"
+                            color={theme.pRIMARY6Primary}
+                        />
+                    )}
+                    {cart?.is_active ? (
+                        <ButtonSubmit
+                            title="Next"
+                            onClick={() => goTableBill()}
+                        />
+                    ) : (
+                        <ButtonPrimary
+                            title="Complete Service"
+                            onClick={() => isAllItemDone && onCompleteService()}
+                            isDisable={!isAllItemDone}
+                        />
+                    )}
                 </div>
             </Col>
         </Row>

@@ -16,19 +16,28 @@ const httpLink = new HttpLink({
 const authLink = setContext(async (_, { headers }) => {
     // get the authentication token from local storage if it exists
     const token = localStorage.getItem('token');
+    const view_code = localStorage.getItem('store_view_code');
     // return the headers to the context so httpLink can read them
+    let newHeaders = headers;
+    if (view_code) {
+        newHeaders = {
+            ...headers,
+            Store: view_code,
+        };
+    }
+
     if (_.operationName === 'getCart') {
         // Thay 'YourOperationName' bằng tên operation của bạn
         return {
             headers: {
-                ...headers,
+                ...newHeaders,
                 'Content-Type': 'application/json',
             },
         };
     }
     return {
         headers: {
-            ...headers,
+            ...newHeaders,
             authorization: token ? `Bearer ${token}` : '',
             'Content-Type': 'application/json',
         },
@@ -55,6 +64,9 @@ const errorLink = onError((error) => {
         if (
             e.message.includes('got invalid value (empty string); Int cannot')
         ) {
+            return;
+        }
+        if (e.message.includes('Variable "$storeId" of required type')) {
             return;
         }
         emitter.emit('error', e.message);

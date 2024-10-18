@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { TTable } from 'graphql/table/table';
 
 export interface authStateType {
     isLogged: boolean;
@@ -8,11 +9,14 @@ export interface authStateType {
     restaurant_address: string;
     restaurant_id: string;
     floor: {
-        id: string;
+        id: number;
         name: string;
-        status: string;
+        status: number;
     }[];
     isMerchant: boolean;
+    is_dine_in: boolean;
+    isTableView: boolean;
+    counterTable?: TTable;
 }
 
 const initialState: authStateType = {
@@ -24,6 +28,9 @@ const initialState: authStateType = {
     restaurant_id: '',
     floor: [],
     isMerchant: false,
+    is_dine_in: false,
+    isTableView: true,
+    counterTable: undefined,
 };
 
 export const authSlice = createSlice({
@@ -33,9 +40,10 @@ export const authSlice = createSlice({
         updateStatusLogin: (state) => {
             state.isLogged = true;
         },
-        updateStatusLoginForMerchant: (state) => {
+        updateStatusLoginForMerchant: (state, action) => {
             state.isLogged = true;
             state.isMerchant = true;
+            state.isTableView = action?.payload?.isTableView || false;
         },
         updateCustomerInfo: (state, action) => {
             state.firstname = action.payload.firstname;
@@ -43,6 +51,7 @@ export const authSlice = createSlice({
             state.restaurant_name = action.payload.restaurant_name;
             state.restaurant_address = action.payload.restaurant_address;
             state.restaurant_id = action.payload.restaurant_id;
+            state.is_dine_in = action.payload.is_dine_in;
         },
         updateFloor: (state, action) => {
             state.floor = action.payload;
@@ -50,11 +59,13 @@ export const authSlice = createSlice({
         updateStatusLogout: (state) => {
             state.isLogged = false;
             state.isMerchant = false;
+            state.isTableView = true;
             state = initialState;
             localStorage.removeItem('token');
             localStorage.removeItem('position');
             localStorage.removeItem('tableData');
             sessionStorage.removeItem('isTokenValidated');
+            localStorage.removeItem('store_view_code');
         },
         clearStoreData: (state) => {
             state.firstname = '';
@@ -65,6 +76,12 @@ export const authSlice = createSlice({
             state.floor = [];
             state.isMerchant = false;
         },
+        changeModeTableView: (state) => {
+            state.isTableView = !state.isTableView;
+        },
+        updateCounterTable: (state, action) => {
+            state.counterTable = action.payload.counterTable;
+        },
     },
 });
 
@@ -72,9 +89,11 @@ export const {
     updateStatusLogin,
     updateStatusLogout,
     updateCustomerInfo,
+    updateCounterTable,
     updateFloor,
     updateStatusLoginForMerchant,
     clearStoreData,
+    changeModeTableView,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -9,12 +9,17 @@ import {
 } from 'features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { BASE_ROUTER } from 'constants/router';
+import { useMediaQuery } from 'react-responsive';
 
 export const useLogin = () => {
     const [onLogin] = useMutation(LOGIN);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [remember, setRemember] = useState(false);
+    const isMobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     const handleLogin = async ({
         username,
         password,
@@ -37,9 +42,25 @@ export const useLogin = () => {
                 if (
                     res.data.generateMerchantToken.account_type === 'merchant'
                 ) {
-                    dispatch(updateStatusLoginForMerchant());
-                } else {
+                    const isView = JSON.parse(
+                        localStorage.getItem('isTableView') || 'false',
+                    );
+                    dispatch(
+                        updateStatusLoginForMerchant({
+                            isTableView: isMobile ? true : isView,
+                        }),
+                    );
+                } else if (
+                    res.data.generateMerchantToken.account_type === 'waiter'
+                ) {
                     dispatch(updateStatusLogin());
+                } else {
+                    notification.open({
+                        message: 'Login Failed',
+                        description: 'Your account type is not valid',
+                        type: 'error',
+                    });
+                    return;
                 }
 
                 navigate(BASE_ROUTER.HOME);
@@ -53,10 +74,19 @@ export const useLogin = () => {
             })
             .finally(() => {
                 setLoading(false);
+                if (remember) {
+                    localStorage.setItem('us-923', btoa(username));
+                    localStorage.setItem('pw-155', btoa(password));
+                } else {
+                    localStorage.removeItem('us-923');
+                    localStorage.removeItem('pw-155');
+                }
             });
     };
     return {
         handleLogin,
         loading,
+        remember,
+        setRemember,
     };
 };

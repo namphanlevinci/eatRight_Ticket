@@ -2,6 +2,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { App, Input, Select, Switch } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { Text } from 'components/atom/Text';
+import LoadingModal from 'components/modal/loadingModal';
 import { useTheme } from 'context/themeContext';
 import { GET_TIPS, SET_TIPS } from 'graphql/tips/tips';
 import { RowStyled } from 'pages/BillDetail/styled';
@@ -32,7 +33,7 @@ export default function SetUpTipPage() {
         value3: 30,
     });
     const { theme } = useTheme();
-    const [onGetTips, { data }] = useLazyQuery(GET_TIPS);
+    const [onGetTips, { data, loading: loadingTips }] = useLazyQuery(GET_TIPS);
     const handleSetTips = () => {
         onSetTips({
             variables: {
@@ -59,6 +60,21 @@ export default function SetUpTipPage() {
             fetchPolicy: 'no-cache',
         });
     }, []);
+    useEffect(() => {
+        if (data?.tipRestaurant) {
+            const tip_option = data?.tipRestaurant?.tip_option.find(
+                (item: any) => {
+                    return item.is_selected === true;
+                },
+            );
+            const typeSelect = TypeList.find((item: any) => {
+                return item.value === tip_option?.type;
+            });
+            if (typeSelect) {
+                setType(typeSelect);
+            }
+        }
+    }, [data]);
     useEffect(() => {
         if (data?.tipRestaurant) {
             const tip_option = data?.tipRestaurant?.tip_option;
@@ -94,7 +110,8 @@ export default function SetUpTipPage() {
     }, [data, type]);
     return (
         <Container>
-            <RowStyled>
+            <LoadingModal showLoading={loadingTips} />
+            <RowStyled style={{ maxWidth: 600 }}>
                 <Text>Include tax in tip</Text>
                 <Switch value={isTax} onChange={(value) => setIsTax(value)} />
             </RowStyled>
@@ -104,11 +121,12 @@ export default function SetUpTipPage() {
             </Text>
             <Select
                 labelInValue
-                defaultValue={type}
+                value={type}
                 style={{
                     width: '100%',
                     height: 56,
                     color: theme.fieldTextIcon,
+                    maxWidth: 600,
                 }}
                 size="large"
                 onChange={handleChange}
@@ -123,7 +141,14 @@ export default function SetUpTipPage() {
                     },
                 ]}
             />
-            <RowStyled style={{ gap: 20, marginTop: 20, marginBottom: 40 }}>
+            <RowStyled
+                style={{
+                    gap: 20,
+                    marginTop: 20,
+                    marginBottom: 40,
+                    maxWidth: 600,
+                }}
+            >
                 <InputStyled
                     value={inputValue.value1}
                     onChange={(e) =>
@@ -164,6 +189,7 @@ export default function SetUpTipPage() {
                     handleSetTips();
                 }}
                 isLoading={loading}
+                maxWidth="600px"
             />
         </Container>
     );

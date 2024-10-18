@@ -1,7 +1,7 @@
 import { Modal, Row } from 'antd';
 import CloseIcon from 'assets/icons/close';
 import RadioButton from 'components/atom/Radio/RadioButton';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 import SplitEvenMode from './SplitEvenMode';
@@ -9,6 +9,8 @@ import SplitByItemMode from './SplitByItemMode';
 import { CartItemType, ItemType } from 'context/cartType';
 import SplitBillConfirmMode from './SplitBillConfirmMode';
 import { useTheme } from 'context/themeContext';
+import { roundTo } from 'utils/number';
+import { useMediaQuery } from 'react-responsive';
 
 export enum SplitBillMode {
     EVEN = 0,
@@ -51,12 +53,38 @@ export default function SplitBillModal({
             setMode(SplitBillMode.EVEN);
             setListItems([]);
             setListGuest([]);
-            setNumbers(2);
         }
     }, [visible]);
-    const total =
-        (cart?.prices.grand_total?.value || 0) -
-        (cart?.prices?.total_canceled?.value || 0);
+    const totalMoney = useMemo(
+        () =>
+            (cart?.prices?.subtotal_excluding_tax?.value || 0) -
+            (cart?.prices?.total_canceled_without_tax?.value || 0),
+        [cart],
+    );
+
+    const Tax = useMemo(
+        () => (cart?.prices?.applied_taxes?.[0]?.tax_percent || 0) / 100,
+        [cart],
+    );
+
+    const totalDiscount = useMemo(
+        () =>
+            roundTo(
+                (cart?.prices?.discount?.amount?.value || 0) +
+                    (cart?.prices?.total_items_canceled_discount?.value || 0),
+                2,
+            ),
+        [cart],
+    );
+
+    const total = useMemo(
+        () =>
+            (totalMoney + totalDiscount) * (Tax + 1) + (cart?.tip_amount || 0),
+        [totalMoney, totalDiscount, Tax, cart],
+    );
+    const isMobile = useMediaQuery({
+        query: '(max-width: 768px)',
+    });
     return (
         <>
             <ModalStyled
@@ -80,7 +108,7 @@ export default function SplitBillModal({
                             justify={'space-between'}
                             style={{ width: '100%' }}
                         >
-                            <Row style={{ gap: 40 }}>
+                            <Row style={{ gap: isMobile ? 20 : 40 }}>
                                 <RadioButton
                                     title="Split evenly"
                                     selected={mode === SplitBillMode.EVEN}

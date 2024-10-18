@@ -1,17 +1,15 @@
-import React from 'react';
-import { Button, Form, Row } from 'antd';
+import React, { useEffect } from 'react';
+import { Button, Checkbox, Form } from 'antd';
 import { useLogin } from './useLogin';
 import { FormItem } from 'components/atom/Form/Item';
 import { Text } from 'components/atom/Text';
 import { DarkInput } from 'components/atom/Input';
-import { Link } from 'react-router-dom';
-import { BASE_ROUTER } from 'constants/router';
-import InputPassword from 'pages/Settings/components/inputPassword';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
+import InputPassword from 'components/atom/Form/inputPassword';
 
 export const LoginPage: React.FC = () => {
-    const { handleLogin, loading } = useLogin();
+    const { handleLogin, loading, setRemember } = useLogin();
     const onFinishFailed = (errorInfo: any) => {
         console.error('Failed:', errorInfo);
     };
@@ -19,17 +17,31 @@ export const LoginPage: React.FC = () => {
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
+    const [form] = Form.useForm();
+    const encodedUsername = localStorage.getItem('us-923');
+    const encodedPassword = localStorage.getItem('pw-155');
+    useEffect(() => {
+        if (encodedUsername && encodedPassword) {
+            form.setFieldsValue({
+                username: atob(encodedUsername),
+                password: atob(encodedPassword),
+            });
+            setRemember(true);
+        }
+    }, [encodedUsername, encodedPassword]);
     return (
         <div
             style={{
-                height: ismobile ? 620 : 650,
+                height: ismobile ? 434 : 474,
                 width: 380,
-                background: theme.nEUTRALBase,
+                background: ismobile ? theme.nEUTRALPrimary : theme.nEUTRALBase,
                 borderRadius: 16,
                 padding: 16,
                 paddingBlock: 32,
                 alignSelf: 'center',
-                border: `1px solid ${theme.nEUTRALLine}`,
+                border: `${ismobile ? '0px' : '1px'} solid ${
+                    theme.nEUTRALLine
+                }`,
             }}
         >
             <span
@@ -55,9 +67,10 @@ export const LoginPage: React.FC = () => {
                 autoComplete="off"
                 layout="vertical"
                 size="large"
+                form={form}
             >
                 <FormItem
-                    label="Email / Phone number"
+                    label="Username"
                     name="username"
                     rules={[
                         {
@@ -69,7 +82,7 @@ export const LoginPage: React.FC = () => {
                     theme={theme}
                 >
                     <DarkInput
-                        placeholder="Email / Phone number"
+                        placeholder="Username"
                         style={{ background: theme.fieldBackground }}
                     />
                 </FormItem>
@@ -80,19 +93,21 @@ export const LoginPage: React.FC = () => {
                         placeholder="Password"
                     />
                 </div>
-                <Row justify={'end'}>
-                    <Link to={BASE_ROUTER.FORGOT_PASSWORD}>
-                        <Text
-                            style={{
-                                fontSize: 16,
-                                color: theme.pRIMARY6Primary,
-                                fontWeight: '600',
-                            }}
-                        >
-                            Forgot Password
-                        </Text>
-                    </Link>
-                </Row>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Text
+                        style={{
+                            color: theme.tEXTSecondary,
+                            fontSize: 14,
+                            fontWeight: '400',
+                        }}
+                    >
+                        Remember Me
+                    </Text>
+                    <Checkbox
+                        defaultChecked={encodedPassword ? true : false}
+                        onChange={(e) => setRemember(e.target.checked)}
+                    />
+                </div>
                 <Form.Item>
                     <Button
                         type="primary"
@@ -100,7 +115,7 @@ export const LoginPage: React.FC = () => {
                         loading={loading}
                         style={{
                             width: '100%',
-                            marginTop: 60,
+                            marginTop: 28,
                             background: theme.pRIMARY6Primary,
                             display: 'flex',
                             justifyContent: 'center',
@@ -121,23 +136,6 @@ export const LoginPage: React.FC = () => {
                     </Button>
                 </Form.Item>
             </Form>
-
-            <Row justify={'center'} style={{ marginTop: 60 }}>
-                <Text>Don’t have an account?</Text>
-            </Row>
-            <Row justify={'center'} style={{ marginTop: 20 }}>
-                <Link to={BASE_ROUTER.REQUEST_ACCOUNT}>
-                    <Text
-                        style={{
-                            fontSize: 18,
-                            fontWeight: '600',
-                            color: theme.pRIMARY6Primary,
-                        }}
-                    >
-                        Request here
-                    </Text>
-                </Link>
-            </Row>
         </div>
     );
 };

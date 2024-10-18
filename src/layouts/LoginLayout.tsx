@@ -1,7 +1,9 @@
 import { Text } from 'components/atom/Text';
+import { BASE_ROUTER } from 'constants/router';
 import { useTheme } from 'context/themeContext';
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
+import { Link } from 'react-router-dom';
 import { Colors } from 'themes/colors';
 type Props = {
     children: React.ReactNode;
@@ -16,7 +18,6 @@ export default function LoginLayout(props: Props) {
         <div
             style={{
                 display: 'flex',
-                minHeight: '100vh',
                 flexDirection: 'column',
                 background: theme.nEUTRALPrimary,
             }}
@@ -50,15 +51,17 @@ export default function LoginLayout(props: Props) {
                     >
                         <Text style={{ textAlign: 'center' }}>
                             Having troubles? {ismobile && <br />}
-                            <span
-                                style={{
-                                    fontSize: 18,
-                                    color: theme.pRIMARY6Primary,
-                                    fontWeight: '600',
-                                }}
-                            >
-                                Contact Levinci Support
-                            </span>
+                            <Link to={BASE_ROUTER.REQUEST_ACCOUNT}>
+                                <span
+                                    style={{
+                                        fontSize: 18,
+                                        color: theme.pRIMARY6Primary,
+                                        fontWeight: '600',
+                                    }}
+                                >
+                                    Contact Levinci Support
+                                </span>
+                            </Link>
                         </Text>
                         <div>
                             <Text
@@ -71,17 +74,19 @@ export default function LoginLayout(props: Props) {
                                 By continuing, you confirm that you agreed with
                                 our{' '}
                             </Text>
-                            <Text
-                                style={{
-                                    textAlign: 'center',
-                                    fontSize: 14,
-                                    color: theme.pRIMARY6Primary,
+                            <Link to="https://levinci.group/">
+                                <Text
+                                    style={{
+                                        textAlign: 'center',
+                                        fontSize: 14,
+                                        color: theme.pRIMARY6Primary,
 
-                                    fontWeight: 600,
-                                }}
-                            >
-                                Terms and Conditions.
-                            </Text>
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    Terms and Conditions.
+                                </Text>
+                            </Link>
                         </div>
                         <Text
                             style={{

@@ -1,4 +1,12 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, {
+    createContext,
+    useState,
+    useContext,
+    ReactNode,
+    useEffect,
+} from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 export const themeMode = {
     lightTheme: {
@@ -104,6 +112,61 @@ export const themeMode = {
         textTitle: '#fff',
     },
 };
+
+export const MerchantTheme = {
+    semanticPositive: '#198754',
+    semanticWarning: '#ffc107',
+    semanticCritcal: '#dc3545',
+    semanticInfo: '#4285f4',
+    semanticInfoLight: '#0dcaf0',
+    fieldBackground: '#eaecf0',
+    formBackground: '#ffffff',
+    fieldTextIcon: '#333741',
+    itemCardBackground: '#f9f9f9',
+    itemCardText: '#1e1e1e',
+    tabBGContainer: '#f9f9f9',
+    pRIMARY1: '#f0fee7',
+    pRIMARY2: '#defccb',
+    pRIMARY3: '#bef99d',
+    pRIMARY4: '#95f264',
+    pRIMARY5: '#4fcc16',
+    pRIMARY6: '#389e0d',
+    pRIMARY7: '#2d7c0f',
+    pRIMARY8: '#286212',
+    pRIMARY9: '#245314',
+    pRIMARY10: '#0e2e05',
+    tEXTPrimary: '#1d2433',
+    tEXTSecondary: '#4a505c',
+    tEXTDisabled: '#6c707a',
+    nEUTRALPrimary: '#ffffff',
+    nEUTRALBase: '#f8f9fc',
+    nEUTRALSecBG: '#f1f3f9',
+    nEUTRALLine: '#e1e6ef',
+    tERTIARY1BG: '#f8f5ff',
+    tERTIARY2Default: '#8a54f7',
+    tERTIARY3Hover: '#6d35de',
+    tERTIARY4Pressed: '#5221b5',
+    sUCCESS1BG: '#edfdf8',
+    sUCCESS2Default: '#08875d',
+    sUCCESS3Hover: '#03724d',
+    sUCCESS4Pressed: '#066042',
+    wARNING1BG: '#fff8eb',
+    wARNING2Default: '#b25e09',
+    wARNING3Hover: '#96530f',
+    wARNING4Pressed: '#7f460d',
+    eRROR1BG: '#fef1f2',
+    eRROR2Default: '#e02d3c',
+    eRROR3Hover: '#ba2532',
+    eRROR4Pressed: '#981b25',
+    sECONDARY1Light: '#fffcea',
+    sECONDARY2Default: '#ff9d00',
+    sECONDARY3Hover: '#e27500',
+    sECONDARY4Pressed: '#983d08',
+    textTitle: '#121212',
+    pRIMARY6Primary: '#389e0d',
+
+};
+
 export type ColorsThemeType = typeof themeMode.lightTheme;
 
 interface ThemeContextProps {
@@ -117,7 +180,7 @@ const ThemeContext = createContext<ThemeContextProps>({
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const [theme, setTheme] = useState(themeMode.lightTheme);
-
+    const { isMerchant } = useSelector((state: RootState) => state.auth);
     const toggleTheme = () => {
         setTheme((prevTheme) =>
             prevTheme === themeMode.lightTheme
@@ -125,7 +188,13 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
                 : themeMode.lightTheme,
         );
     };
-
+    useEffect(() => {
+        // if (isMerchant) {
+        //     setTheme(MerchantTheme);
+        // } else {
+        setTheme(themeMode.lightTheme);
+        // }
+    }, [isMerchant]);
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme }}>
             {children}

@@ -1,15 +1,19 @@
 import { useLazyQuery } from '@apollo/client';
+import { updateCounterTable } from 'features/auth/authSlice';
 import { emitter } from 'graphql/client';
 import { GET_ALL_TABLE, GET_ALL_TABLE_Floor } from 'graphql/table/table';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 
 export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
+    const dispatch = useDispatch();
     const { restaurant_id, floor } = useSelector(
         (state: RootState) => state.auth,
     );
-    const [onGetTable, { data, loading }] = useLazyQuery(GET_ALL_TABLE);
+    const [onGetTable, { data, loading, refetch }] =
+        useLazyQuery(GET_ALL_TABLE);
     const [onGetTableFloor, { data: data2, loading: loading2 }] =
         useLazyQuery(GET_ALL_TABLE_Floor);
     const [floorActive, setFloorActive] = useState<number>(-1);
@@ -61,28 +65,29 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
             const tableDataString = localStorage.getItem('tableData');
             if (tableDataString) {
                 tableData = JSON.parse(tableDataString);
+            } else {
+                refetch();
             }
         }
         if (floorActive !== -1 && searchText === '') {
             tableData = data2?.getTablesByStore;
         }
         if (tableData && Array.isArray(tableData)) {
-            const counterTable = tableData.find(
-                (data: any) => data?.name === 'Counter',
+            const counterTable = tableData?.find(
+                (data: any) => data?.is_counter == 1,
             );
-            const tableNormal = tableData.filter(
-                (data: any) => data?.name !== 'Counter',
+            const tableNormal = tableData?.filter(
+                (data: any) => data?.is_counter != 1,
             );
             let tableList = tableNormal;
             if (searchText) {
-                tableList = tableNormal.filter(
-                    (table: any) =>
-                        table?.name
-                            ?.toLowerCase()
-                            .includes(searchText.toLowerCase()),
+                tableList = tableNormal.filter((table: any) =>
+                    table?.name
+                        ?.toLowerCase()
+                        .includes(searchText.toLowerCase()),
                 );
             }
-            const tempTableList = new Array(30).fill(null);
+            const tempTableList = new Array(100).fill(null);
             const mergedTables = tempTableList.reduce((acc, _, index) => {
                 if (index < tableList.length) {
                     acc.push(tableList[index]);
@@ -95,6 +100,7 @@ export const useGetAllTable = ({ cache }: { cache?: boolean }) => {
 
             if (counterTable) {
                 setCounterTable(counterTable);
+                dispatch(updateCounterTable({ counterTable }));
                 localStorage.setItem(
                     'counterTable',
                     JSON.stringify(counterTable),

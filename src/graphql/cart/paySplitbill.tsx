@@ -1,17 +1,40 @@
 import { gql } from '@apollo/client';
 
+export const PAY_SPLIT_BILL_POS = gql`
+    mutation ($invoice_number: String!, $terminal_id: String!) {
+        arisePosSaleInvoiceForMarchant(
+            input: {
+                terminal_id: $terminal_id
+                invoice_number: $invoice_number
+            }
+        )
+    }
+`;
+export const PAY_SPLIT_BILL_POS_DJV = gql`
+    mutation ($invoice_number: String!, $pos_id: Int!) {
+        posSaleInvoiceForMarchant(
+            input: { invoice_number: $invoice_number, pos_id: $pos_id }
+        )
+    }
+`;
 export const PAY_SPLITBILL = gql`
-    mutation ($invoice_number: String!, $payment_method: String!) {
+    mutation (
+        $invoice_number: String!
+        $payment_method: String!
+        $po_number: String
+    ) {
         merchantPayInvoice(
             input: {
                 invoice_number: $invoice_number
                 payment_method: $payment_method
+                po_number: $po_number
             }
         ) {
             invoice {
                 id
                 number
                 state
+                invoice_image
                 total {
                     subtotal {
                         value

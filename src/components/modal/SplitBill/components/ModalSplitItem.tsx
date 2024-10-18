@@ -4,6 +4,7 @@ import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import React from 'react';
+import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 
 export default function ModalSplitItem({
@@ -15,23 +16,42 @@ export default function ModalSplitItem({
 }) {
     const [input, setInput] = React.useState<any>(1);
     const { theme } = useTheme();
+    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     return (
         <div
-            style={{
-                position: 'absolute',
-                width: 418,
-                height: 203,
-                background: theme.nEUTRALPrimary,
-                boxShadow: '4px 4px 4px 4px rgba(0, 0, 0, 0.25)',
-                right: 75,
-                top: 100,
-                padding: 16,
-                borderRadius: 8,
-                border: `1px solid ${theme.nEUTRALLine}`,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-            }}
+            style={
+                isMobile
+                    ? {
+                          position: 'absolute',
+                          width: 'calc(100% - 60px)',
+                          height: 203,
+                          background: theme.nEUTRALPrimary,
+                          boxShadow: '4px 4px 4px 4px rgba(0, 0, 0, 0.25)',
+                          right: 16,
+                          top: 74,
+                          padding: 16,
+                          borderRadius: 8,
+                          border: `1px solid ${theme.nEUTRALLine}`,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                      }
+                    : {
+                          position: 'absolute',
+                          width: 418,
+                          height: 203,
+                          background: theme.nEUTRALPrimary,
+                          boxShadow: '4px 4px 4px 4px rgba(0, 0, 0, 0.25)',
+                          right: 75,
+                          top: 100,
+                          padding: 16,
+                          borderRadius: 8,
+                          border: `1px solid ${theme.nEUTRALLine}`,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                      }
+            }
         >
             <Row justify={'space-between'}>
                 <Text>Split the item(s) into: </Text>

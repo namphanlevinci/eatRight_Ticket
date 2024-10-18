@@ -19,6 +19,7 @@ import LoadingModal from 'components/modal/loadingModal';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
 import ListBillForMobile from './listForMobile';
+import { convertMethod } from 'utils/format';
 
 const { Content } = Layout;
 
@@ -29,6 +30,7 @@ export enum TableStatus {
     Cancelled = 'Cancelled',
     Complete = 'Complete',
     Processing = 'Processing',
+    Received = 'Received',
 }
 
 export const ConvertStatusText = (status: TableStatus) => {
@@ -41,12 +43,14 @@ export const ConvertStatusText = (status: TableStatus) => {
             return 'Paid';
         case TableStatus.Complete:
             return 'Paid';
+        case TableStatus.Received:
+            return 'Received';
         case TableStatus.UnPaid:
             return 'Pending Payment';
         case TableStatus.Processing:
             return 'Processing';
         default:
-            return 'Unknown';
+            return status;
     }
 };
 
@@ -104,6 +108,19 @@ const convertStatus = (status: TableStatus) => {
                     {ConvertStatusText(status)}
                 </StyledColumn>
             );
+        case TableStatus.Received:
+            return (
+                <StyledColumn
+                    style={{
+                        width: '100%',
+                        opacity: 1,
+                        fontWeight: 600,
+                        color: 'var(--info-2-default)',
+                    }}
+                >
+                    {ConvertStatusText(status)}
+                </StyledColumn>
+            );
         case TableStatus.UnPaid:
             return (
                 <StyledColumn
@@ -131,7 +148,18 @@ const convertStatus = (status: TableStatus) => {
                 </StyledColumn>
             );
         default:
-            return <></>;
+            return (
+                <StyledColumn
+                    style={{
+                        width: '100%',
+                        opacity: 1,
+                        fontWeight: 600,
+                        color: 'var(--info-2-default)',
+                    }}
+                >
+                    {status}
+                </StyledColumn>
+            );
     }
 };
 
@@ -240,6 +268,14 @@ const BillList: React.FC = () => {
                             <StyledColumn
                                 style={{
                                     width: '100%',
+                                    color: theme.tEXTPrimary,
+                                }}
+                            >
+                                Method
+                            </StyledColumn>
+                            <StyledColumn
+                                style={{
+                                    width: '100%',
                                     justifyContent: 'center',
                                     color: theme.tEXTPrimary,
                                 }}
@@ -292,6 +328,16 @@ const BillList: React.FC = () => {
                                     }}
                                 >
                                     {convertStatus(dt.status)}
+                                </StyledColumn>
+                                <StyledColumn
+                                    style={{
+                                        width: '100%',
+                                        color: theme.tEXTPrimary,
+                                    }}
+                                >
+                                    {convertMethod(
+                                        dt?.payment_methods?.[0]?.name,
+                                    )}
                                 </StyledColumn>
                                 <StyledColumn
                                     style={{

@@ -1,4 +1,4 @@
-import { Layout } from 'antd';
+import { Layout, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { RenderHeader } from './components/header';
 import CartInfo from './components/cartInfo';
@@ -8,96 +8,328 @@ import { InvoiceWithSplit, MerchantSplitOrderOutput } from './IType';
 
 import { RenderGuest } from './components/renderGuest';
 import { RenderCart } from './components/renderCart';
-import { useMutation } from '@apollo/client';
-import { PAY_SPLITBILL } from 'graphql/cart/paySplitbill';
-import { useNavigate } from 'react-router';
-import { BASE_ROUTER } from 'constants/router';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import {
+    PAY_SPLIT_BILL_POS,
+    PAY_SPLIT_BILL_POS_DJV,
+    PAY_SPLITBILL,
+} from 'graphql/cart/paySplitbill';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
+import ModalPosDevices from 'pages/TableBill/components/ModalPosDevices';
+import { emitter } from 'graphql/client';
+import { GET_INVOICES } from 'graphql/cart/splitBill';
+import LoadingModalPayment from 'components/modal/loadingModalPayment';
+import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
+import { isEmpty } from 'lodash';
+import ModalPaySuccess from 'components/modal/ModalPaySuccess';
 
 export default function TableSplitBillCheckOut() {
     const dataStorage = localStorage.getItem('split_bill_data');
-    const [onPayment] = useMutation(PAY_SPLITBILL);
+    const [onPaymentWithCash] = useMutation(PAY_SPLITBILL);
+    const [onPaymentWithPOS] = useMutation(PAY_SPLIT_BILL_POS);
+    const [onPaymentWithPOSDJV] = useMutation(PAY_SPLIT_BILL_POS_DJV);
+    const [showPosModal, setShowPosModal] = useState(false);
+    const [showPosModalDJV, setShowPosModalDJV] = useState(false);
     const [data, setData] = useState<MerchantSplitOrderOutput>(
         JSON.parse(dataStorage || '{}'),
     );
+    const [loading, setLoading] = useState(false);
     const [selectGuest, setSelectGuest] = React.useState<InvoiceWithSplit>();
     const { theme } = useTheme();
+    const [loadingPosResult, setLoadingPosResult] = useState(false);
+    const [isModalPaySuccess, setModalPaySuccess] =
+        React.useState<boolean>(false);
+
     useEffect(() => {
         const dataTmp = JSON.parse(dataStorage || '{}');
-        if (dataTmp) {
-            setSelectGuest({ ...dataTmp.invoice[0], index: 0 });
+        const selectGuestIndex = dataTmp.invoice.findIndex(
+            (value: InvoiceWithSplit) => value.state === 'UNPAID',
+        );
+        if (selectGuestIndex > -1) {
+            setSelectGuest({
+                ...dataTmp.invoice[selectGuestIndex],
+                index: selectGuestIndex,
+            });
+        } else {
+            setSelectGuest({
+                ...dataTmp.invoice[0],
+                index: 0,
+            });
         }
-    }, []);
-    const handlePayment = (paymentMethod: string) => {
-        onPayment({
+    }, [data]);
+    let intervalId: any = null;
+    useEffect(() => {
+        if (loadingPosResult) {
+            intervalId = setInterval(() => ReloadInvoice({}), 30000);
+        }
+        return () => {
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        };
+    }, [loadingPosResult, intervalId]);
+    const PrintMerchantCopy = (url: string, isOpenCashier = false) => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'merchant',
+                    isOpenCashier: isOpenCashier,
+                    imageUrl: url,
+                }),
+            );
+        }
+    };
+
+    const checkShowModalPaySuccess = () => {
+        const allPaid = data?.invoice?.every(
+            (invoice: any) => invoice?.state === 'PAID',
+        );
+        return allPaid;
+    };
+    const [dataPaymentSuccess, setDataPaymentSuccess] = useState({
+        invoice_number: '',
+    });
+    const handlePayment = (
+        paymentMethod: string,
+        po_number?: string | undefined | null,
+    ) => {
+        if (paymentMethod === 'cash' || paymentMethod == 'other') {
+            setLoading(true);
+            onPaymentWithCash({
+                variables: {
+                    invoice_number: selectGuest?.number,
+                    payment_method:
+                        paymentMethod == 'other'
+                            ? 'purchaseorder'
+                            : paymentMethod,
+                    po_number: po_number ?? '',
+                    ...(!isEmpty(po_number) && { po_number }),
+                },
+            })
+                .then((res) => {
+                    if (
+                        res.data.merchantPayInvoice.invoice.number ===
+                        selectGuest?.number
+                    ) {
+                        const result = res.data.merchantPayInvoice.invoice;
+                        const newData: MerchantSplitOrderOutput = {
+                            ...data,
+                            invoice: data.invoice.map((value) => {
+                                if (value.number === result.number) {
+                                    return {
+                                        ...value,
+                                        state: result.state,
+                                    };
+                                }
+                                return value;
+                            }),
+                        };
+                        if (result?.invoice_image) {
+                            PrintMerchantCopy(
+                                result.invoice_image,
+                                paymentMethod === 'cash' ? true : false,
+                            );
+                        }
+                        setDataPaymentSuccess({
+                            invoice_number: result.number,
+                        });
+                        setData(newData);
+                        setModalPaySuccess(true);
+                        localStorage.setItem(
+                            'split_bill_data',
+                            JSON.stringify(newData),
+                        );
+                        SkipSelectGuest({ newData });
+                    }
+                })
+                .catch((err) => {
+                    if (
+                        err.graphQLErrors[0].message.includes(
+                            'is already paid',
+                        ) &&
+                        selectGuest
+                    ) {
+                        const newData: MerchantSplitOrderOutput = {
+                            ...data,
+                            invoice: data.invoice.map((value) => {
+                                if (value.number === selectGuest.number) {
+                                    return {
+                                        ...value,
+                                        state: 'PAID',
+                                    };
+                                }
+                                return value;
+                            }),
+                        };
+                        setData(newData);
+                        localStorage.setItem(
+                            'split_bill_data',
+                            JSON.stringify(newData),
+                        );
+                        SkipSelectGuest({ newData });
+                    }
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        } else if (paymentMethod === 'pos') {
+            setShowPosModalDJV(true);
+        }
+    };
+    const handlePaymentWithPOS = (id: string) => {
+        setLoading(true);
+        setLoadingPosResult(true);
+        const invoice_number = selectGuest?.number || '';
+        onPaymentWithPOS({
             variables: {
                 invoice_number: selectGuest?.number,
-                payment_method: paymentMethod,
+                terminal_id: id,
             },
         })
+            .then(() => {
+                setDataPaymentSuccess({
+                    invoice_number: invoice_number,
+                });
+                setLoading(false);
+                setModalPaySuccess(true);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+    const handlePaymentWithPOSDJV = (id: any) => {
+        setLoading(true);
+        const invoice_number = selectGuest?.number || '';
+        onPaymentWithPOSDJV({
+            variables: {
+                invoice_number: selectGuest?.number,
+                pos_id: id,
+            },
+        })
+            .then(async () => {
+                // showModalSuccess();
+                setDataPaymentSuccess({
+                    invoice_number: invoice_number,
+                });
+                ReloadInvoice({
+                    printInVoice: invoice_number,
+                    isPayTerminal: true,
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+                setLoading(false);
+            });
+    };
+    const [onGetInvoices] = useLazyQuery(GET_INVOICES);
+    useEffect(() => {
+        emitter.on('arise_result', (msg: any) => {
+            if (msg.additional_data?.invoice_number !== selectGuest?.number) {
+                return;
+            }
+            if (msg?.additional_data?.payment_status === 'success') {
+                // showModalSuccess();
+                ReloadInvoice({});
+            } else {
+                setLoading(false);
+                showError(msg?.message);
+            }
+            setLoadingPosResult(false);
+        });
+        return () => {
+            emitter.off('arise_result');
+        };
+    }, [selectGuest]);
+    const ReloadInvoice = ({
+        printInVoice,
+        isPayTerminal = false,
+    }: {
+        printInVoice?: any;
+        isPayTerminal?: boolean;
+    }) => {
+        onGetInvoices({
+            variables: {
+                OrderNumber: data.order.order_number,
+            },
+            fetchPolicy: 'no-cache',
+        })
             .then((res) => {
-                if (
-                    res.data.merchantPayInvoice.invoice.number ===
-                    selectGuest?.number
-                ) {
-                    const result = res.data.merchantPayInvoice.invoice;
-                    const newData: MerchantSplitOrderOutput = {
-                        ...data,
-                        invoice: data.invoice.map((value) => {
-                            if (value.number === result.number) {
-                                return {
-                                    ...value,
-                                    state: result.state,
-                                };
-                            }
-                            return value;
-                        }),
-                    };
-                    setData(newData);
-                    localStorage.setItem(
-                        'split_bill_data',
-                        JSON.stringify(newData),
+                const newData = res?.data?.merchantGetOrderInvoices;
+                setData(newData);
+                if (isPayTerminal) {
+                    setLoading(false);
+                    setModalPaySuccess(true);
+                }
+                if (printInVoice !== undefined) {
+                    const FindInvoice = newData.invoice.find(
+                        (value: InvoiceWithSplit) =>
+                            value.number === printInVoice,
                     );
+                    if (FindInvoice) {
+                        if (!isPayTerminal) {
+                            PrintMerchantCopy(FindInvoice.invoice_image);
+                        }
+                    }
+                }
+
+                localStorage.setItem(
+                    'split_bill_data',
+                    JSON.stringify(newData),
+                );
+                const selectGuestIndex = newData.invoice.findIndex(
+                    (value: InvoiceWithSplit) => value.state === 'UNPAID',
+                );
+                if (
+                    selectGuestIndex &&
+                    newData.invoice[selectGuestIndex].state === 'PAID'
+                ) {
+                    setLoadingPosResult(false);
+                    setLoading(false);
+                }
+
+                if (
+                    selectGuestIndex &&
+                    selectGuestIndex !== selectGuest?.index
+                ) {
+                    setSelectGuest({
+                        ...newData.invoice[selectGuestIndex],
+                        index: selectGuestIndex,
+                    });
                 }
             })
             .catch((err) => {
-                if (
-                    err.graphQLErrors[0].message.includes('is already paid') &&
-                    selectGuest
-                ) {
-                    const newData: MerchantSplitOrderOutput = {
-                        ...data,
-                        invoice: data.invoice.map((value) => {
-                            if (value.number === selectGuest.number) {
-                                return {
-                                    ...value,
-                                    state: 'PAID',
-                                };
-                            }
-                            return value;
-                        }),
-                    };
-                    setData(newData);
-                    localStorage.setItem(
-                        'split_bill_data',
-                        JSON.stringify(newData),
-                    );
-                }
+                console.log(err);
+                // showError(msg?.message, `${orderInfo?.order_id}`);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
-    const navigation = useNavigate();
-    useEffect(() => {
-        if (data) {
-            const isAllPay = data.invoice.find((item) => item.state !== 'PAID');
-            if (!isAllPay) {
-                navigation(
-                    `${BASE_ROUTER.BILL_DETAIL}?orderId=${data.order.order_id}`,
-                );
-            }
+    const SkipSelectGuest = ({ newData }: any) => {
+        const selectGuestIndex = newData.invoice.findIndex(
+            (value: InvoiceWithSplit) => value.state === 'UNPAID',
+        );
+        if (!selectGuestIndex) {
+            return;
         }
-    }, [data]);
+        if (selectGuestIndex && selectGuestIndex !== selectGuest?.index) {
+            setSelectGuest({
+                ...newData.invoice[selectGuestIndex],
+                index: selectGuestIndex,
+            });
+        }
+    };
+    const [modal, contextHolder] = Modal.useModal();
+    const showError = (msg: string) => {
+        modal.error({
+            title: msg,
+            centered: true,
+        });
+    };
+
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+
     return (
         <Layout
             style={{
@@ -109,7 +341,27 @@ export default function TableSplitBillCheckOut() {
                 paddingTop: 0,
             }}
         >
-            <RenderHeader />
+            {contextHolder}
+            <LoadingModalPayment
+                showLoading={loading}
+                onClose={() => setLoading(false)}
+            />
+            <ModalPosDevices
+                isVisibleModalPos={showPosModal}
+                setVisibleMoalPos={setShowPosModal}
+                onPressOK={handlePaymentWithPOS}
+            />
+            {showPosModalDJV && (
+                <ModalPosDevicesDJV
+                    isVisibleModalPos={showPosModalDJV}
+                    setVisibleMoalPos={setShowPosModalDJV}
+                    onPressOK={handlePaymentWithPOSDJV}
+                    onCancel={() => setShowPosModalDJV(false)}
+                />
+            )}
+            <RenderHeader
+                isHavePaid={data.invoice.some((item) => item.state === 'PAID')}
+            />
             <CartInfo data={data} />
             <div style={{ marginTop: 20 }} />
             <Container style={isMobile ? { flexWrap: 'wrap' } : {}}>
@@ -144,7 +396,13 @@ export default function TableSplitBillCheckOut() {
                 </ColumnGuestList>
                 <ColumnCart style={isMobile ? { marginLeft: 0 } : {}}>
                     {selectGuest && <RenderCart cart={selectGuest} />}
-                    {!isMobile && <PaymentOptions onPayment={handlePayment} />}
+                    {!isMobile && (
+                        <PaymentOptions
+                            onPayment={handlePayment}
+                            isPaid={selectGuest?.state === 'PAID'}
+                            selectedGuest={selectGuest}
+                        />
+                    )}
                 </ColumnCart>
                 {isMobile && (
                     <ColumnGuestList style={isMobile ? { width: '100%' } : {}}>
@@ -176,7 +434,22 @@ export default function TableSplitBillCheckOut() {
                         })}
                     </ColumnGuestList>
                 )}
-                {isMobile && <PaymentOptions onPayment={handlePayment} />}
+                {isMobile && (
+                    <PaymentOptions
+                        onPayment={handlePayment}
+                        isPaid={selectGuest?.state === 'PAID'}
+                        selectedGuest={selectGuest}
+                    />
+                )}
+                <ModalPaySuccess
+                    isVisible={isModalPaySuccess}
+                    onClose={() => {
+                        setModalPaySuccess(false);
+                    }}
+                    order_id={data.order.order_id}
+                    isBackHome={checkShowModalPaySuccess() ? true : false}
+                    invoice_number={dataPaymentSuccess?.invoice_number}
+                />
             </Container>
         </Layout>
     );

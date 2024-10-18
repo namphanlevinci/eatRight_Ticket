@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Modal } from 'antd';
-import RadioBtnSelected from 'assets/icons/radioBtnSelected';
-import { Button } from 'antd';
-import { Text } from 'components/atom/Text';
-import { Colors } from 'themes/colors';
+// import RadioBtnSelected from 'assets/icons/radioBtnSelected';
+// import { Button } from 'antd';
+// import { Text } from 'components/atom/Text';
 import ButtonSubmit from '../components/buttonSubmit';
-import { useLazyQuery } from '@apollo/client';
-import { POS_DEVICE_LIST } from 'graphql/orders/paymentMethod';
+// import { useLazyQuery } from '@apollo/client';
+// import { POS_DEVICE_LIST } from 'graphql/orders/paymentMethod';
+import { useTheme } from 'context/themeContext';
 
 const ModalPosDevices = ({
     onPressOK,
@@ -17,17 +17,17 @@ const ModalPosDevices = ({
     isVisibleModalPos: boolean;
     setVisibleMoalPos: (visible: boolean) => void;
 }) => {
-    const [selectedOption, setSelectedOption] = useState<any>(null);
-    const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST);
-    const [posDeviceList, setPosDeviceList] = useState<any>([]);
-    useEffect(() => {
-        onGetPosDeviceList({ fetchPolicy: 'no-cache' }).then((res: any) => {
-            setPosDeviceList(res?.data?.getPosDevices?.items ?? []);
-        });
-    }, []);
+    const [selectedOption] = useState<any>(null);
+    // const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST);
+    // const [posDeviceList, setPosDeviceList] = useState<any>([]);
+    // useEffect(() => {
+    //     onGetPosDeviceList({ fetchPolicy: 'no-cache' }).then((res: any) => {
+    //         setPosDeviceList(res?.data?.merchantGetTerminalList?.items ?? []);
+    //     });
+    // }, []);
     const handleOk = (): void => {
         if (selectedOption) {
-            onPressOK(selectedOption?.entity_id);
+            onPressOK(selectedOption?.id);
         }
         setVisibleMoalPos(false);
     };
@@ -36,20 +36,27 @@ const ModalPosDevices = ({
         setVisibleMoalPos(false);
     };
 
-    const handleChange = (item: any): void => {
-        setSelectedOption(item);
-    };
+    // const handleChange = (item: any): void => {
+    //     setSelectedOption(item);
+    // };
 
+    const { theme } = useTheme();
     return (
         <>
             <Modal
                 open={isVisibleModalPos}
                 onOk={handleOk}
                 onCancel={handleCancel}
-                style={{ background: '#191919' }}
+                style={{ background: theme.nEUTRALPrimary, borderRadius: 16 }}
                 styles={{
-                    content: { backgroundColor: '#191919', boxShadow: 'none' }, // turns the Modal #191919,
-                    header: { background: '#191919', color: 'white' },
+                    content: {
+                        backgroundColor: theme.nEUTRALPrimary,
+                        boxShadow: 'none',
+                    }, // turns the Modal #191919,
+                    header: {
+                        background: theme.nEUTRALPrimary,
+                        color: 'white',
+                    },
                 }}
                 closeIcon={null}
                 footer={null}
@@ -57,25 +64,28 @@ const ModalPosDevices = ({
                 <div style={{ paddingTop: 8 }}>
                     <p
                         style={{
-                            color: '#fff',
+                            color: theme.tEXTPrimary,
                             fontSize: 24,
                             fontWeight: '600',
                             marginBottom: 24,
                         }}
                     >
-                        POS Device List
+                        Terminals
                     </p>
-                    {posDeviceList?.map?.((pos: any) => (
+                    {/* {posDeviceList?.map?.((pos: any) => (
                         <Button
-                            key={`pos ${pos?.entity_id}`}
+                            key={`pos ${pos?.id}`}
                             style={{
                                 height: 56,
                                 width: '100%',
-                                background: Colors.grey3,
+                                background: theme.nEUTRALBase,
+
                                 borderRadius: 8,
-                                border: 'none',
+                                border: `1px solid ${theme.nEUTRALLine}`,
                                 display: 'flex',
                                 alignItems: 'center',
+                                justifyContent: 'flex-start',
+                                marginBottom: 12,
                             }}
                             onClick={() => handleChange(pos)}
                         >
@@ -86,16 +96,19 @@ const ModalPosDevices = ({
                                     alignItems: 'center',
                                 }}
                             >
-                                {pos?.entity_id ==
-                                    selectedOption?.entity_id && (
+                                {pos?.id == selectedOption?.id && (
                                     <RadioBtnSelected />
                                 )}
                             </div>
-                            <Text>{pos?.name}</Text>
+                            <Text>{pos?.serialNumber}</Text>
                         </Button>
-                    ))}
+                    ))} */}
 
-                    <ButtonSubmit title="Pay" onClick={handleOk} />
+                    <ButtonSubmit
+                        title="Pay"
+                        onClick={handleOk}
+                        disabled={!selectedOption}
+                    />
                 </div>
             </Modal>
         </>

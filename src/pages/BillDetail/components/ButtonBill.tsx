@@ -2,15 +2,55 @@ import { useTheme } from 'context/themeContext';
 import { Button } from 'components/atom/Button';
 import { TextDark } from 'components/atom/Text';
 import { useMediaQuery } from 'react-responsive';
+import { Spin } from 'antd';
 export const ButtonBill = ({
     title,
     onPress,
+    loading,
+    isSmall = false,
 }: {
     title: string;
     onPress: () => void;
+    loading?: boolean;
+    isSmall?: boolean;
 }) => {
     const { theme } = useTheme();
-    const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const isMobile = isSmall
+        ? isSmall
+        : useMediaQuery({ query: '(max-width: 767px)' });
+    const Icon = (title: string) => {
+        return title === 'Print' ? (
+            <PrintIcon />
+        ) : title === 'Sms' ? (
+            <SMSIcon />
+        ) : title === 'Email' ? (
+            <EmailIcon />
+        ) : title === 'Void' || title === 'Refund' ? (
+            <VoidIcon />
+        ) : null;
+    };
+    if (loading) {
+        return (
+            <Button
+                style={{
+                    height: 56,
+                    width: isMobile ? 56 : 160,
+                    display: 'flex',
+                    border: '0px',
+                    minWidth: 'auto',
+                    padding: isMobile ? 0 : '16px',
+                    paddingInline: isMobile ? 10 : 0,
+                    flexDirection: isMobile ? 'column' : 'row',
+                    gap: isMobile ? 0 : 10,
+                }}
+                onClick={onPress}
+                background={theme.pRIMARY6Primary}
+                disabled={loading}
+            >
+                <Spin />
+            </Button>
+        );
+    }
     return (
         <Button
             style={{
@@ -22,30 +62,29 @@ export const ButtonBill = ({
                 padding: isMobile ? 0 : '16px',
                 paddingInline: isMobile ? 10 : 0,
                 flexDirection: isMobile ? 'column' : 'row',
-                gap: 0,
+                gap: isMobile ? 0 : 10,
             }}
             onClick={onPress}
-            background={theme.pRIMARY6Primary}
+            background={
+                title === 'Void' ? theme.eRROR2Default : theme.pRIMARY6Primary
+            }
+            disabled={loading}
         >
-            {!isMobile ? (
-                <></>
-            ) : title === 'Print' ? (
-                <PrintIcon />
-            ) : title === 'Sms' ? (
-                <SMSIcon />
-            ) : (
-                <EmailIcon />
+            {Icon(title) && (
+                <div style={{ height: 24, width: 24 }}>{Icon(title)}</div>
             )}
-            <TextDark
-                style={{
-                    color: theme.pRIMARY1,
-                    fontWeight: isMobile ? '400' : '600',
-                    fontSize: isMobile ? 14 : 16,
-                    lineHeight: isMobile ? '14px' : '20px',
-                }}
-            >
-                {title}
-            </TextDark>
+            <div style={{ width: 50 }}>
+                <TextDark
+                    style={{
+                        color: theme.pRIMARY1,
+                        fontWeight: isMobile ? '400' : '600',
+                        fontSize: isMobile ? 14 : 16,
+                        lineHeight: isMobile ? '14px' : '20px',
+                    }}
+                >
+                    {title}
+                </TextDark>
+            </div>
         </Button>
     );
 };
@@ -98,6 +137,23 @@ const EmailIcon = () => {
             <path
                 d="M13 19C13 15.69 15.69 13 19 13C20.1 13 21.12 13.3 22 13.81V6C22 5.46957 21.7893 4.96086 21.4142 4.58579C21.0391 4.21071 20.5304 4 20 4H4C2.89 4 2 4.89 2 6V18C2 18.5304 2.21071 19.0391 2.58579 19.4142C2.96086 19.7893 3.46957 20 4 20H13.09C13.04 19.67 13 19.34 13 19ZM4 8V6L12 11L20 6V8L12 13L4 8ZM20 22V20H16V18H20V16L23 19L20 22Z"
                 fill="#E6F5FF"
+            />
+        </svg>
+    );
+};
+
+const VoidIcon = () => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+        >
+            <path
+                d="M13.91 2.91L11.83 5H14C16.1217 5 18.1566 5.84285 19.6569 7.34315C21.1571 8.84344 22 10.8783 22 13H20C20 11.4087 19.3679 9.88258 18.2426 8.75736C17.1174 7.63214 15.5913 7 14 7H11.83L13.92 9.09L12.5 10.5L8 6L9.41 4.59L12.5 1.5L13.91 2.91ZM2 12V22H18V12H2ZM4 18.56V15.45C4.60112 15.1009 5.10087 14.6011 5.45 14H14.55C14.8991 14.6011 15.3989 15.1009 16 15.45V18.56C15.4075 18.9091 14.915 19.4051 14.57 20H5.45C5.0995 19.4025 4.59986 18.9064 4 18.56ZM10 19C10.828 19 11.5 18.105 11.5 17C11.5 15.895 10.828 15 10 15C9.172 15 8.5 15.895 8.5 17C8.5 18.105 9.172 19 10 19Z"
+                fill="#FEF1F2"
             />
         </svg>
     );

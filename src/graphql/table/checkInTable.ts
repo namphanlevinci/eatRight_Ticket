@@ -31,3 +31,15 @@ export const ChangeTableStatusToAvailable = gql`
         }
     }
 `;
+
+export const ADD_NOTE_TABLE = gql`
+    mutation ($targetTableId: Int!, $note: String!) {
+        addNoteToTable(tableId: $targetTableId, note: $note)
+    }
+`;
+
+export const CLEAR_TABLE = gql`
+    mutation ($targetTableId: Int!) {
+        clearCartTable(tableId: $targetTableId)
+    }
+`;

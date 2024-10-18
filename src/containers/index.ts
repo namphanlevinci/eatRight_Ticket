@@ -2,6 +2,7 @@ import { lazy } from 'react';
 
 export const containers = {
     Home: lazy(() => import('containers/Home')),
+    MerchantHome: lazy(() => import('containers/MerchantHome')),
     Table: lazy(() => import('containers/Table')),
     About: lazy(() => import('containers/About')),
     Login: lazy(() => import('containers/Login')),
@@ -20,6 +21,47 @@ export const containers = {
         () => import('containers/RestaurentManagement/General'),
     ),
     RestaurentTip: lazy(() => import('containers/RestaurentManagement/Tip')),
+    NewCustomer: lazy(() => import('containers/Customer/AddNewCustomer')),
+    ListCustomer: lazy(() => import('containers/Customer/ListCustomer')),
+    CustomerDetail: lazy(() => import('containers/Customer/CustomerDetail')),
+    MerchantPage: lazy(() => import('pages/Merchant/index')),
+    BatchHistory: lazy(
+        () => import('pages/BatchSettlements/BatchHistory/index'),
+    ),
+    Settle: lazy(() => import('pages/BatchSettlements/Settle/index')),
+    Transactions: lazy(
+        () => import('pages/BatchSettlements/Transactions/index'),
+    ),
+
+    Report: lazy(() => import('pages/Report')),
+    ReportByPayment: lazy(() => import('pages/ReportByPayment')),
+    MenuPage: lazy(() => import('pages/MenuManager/Menu/index')),
+    Menu_Detail_Page: lazy(() => import('pages/MenuManager/MenuNew/index')),
+    CategoryPage: lazy(() => import('pages/MenuManager/Category/index')),
+    CategoryPage_DETAIL: lazy(
+        () => import('pages/MenuManager/CategoryNew/index'),
+    ),
+    ItemPage_DETAIL: lazy(() => import('pages/MenuManager/ItemNew/index')),
+    ItemPage: lazy(() => import('pages/MenuManager/Item/index')),
+    RestaurentReservation: lazy(
+        () => import('containers/RestaurentManagement/Reservation'),
+    ),
+    KitchenStationReservation: lazy(
+        () => import('containers/RestaurentManagement/KitchenStation'),
+    ),
+    KitchenStationDetailReservation: lazy(
+        () => import('containers/RestaurentManagement/KitchenStationDetail'),
+    ),
+    Terminal: lazy(
+        () => import('containers/RestaurentManagement/TerminalSetting'),
+    ),
+    TerminalDetail: lazy(
+        () => import('containers/RestaurentManagement/TerminalDetailSetting'),
+    ),
+    RestaurentOrdering: lazy(
+        () => import('containers/RestaurentManagement/Ordering'),
+    ),
+    ReceiptsContainer: lazy(() => import('containers/Receipts')),
 };
 
 export default containers;

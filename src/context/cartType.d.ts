@@ -4,10 +4,18 @@ export type CartTableType = {
 };
 
 export type CartItemType = {
+    is_active?: boolean;
+    order_number?: string;
+    order_id?: string;
     id: string;
     items: ItemType[];
     firstname: string;
+    phonenumber?: string;
     numberOfCustomer: number;
+    is_paid?: boolean;
+    order?: {
+        items?: OrderItemType[];
+    };
     applied_coupons?:
         | {
               code: string;
@@ -17,7 +25,7 @@ export type CartItemType = {
     prices: {
         applied_taxes?: {
             amount: {
-                value: number | string;
+                value: number;
             };
             label: string;
             tax_percent: number;
@@ -28,11 +36,23 @@ export type CartItemType = {
             };
             label: string;
         }[];
+        discount?: {
+            amount: {
+                value: number | string;
+            };
+            label: string;
+        };
         grand_total: {
             value: number;
         };
         total_canceled?: {
             value: number;
+        };
+        total_canceled_without_tax?: {
+            value: number;
+        };
+        total_items_canceled_discount?: {
+            value: any;
         };
         subtotal_excluding_tax?: {
             value: number;
@@ -46,6 +66,18 @@ export type CartItemType = {
         new_items_total?: {
             value: number;
         };
+    };
+};
+export type OrderItemType = {
+    id?: string;
+    name?: string;
+    qty?: number;
+    price?: number;
+    serving_status?: string;
+    options?: {
+        name: string;
+        qty: number;
+        price: number;
     };
 };
 export type ItemType = {
@@ -66,6 +98,7 @@ export type ItemType = {
     product: {
         name: string;
         sku: string;
+        __typename: string;
     };
     quantity: number;
     quantityText?: string;

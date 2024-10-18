@@ -12,8 +12,10 @@ import SearchTable from 'pages/Home/components/Search';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useTheme } from 'context/themeContext';
+import { useMediaQuery } from 'react-responsive';
+import { ProductType } from './useCategory';
 
-export default function Menu() {
+export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
     const {
         breadCrumbs,
         categoryIndex,
@@ -25,15 +27,24 @@ export default function Menu() {
     const { addToCart } = useCart();
     const { notification } = App.useApp();
     const [search, setSearch] = useState();
+    const isMobile = useMediaQuery({
+        query: '(max-width: 767px)',
+    });
+    function removeAccents(str: string) {
+        return str
+            .normalize('NFD') // Decompose accents from letters
+            .replace(/[\u0300-\u036f]/g, ''); // Remove all the accent marks
+    }
     function searchProductByName(productName: string, products: any) {
         var foundProducts: any = [];
+        const normalizedProductName = removeAccents(productName.toLowerCase());
+
         products?.forEach(function (category: any) {
             category?.products?.items?.forEach(function (product: any) {
-                if (
-                    product.name
-                        .toLowerCase()
-                        .includes(productName.toLowerCase())
-                ) {
+                const normalizedProduct = removeAccents(
+                    product.name.toLowerCase(),
+                );
+                if (normalizedProduct.includes(normalizedProductName)) {
                     foundProducts.push(product);
                 }
             });
@@ -48,7 +59,10 @@ export default function Menu() {
     }, [categoryIndex]);
     const { theme } = useTheme();
     const onClickAddToCart = (item: any) => {
-        if (item.__typename === 'SimpleProduct') {
+        if (
+            item.__typename === 'SimpleProduct' ||
+            item.__typename === 'VirtualProduct'
+        ) {
             const Item: ItemType = {
                 id: item.sku,
                 prices: {
@@ -85,26 +99,49 @@ export default function Menu() {
                 </StyledSearch>
             </Row>
             {breadCrumbs.length < 2 || !product ? (
-                <Row>
+                <Row style={{ marginTop: 16 }}>
                     <RenderCategoryColumn
                         data={data}
                         categoryIndex={categoryIndex}
                         onSetCategoryIndex={onSetCategoryIndex}
+                        isEatOut={isEatOut}
                     />
                     <Col xs={{ span: 12 }} md={{ span: 18 }}>
                         <Row>
                             {search
                                 ? searchProductByName(search, data).map(
-                                      (item: any, index: number) => {
+                                      (item: ProductType, index: number) => {
+                                          if (isEatOut) {
+                                              if (
+                                                  !item.display_platforms.includes(
+                                                      'online',
+                                                  )
+                                              ) {
+                                                  return null;
+                                              }
+                                          } else {
+                                              if (
+                                                  !item.display_platforms.includes(
+                                                      'dine_in',
+                                                  )
+                                              ) {
+                                                  return null;
+                                              }
+                                          }
                                           return (
                                               <Col
                                                   xs={{ span: 24 }}
                                                   md={{ span: 8 }}
                                                   key={index}
-                                                  style={{
-                                                      display: 'flex',
-                                                      justifyContent: 'end',
-                                                  }}
+                                                  style={
+                                                      isMobile
+                                                          ? {
+                                                                display: 'flex',
+                                                                justifyContent:
+                                                                    'end',
+                                                            }
+                                                          : {}
+                                                  }
                                               >
                                                   <div
                                                       onClick={() =>
@@ -141,15 +178,37 @@ export default function Menu() {
                                   )
                                 : data[categoryIndex]?.products.items?.map(
                                       (item: any, index: number) => {
+                                          if (isEatOut) {
+                                              if (
+                                                  !item.display_platforms.includes(
+                                                      'online',
+                                                  )
+                                              ) {
+                                                  return null;
+                                              }
+                                          } else {
+                                              if (
+                                                  !item.display_platforms.includes(
+                                                      'dine_in',
+                                                  )
+                                              ) {
+                                                  return null;
+                                              }
+                                          }
                                           return (
                                               <Col
                                                   xs={{ span: 24 }}
                                                   md={{ span: 8 }}
                                                   key={index}
-                                                  style={{
-                                                      display: 'flex',
-                                                      justifyContent: 'end',
-                                                  }}
+                                                  style={
+                                                      isMobile
+                                                          ? {
+                                                                display: 'flex',
+                                                                justifyContent:
+                                                                    'end',
+                                                            }
+                                                          : {}
+                                                  }
                                               >
                                                   <div
                                                       onClick={() =>
@@ -165,8 +224,31 @@ export default function Menu() {
                                                               item.__typename ===
                                                               'SimpleProduct'
                                                           }
+                                                          isVirtualProduct={
+                                                              item.__typename ===
+                                                              'VirtualProduct'
+                                                          }
                                                       >
-                                                          {item.name}
+                                                          <span
+                                                              style={{
+                                                                  display:
+                                                                      '-webkit-box',
+                                                                  WebkitLineClamp: 2,
+                                                                  WebkitBoxOrient:
+                                                                      'vertical',
+                                                                  overflow:
+                                                                      'hidden',
+                                                                  textOverflow:
+                                                                      'ellipsis',
+                                                                  maxWidth:
+                                                                      '200px', // Đặt chiều rộng tối đa
+                                                                  whiteSpace:
+                                                                      'normal', // Đảm bảo dòng được bẻ đúng cách
+                                                              }}
+                                                          >
+                                                              {' '}
+                                                              {item.name}
+                                                          </span>
                                                           {item.__typename ===
                                                               'SimpleProduct' && (
                                                               <p

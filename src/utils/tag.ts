@@ -11,7 +11,7 @@ export const getTagStyled = (status?: string, theme?: ColorsThemeType) => {
     switch (status) {
         case 'sent':
             return {
-                text: 'Sent',
+                text: 'Confirmed',
                 background: theme.tERTIARY1BG,
                 textColor: theme.tERTIARY2Default,
             };
@@ -24,15 +24,15 @@ export const getTagStyled = (status?: string, theme?: ColorsThemeType) => {
             };
         case 'ready':
             return {
-                text: 'Ready',
+                text: 'Cooked',
                 background: theme.sUCCESS1BG,
                 textColor: theme.sUCCESS2Default,
             };
         case 'done':
             return {
-                text: 'Done',
-                background: theme.sUCCESS1BG,
-                textColor: theme.sUCCESS2Default,
+                text: 'Served',
+                background: theme.pRIMARY1,
+                textColor: '#3498db',
             };
         case 'New':
             return {
@@ -48,7 +48,7 @@ export const getTagStyled = (status?: string, theme?: ColorsThemeType) => {
             };
         default:
             return {
-                text: 'Sent',
+                text: 'Confirmed',
                 background: theme.tERTIARY1BG,
                 textColor: theme.tERTIARY2Default,
             };

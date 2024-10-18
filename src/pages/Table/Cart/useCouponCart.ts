@@ -28,15 +28,7 @@ export const useCouponCart = () => {
             variables: {
                 cartId,
             },
-        })
-            .then((res) => {
-                if (res.data.removeCouponFromCart.cart) {
-                    updateCartIndex(res.data.removeCouponFromCart.cart);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        });
     };
     return {
         handleAddCoupon,

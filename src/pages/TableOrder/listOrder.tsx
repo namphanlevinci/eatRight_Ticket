@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd';
+import { Col, Modal, Row } from 'antd';
 import IconButtonDeleteItem from 'assets/icons/ButtonDelete';
 import CustomTag from 'components/atom/Tag/CustomTag';
 import { Text, Text18 } from 'components/atom/Text';
@@ -7,10 +7,11 @@ import { ColStyled } from 'pages/TableBill/styleds';
 import React from 'react';
 import { formatNumberWithCommas } from 'utils/format';
 import { getTagStyled } from 'utils/tag';
-import { App } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import { useTheme } from 'context/themeContext';
 import { useMediaQuery } from 'react-responsive';
+import ModalConfirm from 'components/modal/ModalConfirm';
+const { confirm } = Modal;
 export default function ListOrder({
     cart,
     count,
@@ -22,36 +23,49 @@ export default function ListOrder({
     removeItemOnCartServer?: any;
     updateStatusItemServer?: any;
 }) {
-    const { modal } = App.useApp();
-    const onDone = async (id?: string, itemName?: string) => {
-        await modal.confirm({
+    const onDone = async (
+        id?: string,
+        itemName?: string,
+        itemType?: string,
+    ) => {
+        await confirm({
             title: `Confirmation of serving ${itemName} ?`,
             onOk: () => {
                 if (id) {
+                    Modal.destroyAll();
                     updateStatusItemServer({
                         cartId: id,
+                        itemType: itemType || 'QUOTE',
                     });
                 }
+            },
+            onCancel: () => {
+                Modal.destroyAll();
             },
             centered: true,
         });
     };
     const onRemoveItem = async (id?: string) => {
-        await modal.confirm({
-            title: 'Do you want to this item remove?',
-            onOk: () => {
-                if (id) {
-                    removeItemOnCartServer({
-                        cartId: cart?.id,
-                        cartItemId: id,
-                    });
-                }
-            },
-            centered: true,
-        });
+        setIsModalConfirm(true);
+        setId(id);
     };
     const { theme } = useTheme();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
+    const [isModalConfirm, setIsModalConfirm] = React.useState<boolean>(false);
+    const [id, setId] = React.useState<string | undefined>('');
+    const onCancel = () => {
+        setIsModalConfirm(false);
+        setId('');
+    };
+    const onSubmit = () => {
+        setIsModalConfirm(false);
+        if (id) {
+            removeItemOnCartServer({
+                cartId: cart?.id,
+                cartItemId: id,
+            });
+        }
+    };
     return (
         <ColStyled
             style={{
@@ -63,11 +77,22 @@ export default function ListOrder({
                 padding: 16,
             }}
         >
+            <ModalConfirm
+                isModalOpen={isModalConfirm}
+                onCancel={onCancel}
+                onSubmit={onSubmit}
+                title="Remove this item?"
+                content="Do you want to this item remove?"
+            />
             <Text>Total {count} Items</Text>
             {cart?.items?.map((item, index) => {
                 const tag = item.bundle_options?.find((e) => {
                     return e.values?.find((value) => value?.status !== 'sent');
                 });
+                const orderItems = cart.order?.items?.find(
+                    (e) => e.name === item.product.name,
+                );
+
                 return (
                     <div key={index}>
                         <Row
@@ -87,7 +112,9 @@ export default function ListOrder({
                                                 {...getTagStyled(
                                                     item.isUnsend
                                                         ? 'New'
-                                                        : item?.status,
+                                                        : orderItems
+                                                          ? orderItems.serving_status
+                                                          : item?.status,
                                                     theme,
                                                 )}
                                             />
@@ -104,6 +131,7 @@ export default function ListOrder({
                                 </Col>
 
                                 <Text18 style={{ textAlign: 'right' }}>
+                                    $
                                     {formatNumberWithCommas(
                                         item.prices.price.value,
                                     )}{' '}
@@ -118,26 +146,41 @@ export default function ListOrder({
                                     marginLeft: isMobile ? 0 : 20,
                                 }}
                             >
-                                {!tag && item.status === 'sent' && (
-                                    <div
-                                        onClick={() => onRemoveItem(item.id)}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <IconButtonDeleteItem />
-                                    </div>
-                                )}
-                                {!tag && item.status === 'ready' && (
-                                    <ButtonPrimary
-                                        title="Served"
-                                        onClick={() => {
-                                            onDone(item.id, item.product.name);
-                                        }}
-                                        size="medium"
-                                        width="80px"
-                                        height="40px"
-                                        marginTop="0px"
-                                    />
-                                )}
+                                {!tag &&
+                                    item.status === 'sent' &&
+                                    cart?.is_active && (
+                                        <div
+                                            onClick={() =>
+                                                onRemoveItem(item.id)
+                                            }
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            <IconButtonDeleteItem />
+                                        </div>
+                                    )}
+                                {!tag &&
+                                    (orderItems
+                                        ? orderItems.serving_status === 'ready'
+                                        : item.status === 'ready') && (
+                                        <ButtonPrimary
+                                            title="Done"
+                                            onClick={() => {
+                                                onDone(
+                                                    orderItems
+                                                        ? orderItems.id
+                                                        : item.id,
+                                                    item.product.name,
+                                                    orderItems
+                                                        ? 'ORDER'
+                                                        : 'QUOTE',
+                                                );
+                                            }}
+                                            size="medium"
+                                            width="80px"
+                                            height="40px"
+                                            marginTop="0px"
+                                        />
+                                    )}
                             </Col>
                         </Row>
 
@@ -193,11 +236,16 @@ export default function ListOrder({
                                                         {product.status ===
                                                             'ready' && (
                                                             <ButtonPrimary
-                                                                title="Served"
+                                                                title="Done"
                                                                 onClick={() => {
                                                                     onDone(
-                                                                        product.item_id,
+                                                                        orderItems
+                                                                            ? orderItems.id
+                                                                            : product.item_id,
                                                                         product.label,
+                                                                        orderItems
+                                                                            ? 'ORDER'
+                                                                            : 'QUOTE',
                                                                     );
                                                                 }}
                                                                 size="medium"

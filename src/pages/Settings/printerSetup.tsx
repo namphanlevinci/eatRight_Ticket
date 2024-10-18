@@ -1,9 +1,9 @@
 import { Button, Form, Layout } from 'antd';
+import InputForm from 'components/atom/Form/input';
 import { Text } from 'components/atom/Text';
 
 import { usePrinter } from 'context/printerContext';
 import { PrinterContextType } from 'context/printerType';
-import Input from './components/input';
 import { useTheme } from 'context/themeContext';
 export default function PrinterSetUpPage() {
     const {
@@ -47,12 +47,12 @@ export default function PrinterSetUpPage() {
                 layout="vertical"
                 size="large"
             >
-                <Input
+                <InputForm
                     label="Printer Ip Address"
                     name="printerIPAddress"
                     placeholder="Printer Ip Address"
                 />
-                <Input
+                <InputForm
                     label="Printer Port"
                     name="port"
                     placeholder="Printer Port"

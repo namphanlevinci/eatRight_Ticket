@@ -12,7 +12,7 @@ export const DarkInputDefault = styled(Input)`
     }
     background: ${getBackgroundColor};
     border: 0px;
-    height: 50px;
+    height: 56px;
     color: ${getTextColor};
 `;
 export const DarkInput = (props: InputProps) => {
