@@ -24,6 +24,8 @@ interface ITable {
     numberOfCustomer: number;
     size: number;
     status: string;
+    customer_name: string;
+    created_at: string;
 }
 
 interface IProps {
@@ -31,9 +33,6 @@ interface IProps {
 }
 
 const Tables = ({ tables }: IProps) => {
-    console.log(
-        tables?.filter((table) => table?.name).sort((a, b) => a.size - b.size),
-    );
     return (
         <div
             style={{
@@ -55,7 +54,9 @@ const Tables = ({ tables }: IProps) => {
                         <Fragment key={idx}>
                             <Table
                                 tableData={table}
-                                size={table.size > 6 ? 'large' : 'small'}
+                                size={
+                                    table.size > SMALL_SIZE ? 'large' : 'small'
+                                }
                                 status={_status}
                             />
                         </Fragment>
@@ -81,6 +82,10 @@ interface IChairsTable {
     status: TStatus;
 }
 
+// SMALL TABLE IF SIZE < 4, ELSE
+
+const SMALL_SIZE = 4;
+
 const Table = ({ tableData, size, status }: IPropsTable & ISize) => {
     const navigation = useNavigate();
     return (
@@ -93,8 +98,8 @@ const Table = ({ tableData, size, status }: IPropsTable & ISize) => {
         >
             <Chairs size={size} status={status} />
             <STitle>{tableData?.name || 'Table name'}</STitle>
-            <SSubtitle>Emily Nguyen</SSubtitle>
-            <SDuration>00:46</SDuration>
+            <SSubtitle>{tableData.customer_name}</SSubtitle>
+            <SDuration>{tableData.created_at}</SDuration>
         </STableContainer>
     );
 };
