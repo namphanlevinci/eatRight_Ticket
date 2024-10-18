@@ -64,7 +64,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 <TextDark style={{ ...text16W, marginTop: 16 }}>
                     {`${address?.substring?.(0, 42)} ${address?.length > 42 && ' ...'}`}
                 </TextDark>
-                <TextDark style={{ ...text16W, marginTop: 16 }}>
+                <TextDark style={{ ...text16W, marginTop: 8 }}>
                     {data?.restaurant_address
                         ?.split?.(',')
                         .slice?.(1)
@@ -189,11 +189,11 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Tip:</TextDark>
                     {tip > 0 ? (
-                        <TextDark>_______________________________</TextDark>
-                    ) : (
                         <TextDark>
                             {CURRENTCY} {tip.toFixed(2)}
                         </TextDark>
+                    ) : (
+                        <TextDark>_______________________________</TextDark>
                     )}
                 </RowStyled>
                 <RowStyled align={'middle'}>
