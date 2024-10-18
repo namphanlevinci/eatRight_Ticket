@@ -93,7 +93,6 @@ const MerchantTableView: React.FC = () => {
         >
             <Content
                 style={{
-                    margin: '0 16px',
                     paddingTop: 16,
                     backgroundColor: '#fafafa',
                 }}

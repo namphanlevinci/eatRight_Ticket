@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { Layout } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useGetAllTable } from './useTable';
 import {
     ContainerTable,
@@ -23,17 +23,23 @@ const { Content } = Layout;
 
 const HomePage: React.FC = () => {
     const navigation = useNavigate();
+    const location = useLocation();
     const { data, counterTable, floorActive, setFloorActive } = useGetAllTable({
         cache: false,
     });
-    const { floor: floors, isTableView } = useSelector(
-        (state: RootState) => state.auth,
-    );
+    const {
+        floor: floors,
+        isTableView,
+        isMerchant,
+    } = useSelector((state: RootState) => state.auth);
     useEffect(() => {
-        if (isTableView) {
+        if (!isTableView && isMerchant) {
+            navigation(BASE_ROUTER.MERCHANT_ORDERLIST);
+        }
+        if (isTableView && isMerchant) {
             navigation(BASE_ROUTER.MERCHANT_TABLEVIEW);
         }
-    }, [isTableView]);
+    }, [isTableView, isMerchant, location]);
     const memoizedTables = useMemo(() => data, [data]);
     const { theme } = useTheme();
     const ismobile = useMediaQuery({
