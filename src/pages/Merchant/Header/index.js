@@ -20,8 +20,7 @@ import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
 import { SwitchContainer } from 'layouts/styled';
 import { useMediaQuery } from 'react-responsive';
-import { OPEN_CASHIER } from 'graphql/printer';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { GET_NOTIFICATION } from 'graphql/notification';
 import { changeModeTableView } from 'features/auth/authSlice';
 import { useDispatch } from 'react-redux';
@@ -33,6 +32,7 @@ import CheckBoxOption from '../components/CheckBoxOption';
 function Header(props) {
     const { setSearchValue, isSearch, onFilterChange } = props;
     const history = useNavigate();
+    const dispatch = useDispatch();
     const [listNotifications, setListNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoadMore, setLoadMore] = useState(false);
@@ -208,7 +208,6 @@ function Header(props) {
             </Col>
         </Row>
     );
-    const [onOpenCashier] = useMutation(OPEN_CASHIER);
     const openCashier = () => {
         // onOpenCashier()
         //     .then((res) => {
@@ -232,7 +231,6 @@ function Header(props) {
         }
     };
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
-    const dispatch = useDispatch();
     const [fillter, setFillter] = useState({
         dine_in: localStorage.getItem('is_dine_in') !== 'false',
         eat_out: localStorage.getItem('is_eat_out') !== 'false',

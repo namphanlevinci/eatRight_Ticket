@@ -45,11 +45,9 @@ export default function ColLeft({
                       if (items.find((item) => item.status === 'cancel')) {
                           return null;
                       }
-                      console.log(data);
                       const totalPrice = items.reduce((sum, item) => {
                           return sum + item.prices.price.value * item.quantity;
                       }, 0);
-                      console.log(totalPrice);
                       return (
                           <div key={data.guestId}>
                               <Row

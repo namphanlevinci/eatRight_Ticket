@@ -22,13 +22,15 @@ import {
 } from 'features/auth/authSlice';
 import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
+import { GET_CONFIG_PRINTER } from 'graphql/printer';
+import { useLazyQuery } from '@apollo/client';
 export const BaseRouter = () => {
     const { notification } = App.useApp();
     const dispatch = useDispatch();
     const { error } = Modal;
     const [needLogout, setNeedLogout] = useState(false);
     const [noStore, setNoStore] = useState(false);
-    const { isLogged, isMerchant } = useSelector(
+    const { isLogged, isMerchant, isTableView } = useSelector(
         (state: RootState) => state.auth,
     );
     const [urlParams] = useSearchParams();
@@ -41,6 +43,7 @@ export const BaseRouter = () => {
             );
         }
     };
+    const [onGetConfig] = useLazyQuery(GET_CONFIG_PRINTER);
     useEffect(() => {
         if (isMerchant) {
             document.title = 'EatRight Merchant';
@@ -147,6 +150,16 @@ export const BaseRouter = () => {
     useEffect(() => {
         if (isLogged) {
             setNeedLogout(false);
+            onGetConfig().then((res: any) => {
+                const { data } = res;
+                if (data) {
+                    localStorage.setItem(
+                        'merchantGetPrinterConfig',
+
+                        `${data.merchantGetPrinterConfig.is_used_terminal}`,
+                    );
+                }
+            });
         }
     }, [isLogged]);
     return (
@@ -165,7 +178,11 @@ export const BaseRouter = () => {
                     path={BASE_ROUTER.HOME}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.Home />
+                            {isMerchant && isTableView ? (
+                                <Container.MerchantHome />
+                            ) : (
+                                <Container.Home />
+                            )}
                         </PrivateRoute>
                     }
                 />
@@ -334,6 +351,14 @@ export const BaseRouter = () => {
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
                             <Container.RestaurentTip />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.RESTAURENT_ORDERING}
+                    element={
+                        <PrivateRoute isAuthenticated={isLogged}>
+                            <Container.RestaurentOrdering />
                         </PrivateRoute>
                     }
                 />

@@ -2,6 +2,7 @@ import { lazy } from 'react';
 
 export const containers = {
     Home: lazy(() => import('containers/Home')),
+    MerchantHome: lazy(() => import('containers/MerchantHome')),
     Table: lazy(() => import('containers/Table')),
     About: lazy(() => import('containers/About')),
     Login: lazy(() => import('containers/Login')),
@@ -56,6 +57,9 @@ export const containers = {
     ),
     TerminalDetail: lazy(
         () => import('containers/RestaurentManagement/TerminalDetailSetting'),
+    ),
+    RestaurentOrdering: lazy(
+        () => import('containers/RestaurentManagement/Ordering'),
     ),
     ReceiptsContainer: lazy(() => import('containers/Receipts')),
 };

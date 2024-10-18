@@ -14,6 +14,7 @@ export const Colors = {
     primary_dark_20: '#331F00',
     red: '#EA4335',
     blueInfo: '#4285F4',
+    teal: '#0AA699'
 };
 
 export const themeMode = {

@@ -7,7 +7,7 @@ export type ReportPaymentMethodItem = {
     credit_card: TotalAmount;
     cash: TotalAmount;
     discount: TotalAmount;
-    others: TotalAmount
+    others: TotalAmount;
 };
 
 export type ReportByPaymentMethodsResponse = {
@@ -173,7 +173,7 @@ export const gql_GetBatchInvoices = gql`
 `;
 
 export const gql_MerchantSettle = gql`
-    mutation {
-        posSettleMerchant
+    mutation ($markdone_item: Boolean!) {
+        posSettleMerchant(markdone_item: $markdone_item)
     }
 `;

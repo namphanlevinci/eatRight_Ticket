@@ -28,6 +28,7 @@ export default function TableBill() {
     const [openModalConfirmCloseSplitBill, setCloseSplitBill] = useState(false);
     const navigation = useNavigate();
     const { theme } = useTheme();
+
     const RenderHeader = () => {
         return (
             <div

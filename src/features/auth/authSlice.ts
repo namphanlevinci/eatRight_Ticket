@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { TTable } from 'graphql/table/table';
 
 export interface authStateType {
     isLogged: boolean;
@@ -8,13 +9,14 @@ export interface authStateType {
     restaurant_address: string;
     restaurant_id: string;
     floor: {
-        id: string;
+        id: number;
         name: string;
-        status: string;
+        status: number;
     }[];
     isMerchant: boolean;
     is_dine_in: boolean;
     isTableView: boolean;
+    counterTable?: TTable;
 }
 
 const initialState: authStateType = {
@@ -28,6 +30,7 @@ const initialState: authStateType = {
     isMerchant: false,
     is_dine_in: false,
     isTableView: true,
+    counterTable: undefined,
 };
 
 export const authSlice = createSlice({
@@ -76,6 +79,9 @@ export const authSlice = createSlice({
         changeModeTableView: (state) => {
             state.isTableView = !state.isTableView;
         },
+        updateCounterTable: (state, action) => {
+            state.counterTable = action.payload.counterTable;
+        },
     },
 });
 
@@ -83,6 +89,7 @@ export const {
     updateStatusLogin,
     updateStatusLogout,
     updateCustomerInfo,
+    updateCounterTable,
     updateFloor,
     updateStatusLoginForMerchant,
     clearStoreData,

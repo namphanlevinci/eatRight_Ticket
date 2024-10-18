@@ -58,3 +58,17 @@ export const gql_BatchHistory = gql`
         }
     }
 `;
+
+export type data_BatchHistoryReport = {
+    merchantPrintBatch: {
+        image_url: string;
+    };
+};
+
+export const gql_BatchHistoryReport = gql`
+    mutation ($batch_id: Int!) {
+        merchantPrintBatch(batch_id: $batch_id) {
+            image_url
+        }
+    }
+`;
