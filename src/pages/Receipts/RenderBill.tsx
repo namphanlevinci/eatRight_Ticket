@@ -15,7 +15,7 @@ import React from 'react';
 import { convertMethod } from 'utils/format';
 import { ReceiptDetail } from 'graphql/receipts';
 import { isEmpty } from 'lodash';
-// import moment from 'moment';
+import moment from 'moment';
 
 const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
     const totalDiscount = data?.total?.discounts?.reduce(
@@ -84,12 +84,12 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     RECEIPT
                 </TextDark>
 
-                {/* <RowStyled>
+                <RowStyled>
                     <TextDark>
                         <BoldText>Date: </BoldText>
                         {`${moment(data?.order_date, ['YYYY-MM-DD']).format('MM/DD/YYYY')} ${moment(data?.order_time, ['HH:mm:ss']).format('hh:mm A')}`}
                     </TextDark>
-                </RowStyled> */}
+                </RowStyled>
                 <RowStyled>
                     <TextDark>{data?.order_type}</TextDark>
                     <TextDark>

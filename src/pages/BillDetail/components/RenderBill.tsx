@@ -14,6 +14,7 @@ import {
 import React from 'react';
 import { convertMethod } from 'utils/format';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
 
 const RenderBillItem = ({
     data,
@@ -114,12 +115,12 @@ const RenderBillItem = ({
                     RECEIPT
                 </TextDark>
 
-                {/* <RowStyled>
+                <RowStyled>
                     <TextDark>
                         <BoldText>Date: </BoldText>
                         {`${moment(data?.created_at).format('MM/DD/YYYY hh:mm A')}`}
                     </TextDark>
-                </RowStyled> */}
+                </RowStyled>
                 <RowStyled>
                     <TextDark>{data?.order_source}</TextDark>
                     <TextDark>
