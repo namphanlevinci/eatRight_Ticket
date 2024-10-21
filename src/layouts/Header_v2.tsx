@@ -75,8 +75,6 @@ const HeaderV2 = () => {
         };
     }, [location, isMerchant, isMobile]);
 
-    console.log(showOnHeader);
-
     useEffect(() => {
         const isTokenValidated =
             sessionStorage.getItem('isTokenValidated') === 'true';
