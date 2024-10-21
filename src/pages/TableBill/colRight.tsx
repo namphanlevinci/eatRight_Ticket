@@ -89,7 +89,7 @@ export default function ColRight({
     const [modalTip, setModalTip] = useState(false);
     const {
         handleAddCoupon,
-        handleRemoveCoupon,
+        // handleRemoveCoupon,
         loading: loadingCoupon,
     } = useCouponCart();
     const { theme } = useTheme();

@@ -25,7 +25,7 @@ import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
 import { GET_MERCHANT_RESTAURANT_CONFIG } from 'graphql/setups';
 import {
-    GET_CONFIG_PRINTER,
+    // GET_CONFIG_PRINTER,
     LIST_PRINTER_DEVICES,
     SELECT_PRINTER_DEVICE,
 } from 'graphql/printer';
@@ -50,7 +50,7 @@ export const BaseRouter = () => {
             );
         }
     };
-    const [onGetConfig] = useLazyQuery(GET_CONFIG_PRINTER);
+    // const [onGetConfig] = useLazyQuery(GET_CONFIG_PRINTER);
     useEffect(() => {
         if (isMerchant) {
             document.title = 'EatRight Merchant';
