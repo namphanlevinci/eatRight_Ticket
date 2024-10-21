@@ -195,13 +195,18 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     <TextDark style={text16}>Grand Total:$</TextDark>
                     <TextDark>______________________</TextDark>
                 </RowStyled>
-                <DividedDashed />
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Payment Method:</TextDark>
-                    <TextDark>
-                        {convertMethod(data.payment_method.title)}
-                    </TextDark>
-                </RowStyled>
+
+                {data.status !== 'UNPAID' && (
+                    <>
+                        <DividedDashed />
+                        <RowStyled align={'middle'}>
+                            <TextDark style={text16}>Payment Method:</TextDark>
+                            <TextDark>
+                                {convertMethod(data.payment_method.title)}
+                            </TextDark>
+                        </RowStyled>
+                    </>
+                )}
                 {!isEmpty(data.payment_method.po_number) &&
                     data.payment_method.po_number !== 'none' && (
                         <RowStyled>
