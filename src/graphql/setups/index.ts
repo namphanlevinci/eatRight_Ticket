@@ -7,6 +7,7 @@ export const GET_MERCHANT_RESTAURANT_CONFIG = gql`
             minimum_ticket_length
             close_order
             open_pricing
+            primary_terminal_setting
         }
     }
 `;
@@ -19,6 +20,17 @@ export const SET_MERCHANT_RESTAURANT_CONFIG = gql`
 
 export const SET_MERCHANT_RESTAURANT_CONFIG_OPEN_PRICING = gql`
     mutation ($open_pricing: Boolean!) {
-        setupConfigRestaurant(input: { open_pricing: $open_pricing })
+        setupConfigRestaurant(input: { open_pricing: $open_pricing })`;
+export const GET_PRIMARY_TERMINAL_WAITER = gql`
+    {
+        waiterPrimaryPosDevice {
+            entity_id
+            name
+            tpn
+            auth_key
+            machine_type
+            status
+            serial_number
+        }
     }
 `;

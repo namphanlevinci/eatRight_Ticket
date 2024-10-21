@@ -1,4 +1,30 @@
 import { gql } from '@apollo/client';
+export type StatusTable = 'available' | 'dining' | 'reserved' | 'all';
+
+export enum EStatusTable {
+    'AVAILABLE',
+    'DINING',
+    'RESERVED',
+    'ALL',
+}
+
+export type TTable = {
+    cartIds: { cartId: string }[];
+    hasReadyItem: boolean;
+    id: number;
+    is_counter: number;
+    name: string;
+    note: string | null;
+    numberOfCustomer: number;
+    size: number;
+    status: EStatusTable;
+    customer_name: string;
+    created_at: string;
+};
+
+export type DATA_ALL_TABLE = {
+    getTablesByStore: TTable[];
+};
 
 export const GET_ALL_TABLE_Floor = gql`
     query ($storeId: Int!, $floorId: Int!) {
@@ -7,13 +33,15 @@ export const GET_ALL_TABLE_Floor = gql`
             name
             status
             size
-            hasReadyItem
-            is_counter
             numberOfCustomer
+            hasReadyItem
             cartIds {
                 cartId
             }
             note
+            is_counter
+            created_at
+            customer_name
         }
     }
 `;
@@ -24,13 +52,15 @@ export const GET_ALL_TABLE = gql`
             name
             status
             size
-            hasReadyItem
-            is_counter
             numberOfCustomer
+            hasReadyItem
             cartIds {
                 cartId
             }
             note
+            is_counter
+            created_at
+            customer_name
         }
     }
 `;

@@ -23,8 +23,6 @@ export default function TableBill() {
         listItems,
         numbersSplit,
         setCart,
-        isModalPaySuccess,
-        setModalPaySuccess,
     } = useTableBill();
     const [splitBill, setSplitBill] = useState(false);
     const [openModalSplitBill, setOpenModalSplitBill] = useState(false);

@@ -2,7 +2,6 @@
 import { DatePicker, Table, Input, Spin, Row, Col } from 'antd';
 import { Columns } from './Column_v2';
 import useReceipts from './useReceipts';
-import Header from 'pages/Merchant/Header';
 import SearchIcon from 'assets/icons/search';
 import { getCurrentMonthDates } from 'utils/date';
 import dayjs from 'dayjs';
@@ -96,7 +95,6 @@ export default function ReceiptsPage() {
                 }}
                 type="email"
             />
-            <Header />
             <div
                 style={{
                     display: 'flex',
@@ -190,7 +188,7 @@ export default function ReceiptsPage() {
                             justifyContent: 'center',
                             alignItems: 'center',
                             overflow: 'scroll',
-                            height: 'calc(100vh - 135px)',
+                            height: 'calc(100vh - 152px)',
                             background: 'var(--field-background)',
                             position: 'relative',
                         }}
@@ -240,17 +238,17 @@ export default function ReceiptsPage() {
                                         isSmall
                                     />
                                     {receiptDetail?.merchantGetReceipt
-                                        ?.can_void ? (
+                                        ?.can_refund ? (
                                         <ButtonBill
-                                            title="Void"
+                                            title="Refund"
                                             isSmall
                                             onPress={() => setModalRefund(true)}
                                         />
                                     ) : (
                                         receiptDetail?.merchantGetReceipt
-                                            ?.can_refund && (
+                                            ?.can_void && (
                                             <ButtonBill
-                                                title="Refund"
+                                                title="Void"
                                                 isSmall
                                                 onPress={() =>
                                                     setModalRefund(true)

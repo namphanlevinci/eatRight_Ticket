@@ -15,13 +15,13 @@ import { ReceiptDetail } from 'graphql/receipts';
 import { useEffect, useState } from 'react';
 
 export default function useActionReceipt() {
-    const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
     const [onSendBillToEmail, { loading: sendLoading1 }] = useMutation(
         SEND_RECEIPT_TO_EMAIL,
     );
     const [onSendBillToPhone, { loading: sendLoading2 }] = useMutation(
         SEND_RECEIPT_TO_PHONENUMBER,
     );
+    const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         if (loading) {
@@ -34,18 +34,25 @@ export default function useActionReceipt() {
         if (!data) {
             return;
         }
-        if (window?.ReactNativeWebView) {
-            setLoading(true);
-            const imageUrl = data.invoice_image;
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
-            );
-            notification.success({
-                message: 'Receipt sent to printer',
-                description: 'Please go to printer to take the bill!',
-            });
-            // return;
+        const is_used_terminal =
+            localStorage.getItem('merchantGetPrinterConfig') === 'true'
+                ? true
+                : false;
+        if (!is_used_terminal) {
+            if (window?.ReactNativeWebView) {
+                setLoading(true);
+                const imageUrl = data.invoice_image;
+                window.ReactNativeWebView.postMessage(
+                    JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
+                );
+                notification.success({
+                    message: 'Receipt sent to printer',
+                    description: 'Please go to printer to take the bill!',
+                });
+                return;
+            }
         }
+
         onPrintBill({
             variables: {
                 invoice_number: data.increment_id,
@@ -234,7 +241,7 @@ export default function useActionReceipt() {
     };
     return {
         PrintBillApi,
-        loadingPrint: loadingPrint || loading,
+        loadingPrint: loading || loadingPrint,
         loading:
             sendLoading1 ||
             sendLoading2 ||

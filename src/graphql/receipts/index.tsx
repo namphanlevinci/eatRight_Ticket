@@ -126,6 +126,7 @@ export type PaymentMethod = {
     card_type?: string;
     last_digits?: string;
     method?: string;
+    po_number?: string;
 };
 
 // Kiểu cho chi tiết tổng tiền
@@ -216,6 +217,7 @@ export const gqlGetReceiptDetail = gql`
                 card_type
                 last_digits
                 method
+                po_number
             }
             items {
                 name

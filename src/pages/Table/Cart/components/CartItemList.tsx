@@ -114,13 +114,14 @@ export default function CartItemList({
     const goTableBill = () => {
         navigation(`${BASE_ROUTER.TABLE_BILL}${window.location.search}`);
     };
-    const SendCart = () => {
+    const SendCart = (isSendThenGo?: boolean) => {
         let CustomerName =
             cartItems[indexTable]?.carts[selectedCart]?.firstname;
         if (CustomerName?.includes('Guest')) {
             createCart({
                 username: 'Diner ' + (selectedCart + 1),
                 numberOfCustomer: 1,
+                finishAction: isSendThenGo ? goTableBill : undefined,
             });
         } else {
             setCustomerName(CustomerName, selectedCart, indexTable);
@@ -131,6 +132,7 @@ export default function CartItemList({
                         ?.numberOfCustomer,
                 phoneNumber:
                     cartItems[indexTable]?.carts[selectedCart]?.phonenumber,
+                finishAction: isSendThenGo ? goTableBill : undefined,
             });
         }
     };
@@ -138,10 +140,12 @@ export default function CartItemList({
         username,
         numberOfCustomer = 1,
         phoneNumber,
+        finishAction,
     }: {
         username?: string;
         numberOfCustomer?: number;
         phoneNumber?: string;
+        finishAction?: () => void;
     }) => {
         const items: ItemType[] =
             data?.items.filter((item: ItemType) => item.isUnsend) || [];
@@ -231,9 +235,21 @@ export default function CartItemList({
                 numberOfCustomer,
                 table?.is_counter == 1 ? true : false,
                 phoneNumber,
-            );
+            )
+                .then(() => {
+                    if (finishAction) {
+                        finishAction();
+                    }
+                })
+                .catch((e) => console.log(e));
         } else {
-            addMoreCart(data?.id || '', carts);
+            addMoreCart(data?.id || '', carts)
+                .then(() => {
+                    if (finishAction) {
+                        finishAction();
+                    }
+                })
+                .catch((e) => console.log(e));
         }
     };
     const { setUpdate, targetRef, showMenu } = useMenuContext();
@@ -330,11 +346,17 @@ export default function CartItemList({
             },
         })
             .then((res) => {
-                localStorage.setItem(
-                    'split_bill_data',
-                    JSON.stringify(res.data?.merchantGetOrderInvoices),
-                );
-                navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+                if (res.data?.merchantGetOrderInvoices?.invoice?.length > 0) {
+                    localStorage.setItem(
+                        'split_bill_data',
+                        JSON.stringify(res.data?.merchantGetOrderInvoices),
+                    );
+                    navigation(BASE_ROUTER.TABLE_BILL_CHECKOUT);
+                } else {
+                    navigation(
+                        `${BASE_ROUTER.BILL_DETAIL}?orderId=${res.data?.merchantGetOrderInvoices?.order?.order_id}`,
+                    );
+                }
             })
             .catch(() => {
                 console.log('error');

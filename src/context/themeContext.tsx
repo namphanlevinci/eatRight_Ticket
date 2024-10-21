@@ -163,8 +163,8 @@ export const MerchantTheme = {
     sECONDARY3Hover: '#e27500',
     sECONDARY4Pressed: '#983d08',
     textTitle: '#121212',
-    pRIMARY6Primary: '#389e0d', // bổ sung từ B
-    // bổ sung từ B
+    pRIMARY6Primary: '#389e0d',
+
 };
 
 export type ColorsThemeType = typeof themeMode.lightTheme;
