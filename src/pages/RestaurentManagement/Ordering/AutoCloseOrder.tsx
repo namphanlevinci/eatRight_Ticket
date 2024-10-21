@@ -10,11 +10,12 @@ import {
 import LoadingModal from 'components/modal/loadingModal';
 import { useDispatch } from 'react-redux';
 import { updateAutoCloseOrder } from 'features/auth/authSlice';
-import { useSelector } from 'react-redux';
-import { RootState } from 'store';
+// import { useSelector } from 'react-redux';
+// import { RootState } from 'store';
 import styled from 'styled-components';
 export default function AutoCloseOrder() {
-    const { isAutoConfirmItem } = useSelector((state: RootState) => state.auth);
+    // const { isAutoConfirmItem } = useSelector((state: RootState) => state.auth);
+    const [isOpen, setIsOpen] = useState(true);
     const [onGetRestaurantConfig, { loading }] = useLazyQuery(
         GET_MERCHANT_RESTAURANT_CONFIG,
     );
@@ -87,7 +88,7 @@ export default function AutoCloseOrder() {
                 </Row>
 
                 <Switch
-                    value={isAutoConfirmItem}
+                    value={isOpen}
                     onChange={(value) => {
                         // handleChangeSelect(value);
                         console.log(value);
@@ -96,7 +97,7 @@ export default function AutoCloseOrder() {
                 />
             </Row>
 
-            {isAutoConfirmItem ? (
+            {isOpen ? (
                 <>
                     <Row style={{ marginTop: 16 }} align={'middle'}>
                         <IconContainer
