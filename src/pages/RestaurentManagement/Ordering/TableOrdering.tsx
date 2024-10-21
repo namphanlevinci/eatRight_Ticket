@@ -51,7 +51,7 @@ export default function TableOrdering() {
         <Row justify={'space-between'} align={'middle'}>
             <LoadingModal showLoading={loading} />
             <Row>
-                <Text style={{ fontSize: 18, fontWeight: '500' }}>
+                <Text style={{ fontSize: 18, fontWeight: '600' }}>
                     Auto confirm items at checkout
                 </Text>
                 <Tooltip
