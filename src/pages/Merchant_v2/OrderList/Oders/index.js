@@ -134,7 +134,7 @@ function Order(props) {
     if (order) {
         return (
             <Draggable
-                draggableId={(id + 1)?.toString?.()}
+                draggableId={order?.id}
                 key={id}
                 index={parseInt(order?.id)}
             >
