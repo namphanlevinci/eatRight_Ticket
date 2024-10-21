@@ -56,7 +56,10 @@ export const Columns = (): TableColumnsType<ReceiptItem> => {
             dataIndex: 'payment_method',
             key: 'payment_method',
             width: 150,
-            render: (payment_method) => {
+            render: (payment_method, record) => {
+                if (record.status.toLowerCase() === 'unpaid') {
+                    return null;
+                }
                 return (
                     <div style={{ fontSize: 16 }}>{payment_method?.title}</div>
                 );
