@@ -23,6 +23,11 @@ export const SET_MERCHANT_RESTAURANT_CONFIG_OPEN_PRICING = gql`
         setupConfigRestaurant(input: { open_pricing: $open_pricing })
     }
 `;
+export const SET_MERCHANT_RESTAURANT_CONFIG_AUTO_CLOSE_ORDER = gql`
+    mutation ($close_order: AutoCloseOrderOptionEnum!) {
+        setupConfigRestaurant(input: { close_order: $close_order })
+    }
+`;
 export const GET_PRIMARY_TERMINAL_WAITER = gql`
     {
         waiterPrimaryPosDevice {

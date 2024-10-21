@@ -21,6 +21,7 @@ export interface authStateType {
     isTerminalPrinter: boolean;
     isAutoConfirmItem: boolean;
     counterTable?: TTable;
+    isAutoCloseOrder?: boolean;
 }
 
 const initialState: authStateType = {
@@ -39,6 +40,7 @@ const initialState: authStateType = {
     isTerminalPrinter: false,
     isAutoConfirmItem: false,
     counterTable: undefined,
+    isAutoCloseOrder: false,
 };
 
 export const authSlice = createSlice({
@@ -99,6 +101,9 @@ export const authSlice = createSlice({
         updateAutoConfirmItem: (state, action) => {
             state.isAutoConfirmItem = action.payload;
         },
+        updateAutoCloseOrder: (state, action) => {
+            state.isAutoCloseOrder = action.payload;
+        },
         updateRestaurantConfig: (state, action) => {
             if (action.payload) {
                 state = {
@@ -127,6 +132,7 @@ export const {
     updateIsOpenPrice,
     updateAutoConfirmItem,
     updateRestaurantConfig,
+    updateAutoCloseOrder,
 } = authSlice.actions;
 
 export default authSlice.reducer;
