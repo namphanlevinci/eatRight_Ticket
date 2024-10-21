@@ -12,6 +12,7 @@ export type CartItemType = {
     firstname: string;
     phonenumber?: string;
     numberOfCustomer: number;
+    custom_price?: number;
     is_paid?: boolean;
     order?: {
         items?: OrderItemType[];
@@ -100,11 +101,13 @@ export type ItemType = {
         sku: string;
         __typename: string;
     };
+    open_price?: boolean | number;
     quantity: number;
     quantityText?: string;
     guestId?: string;
     is_bundle?: boolean;
     is_configurable?: boolean;
+    custom_price?: number;
     configurable_options?: {
         id: number | string;
         option_label: string;

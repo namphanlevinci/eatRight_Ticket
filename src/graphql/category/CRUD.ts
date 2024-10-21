@@ -7,6 +7,7 @@ export const CREATE_CATEGORY = gql`
         $is_active: Boolean!
         $menu_ids: [Int]!
         $kitchen_station: Int
+        $open_price: Boolean
     ) {
         merchantCreateCategoryMenu(
             input: {
@@ -15,6 +16,7 @@ export const CREATE_CATEGORY = gql`
                 is_active: $is_active
                 menu_ids: $menu_ids
                 kitchen_station: $kitchen_station
+                open_price: $open_price
             }
         ) {
             id
@@ -48,6 +50,7 @@ export const UPDATE_CATEGORY = gql`
         $is_active: Boolean!
         $menu_ids: [Int]!
         $kitchen_station: Int
+        $open_price: Boolean
     ) {
         merchantUpdateCategoryMenu(
             id: $id
@@ -57,6 +60,7 @@ export const UPDATE_CATEGORY = gql`
                 is_active: $is_active
                 menu_ids: $menu_ids
                 kitchen_station: $kitchen_station
+                open_price: $open_price
             }
         ) {
             id
@@ -90,6 +94,7 @@ export const GET_CATEGORY_DETAIL = gql`
             description
             is_active
             kitchen_station
+            open_price
             menus {
                 entity_id
                 name

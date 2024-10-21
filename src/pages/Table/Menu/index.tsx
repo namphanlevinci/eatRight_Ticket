@@ -58,7 +58,7 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
         }
     }, [categoryIndex]);
     const { theme } = useTheme();
-    const onClickAddToCart = (item: any) => {
+    const onClickAddToCart = (item: ProductType) => {
         if (
             item.__typename === 'SimpleProduct' ||
             item.__typename === 'VirtualProduct'
@@ -73,6 +73,7 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                 product: item,
                 quantity: 1,
                 isUnsend: true,
+                open_price: item.open_price || false,
             };
             addToCart(Item);
             notification.success({
@@ -82,6 +83,31 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
         } else {
             setProduct(item);
         }
+    };
+    const TestData = {
+        __typename: 'SimpleProduct',
+        id: 294,
+        name: 'Handez Test Open Price',
+        sku: 'Handez Test Open Price',
+        url_key: 'handez-test-open-price-1',
+        display_platforms: ['dine_in'],
+        open_price: 1,
+        small_image: {
+            __typename: 'ProductImage',
+            url: 'https://staging-consumer.eatrightpos.com/static/version1729071142/frontend/fnb/default/en_US/Magento_Catalog/images/product/placeholder/small_image.jpg',
+            label: 'Handez Test Open Price',
+        },
+        price: {
+            __typename: 'ProductPrices',
+            regularPrice: {
+                __typename: 'Price',
+                amount: {
+                    __typename: 'Money',
+                    value: 20,
+                    currency: 'USD',
+                },
+            },
+        },
     };
     return data.length < 1 ? (
         <Spin />
@@ -162,12 +188,15 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                                                           {item.__typename ===
                                                               'SimpleProduct' && (
                                                               <p>
-                                                                  {formatNumberWithCommas(
-                                                                      item.price
-                                                                          .regularPrice
-                                                                          .amount
-                                                                          .value,
-                                                                  )}
+                                                                  {item.open_price
+                                                                      ? 'Open Price'
+                                                                      : formatNumberWithCommas(
+                                                                            item
+                                                                                .price
+                                                                                .regularPrice
+                                                                                .amount
+                                                                                .value,
+                                                                        )}
                                                               </p>
                                                           )}
                                                       </MenuItem>
@@ -256,10 +285,12 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                                                                       color: theme.pRIMARY6Primary,
                                                                   }}
                                                               >
-                                                                  ${' '}
-                                                                  {item.price.regularPrice.amount.value.toFixed(
+                                                                  {item.open_price
+                                                                      ? 'Open Price'
+                                                                      : ` $ 
+                                                                  ${item.price.regularPrice.amount.value.toFixed(
                                                                       2,
-                                                                  )}
+                                                                  )}`}
                                                               </p>
                                                           )}
                                                       </MenuItem>

@@ -11,6 +11,7 @@ import { useTheme } from 'context/themeContext';
 import ModalOffSplitBill from 'components/modal/ModalOffSplitBill';
 import { useCartTable } from 'pages/Table/Cart/useGetCart';
 import LoadingModal from 'components/modal/loadingModal';
+import ModalEditPrice from 'components/modal/ModalEditPrice';
 export default function TableBill() {
     const { loading } = useCartTable(false, false);
     const {

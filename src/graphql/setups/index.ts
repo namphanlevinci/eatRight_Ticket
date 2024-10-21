@@ -5,6 +5,8 @@ export const GET_MERCHANT_RESTAURANT_CONFIG = gql`
         merchantGetRestaurantConfig {
             auto_confirm_item
             minimum_ticket_length
+            close_order
+            open_pricing
             primary_terminal_setting
         }
     }
@@ -16,6 +18,11 @@ export const SET_MERCHANT_RESTAURANT_CONFIG = gql`
     }
 `;
 
+export const SET_MERCHANT_RESTAURANT_CONFIG_OPEN_PRICING = gql`
+    mutation ($open_pricing: Boolean!) {
+        setupConfigRestaurant(input: { open_pricing: $open_pricing })
+    }
+`;
 export const GET_PRIMARY_TERMINAL_WAITER = gql`
     {
         waiterPrimaryPosDevice {

@@ -16,14 +16,16 @@ import { emitter } from 'graphql/client';
 import { App, Modal } from 'antd';
 import { useDispatch } from 'react-redux';
 import {
+    updateRestaurantConfig,
     updateStatusLogin,
     updateStatusLoginForMerchant,
     updateStatusLogout,
 } from 'features/auth/authSlice';
 import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
+import { GET_MERCHANT_RESTAURANT_CONFIG } from 'graphql/setups';
 import {
-    GET_CONFIG_PRINTER,
+    // GET_CONFIG_PRINTER,
     LIST_PRINTER_DEVICES,
     SELECT_PRINTER_DEVICE,
 } from 'graphql/printer';
@@ -48,7 +50,7 @@ export const BaseRouter = () => {
             );
         }
     };
-    const [onGetConfig] = useLazyQuery(GET_CONFIG_PRINTER);
+    // const [onGetConfig] = useLazyQuery(GET_CONFIG_PRINTER);
     useEffect(() => {
         if (isMerchant) {
             document.title = 'EatRight Merchant';
@@ -211,9 +213,28 @@ export const BaseRouter = () => {
             });
         }
     }, [needLogout]);
+    const [onGetRestaurantConfig] = useLazyQuery(
+        GET_MERCHANT_RESTAURANT_CONFIG,
+    );
     useEffect(() => {
         if (isLogged) {
             setNeedLogout(false);
+            onGetRestaurantConfig({ fetchPolicy: 'no-cache' }).then(
+                (res: any) => {
+                    if (res.data) {
+                        dispatch(
+                            updateRestaurantConfig({
+                                isOpenPrice:
+                                    res?.data?.merchantGetRestaurantConfig
+                                        ?.open_pricing,
+                                isAutoConfirmItem:
+                                    res?.data?.merchantGetRestaurantConfig
+                                        ?.auto_confirm_item,
+                            }),
+                        );
+                    }
+                },
+            );
         }
     }, [isLogged]);
     return (
