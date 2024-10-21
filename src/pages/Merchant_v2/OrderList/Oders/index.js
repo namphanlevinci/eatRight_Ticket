@@ -35,8 +35,6 @@ function Order(props) {
         isCompletedOrder = false,
     } = props;
 
-    console.log({ order });
-
     const findOrderOffSound = orderListNotResponse.find(
         (obj) => obj?.id == order?.id,
     );
@@ -132,9 +130,14 @@ function Order(props) {
             </span>
         );
     };
+
     if (order) {
         return (
-            <Draggable draggableId={id} key={id} index={parseInt(order?.id)}>
+            <Draggable
+                draggableId={(id + 1)?.toString?.()}
+                key={id}
+                index={parseInt(order?.id)}
+            >
                 {(provided, snapshot) => (
                     <div
                         // draggableId={order?.order_number?.toString()}

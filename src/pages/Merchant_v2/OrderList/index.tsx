@@ -202,8 +202,6 @@ export default function MerchantOrderList() {
                                         const countOrderByStatus =
                                             list_order?.length ?? 0;
 
-                                        console.log('status : ', item?.status);
-
                                         return (
                                             <Droppable
                                                 droppableId={item?.status}
