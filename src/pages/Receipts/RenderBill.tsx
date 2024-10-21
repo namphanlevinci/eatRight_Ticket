@@ -150,12 +150,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     <TextDark style={text16}>Base total:</TextDark>
                     <TextDark>
                         {CURRENTCY}{' '}
-                        {Math.abs(
-                            data?.total?.grand_total?.value -
-                                (data?.total?.subtotal?.value -
-                                    (totalDiscount || 0) +
-                                    data?.total?.total_tax?.value),
-                        ).toFixed(2)}
+                        {Math.abs(data?.total?.grand_total?.value).toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
