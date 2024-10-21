@@ -10,10 +10,10 @@ import {
 import LoadingModal from 'components/modal/loadingModal';
 import { useDispatch } from 'react-redux';
 import { updateAutoConfirmItem } from 'features/auth/authSlice';
-import { useSelector } from 'react-redux';
-import { RootState } from 'store';
+// import { useSelector } from 'react-redux';
+// import { RootState } from 'store';
 export default function TableOrdering() {
-    const { isAutoConfirmItem } = useSelector((state: RootState) => state.auth);
+    // const { isAutoConfirmItem } = useSelector((state: RootState) => state.auth);
     const [onGetRestaurantConfig, { loading }] = useLazyQuery(
         GET_MERCHANT_RESTAURANT_CONFIG,
     );
@@ -82,7 +82,7 @@ export default function TableOrdering() {
             </Row>
 
             <Switch
-                value={isAutoConfirmItem}
+                value={true}
                 onChange={(value) => {
                     handleChangeSelect(value);
                 }}
