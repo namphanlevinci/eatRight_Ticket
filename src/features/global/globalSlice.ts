@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { EStatusTable } from 'graphql/table/table';
 
 export interface globalStateType {
     searchText: {
@@ -9,6 +10,7 @@ export interface globalStateType {
         is_dine_in: boolean;
         is_eat_out: boolean;
     };
+    filterTable: EStatusTable;
 }
 
 const initialState: globalStateType = {
@@ -20,21 +22,26 @@ const initialState: globalStateType = {
         is_dine_in: true,
         is_eat_out: true,
     },
+    filterTable: EStatusTable.ALL,
 };
 
 export const globalSlice = createSlice({
     name: 'global',
     initialState,
     reducers: {
-        updateSearchOrder: (state, action) => {
+        updateSearch: (state, action) => {
             state.searchText = action.payload.searchText;
         },
         updateFilterOrder: (state, action) => {
             state.filterOrder = action.payload.filterOrder;
         },
+        updateFilterTable: (state, action) => {
+            state.filterTable = action.payload.filterTable;
+        },
     },
 });
 
-export const { updateSearchOrder, updateFilterOrder } = globalSlice.actions;
+export const { updateSearch, updateFilterOrder, updateFilterTable } =
+    globalSlice.actions;
 
 export default globalSlice.reducer;

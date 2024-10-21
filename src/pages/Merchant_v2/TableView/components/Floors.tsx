@@ -24,7 +24,6 @@ const Floors = ({ floorActive, onFloorActive, floors }: IProps) => {
     return (
         <SFloorsContaier>
             {floosList.map((floor, idx) => {
-                console.log(floorActive, floor.id);
                 return (
                     <SFloorItem
                         key={floor.id}
