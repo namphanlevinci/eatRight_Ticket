@@ -58,7 +58,7 @@ export default function AutoCloseOrder() {
                     showLoading={loading || setRestaurantConfigLoading}
                 />
                 <Row>
-                    <Text style={{ fontSize: 18, fontWeight: '500' }}>
+                    <Text style={{ fontSize: 18, fontWeight: '600' }}>
                         Auto Close Orders
                     </Text>
                     <Tooltip
