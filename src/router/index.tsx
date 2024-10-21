@@ -16,12 +16,15 @@ import { emitter } from 'graphql/client';
 import { App, Modal } from 'antd';
 import { useDispatch } from 'react-redux';
 import {
+    updateRestaurantConfig,
     updateStatusLogin,
     updateStatusLoginForMerchant,
     updateStatusLogout,
 } from 'features/auth/authSlice';
 import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
+import { useLazyQuery } from '@apollo/client';
+import { GET_MERCHANT_RESTAURANT_CONFIG } from 'graphql/setups';
 export const BaseRouter = () => {
     const { notification } = App.useApp();
     const dispatch = useDispatch();
@@ -144,9 +147,24 @@ export const BaseRouter = () => {
             });
         }
     }, [needLogout]);
+    const [onGetConfig] = useLazyQuery(GET_MERCHANT_RESTAURANT_CONFIG);
     useEffect(() => {
         if (isLogged) {
             setNeedLogout(false);
+            onGetConfig({ fetchPolicy: 'no-cache' }).then((res: any) => {
+                if (res.data) {
+                    dispatch(
+                        updateRestaurantConfig({
+                            isOpenPrice:
+                                res?.data?.merchantGetRestaurantConfig
+                                    ?.open_pricing,
+                            isAutoConfirmItem:
+                                res?.data?.merchantGetRestaurantConfig
+                                    ?.auto_confirm_item,
+                        }),
+                    );
+                }
+            });
         }
     }, [isLogged]);
     return (

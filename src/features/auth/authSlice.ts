@@ -15,6 +15,10 @@ export interface authStateType {
     isMerchant: boolean;
     is_dine_in: boolean;
     isTableView: boolean;
+    isOpenPrice: boolean;
+    isDefaultTableView: boolean;
+    isTerminalPrinter: boolean;
+    isAutoConfirmItem: boolean;
 }
 
 const initialState: authStateType = {
@@ -28,6 +32,10 @@ const initialState: authStateType = {
     isMerchant: false,
     is_dine_in: false,
     isTableView: true,
+    isOpenPrice: false,
+    isDefaultTableView: false,
+    isTerminalPrinter: false,
+    isAutoConfirmItem: false,
 };
 
 export const authSlice = createSlice({
@@ -76,6 +84,26 @@ export const authSlice = createSlice({
         changeModeTableView: (state) => {
             state.isTableView = !state.isTableView;
         },
+        updateIsTerminalPrinter: (state, action) => {
+            state.isTerminalPrinter = action.payload;
+        },
+        updateIsDefaultTableView: (state, action) => {
+            state.isDefaultTableView = action.payload;
+        },
+        updateIsOpenPrice: (state, action) => {
+            state.isOpenPrice = action.payload;
+        },
+        updateAutoConfirmItem: (state, action) => {
+            state.isAutoConfirmItem = action.payload;
+        },
+        updateRestaurantConfig: (state, action) => {
+            if (action.payload) {
+                state = {
+                    ...state,
+                    ...action.payload,
+                };
+            }
+        },
     },
 });
 
@@ -87,6 +115,11 @@ export const {
     updateStatusLoginForMerchant,
     clearStoreData,
     changeModeTableView,
+    updateIsTerminalPrinter,
+    updateIsDefaultTableView,
+    updateIsOpenPrice,
+    updateAutoConfirmItem,
+    updateRestaurantConfig,
 } = authSlice.actions;
 
 export default authSlice.reducer;

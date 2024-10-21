@@ -3,11 +3,36 @@ import { Text } from 'components/atom/Text';
 import { RowStyled } from 'pages/BillDetail/styled';
 import React, { useEffect } from 'react';
 import QuestionIcon from 'assets/icons/questionIcon';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import {
+    GET_MERCHANT_RESTAURANT_CONFIG,
+    SET_MERCHANT_RESTAURANT_CONFIG_OPEN_PRICING,
+} from 'graphql/setups';
+import { useDispatch } from 'react-redux';
+import { updateIsOpenPrice } from 'features/auth/authSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
+import LoadingModal from 'components/modal/loadingModal';
 
 export default function RestaurentGeneralPage() {
     const [isTableView, setIsTableView] = React.useState(false);
-    const [isOpenPrice, setOpenPrice] = React.useState(false);
-
+    const { isOpenPrice } = useSelector((state: RootState) => state.auth);
+    const [onGetConfig, { loading: loadingConfig }] = useLazyQuery(
+        GET_MERCHANT_RESTAURANT_CONFIG,
+    );
+    useEffect(() => {
+        onGetConfig({ fetchPolicy: 'no-cache' }).then((res: any) => {
+            dispatch(
+                updateIsOpenPrice(
+                    res?.data?.merchantGetRestaurantConfig?.open_pricing,
+                ),
+            );
+        });
+    }, []);
+    const [onSetOpenPrice, { loading }] = useMutation(
+        SET_MERCHANT_RESTAURANT_CONFIG_OPEN_PRICING,
+    );
+    const dispatch = useDispatch();
     useEffect(() => {
         setIsTableView(
             JSON.parse(localStorage.getItem('isTableView') || 'false'),
@@ -25,12 +50,22 @@ export default function RestaurentGeneralPage() {
     };
 
     const handleSetOpenPrice = (value: boolean) => {
-        setOpenPrice(value);
-        localStorage.setItem('isOpenPrice', JSON.stringify(value));
+        onSetOpenPrice({
+            variables: {
+                open_pricing: value,
+            },
+        }).then(() => {
+            notification.success({
+                message: 'Success',
+                description: 'Set open pricing successfully',
+            });
+            dispatch(updateIsOpenPrice(value));
+        });
     };
 
     return (
         <div style={{ padding: 16 }}>
+            <LoadingModal showLoading={loadingConfig} />
             <div
                 style={{
                     borderBottom: '1px solid #dddddd',
@@ -88,6 +123,7 @@ export default function RestaurentGeneralPage() {
                 <Switch
                     value={isOpenPrice}
                     onChange={(value) => handleSetOpenPrice(value)}
+                    loading={loading}
                 />
             </RowStyled>
         </div>
