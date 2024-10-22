@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import ButtonTime from '../components/Button/ButtonTime';
 import './index.scss';
 import moment from 'moment';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable } from '@hello-pangea/dnd';
 const statusConvertData = {
     pending: '1',
     received: '2',
@@ -131,12 +131,17 @@ function Order(props) {
         );
     };
 
+    function generateRandomInteger(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    const randomInteger = generateRandomInteger(100, 1000);
+
     if (order) {
         return (
             <Draggable
                 draggableId={order?.id}
                 key={id}
-                index={parseInt(order?.id)}
+                index={order?.sortId ?? randomInteger}
             >
                 {(provided, snapshot) => (
                     <div

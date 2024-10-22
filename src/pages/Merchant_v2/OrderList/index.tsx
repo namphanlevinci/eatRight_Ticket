@@ -9,10 +9,10 @@ import Order from './Oders';
 import useOpenModal from './useOpenModal';
 import { RejectOrderModal } from './components/Modal/RejectOrderModal';
 import { useOrderCompleted } from './useOrderComplete';
-import { debounce } from 'lodash';
+import { cond, debounce } from 'lodash';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 
 export default function MerchantOrderList() {
     const { filterOrder, searchText } = useSelector(
@@ -87,8 +87,25 @@ export default function MerchantOrderList() {
     }, [currentPage, loading2]);
     const [isCompletedOrder, setIsCompletedOrder] = useState(false);
 
-    const handleDragEnd = () => {
-        console.log('handle drag end');
+    const handleDragEnd = ({
+        source, // cột nguồn
+        destination, // cột tới
+    }: {
+        source: any;
+        destination: any;
+    }) => {
+        console.log('handle drag end', { source, destination });
+        const dragItem = renderList?.find(
+            (obj: any) => obj?.sortId == source?.index,
+        );
+        const listItem = renderList.filter(
+            (obj: any) => obj?.cart_id == dragItem?.cart_id,
+        );
+        const payload = {
+            entity_id: dragItem?.cart_id,
+            items_id: listItem.map((obj) => obj?.id), /// confirm lại id chinh xac chưa
+            type: dragItem?.type == 'dining-quotes' ? 'QUOTES' : 'ORDER',
+        };
     };
 
     return (

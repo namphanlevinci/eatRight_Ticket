@@ -22,3 +22,13 @@ export const MERCHANT_COMPLETE_ORDER = gql`
         }
     }
 `;
+
+export const SET_ALL_ITEM_COOKING = gql`
+    mutation ($entity_id: Int!, $items_id: Int!, $entity_type: String!) {
+        kitchenSetAllItemCooking(
+            entity_id: $entity_id
+            items_id: $items_id
+            entity_type: $entity_type
+        )
+    }
+`;

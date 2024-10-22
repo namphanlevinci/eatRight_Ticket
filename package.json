@@ -8,6 +8,7 @@
         "@babel/preset-env": "^7.24.7",
         "@babel/preset-react": "^7.24.7",
         "@babel/preset-typescript": "^7.24.7",
+        "@hello-pangea/dnd": "^17.0.0",
         "@reduxjs/toolkit": "^2.0.1",
         "@testing-library/jest-dom": "^5.14.1",
         "@testing-library/react": "^13.0.0",
