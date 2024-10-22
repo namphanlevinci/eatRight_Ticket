@@ -57,15 +57,15 @@ export default function ModalPaySuccess({
         fetchPolicy: 'no-cache',
     });
     const Print = () => {
-        const is_used_terminal =
-            localStorage.getItem('merchantGetPrinterConfig') === 'true'
-                ? true
-                : false;
+        // const is_used_terminal =
+        //     localStorage.getItem('merchantGetPrinterConfig') === 'true'
+        //         ? true
+        //         : false;
         // console.log('is_used_terminal', is_used_terminal);
-        if (is_used_terminal) {
-            PrintBillApi();
-            return;
-        }
+        // if (is_used_terminal) {
+        //     PrintBillApi();
+        //     return;
+        // }
         if (invoice_number) {
             // console.log('invoice_number', invoice_number);
             // console.log(Customer_CopyForm(invoice_number));
