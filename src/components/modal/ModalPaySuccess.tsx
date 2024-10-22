@@ -1,4 +1,4 @@
-import { Modal, Spin } from 'antd';
+import { Modal, notification, Spin } from 'antd';
 import { useTheme } from 'context/themeContext';
 import styled from 'styled-components';
 import SmsIcon from 'assets/icons/smsIcon';
@@ -17,6 +17,7 @@ import {
     var_ReceiptDetail,
 } from 'graphql/receipts';
 import { useLazyQuery } from '@apollo/client';
+import { Customer_CopyForm } from 'utils/printForm';
 
 export default function ModalPaySuccess({
     isVisible = false,
@@ -60,20 +61,35 @@ export default function ModalPaySuccess({
             localStorage.getItem('merchantGetPrinterConfig') === 'true'
                 ? true
                 : false;
+        // console.log('is_used_terminal', is_used_terminal);
         if (is_used_terminal) {
             PrintBillApi();
             return;
         }
         if (invoice_number) {
-            getReceiptDetail({
-                variables: {
-                    invoice_number: invoice_number,
-                },
-            }).then((res) => {
-                if (res.data) {
-                    PrintReceipt(res.data.merchantGetReceipt);
-                }
-            });
+            // console.log('invoice_number', invoice_number);
+            // console.log(Customer_CopyForm(invoice_number));
+            // getReceiptDetail({
+            //     variables: {
+            //         invoice_number: invoice_number,
+            //     },
+            // }).then((res) => {
+            //     if (res.data) {
+            //         PrintReceipt(res.data.merchantGetReceipt);
+            //     }
+            // });
+            if (window?.ReactNativeWebView) {
+                const imageUrl = Customer_CopyForm(invoice_number);
+                window.ReactNativeWebView.postMessage(
+                    JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
+                );
+                console.log('image url', imageUrl);
+                notification.success({
+                    message: 'Receipt sent to printer',
+                    description: 'Please go to printer to take the bill!',
+                });
+                return;
+            }
         } else {
             PrintBillApi();
         }
