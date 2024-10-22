@@ -1,12 +1,12 @@
 import { DarkLayout } from 'layouts/DarkLayout';
-import CategoryNew from 'pages/Merchant_v2/MenuManager/CategoryNew';
+import CategoryPage from 'pages/Merchant_v2/MenuManager/Category';
 
-export const CategoryNewContainer = () => {
+export const CategoryPageContainer = () => {
     return (
         <DarkLayout>
-            <CategoryNew />
+            <CategoryPage />
         </DarkLayout>
     );
 };
 
-export default CategoryNewContainer;
+export default CategoryPageContainer;
