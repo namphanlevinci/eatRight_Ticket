@@ -31,6 +31,8 @@ import {
 import { BASE_ROUTER } from 'constants/router';
 import QuestionIcon from 'assets/icons/questionIcon';
 import './index.scss';
+import { RootState } from 'store';
+import { useSelector } from 'react-redux';
 
 const Index = () => {
     const [apiGetCategory] = useLazyQuery(GET_CATEGORY_LIST);
@@ -61,7 +63,13 @@ const Index = () => {
     const refPopupEdit = useRef<any>();
 
     const [form] = Form.useForm();
-
+    const { isOpenPrice } = useSelector((state: RootState) => state.auth);
+    useEffect(() => {
+        if (isOpenPrice) {
+            setOpenPrice(true);
+            openPriceRef?.current?.setValue(true);
+        }
+    }, [isOpenPrice]);
     const onFinish = (values: any) => {
         const dineIn = dineInRef?.current?.getValue?.() ? 'dine_in' : null;
         const takeAway = takeAwayRef?.current?.getValue?.() ? 'online' : null;
@@ -372,7 +380,6 @@ const Index = () => {
                                         }}
                                         placeholder="Select a group"
                                         defaultActiveFirstOption
-                                        onSelect={(value) => console.log(value)}
                                     >
                                         {menuList?.map?.((m: any) => {
                                             return (
@@ -386,6 +393,7 @@ const Index = () => {
                                                                 'kitchen_station',
                                                                 `${m?.kitchen_station}`,
                                                             );
+                                                            console.log(m);
                                                         }}
                                                     >
                                                         {m?.name}

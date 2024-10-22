@@ -335,6 +335,9 @@ export const useTableBill = (isGoBack = true) => {
             })
             .catch((err) => {
                 console.log(err);
+            })
+            .finally(() => {
+                setCheckOutLoading(false);
             });
     };
     const [onCancelCheckout] = useMutation(CANCEL_CHECKOUT);

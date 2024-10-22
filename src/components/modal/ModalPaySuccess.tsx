@@ -60,7 +60,7 @@ export default function ModalPaySuccess({
             localStorage.getItem('merchantGetPrinterConfig') === 'true'
                 ? true
                 : false;
-        if (!is_used_terminal) {
+        if (is_used_terminal) {
             PrintBillApi();
             return;
         }

@@ -30,6 +30,8 @@ import { GET_LIST_KITCHEN_STATION } from 'containers/Kitchen/printer';
 import { BASE_ROUTER } from 'constants/router';
 import ModalConfirm from 'components/modal/ModalConfirm';
 import QuestionIcon from 'assets/icons/questionIcon';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 interface ICategory {
     name: string;
@@ -57,12 +59,16 @@ const Index = () => {
     const { openModal } = useContext(AlertContext);
     const [stations, setStations] = useState([]);
     const [showModalChangeStation, setShowModalChangeStation] = useState(false);
-
+    const { isOpenPrice } = useSelector((state: RootState) => state.auth);
     const location = useLocation();
     const pathname = location?.pathname;
     const refPopupDelete = useRef<any>();
     const refPopupEdit = useRef<any>();
-
+    useEffect(() => {
+        if (isOpenPrice) {
+            setOpenPriceToggle(true);
+        }
+    }, [isOpenPrice]);
     const handleConfirmChaneStation = () => {
         const values = form.getFieldsValue();
         const payload = {
