@@ -32,6 +32,7 @@ export default function ColRight({
     isSplitBill,
     openModalSplitBill,
     SplitBillButton,
+    checkItemNeedInputPrice,
 }: {
     cart?: CartItemType;
     setCart?: any;
@@ -44,6 +45,7 @@ export default function ColRight({
     isSplitBill?: boolean;
     openModalSplitBill?: () => void;
     SplitBillButton?: any;
+    checkItemNeedInputPrice?: any;
 }) {
     // const [customerName, setCustomerName] = React.useState<any>(
     //     cart?.firstname,
@@ -87,6 +89,7 @@ export default function ColRight({
     const [tipPercent, setTipPercent] = useState(0);
     const [modalDiscount, setModalDiscount] = useState(false);
     const [modalTip, setModalTip] = useState(false);
+
     const {
         handleAddCoupon,
         // handleRemoveCoupon,
@@ -126,6 +129,7 @@ export default function ColRight({
                 handleOtherPayment(value);
                 return;
             }
+
             handleCheckOut();
         }
     };
@@ -553,6 +557,10 @@ export default function ColRight({
                     <ButtonSubmit
                         title="Proceed Payment"
                         onClick={() => {
+                            const isConfirmed = checkItemNeedInputPrice();
+                            if (isConfirmed) {
+                                return;
+                            }
                             setIsClickProceed(true);
                             if (
                                 paymentMethod === 'cashondelivery' &&

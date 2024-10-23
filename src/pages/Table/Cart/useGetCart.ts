@@ -62,7 +62,7 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
         cartId: string;
         price: number;
     }) => {
-        console.log('update price on cart', item);
+        setLoading(true);
         onUpdatePriceItem({
             variables: {
                 itemId: item.id,
@@ -75,6 +75,9 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
             })
             .catch((error) => {
                 console.error(error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
     const getCartsTable = async () => {
@@ -140,6 +143,9 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
                 })
                 .catch((error) => {
                     console.error(error);
+                })
+                .finally(() => {
+                    setLoading(false);
                 });
         }
     };
