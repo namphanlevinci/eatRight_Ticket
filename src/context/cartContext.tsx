@@ -395,10 +395,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         const old_price =
             newCartItems[cartIndex].items[index].prices.price.value;
         const quantity = newCartItems[cartIndex].items[index].quantity;
-        newCartItems[cartIndex].items[index].custom_price = parseInt(
+        newCartItems[cartIndex].items[index].custom_price = parseFloat(
             `${custom_price}`,
         );
-        newCartItems[cartIndex].items[index].prices.price.value = parseInt(
+        newCartItems[cartIndex].items[index].prices.price.value = parseFloat(
             `${custom_price}`,
         );
 

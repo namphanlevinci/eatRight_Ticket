@@ -102,7 +102,7 @@ export default function ModalEditPrice({
                     onChange={handlechangePrice}
                 />
                 <div
-                    onClick={() => setPrice(0)}
+                    onClick={() => setPrice('')}
                     style={{ marginRight: 16, cursor: 'pointer' }}
                 >
                     <CloseInputIcon />
