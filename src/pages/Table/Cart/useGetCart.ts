@@ -9,6 +9,7 @@ import { REMOVE_ITEM_ON_CART } from 'graphql/cart/removeItemOnCart';
 import { UPDATE_STATUS_ITEM } from 'graphql/cart/updateStatusItem';
 import { emitter } from 'graphql/client';
 import { isCartIdFromLocal } from 'utils/isNumericId';
+import { UPDATE_PRICE_ITEM_ON_CART } from 'graphql/cart/updatePriceItemOnCart';
 export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
     const [listCart, setListCart] = useState<string[]>([]);
     const [searchParams] = useSearchParams();
@@ -35,6 +36,7 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
         useLazyQuery(GET_CARTS_BY_TABLE);
     const [updateStatusItem, { loading: updateLoading }] =
         useMutation(UPDATE_STATUS_ITEM);
+    const [onUpdatePriceItem] = useMutation(UPDATE_PRICE_ITEM_ON_CART);
     useEffect(() => {
         if (indexTable !== -1) {
             if (cartItems[indexTable].carts.length > 0) {
@@ -55,7 +57,26 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
             );
         }
     }, [selectedCart]);
-
+    const handleUpdatePriceItem = (item: {
+        id: string;
+        cartId: string;
+        price: number;
+    }) => {
+        console.log('update price on cart', item);
+        onUpdatePriceItem({
+            variables: {
+                itemId: item.id,
+                cartId: item.cartId,
+                customPrice: item.price,
+            },
+        })
+            .then(() => {
+                getCartByIdTable();
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
     const getCartsTable = async () => {
         if (tableId) {
             setLoading(true);
@@ -223,5 +244,6 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
         updateStatusItemServer,
         removeCartIndex,
         customOpenPriceForItem,
+        handleUpdatePriceItem,
     };
 };

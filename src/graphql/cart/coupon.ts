@@ -30,6 +30,7 @@ export const ADD_COUPON = gql`
                     product {
                         name
                         sku
+                        open_price
                     }
                     discount_percent
                     id

@@ -99,6 +99,7 @@ export type ItemType = {
     product: {
         name: string;
         sku: string;
+        open_price?: boolean | number;
         __typename: string;
     };
     open_price?: boolean | number;

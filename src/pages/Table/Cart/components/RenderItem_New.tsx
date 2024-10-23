@@ -121,7 +121,13 @@ export default function RenderItemNew({
                     style={{ width: ismobile ? 240 : 400 }}
                     justify={'space-between'}
                 >
-                    {!item.open_price ? (
+                    {item.open_price || item.product.open_price ? (
+                        <RenderOpenPrice
+                            value={item.custom_price || item.prices.price.value}
+                            onEditOpenPrice={onEditOpenPrice}
+                            isNeedInput={isNeedRequire}
+                        />
+                    ) : (
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <Text
                                 style={{
@@ -137,12 +143,6 @@ export default function RenderItemNew({
                                 )}
                             </Text>
                         </div>
-                    ) : (
-                        <RenderOpenPrice
-                            value={item.custom_price || item.prices.price.value}
-                            onEditOpenPrice={onEditOpenPrice}
-                            isNeedInput={isNeedRequire}
-                        />
                     )}
                     <div>
                         {item.isUnsend ? (

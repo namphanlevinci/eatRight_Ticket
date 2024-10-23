@@ -33,6 +33,7 @@ export default function CartItemList({
     removeItemOnCartServer,
     updateStatusItemServer,
     customOpenPriceForItem,
+    handleUpdatePriceItem,
 }: {
     data: CartItemType | undefined;
     cartInfo: string;
@@ -47,6 +48,11 @@ export default function CartItemList({
     }: {
         index: number;
         custom_price: number;
+    }) => void;
+    handleUpdatePriceItem: (item: {
+        id: string;
+        cartId: string;
+        price: number;
     }) => void;
 }) {
     const {
@@ -71,7 +77,7 @@ export default function CartItemList({
     const [isAllDone, setIsAllDone] = useState(false);
     const [searchParams] = useSearchParams();
     const selectedCart = parseInt(searchParams.get('cartIndex') || '0');
-    const [isNeedRequire, setIsNeedRequire] = useState(false);
+    // const [isNeedRequire, setIsNeedRequire] = useState(false);
     const isNewItem = data?.items?.find((item: ItemType) => item.isUnsend)
         ? true
         : false;
@@ -149,7 +155,7 @@ export default function CartItemList({
     }) => {
         const items: ItemType[] =
             data?.items.filter((item: ItemType) => item.isUnsend) || [];
-        let isNeedInput = false;
+        // let isNeedInput = false;
         const carts = items.map((item: ItemType) => {
             if (item.is_configurable) {
                 let result: any = {
@@ -159,17 +165,17 @@ export default function CartItemList({
                     note: item.note,
                 };
                 if (item?.open_price) {
-                    const custom_price =
-                        item?.custom_price || item.prices.price.value;
-                    if (custom_price > 0) {
-                        result = {
-                            ...result,
-                            custom_price:
-                                item?.custom_price || item.prices.price.value,
-                        };
-                    } else {
-                        isNeedInput = true;
-                    }
+                    // const custom_price =
+                    //     item?.custom_price || item.prices.price.value||0;
+                    // if (custom_price > 0) {
+                    result = {
+                        ...result,
+                        custom_price:
+                            item?.custom_price || item.prices.price.value,
+                    };
+                    // } else {
+                    // isNeedInput = true;
+                    // }
                 }
                 return result;
             }
@@ -210,24 +216,23 @@ export default function CartItemList({
                 note: item.note,
             };
             if (item?.open_price) {
-                const custom_price =
-                    item?.custom_price || item.prices.price.value;
-                if (custom_price > 0) {
-                    result = {
-                        ...result,
-                        custom_price:
-                            item?.custom_price || item.prices.price.value,
-                    };
-                } else {
-                    isNeedInput = true;
-                }
+                // const custom_price =
+                //     item?.custom_price || item.prices.price.value;
+                // if (custom_price > 0) {
+                result = {
+                    ...result,
+                    custom_price: item?.custom_price || item.prices.price.value,
+                };
+                // } else {
+                // isNeedInput = true;
+                // }
             }
             return result;
         });
-        if (isNeedInput) {
-            setIsNeedRequire(true);
-            return;
-        }
+        // if (isNeedInput) {
+        //     setIsNeedRequire(true);
+        //     return;
+        // }
         if (isCartIdFromLocal(data?.id || '')) {
             addCart(
                 carts,
@@ -364,7 +369,20 @@ export default function CartItemList({
     };
 
     const onSubmitEditPrice = (custom_price: number) => {
-        customOpenPriceForItem({ index: showEditPrice.index, custom_price });
+        const items = data?.items[showEditPrice.index];
+        if (items?.uid) {
+            handleUpdatePriceItem({
+                cartId: data?.id || '',
+                id: items?.id || '',
+                price: custom_price,
+            });
+        } else {
+            customOpenPriceForItem({
+                index: showEditPrice.index,
+                custom_price,
+            });
+        }
+
         setShowEditPrice({
             ...showEditPrice,
             show: false,
@@ -447,10 +465,9 @@ export default function CartItemList({
                                 updateStatusItemServer={updateStatusItemServer}
                                 key={index}
                                 onRemoveItem={onRemoveItem}
-                                onEditOpenPrice={() =>
-                                    onEditOpenPrice(index, item)
-                                }
-                                isNeedRequire={isNeedRequire}
+                                onEditOpenPrice={() => {
+                                    onEditOpenPrice(index, item);
+                                }}
                             />
                         );
                     })}
