@@ -98,8 +98,9 @@ const Index = () => {
 
     const onFinish = (values: any) => {
         if (
-            data?.kitchen_station.toString() !== values?.kitchen_station &&
-            categoryId
+            data?.kitchen_station?.toString() != values?.kitchen_station &&
+            categoryId &&
+            values?.kitchen_station !== ''
         ) {
             setShowModalChangeStation(true);
             return;
@@ -163,9 +164,12 @@ const Index = () => {
                         menu_ids: detail?.menus?.map?.(
                             (m: any) => m?.entity_id,
                         ),
-                        kitchen_station: `${detail?.kitchen_station ?? ''}`,
                     });
-
+                    if (detail?.kitchen_station) {
+                        form.setFieldsValue({
+                            kitchen_station: `${detail?.kitchen_station}`,
+                        });
+                    }
                     setOpenPriceToggle(detail?.open_price ?? false);
                     setIsToggled(detail?.is_active);
                     setData(detail);

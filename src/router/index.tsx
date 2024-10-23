@@ -159,6 +159,9 @@ export const BaseRouter = () => {
             return;
         }
         const handleMessage = (event: any) => {
+            if (!window?.ReactNativeWebView) {
+                return;
+            }
             try {
                 const data = JSON.parse(event.data);
                 notification.success({
