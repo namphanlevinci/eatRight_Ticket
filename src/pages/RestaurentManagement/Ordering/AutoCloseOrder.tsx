@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, notification, Row, Switch, Tooltip } from 'antd';
+import { Button, notification, Row, Tooltip } from 'antd';
 import { Text } from 'components/atom/Text';
 import { InfoIcon } from '../TerminalSetting/icons/infoIcon';
 import { useLazyQuery, useMutation } from '@apollo/client';
@@ -15,7 +15,7 @@ import { updateAutoCloseOrder } from 'features/auth/authSlice';
 import styled from 'styled-components';
 export default function AutoCloseOrder() {
     // const { isAutoConfirmItem } = useSelector((state: RootState) => state.auth);
-    const [isOpen, setIsOpen] = useState(true);
+    // const [isOpen, setIsOpen] = useState(true);
     const [onGetRestaurantConfig, { loading }] = useLazyQuery(
         GET_MERCHANT_RESTAURANT_CONFIG,
     );
@@ -87,46 +87,42 @@ export default function AutoCloseOrder() {
                     </Tooltip>
                 </Row>
 
-                <Switch
+                {/* <Switch
                     value={isOpen}
                     onChange={(value) => {
                         // handleChangeSelect(value);
                         console.log(value);
                     }}
                     loading={setRestaurantConfigLoading}
-                />
+                /> */}
             </Row>
 
-            {isOpen ? (
-                <>
-                    <Row style={{ marginTop: 16 }} align={'middle'}>
-                        <IconContainer
-                            onClick={() => {
-                                handleChangeSelect(false);
-                                setIsPaid(false);
-                            }}
-                        >
-                            {!isPaid ? <IconRadioSelect /> : <IconRadio />}
-                        </IconContainer>
-                        <Text style={{ fontSize: 18, fontWeight: '500' }}>
-                            After all items are served and bill is paid.
-                        </Text>
-                    </Row>
-                    <Row style={{ marginTop: 16 }} align={'middle'}>
-                        <IconContainer
-                            onClick={() => {
-                                handleChangeSelect(true);
-                                setIsPaid(true);
-                            }}
-                        >
-                            {isPaid ? <IconRadioSelect /> : <IconRadio />}
-                        </IconContainer>
-                        <Text style={{ fontSize: 18, fontWeight: '500' }}>
-                            Only after bill is paid.
-                        </Text>
-                    </Row>
-                </>
-            ) : null}
+            <Row style={{ marginTop: 16 }} align={'middle'}>
+                <IconContainer
+                    onClick={() => {
+                        handleChangeSelect(false);
+                        setIsPaid(false);
+                    }}
+                >
+                    {!isPaid ? <IconRadioSelect /> : <IconRadio />}
+                </IconContainer>
+                <Text style={{ fontSize: 18, fontWeight: '500' }}>
+                    After all items are served and bill is paid.
+                </Text>
+            </Row>
+            <Row style={{ marginTop: 16 }} align={'middle'}>
+                <IconContainer
+                    onClick={() => {
+                        handleChangeSelect(true);
+                        setIsPaid(true);
+                    }}
+                >
+                    {isPaid ? <IconRadioSelect /> : <IconRadio />}
+                </IconContainer>
+                <Text style={{ fontSize: 18, fontWeight: '500' }}>
+                    Only after bill is paid.
+                </Text>
+            </Row>
         </div>
     );
 }

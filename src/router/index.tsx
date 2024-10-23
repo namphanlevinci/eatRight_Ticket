@@ -165,9 +165,10 @@ export const BaseRouter = () => {
                     message: 'Connected Printer successfully',
                     description: data.data.deviceName,
                 });
-
+                localStorage.setItem('merchantGetPrinterConfig', 'false');
                 localStorage.setItem('printer_name', data.data.deviceName);
                 emitter.emit('printer_name', data.data.deviceName);
+
                 onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then(
                     (res: any) => {
                         const list = res?.data?.merchantGetListDevice?.prints;
@@ -176,10 +177,6 @@ export const BaseRouter = () => {
                                 item?.printer_name == data.data.deviceName,
                         );
                         handleSelectPrinter(printer?.id);
-                        localStorage.setItem(
-                            'merchantGetPrinterConfig',
-                            `false`,
-                        );
                     },
                 );
             } catch (error) {
