@@ -23,6 +23,8 @@ import LoadingModalPayment from 'components/modal/loadingModalPayment';
 import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
 import { isEmpty } from 'lodash';
 import ModalPaySuccess from 'components/modal/ModalPaySuccess';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 export default function TableSplitBillCheckOut() {
     const dataStorage = localStorage.getItem('split_bill_data');
@@ -125,7 +127,7 @@ export default function TableSplitBillCheckOut() {
                                 return value;
                             }),
                         };
-                        if (result?.invoice_image) {
+                        if (result?.invoice_image && !isTerminalPrinter) {
                             PrintMerchantCopy(
                                 result.invoice_image,
                                 paymentMethod === 'cash' ? true : false,
@@ -241,6 +243,7 @@ export default function TableSplitBillCheckOut() {
             emitter.off('arise_result');
         };
     }, [selectGuest]);
+    const { isTerminalPrinter } = useSelector((state: RootState) => state.auth);
     const ReloadInvoice = ({
         printInVoice,
         isPayTerminal = false,
@@ -267,7 +270,7 @@ export default function TableSplitBillCheckOut() {
                             value.number === printInVoice,
                     );
                     if (FindInvoice) {
-                        if (!isPayTerminal) {
+                        if (!isPayTerminal && !isTerminalPrinter) {
                             PrintMerchantCopy(FindInvoice.invoice_image);
                         }
                     }

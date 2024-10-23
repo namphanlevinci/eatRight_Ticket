@@ -221,7 +221,7 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
         }
     }, [loadingPrint]);
     const { isTerminalPrinter } = useSelector((state: RootState) => state.auth);
-    const PrintBillApi = () => {
+    const PrintBillApi = async () => {
         setLoadingPrint(true);
 
         if (!isTerminalPrinter) {
@@ -260,7 +260,7 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
                 });
         } else {
             if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length === 0) {
-                onGetInvoices({
+                await onGetInvoices({
                     variables: {
                         OrderNumber: data?.orderDetail?.order_number,
                     },
