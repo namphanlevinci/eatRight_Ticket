@@ -57,39 +57,16 @@ export default function ModalPaySuccess({
         fetchPolicy: 'no-cache',
     });
     const Print = () => {
-        // const is_used_terminal =
-        //     localStorage.getItem('merchantGetPrinterConfig') === 'true'
-        //         ? true
-        //         : false;
-        // console.log('is_used_terminal', is_used_terminal);
-        // if (is_used_terminal) {
-        //     PrintBillApi();
-        //     return;
-        // }
         if (invoice_number) {
-            // console.log('invoice_number', invoice_number);
-            // console.log(Customer_CopyForm(invoice_number));
-            // getReceiptDetail({
-            //     variables: {
-            //         invoice_number: invoice_number,
-            //     },
-            // }).then((res) => {
-            //     if (res.data) {
-            //         PrintReceipt(res.data.merchantGetReceipt);
-            //     }
-            // });
-            if (window?.ReactNativeWebView) {
-                const imageUrl = Customer_CopyForm(invoice_number);
-                window.ReactNativeWebView.postMessage(
-                    JSON.stringify({ type: 'Customer', imageUrl: imageUrl }),
-                );
-                console.log('image url', imageUrl);
-                notification.success({
-                    message: 'Receipt sent to printer',
-                    description: 'Please go to printer to take the bill!',
-                });
-                return;
-            }
+            getReceiptDetail({
+                variables: {
+                    invoice_number: invoice_number,
+                },
+            }).then((res) => {
+                if (res.data) {
+                    PrintReceipt(res.data.merchantGetReceipt);
+                }
+            });
         } else {
             PrintBillApi();
         }

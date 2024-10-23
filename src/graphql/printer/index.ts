@@ -51,8 +51,24 @@ export const SELECT_TERMINAL_PRINTER_DEVICE = gql`
     }
 `;
 export const SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT = gql`
-    mutation ($pos_id: Int!) {
-        setupConfigRestaurant(input: { primary_terminal_setting: $pos_id })
+    mutation ($pos_id: Int!, $is_used_terminal: Boolean!) {
+        merchantSetConfig(
+            config: {
+                primary_terminal_id: $pos_id
+                is_used_terminal: $is_used_terminal
+            }
+        ) {
+            primary_terminal_id
+            is_used_terminal
+        }
+    }
+`;
+export const USE_TERMINAL_PRINTER = gql`
+    mutation {
+        merchantSetConfig(config: { is_used_terminal: true }) {
+            primary_terminal_id
+            is_used_terminal
+        }
     }
 `;
 export const PRINT_BILL = gql`

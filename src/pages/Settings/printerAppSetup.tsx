@@ -12,6 +12,7 @@ import {
     SELECT_PRINTER_DEVICE,
     SELECT_TERMINAL_PRINTER_DEVICE,
     SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT,
+    USE_TERMINAL_PRINTER,
 } from 'graphql/printer';
 import ButtonSubmit from 'pages/TableBill/components/buttonSubmit';
 import { useEffect, useState } from 'react';
@@ -34,9 +35,8 @@ export default function PrinterAppSetUpPage() {
         SELECT_PRINTER_DEVICE,
     );
     const [onSetTerminalPrinter] = useMutation(SELECT_TERMINAL_PRINTER_DEVICE);
-    const [onSetTerminalPrinterMerchant] = useMutation(
-        SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT,
-    );
+    const [onUseTerminalPrinter] = useMutation(USE_TERMINAL_PRINTER);
+    const [onSetPrinter] = useMutation(SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT);
     const [list, setList] = useState<any>([]);
     const [selectedOption, setSelectedOption] = useState<any>(null);
     const { theme } = useTheme();
@@ -65,9 +65,10 @@ export default function PrinterAppSetUpPage() {
         if (selectedOption) {
             if (switchPrinterMode) {
                 if (isMerchant) {
-                    onSetTerminalPrinterMerchant({
+                    onSetPrinter({
                         variables: {
                             pos_id: selectedOption.entity_id,
+                            is_used_terminal: true,
                         },
                     })
                         .then(() => {
@@ -108,6 +109,7 @@ export default function PrinterAppSetUpPage() {
                                 'merchantGetPrinterConfig',
                                 `true`,
                             );
+                            onUseTerminalPrinter();
                             pushMsgOffPrinter();
                         })
                         .catch(() => {
@@ -133,6 +135,12 @@ export default function PrinterAppSetUpPage() {
                     .catch(() => {
                         console.log('error');
                     });
+                onSetPrinter({
+                    variables: {
+                        pos_id: selectedOption.entity_id,
+                        is_used_terminal: false,
+                    },
+                });
             }
 
             // onPressOK(selectedOption?.id);
@@ -164,7 +172,7 @@ export default function PrinterAppSetUpPage() {
                 setSwitchPrinterMode(false);
             }
         }
-    }, [data, list]);
+    }, [data, list, posDeviceList]);
     const [switchPrinterMode, setSwitchPrinterMode] = useState(false);
 
     useEffect(() => {
@@ -174,6 +182,7 @@ export default function PrinterAppSetUpPage() {
         }
         emitter.on('printer_name', (data: any) => {
             setPrinter(data);
+            onGetConfig({ fetchPolicy: 'no-cache' });
         });
         return () => {
             emitter.off('printer_name');
