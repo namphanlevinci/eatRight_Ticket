@@ -1,4 +1,4 @@
-import { Modal, notification, Spin } from 'antd';
+import { Modal, Spin } from 'antd';
 import { useTheme } from 'context/themeContext';
 import styled from 'styled-components';
 import SmsIcon from 'assets/icons/smsIcon';
@@ -17,7 +17,6 @@ import {
     var_ReceiptDetail,
 } from 'graphql/receipts';
 import { useLazyQuery } from '@apollo/client';
-import { Customer_CopyForm } from 'utils/printForm';
 
 export default function ModalPaySuccess({
     isVisible = false,
