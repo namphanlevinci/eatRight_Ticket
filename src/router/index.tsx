@@ -163,6 +163,7 @@ export const BaseRouter = () => {
             },
         }).finally(() => {
             emitter.emit('printer_name', printerName);
+            dispatch(updateIsTerminalPrinter(false));
         });
     };
     useEffect(() => {
@@ -187,7 +188,6 @@ export const BaseRouter = () => {
                     message: 'Connected Printer successfully',
                     description: data.data.deviceName,
                 });
-                localStorage.setItem('merchantGetPrinterConfig', 'false');
                 localStorage.setItem('printer_name', data.data.deviceName);
 
                 onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then(

@@ -3,6 +3,7 @@ import { Button, Layout, notification, Row, Switch } from 'antd';
 import RadioBtnSelected from 'assets/icons/radioBtnSelected';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
+import { updateIsTerminalPrinter } from 'features/auth/authSlice';
 import { emitter } from 'graphql/client';
 
 import { POS_DEVICE_LIST_DJV } from 'graphql/orders/paymentMethod';
@@ -16,6 +17,7 @@ import {
 } from 'graphql/printer';
 import ButtonSubmit from 'pages/TableBill/components/buttonSubmit';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 export default function PrinterAppSetUpPage() {
@@ -61,6 +63,7 @@ export default function PrinterAppSetUpPage() {
             );
         }
     };
+    const dispatch = useDispatch();
     const handleOk = (): void => {
         if (selectedOption) {
             if (switchPrinterMode) {
@@ -76,10 +79,8 @@ export default function PrinterAppSetUpPage() {
                                 message: 'Success',
                                 description: 'Set up printer successfully',
                             });
-                            localStorage.setItem(
-                                'merchantGetPrinterConfig',
-                                `true`,
-                            );
+
+                            dispatch(updateIsTerminalPrinter(true));
                             localStorage.setItem(
                                 'printer_id',
                                 selectedOption?.id?.toString(),
@@ -105,10 +106,8 @@ export default function PrinterAppSetUpPage() {
                                 'printer_id',
                                 selectedOption?.id?.toString(),
                             );
-                            localStorage.setItem(
-                                'merchantGetPrinterConfig',
-                                `true`,
-                            );
+
+                            dispatch(updateIsTerminalPrinter(true));
                             onUseTerminalPrinter();
                             pushMsgOffPrinter();
                         })
@@ -131,6 +130,7 @@ export default function PrinterAppSetUpPage() {
                             'printer_id',
                             selectedOption?.id.toString(),
                         );
+                        dispatch(updateIsTerminalPrinter(false));
                     })
                     .catch(() => {
                         console.log('error');

@@ -184,12 +184,9 @@ export const useTableBill = (isGoBack = true) => {
                 });
             });
     };
+    const { isTerminalPrinter } = useSelector((state: RootState) => state.auth);
     const PrintMerchantCopy = (url: string, isOpenCashier = false) => {
-        const is_used_terminal =
-            localStorage.getItem('merchantGetPrinterConfig') === 'true'
-                ? true
-                : false;
-        if (!is_used_terminal) {
+        if (!isTerminalPrinter) {
             if (window.ReactNativeWebView) {
                 window.ReactNativeWebView.postMessage(
                     JSON.stringify({
@@ -260,13 +257,8 @@ export const useTableBill = (isGoBack = true) => {
                             const order = res.data.createMerchantOrder.order;
 
                             setCheckOutLoading(false);
-                            const is_used_terminal =
-                                localStorage.getItem(
-                                    'merchantGetPrinterConfig',
-                                ) === 'true'
-                                    ? true
-                                    : false;
-                            if (!is_used_terminal) {
+
+                            if (isTerminalPrinter) {
                                 setVisibleMoalPosDJV(true);
                                 return;
                             }
@@ -375,28 +367,6 @@ export const useTableBill = (isGoBack = true) => {
                     setModalPaySuccess(true);
                     setModalChange(false);
                     emitter.emit('REPAYMENT_SUCCESS');
-                    const is_used_terminal =
-                        localStorage.getItem('merchantGetPrinterConfig') ===
-                        'true'
-                            ? true
-                            : false;
-                    if (!is_used_terminal) {
-                        if (
-                            dataInvoices?.merchantGetOrderInvoices?.invoice[0]
-                                ?.invoice_image
-                        ) {
-                            PrintMerchantCopy(
-                                dataInvoices?.merchantGetOrderInvoices
-                                    ?.invoice[0]?.invoice_image,
-                            );
-                        } else {
-                            ReGetInvoices({
-                                orderNumber:
-                                    dataInvoices?.merchantGetOrderInvoices
-                                        ?.order?.order_number,
-                            });
-                        }
-                    }
 
                     // showModalSuccess(
                     //     `${
