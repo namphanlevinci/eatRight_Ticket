@@ -185,7 +185,7 @@ const Index = () => {
         apiGetCategory({
             variables: {
                 currentPage: 1,
-                pageSize: 10,
+                pageSize: 100,
                 field: 'id',
                 position: 'DESC',
             },
@@ -393,7 +393,17 @@ const Index = () => {
                                                                 'kitchen_station',
                                                                 `${m?.kitchen_station}`,
                                                             );
-                                                            console.log(m);
+                                                            let isOpen =
+                                                                m?.open_price;
+                                                            if (isOpenPrice) {
+                                                                isOpen = true;
+                                                            }
+                                                            openPriceRef?.current?.setValue(
+                                                                isOpen,
+                                                            );
+                                                            setOpenPrice(
+                                                                isOpen,
+                                                            );
                                                         }}
                                                     >
                                                         {m?.name}
