@@ -15,7 +15,7 @@ const ButtonV2 = ({ style, children, ...props }: ButtonProps) => {
             style={{
                 outline: 'none',
                 border: 'none',
-                padding: '13px 18px',
+                padding: '13px 12px',
                 borderRadius: 6,
                 backgroundColor: Colors.grey3,
                 ...style,

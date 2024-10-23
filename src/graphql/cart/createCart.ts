@@ -43,6 +43,7 @@ export const CREATE_CART = gql`
                     product {
                         name
                         sku
+                        open_price
                     }
                     discount_percent
                     id

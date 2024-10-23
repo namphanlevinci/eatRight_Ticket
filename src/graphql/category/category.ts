@@ -31,6 +31,7 @@ export const GET_CAGORYLIST = gql`
                             sku
                             url_key
                             display_platforms
+                            open_price
                             small_image {
                                 url
                                 label

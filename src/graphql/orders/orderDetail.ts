@@ -27,6 +27,7 @@ export const GET_ORDER_DETAIL = gql`
                 name
                 qty
                 price
+                serving_status
                 options {
                     name
                     qty

@@ -23,6 +23,7 @@ import { GET_INVOICES } from 'graphql/cart/splitBill';
 import { FoodCoverIcon } from 'assets/icons/foodCoverIcon';
 import RenderAction from './RenderAction';
 import RenderItemNew from './RenderItem_New';
+import ModalEditPrice from 'components/modal/ModalEditPrice';
 export default function CartItemList({
     data,
     cartInfo,
@@ -31,6 +32,8 @@ export default function CartItemList({
     loadingCardTable,
     removeItemOnCartServer,
     updateStatusItemServer,
+    customOpenPriceForItem,
+    handleUpdatePriceItem,
 }: {
     data: CartItemType | undefined;
     cartInfo: string;
@@ -39,6 +42,18 @@ export default function CartItemList({
     loadingCardTable: boolean;
     removeItemOnCartServer: any;
     updateStatusItemServer: any;
+    customOpenPriceForItem: ({
+        custom_price,
+        index,
+    }: {
+        index: number;
+        custom_price: number;
+    }) => void;
+    handleUpdatePriceItem: (item: {
+        id: string;
+        cartId: string;
+        price: number;
+    }) => void;
 }) {
     const {
         updateQuantityItemFromCart,
@@ -62,6 +77,7 @@ export default function CartItemList({
     const [isAllDone, setIsAllDone] = useState(false);
     const [searchParams] = useSearchParams();
     const selectedCart = parseInt(searchParams.get('cartIndex') || '0');
+    // const [isNeedRequire, setIsNeedRequire] = useState(false);
     const isNewItem = data?.items?.find((item: ItemType) => item.isUnsend)
         ? true
         : false;
@@ -139,14 +155,29 @@ export default function CartItemList({
     }) => {
         const items: ItemType[] =
             data?.items.filter((item: ItemType) => item.isUnsend) || [];
+        // let isNeedInput = false;
         const carts = items.map((item: ItemType) => {
             if (item.is_configurable) {
-                return {
+                let result: any = {
                     sku: item.id,
                     quantity: item.quantity,
                     parent_sku: item.product.sku,
                     note: item.note,
                 };
+                if (item?.open_price) {
+                    // const custom_price =
+                    //     item?.custom_price || item.prices.price.value||0;
+                    // if (custom_price > 0) {
+                    result = {
+                        ...result,
+                        custom_price:
+                            item?.custom_price || item.prices.price.value,
+                    };
+                    // } else {
+                    // isNeedInput = true;
+                    // }
+                }
+                return result;
             }
             if (item.bundle_options && item.bundle_options.length > 0) {
                 return {
@@ -179,12 +210,29 @@ export default function CartItemList({
                     }),
                 };
             }
-            return {
+            let result: any = {
                 sku: item.product.sku,
                 quantity: item.quantity,
                 note: item.note,
             };
+            if (item?.open_price) {
+                // const custom_price =
+                //     item?.custom_price || item.prices.price.value;
+                // if (custom_price > 0) {
+                result = {
+                    ...result,
+                    custom_price: item?.custom_price || item.prices.price.value,
+                };
+                // } else {
+                // isNeedInput = true;
+                // }
+            }
+            return result;
         });
+        // if (isNeedInput) {
+        //     setIsNeedRequire(true);
+        //     return;
+        // }
         if (isCartIdFromLocal(data?.id || '')) {
             addCart(
                 carts,
@@ -243,6 +291,13 @@ export default function CartItemList({
         show: false,
         index: 0,
     });
+
+    const [showEditPrice, setShowEditPrice] = useState({
+        show: false,
+        price: 0,
+        index: -1,
+    });
+
     const goViewBill = (id: string) => {
         navigation(`${BASE_ROUTER.BILL_DETAIL}?order_id=${id}`);
     };
@@ -312,6 +367,37 @@ export default function CartItemList({
                 console.log('error');
             });
     };
+
+    const onSubmitEditPrice = (custom_price: number) => {
+        const items = data?.items[showEditPrice.index];
+        if (items?.uid) {
+            handleUpdatePriceItem({
+                cartId: data?.id || '',
+                id: items?.id || '',
+                price: custom_price,
+            });
+        } else {
+            customOpenPriceForItem({
+                index: showEditPrice.index,
+                custom_price,
+            });
+        }
+
+        setShowEditPrice({
+            ...showEditPrice,
+            show: false,
+            price: custom_price,
+        });
+    };
+
+    const onEditOpenPrice = (index: number, item: ItemType) => {
+        setShowEditPrice({
+            show: true,
+            price: item?.custom_price ?? 0,
+            index: index ?? 0,
+        });
+    };
+
     return data ? (
         <StyledCartBorder
             style={{
@@ -321,6 +407,14 @@ export default function CartItemList({
                 border: ismobile ? '0px' : `1px solid ${theme.nEUTRALLine}`,
             }}
         >
+            <ModalEditPrice
+                isModalOpen={showEditPrice.show}
+                onCancel={() => {
+                    setShowEditPrice({ show: false, price: 0, index: -1 });
+                }}
+                onSubmit={onSubmitEditPrice}
+                custom_price={showEditPrice.price}
+            />
             <LoadingModal showLoading={loading || loadingClean} />
             {showNoteModal.show && (
                 <ModalInputNote
@@ -371,6 +465,9 @@ export default function CartItemList({
                                 updateStatusItemServer={updateStatusItemServer}
                                 key={index}
                                 onRemoveItem={onRemoveItem}
+                                onEditOpenPrice={() => {
+                                    onEditOpenPrice(index, item);
+                                }}
                             />
                         );
                     })}

@@ -49,20 +49,20 @@ const MenuMerchant = ({ isMerchant }: { isMerchant?: boolean }) => [
         to: BASE_ROUTER.MENU_PAGE,
     },
     {
-        title: 'Order History',
+        title: 'Receipts',
         icon: <HistoryOutlined style={{ fontSize: 34 }} />,
         to: isMerchant ? BASE_ROUTER.RECEIPTS : BASE_ROUTER.BILL,
     },
     {
         title: 'Batch Settlements',
         icon: <BillIcon />,
-        to: BASE_ROUTER.SETTLE,
+        to: BASE_ROUTER.MERCHANT_SETTLE,
         isGo: true,
     },
     {
         title: 'Report',
         icon: <ReportIcon />,
-        to: BASE_ROUTER.SALES_REPORT,
+        to: BASE_ROUTER.MERCHANT_SALES_REPORT,
         isGo: true,
     },
     {
@@ -183,7 +183,9 @@ export default function DrawerMenuV2() {
                     alignItems: 'center',
                     cursor: 'pointer',
                     backgroundColor: Colors.teal,
-                    padding: "16px"
+                    padding: '16px',
+                    width: 72,
+                    height: 72,
                 }}
                 onClick={showDrawer}
             >

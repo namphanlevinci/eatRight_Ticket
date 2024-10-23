@@ -21,7 +21,7 @@ import {
     GET_MERCHANT_RESTAURANT_CONFIG,
     GET_PRIMARY_TERMINAL_WAITER,
 } from 'graphql/setups';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { RootState } from 'store';
@@ -184,12 +184,9 @@ export const useTableBill = (isGoBack = true) => {
                 });
             });
     };
+    const { isTerminalPrinter } = useSelector((state: RootState) => state.auth);
     const PrintMerchantCopy = (url: string, isOpenCashier = false) => {
-        const is_used_terminal =
-            localStorage.getItem('merchantGetPrinterConfig') === 'true'
-                ? true
-                : false;
-        if (!is_used_terminal) {
+        if (!isTerminalPrinter) {
             if (window.ReactNativeWebView) {
                 window.ReactNativeWebView.postMessage(
                     JSON.stringify({
@@ -260,13 +257,8 @@ export const useTableBill = (isGoBack = true) => {
                             const order = res.data.createMerchantOrder.order;
 
                             setCheckOutLoading(false);
-                            const is_used_terminal =
-                                localStorage.getItem(
-                                    'merchantGetPrinterConfig',
-                                ) === 'true'
-                                    ? true
-                                    : false;
-                            if (!is_used_terminal) {
+
+                            if (isTerminalPrinter) {
                                 setVisibleMoalPosDJV(true);
                                 return;
                             }
@@ -335,9 +327,14 @@ export const useTableBill = (isGoBack = true) => {
             })
             .catch((err) => {
                 console.log(err);
+            })
+            .finally(() => {
+                setCheckOutLoading(false);
             });
     };
     const [onCancelCheckout] = useMutation(CANCEL_CHECKOUT);
+    const [PosIdTmp, setPosIdTmp] = useState<any>('');
+
     const handlePOSPaymentWithDJV = (
         posId: number,
         orderDetail?: {
@@ -348,10 +345,14 @@ export const useTableBill = (isGoBack = true) => {
         isGoToTable = true,
         isSelectAnotherPos = false,
     ) => {
-        setPos_Loading(true);
         if (orderDetail) {
             setOrderInfo(orderDetail);
         }
+        if (PosIdTmp === posId) {
+            return;
+        }
+        setPos_Loading(true);
+        setPosIdTmp(posId);
         onPosDJV({
             variables: {
                 orderId: orderDetail?.order_number
@@ -366,21 +367,6 @@ export const useTableBill = (isGoBack = true) => {
                     setModalPaySuccess(true);
                     setModalChange(false);
                     emitter.emit('REPAYMENT_SUCCESS');
-                    // if (
-                    //     dataInvoices?.merchantGetOrderInvoices?.invoice[0]
-                    //         ?.invoice_image
-                    // ) {
-                    //     PrintMerchantCopy(
-                    //         dataInvoices?.merchantGetOrderInvoices?.invoice[0]
-                    //             ?.invoice_image,
-                    //     );
-                    // } else {
-                    //     ReGetInvoices({
-                    //         orderNumber:
-                    //             dataInvoices?.merchantGetOrderInvoices?.order
-                    //                 ?.order_number,
-                    //     });
-                    // }
 
                     // showModalSuccess(
                     //     `${
@@ -390,7 +376,6 @@ export const useTableBill = (isGoBack = true) => {
                     //     }`,
                     //     isGoToTable,
                     // );
-                    setModalPaySuccess(true);
                 }
             })
             .catch(() => {

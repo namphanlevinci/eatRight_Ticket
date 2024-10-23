@@ -69,6 +69,7 @@ export type InvoiceItem = {
             rate: number;
         }[];
         grand_total: TotalAmount;
+        non_cash_amount: TotalAmount;
         base_grand_total: TotalAmount;
         total_shipping: TotalAmount;
     };
@@ -150,6 +151,10 @@ export const gql_GetBatchInvoices = gql`
                         rate
                     }
                     grand_total {
+                        value
+                        currency
+                    }
+                    non_cash_amount {
                         value
                         currency
                     }

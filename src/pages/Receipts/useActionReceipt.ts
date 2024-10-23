@@ -13,6 +13,8 @@ import {
 import { PRINT_BILL } from 'graphql/printer';
 import { ReceiptDetail } from 'graphql/receipts';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 export default function useActionReceipt() {
     const [onSendBillToEmail, { loading: sendLoading1 }] = useMutation(
@@ -30,15 +32,12 @@ export default function useActionReceipt() {
             }, 5000);
         }
     }, [loading]);
+    const { isTerminalPrinter } = useSelector((state: RootState) => state.auth);
     const PrintBillApi = (data: ReceiptDetail | undefined) => {
         if (!data) {
             return;
         }
-        const is_used_terminal =
-            localStorage.getItem('merchantGetPrinterConfig') === 'true'
-                ? true
-                : false;
-        if (!is_used_terminal) {
+        if (!isTerminalPrinter) {
             if (window?.ReactNativeWebView) {
                 setLoading(true);
                 const imageUrl = data.invoice_image;

@@ -8,8 +8,9 @@ import { useMediaQuery } from 'react-responsive';
 import { formatNumberWithCommas } from 'utils/format';
 import RenderNote from './RenderNote';
 import { NoteTableIcon } from 'assets/icons/noteTableIcon';
-import { CURRENTCY } from 'constants/currency';
 import UpDownNumberV2 from 'components/UpdownNumber/index2';
+import { CURRENTCY } from 'constants/currency';
+import RenderOpenPrice from './RenderOpenPrice';
 
 export default function RenderItemNew({
     item,
@@ -28,6 +29,8 @@ export default function RenderItemNew({
     setItemSelected,
     updateStatusItemServer,
     onRemoveItem,
+    onEditOpenPrice,
+    isNeedRequire,
 }: {
     item: ItemType;
     index: number;
@@ -45,11 +48,14 @@ export default function RenderItemNew({
     setItemSelected: any;
     updateStatusItemServer: any;
     onRemoveItem: any;
+    onEditOpenPrice?: any;
+    isNeedRequire?: boolean;
 }) {
     const ismobile = useMediaQuery({
         query: '(max-width: 768px)',
     });
     const { theme } = useTheme();
+
     return (
         <div key={index}>
             {/* <Row align={'middle'} justify={'space-between'}> */}
@@ -115,17 +121,29 @@ export default function RenderItemNew({
                     style={{ width: ismobile ? 240 : 400 }}
                     justify={'space-between'}
                 >
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Text
-                            style={{
-                                marginLeft: 24,
-                                fontSize: 18,
-                            }}
-                        >
-                            {CURRENTCY}
-                            {formatNumberWithCommas(item.prices.price.value)}
-                        </Text>
-                    </div>
+                    {item.open_price || item.product.open_price ? (
+                        <RenderOpenPrice
+                            value={item.custom_price || item.prices.price.value}
+                            onEditOpenPrice={onEditOpenPrice}
+                            isNeedInput={isNeedRequire}
+                        />
+                    ) : (
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <Text
+                                style={{
+                                    marginLeft: 24,
+                                    fontSize: 20,
+                                    color: '#1D2433',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                {CURRENTCY}
+                                {formatNumberWithCommas(
+                                    item.prices.price.value,
+                                )}
+                            </Text>
+                        </div>
+                    )}
                     <div>
                         {item.isUnsend ? (
                             <UpDownNumberV2
