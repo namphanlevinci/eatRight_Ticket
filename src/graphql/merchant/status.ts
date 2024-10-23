@@ -32,3 +32,27 @@ export const SET_ALL_ITEM_COOKING = gql`
         )
     }
 `;
+
+export const MERCHANT_COOKING_ORDER = gql`
+    mutation ($id: Int!) {
+        cookingOrder(id: $id) {
+            result
+        }
+    }
+`;
+
+export const MERCHANT_SHIPPING_ORDER = gql`
+    mutation ($id: Int!) {
+        shippingOrder(id: $id) {
+            result
+        }
+    }
+`;
+
+export const MERCHANT_READY_TO_SHIP_ORDER = gql`
+    mutation ($id: Int!) {
+        readyToShipOrder(id: $id) {
+            result
+        }
+    }
+`;

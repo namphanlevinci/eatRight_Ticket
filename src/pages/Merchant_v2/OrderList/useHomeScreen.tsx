@@ -7,7 +7,9 @@ import { message, Modal, notification } from 'antd';
 import {
     MERCHANT_COMPLETE_ORDER,
     MERCHANT_RECEIVE_ORDER,
+    MERCHANT_READY_TO_SHIP_ORDER,
     SET_ALL_ITEM_COOKING,
+    MERCHANT_COOKING_ORDER,
 } from 'graphql/merchant/status';
 import io from 'socket.io-client';
 import { SOCKET } from 'graphql/socket/connect';
@@ -31,11 +33,13 @@ export const useHomeScreen = () => {
     const [isShowModalPending, setShowModalPending] = useState(false);
     const [isShowModalCancel, setShowModalCancel] = useState(false);
     const [apiSetAllItemCooking] = useMutation(SET_ALL_ITEM_COOKING);
+
     const getOrderList = async () => {
         setIsLoadingApp(true);
         apiGetListDining({
             fetchPolicy: 'no-cache',
         }).then((res) => {
+            console.log('response : ', res.data);
             if (res.data) {
                 setDiningQuoteList(res?.data?.merchantOrderDashboard?.quotes);
                 setDiningOrderList(res?.data?.merchantOrderDashboard?.orders);
@@ -49,6 +53,7 @@ export const useHomeScreen = () => {
     useEffect(() => {
         getOrderList();
     }, []);
+
     useEffect(() => {
         if (diningQuoteList || diningOrderList) {
             const listQuote = diningQuoteList.map(
@@ -118,9 +123,47 @@ export const useHomeScreen = () => {
     }, [diningQuoteList, diningOrderList]);
     const { info } = Modal;
     const [apiReciveOrder] = useMutation(MERCHANT_RECEIVE_ORDER);
+    const [apiCookingOrder] = useMutation(MERCHANT_COOKING_ORDER);
+    const [apiReadyToShipOrder] = useMutation(MERCHANT_READY_TO_SHIP_ORDER);
 
     const handleSubmitRecievedOrder = async (id: string) => {
+        setIsLoadingApp(true);
         const res = await apiReciveOrder({ variables: { id: id } });
+        setIsLoadingApp(false);
+        if (!res.errors && res.data) {
+            setShowModalPending(false);
+            setReload();
+            return true;
+        }
+        info({
+            icon: <></>,
+            title: <span style={{ fontWeight: 'bold' }}>Thất bại</span>,
+            content: res?.errors && res?.errors[0]?.message,
+        });
+        return false;
+    };
+
+    const handleSubmitCookingOrder = async (id: string) => {
+        setIsLoadingApp(true);
+        const res = await apiCookingOrder({ variables: { id: id } });
+        setIsLoadingApp(false);
+        if (!res.errors && res.data) {
+            setShowModalPending(false);
+            setReload();
+            return true;
+        }
+        info({
+            icon: <></>,
+            title: <span style={{ fontWeight: 'bold' }}>Thất bại</span>,
+            content: res?.errors && res?.errors[0]?.message,
+        });
+        return false;
+    };
+
+    const handleSubmitReadyToShipgOrder = async (id: string) => {
+        setIsLoadingApp(true);
+        const res = await apiReadyToShipOrder({ variables: { id: id } });
+        setIsLoadingApp(false);
         if (!res.errors && res.data) {
             setShowModalPending(false);
             setReload();
@@ -176,6 +219,16 @@ export const useHomeScreen = () => {
                 console.log(err);
             });
     };
+
+    const updateOrderStatusFE = (order: any, status: string) => {
+        let findIndex = renderList.findIndex((o: any) => o?.id == order?.id);
+        let tempList = [...renderList];
+        if (findIndex != -1) {
+            tempList[findIndex].status = status;
+        }
+        setRenderList(tempList);
+    };
+
     const [dataOrderModal, setDataOrderModal] = useState();
     const [onSocket] = useMutation(SOCKET);
     const reloadOrderRef = React.useRef<any>();
@@ -283,5 +336,8 @@ export const useHomeScreen = () => {
         handleSubmitCompletePickUp,
         pushNotificationLocal,
         handleSetAllItemCooking,
+        handleSubmitCookingOrder,
+        handleSubmitReadyToShipgOrder,
+        updateOrderStatusFE,
     };
 };

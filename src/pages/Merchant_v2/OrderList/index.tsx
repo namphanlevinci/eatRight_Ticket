@@ -30,6 +30,9 @@ export default function MerchantOrderList() {
         isShowModalCancel,
         dataOrderModal,
         handleSubmitCompletePickUp,
+        handleSubmitCookingOrder,
+        handleSubmitReadyToShipgOrder,
+        updateOrderStatusFE,
     } = useHomeScreen();
 
     const {
@@ -94,18 +97,33 @@ export default function MerchantOrderList() {
         source: any;
         destination: any;
     }) => {
-        console.log('handle drag end', { source, destination });
         const dragItem = renderList?.find(
             (obj: any) => obj?.sortId == source?.index,
         );
-        const listItem = renderList.filter(
-            (obj: any) => obj?.cart_id == dragItem?.cart_id,
-        );
-        const payload = {
-            entity_id: dragItem?.cart_id,
-            items_id: listItem.map((obj) => obj?.id), /// confirm lại id chinh xac chưa
-            type: dragItem?.type == 'dining-quotes' ? 'QUOTES' : 'ORDER',
-        };
+
+        if (dragItem && dragItem?.type == 'dining-orders') {
+            switch (destination?.droppableId) {
+                case 'received':
+                    handleSubmitRecievedOrder(dragItem?.id);
+                    updateOrderStatusFE(dragItem, destination?.droppableId);
+                    return;
+
+                case 'cooking':
+                    handleSubmitCookingOrder(dragItem?.id);
+                    updateOrderStatusFE(dragItem, destination?.droppableId);
+                    return;
+
+                case 'ready_to_ship':
+                    handleSubmitReadyToShipgOrder(dragItem?.id);
+                    updateOrderStatusFE(dragItem, destination?.droppableId);
+                    return;
+
+                default:
+                    break;
+            }
+        }
+
+        //chưa có api update status cho quotes
     };
 
     return (

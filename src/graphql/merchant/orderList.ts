@@ -3,6 +3,7 @@ export const GET_LIST_ORDER_DINING = gql`
     {
         merchantOrderDashboard(sort: { created_at: ASC }) {
             quotes {
+                quote_id
                 table
                 table_id
                 cart_id
@@ -19,6 +20,7 @@ export const GET_LIST_ORDER_DINING = gql`
                 }
             }
             orders {
+                quote_id
                 status
                 table
                 id
