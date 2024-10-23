@@ -1,4 +1,4 @@
-import { Layout, Row, Switch } from 'antd';
+import { Layout, notification, Row, Switch } from 'antd';
 import ArrowLeftIcon from 'assets/icons/arrowLeft';
 import { Text } from 'components/atom/Text';
 import ColRight from './colRight';
@@ -11,9 +11,8 @@ import { useTheme } from 'context/themeContext';
 import ModalOffSplitBill from 'components/modal/ModalOffSplitBill';
 import { useCartTable } from 'pages/Table/Cart/useGetCart';
 import LoadingModal from 'components/modal/loadingModal';
-import ModalEditPrice from 'components/modal/ModalEditPrice';
 export default function TableBill() {
-    const { loading } = useCartTable(false, false);
+    const { loading, handleUpdatePriceItem } = useCartTable(false, false);
     const {
         cart,
         total,
@@ -29,7 +28,26 @@ export default function TableBill() {
     const [openModalConfirmCloseSplitBill, setCloseSplitBill] = useState(false);
     const navigation = useNavigate();
     const { theme } = useTheme();
-
+    const [isNeedInput, setIsNeedInput] = useState(false);
+    const checkItemNeedInputPrice = () => {
+        let isNeedInput = false;
+        cart?.items.forEach((item) => {
+            if (item.product.open_price && item.prices.price.value <= 0) {
+                isNeedInput = true;
+            }
+        });
+        if (isNeedInput && setIsNeedInput) {
+            setIsNeedInput(true);
+            notification.warning({
+                message: 'Price need input',
+                description: 'Please input price for all items',
+                placement: 'topRight',
+                duration: 3,
+            });
+            return true;
+        }
+        return false;
+    };
     const RenderHeader = () => {
         return (
             <div
@@ -68,6 +86,10 @@ export default function TableBill() {
                 <Switch
                     value={splitBill}
                     onChange={(value) => {
+                        const isConfirmed = checkItemNeedInputPrice();
+                        if (isConfirmed) {
+                            return;
+                        }
                         if (value) {
                             setSplitBill(true);
                             setOpenModalSplitBill(true);
@@ -125,6 +147,8 @@ export default function TableBill() {
                     listItems={listItems}
                     isSplitBill={splitBill}
                     openModalSplitBill={() => setOpenModalSplitBill(true)}
+                    handleUpdatePriceItem={handleUpdatePriceItem}
+                    isNeedInput={isNeedInput}
                 />
                 <ColRight
                     cart={cart}
@@ -135,6 +159,7 @@ export default function TableBill() {
                     openModalSplitBill={() => setOpenModalSplitBill(true)}
                     setCart={setCart}
                     SplitBillButton={SplitBillButton}
+                    checkItemNeedInputPrice={checkItemNeedInputPrice}
                 />
             </Row>
         </Layout>

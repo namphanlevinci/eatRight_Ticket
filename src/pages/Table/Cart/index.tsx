@@ -26,6 +26,7 @@ export default function OrderCart({ table }: { table: any }) {
         removeItemOnCartServer,
         updateStatusItemServer,
         customOpenPriceForItem,
+        handleUpdatePriceItem,
     } = useCartTable();
     const { setShowMenu } = useMenuContext();
     const [modalChangeTable, setModalChangeTableOpen] = useState(false);
@@ -147,6 +148,7 @@ export default function OrderCart({ table }: { table: any }) {
                     removeItemOnCartServer={removeItemOnCartServer}
                     updateStatusItemServer={updateStatusItemServer}
                     customOpenPriceForItem={customOpenPriceForItem}
+                    handleUpdatePriceItem={handleUpdatePriceItem}
                 />
             )}
         </div>
