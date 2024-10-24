@@ -25,6 +25,8 @@ const RenderBillItem = ({
     selectDataShowbill: any;
     dataInvoice?: any;
 }) => {
+    console.log({ dataInvoice });
+
     const totalDiscount = selectDataShowbill
         ? selectDataShowbill?.total?.discounts.reduce(
               (total: number, discount: any) => {

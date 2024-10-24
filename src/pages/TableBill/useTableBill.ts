@@ -225,7 +225,7 @@ export const useTableBill = (isGoBack = true) => {
     };
     const [checkOutLoading, setCheckOutLoading] =
         React.useState<boolean>(false);
-    const handleCheckOut = async () => {
+    const handleCheckOut = async (received_amount?: number) => {
         setCheckOutLoading(true);
         placeOrder({
             variables: {
@@ -233,6 +233,8 @@ export const useTableBill = (isGoBack = true) => {
                 paymentMethod: paymentMethod.includes('pos')
                     ? 'pos'
                     : paymentMethod,
+                ...(received_amount &&
+                    paymentMethod === 'cashondelivery' && { received_amount }),
             },
         })
             .then((res) => {

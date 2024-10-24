@@ -97,7 +97,7 @@ export default function ColRight({
         }
     };
 
-    const handleProceed = () => {
+    const handleProceed = (received_amount?: number) => {
         if (isSplitBill) {
             if (numbersSplit && numbersSplit > 1) {
                 handleSplitEven(numbersSplit);
@@ -121,7 +121,7 @@ export default function ColRight({
                 handleOtherPayment(value);
                 return;
             }
-            handleCheckOut();
+            handleCheckOut(received_amount);
         }
     };
 
