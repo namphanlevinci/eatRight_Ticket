@@ -33,6 +33,7 @@ function Order(props) {
         playOrderNOtResponseAgain = () => {},
         turnOffAppSound,
         isCompletedOrder = false,
+        isDragDisabled = false,
     } = props;
 
     const findOrderOffSound = orderListNotResponse.find(
@@ -142,6 +143,7 @@ function Order(props) {
                 draggableId={order?.id}
                 key={id}
                 index={order?.sortId ?? randomInteger}
+                isDragDisabled={isDragDisabled}
             >
                 {(provided, snapshot) => (
                     <div

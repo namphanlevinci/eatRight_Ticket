@@ -9,10 +9,18 @@ import Order from './Oders';
 import useOpenModal from './useOpenModal';
 import { RejectOrderModal } from './components/Modal/RejectOrderModal';
 import { useOrderCompleted } from './useOrderComplete';
-import { cond, debounce } from 'lodash';
+import { debounce } from 'lodash';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+
+export const statusConvertData: any = {
+    new: 1,
+    received: 2,
+    cooking: 3,
+    ready_to_ship: 4,
+    serving: 5,
+};
 
 export default function MerchantOrderList() {
     const { filterOrder, searchText } = useSelector(
@@ -103,7 +111,12 @@ export default function MerchantOrderList() {
             (obj: any) => obj?.sortId == source?.index,
         );
 
-        if (dragItem && dragItem?.total_quantity > 0) {
+        if (
+            dragItem &&
+            dragItem?.total_quantity > 0 &&
+            statusConvertData[dragItem?.status] <
+                statusConvertData[destination?.droppableId]
+        ) {
             if (dragItem?.type == 'dining-orders') {
                 switch (destination?.droppableId) {
                     case 'received':
@@ -260,6 +273,9 @@ export default function MerchantOrderList() {
                                             <Droppable
                                                 droppableId={item?.status}
                                                 key={index}
+                                                isDropDisabled={
+                                                    item?.status == 'serving'
+                                                }
                                             >
                                                 {(provided, _snapshot) => (
                                                     <div
@@ -280,6 +296,10 @@ export default function MerchantOrderList() {
                                                                 (order, i) => {
                                                                     return (
                                                                         <Order
+                                                                            isDragDisabled={
+                                                                                order?.status ==
+                                                                                'serving'
+                                                                            }
                                                                             key={
                                                                                 order?.order_number
                                                                             }
@@ -366,6 +386,9 @@ export default function MerchantOrderList() {
                                                             ) => {
                                                                 return (
                                                                     <Order
+                                                                        isDragDisabled={
+                                                                            true
+                                                                        }
                                                                         key={
                                                                             order?.order_number
                                                                         }
