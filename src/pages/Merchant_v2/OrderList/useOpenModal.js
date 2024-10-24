@@ -180,7 +180,6 @@ const ModalDetail = React.memo(
         isCompletedOrder,
     }) => {
         const history = useNavigate();
-        console.log({ data });
         return (
             <>
                 <Modal
