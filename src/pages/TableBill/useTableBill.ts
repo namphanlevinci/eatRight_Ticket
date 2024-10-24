@@ -222,15 +222,23 @@ export const useTableBill = (isGoBack = true) => {
     };
     const [checkOutLoading, setCheckOutLoading] =
         React.useState<boolean>(false);
-    const handleCheckOut = async () => {
+    const handleCheckOut = async (received_amount?: number) => {
+        const variables = {
+            cartId: cartItems[indexTable].carts[cartIndex].id,
+            paymentMethod: paymentMethod.includes('pos')
+                ? 'pos'
+                : paymentMethod,
+            ...(received_amount &&
+                paymentMethod === 'cashondelivery' && {
+                    received_amount: parseFloat(
+                        received_amount?.toString?.(),
+                    ).toFixed(2),
+                }),
+        };
+
         setCheckOutLoading(true);
         placeOrder({
-            variables: {
-                cartId: cartItems[indexTable].carts[cartIndex].id,
-                paymentMethod: paymentMethod.includes('pos')
-                    ? 'pos'
-                    : paymentMethod,
-            },
+            variables,
         })
             .then((res) => {
                 setOrderInfo(res.data.createMerchantOrder.order);

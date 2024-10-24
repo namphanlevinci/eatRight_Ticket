@@ -95,19 +95,26 @@ export default function TableSplitBillCheckOut() {
     const handlePayment = (
         paymentMethod: string,
         po_number?: string | undefined | null,
+        received_amount?: number,
     ) => {
         if (paymentMethod === 'cash' || paymentMethod == 'other') {
+            const variables = {
+                invoice_number: selectGuest?.number,
+                payment_method:
+                    paymentMethod == 'other' ? 'purchaseorder' : paymentMethod,
+                po_number: po_number ?? '',
+                ...(!isEmpty(po_number) && { po_number }),
+                ...(received_amount &&
+                    paymentMethod === 'cash' && {
+                        received_amount: parseFloat(
+                            received_amount?.toString?.(),
+                        ).toFixed(2),
+                    }),
+            };
+
             setLoading(true);
             onPaymentWithCash({
-                variables: {
-                    invoice_number: selectGuest?.number,
-                    payment_method:
-                        paymentMethod == 'other'
-                            ? 'purchaseorder'
-                            : paymentMethod,
-                    po_number: po_number ?? '',
-                    ...(!isEmpty(po_number) && { po_number }),
-                },
+                variables,
             })
                 .then((res) => {
                     if (
