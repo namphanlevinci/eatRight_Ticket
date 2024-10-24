@@ -290,6 +290,28 @@ const RenderBillItem = ({
                         )}
                     </TextDark>
                 </RowStyled>
+                {dataInvoice?.[0]?.payment_methods?.[0]?.name == 'Cash' &&
+                    dataInvoice?.[0]?.total_received?.received_amount &&
+                    dataInvoice?.[0]?.total_received?.change_amount && (
+                        <>
+                            <RowStyled align={'middle'}>
+                                <TextDark style={text16}>
+                                    Received amount:
+                                </TextDark>
+                                <TextDark>
+                                    {`${CURRENTCY} ${dataInvoice?.[0]?.total_received?.received_amount?.value}`}
+                                </TextDark>
+                            </RowStyled>
+                            <RowStyled align={'middle'}>
+                                <TextDark style={text16}>
+                                    Change amount:
+                                </TextDark>
+                                <TextDark>
+                                    {`${CURRENTCY} ${dataInvoice?.[0]?.total_received?.change_amount?.value}`}
+                                </TextDark>
+                            </RowStyled>
+                        </>
+                    )}
                 {!isEmpty(dataInvoice?.[0]?.payment_methods?.[0]?.po_number) &&
                     dataInvoice?.[0]?.payment_methods?.[0]?.po_number !==
                         'none' && (
