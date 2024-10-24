@@ -41,7 +41,6 @@ export const useHomeScreen = () => {
         apiGetListDining({
             fetchPolicy: 'no-cache',
         }).then((res) => {
-            console.log('response : ', res.data);
             if (res.data) {
                 setDiningQuoteList(res?.data?.merchantOrderDashboard?.quotes);
                 setDiningOrderList(res?.data?.merchantOrderDashboard?.orders);
@@ -150,7 +149,7 @@ export const useHomeScreen = () => {
 
     const handleSubmitCookingOrder = async (id: string) => {
         setIsLoadingApp(true);
-        const res = await apiCookingOrder({ variables: { id: id } });
+        const res: any = await apiCookingOrder({ variables: { order_id: id } });
         setIsLoadingApp(false);
         if (!res.errors && res.data) {
             setShowModalPending(false);
@@ -167,7 +166,7 @@ export const useHomeScreen = () => {
 
     const handleSubmitReadyToShipgOrder = async (id: string) => {
         setIsLoadingApp(true);
-        const res = await apiReadyToShipOrder({ variables: { id: id } });
+        const res = await apiReadyToShipOrder({ variables: { order_id: id } });
         setIsLoadingApp(false);
         if (!res.errors && res.data) {
             setShowModalPending(false);
@@ -184,7 +183,7 @@ export const useHomeScreen = () => {
 
     const handleSubmitCookingQuote = async (id: string | number) => {
         setIsLoadingApp(true);
-        const res = await apiCookingOrder({ variables: { quote_id: id } });
+        const res = await apiCookingQuote({ variables: { quote_id: id } });
         setIsLoadingApp(false);
         if (!res.errors && res.data) {
             setShowModalPending(false);

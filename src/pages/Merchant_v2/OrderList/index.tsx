@@ -103,9 +103,7 @@ export default function MerchantOrderList() {
             (obj: any) => obj?.sortId == source?.index,
         );
 
-        console.log({ dragItem });
-
-        if (dragItem) {
+        if (dragItem && dragItem?.total_quantity > 0) {
             if (dragItem?.type == 'dining-orders') {
                 switch (destination?.droppableId) {
                     case 'received':
