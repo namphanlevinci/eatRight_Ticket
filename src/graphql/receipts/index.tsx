@@ -178,6 +178,7 @@ export type ReceiptDetail = {
     total: Total;
     feedback_url?: string;
     invoice_image?: string;
+    total_received?: any;
 };
 
 // Kiểu cho phản hồi của truy vấn
@@ -249,6 +250,16 @@ export const gqlGetReceiptDetail = gql`
                     value
                 }
                 tip_amount {
+                    currency
+                    value
+                }
+            }
+            total_received {
+                received_amount {
+                    currency
+                    value
+                }
+                change_amount {
                     currency
                     value
                 }

@@ -46,6 +46,8 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 data?.total?.total_tax?.value),
     );
 
+    console.log({ data });
+
     return (
         <div
             style={{
@@ -213,6 +215,30 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                         {convertMethod(data.payment_method.title)}
                     </TextDark>
                 </RowStyled>
+
+                {data?.payment_method?.title == 'Cash' &&
+                    data?.total_received?.received_amount &&
+                    data?.total_received?.change_amount && (
+                        <>
+                            <RowStyled align={'middle'}>
+                                <TextDark style={text16}>
+                                    Received amount:
+                                </TextDark>
+                                <TextDark>
+                                    {`${CURRENTCY} ${data?.total_received?.received_amount}`}
+                                </TextDark>
+                            </RowStyled>
+                            <RowStyled align={'middle'}>
+                                <TextDark style={text16}>
+                                    Change amount:
+                                </TextDark>
+                                <TextDark>
+                                    {`${CURRENTCY} ${data?.total_received?.change_amount}`}
+                                </TextDark>
+                            </RowStyled>
+                        </>
+                    )}
+
                 {!isEmpty(data.payment_method.po_number) &&
                     data.payment_method.po_number !== 'none' && (
                         <RowStyled>
