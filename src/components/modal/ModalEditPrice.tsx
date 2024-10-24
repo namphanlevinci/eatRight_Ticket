@@ -22,7 +22,10 @@ export default function ModalEditPrice({
 
     useEffect(() => {
         if (isModalOpen && inputRef.current) {
-            inputRef.current.focus();
+            setTimeout(() => {
+                console.log('forcus input');
+                inputRef.current.focus();
+            }, 200);
         }
         setPrice(custom_price);
     }, [isModalOpen, custom_price]);
@@ -100,6 +103,8 @@ export default function ModalEditPrice({
                     }}
                     value={price}
                     onChange={handlechangePrice}
+                    inputMode="decimal"
+                    maxLength={9}
                 />
                 <div
                     onClick={() => setPrice('')}

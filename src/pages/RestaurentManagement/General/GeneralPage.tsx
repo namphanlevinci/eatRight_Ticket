@@ -108,8 +108,8 @@ export default function RestaurentGeneralPage() {
                                         color: '#000',
                                     }}
                                 >
-                                    Allow custom pricing at checkout. Set price
-                                    used as editable default
+                                    When enabled, allows manual price entry for
+                                    all menu items
                                 </div>
                             }
                             placement="top"

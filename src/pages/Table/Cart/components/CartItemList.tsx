@@ -393,7 +393,7 @@ export default function CartItemList({
     const onEditOpenPrice = (index: number, item: ItemType) => {
         setShowEditPrice({
             show: true,
-            price: item?.custom_price ?? 0,
+            price: item?.custom_price ?? item.prices.price.value ?? 0,
             index: index ?? 0,
         });
     };

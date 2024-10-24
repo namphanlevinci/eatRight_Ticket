@@ -123,7 +123,11 @@ export default function RenderItemNew({
                 >
                     {item.open_price || item.product.open_price ? (
                         <RenderOpenPrice
-                            value={item.custom_price || item.prices.price.value}
+                            value={
+                                item?.custom_price && item?.custom_price > 0
+                                    ? item.custom_price
+                                    : item.prices.price.value
+                            }
                             onEditOpenPrice={onEditOpenPrice}
                             isNeedInput={isNeedRequire}
                         />
