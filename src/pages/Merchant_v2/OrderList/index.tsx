@@ -33,6 +33,8 @@ export default function MerchantOrderList() {
         handleSubmitCookingOrder,
         handleSubmitReadyToShipgOrder,
         updateOrderStatusFE,
+        handleSubmitCookingQuote,
+        handleSubmitReadyToShippingQuote,
     } = useHomeScreen();
 
     const {
@@ -101,25 +103,44 @@ export default function MerchantOrderList() {
             (obj: any) => obj?.sortId == source?.index,
         );
 
-        if (dragItem && dragItem?.type == 'dining-orders') {
-            switch (destination?.droppableId) {
-                case 'received':
-                    handleSubmitRecievedOrder(dragItem?.id);
-                    updateOrderStatusFE(dragItem, destination?.droppableId);
-                    return;
+        console.log({ dragItem });
 
-                case 'cooking':
-                    handleSubmitCookingOrder(dragItem?.id);
-                    updateOrderStatusFE(dragItem, destination?.droppableId);
-                    return;
+        if (dragItem) {
+            if (dragItem?.type == 'dining-orders') {
+                switch (destination?.droppableId) {
+                    case 'received':
+                        handleSubmitRecievedOrder(dragItem?.id);
+                        updateOrderStatusFE(dragItem, destination?.droppableId);
+                        return;
 
-                case 'ready_to_ship':
-                    handleSubmitReadyToShipgOrder(dragItem?.id);
-                    updateOrderStatusFE(dragItem, destination?.droppableId);
-                    return;
+                    case 'cooking':
+                        handleSubmitCookingOrder(dragItem?.id);
+                        updateOrderStatusFE(dragItem, destination?.droppableId);
+                        return;
 
-                default:
-                    break;
+                    case 'ready_to_ship':
+                        handleSubmitReadyToShipgOrder(dragItem?.id);
+                        updateOrderStatusFE(dragItem, destination?.droppableId);
+                        return;
+
+                    default:
+                        break;
+                }
+            } else {
+                switch (destination?.droppableId) {
+                    case 'cooking':
+                        handleSubmitCookingQuote(dragItem?.quote_id);
+                        updateOrderStatusFE(dragItem, destination?.droppableId);
+                        return;
+
+                    case 'ready_to_ship':
+                        handleSubmitReadyToShippingQuote(dragItem?.quote_id);
+                        updateOrderStatusFE(dragItem, destination?.droppableId);
+                        return;
+
+                    default:
+                        break;
+                }
             }
         }
 

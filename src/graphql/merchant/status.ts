@@ -34,8 +34,8 @@ export const SET_ALL_ITEM_COOKING = gql`
 `;
 
 export const MERCHANT_COOKING_ORDER = gql`
-    mutation ($id: Int!) {
-        cookingOrder(id: $id) {
+    mutation ($order_id: Int!) {
+        merchantSetCookingOrder(order_id: $order_id) {
             result
         }
     }
@@ -50,8 +50,24 @@ export const MERCHANT_SHIPPING_ORDER = gql`
 `;
 
 export const MERCHANT_READY_TO_SHIP_ORDER = gql`
-    mutation ($id: Int!) {
-        readyToShipOrder(id: $id) {
+    mutation ($order_id: Int!) {
+        merchantSetReadyOrder(order_id: $order_id) {
+            result
+        }
+    }
+`;
+
+export const MERCHANT_COOKING_QUOTE = gql`
+    mutation ($quote_id: Int!) {
+        merchantSetCookingQuote(quote_id: $quote_id) {
+            result
+        }
+    }
+`;
+
+export const MERCHANT_READY_TO_SHIP_QUOTE = gql`
+    mutation ($quote_id: Int!) {
+        merchantSetReadyQuote(quote_id: $quote_id) {
             result
         }
     }

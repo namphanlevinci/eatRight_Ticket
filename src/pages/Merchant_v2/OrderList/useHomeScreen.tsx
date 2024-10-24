@@ -10,6 +10,8 @@ import {
     MERCHANT_READY_TO_SHIP_ORDER,
     SET_ALL_ITEM_COOKING,
     MERCHANT_COOKING_ORDER,
+    MERCHANT_COOKING_QUOTE,
+    MERCHANT_READY_TO_SHIP_QUOTE,
 } from 'graphql/merchant/status';
 import io from 'socket.io-client';
 import { SOCKET } from 'graphql/socket/connect';
@@ -126,6 +128,9 @@ export const useHomeScreen = () => {
     const [apiCookingOrder] = useMutation(MERCHANT_COOKING_ORDER);
     const [apiReadyToShipOrder] = useMutation(MERCHANT_READY_TO_SHIP_ORDER);
 
+    const [apiCookingQuote] = useMutation(MERCHANT_COOKING_QUOTE);
+    const [apiReadyToShipQuote] = useMutation(MERCHANT_READY_TO_SHIP_QUOTE);
+
     const handleSubmitRecievedOrder = async (id: string) => {
         setIsLoadingApp(true);
         const res = await apiReciveOrder({ variables: { id: id } });
@@ -163,6 +168,40 @@ export const useHomeScreen = () => {
     const handleSubmitReadyToShipgOrder = async (id: string) => {
         setIsLoadingApp(true);
         const res = await apiReadyToShipOrder({ variables: { id: id } });
+        setIsLoadingApp(false);
+        if (!res.errors && res.data) {
+            setShowModalPending(false);
+            setReload();
+            return true;
+        }
+        info({
+            icon: <></>,
+            title: <span style={{ fontWeight: 'bold' }}>Thất bại</span>,
+            content: res?.errors && res?.errors[0]?.message,
+        });
+        return false;
+    };
+
+    const handleSubmitCookingQuote = async (id: string | number) => {
+        setIsLoadingApp(true);
+        const res = await apiCookingOrder({ variables: { quote_id: id } });
+        setIsLoadingApp(false);
+        if (!res.errors && res.data) {
+            setShowModalPending(false);
+            setReload();
+            return true;
+        }
+        info({
+            icon: <></>,
+            title: <span style={{ fontWeight: 'bold' }}>Thất bại</span>,
+            content: res?.errors && res?.errors[0]?.message,
+        });
+        return false;
+    };
+
+    const handleSubmitReadyToShippingQuote = async (id: string | number) => {
+        setIsLoadingApp(true);
+        const res = await apiReadyToShipQuote({ variables: { quote_id: id } });
         setIsLoadingApp(false);
         if (!res.errors && res.data) {
             setShowModalPending(false);
@@ -339,5 +378,7 @@ export const useHomeScreen = () => {
         handleSubmitCookingOrder,
         handleSubmitReadyToShipgOrder,
         updateOrderStatusFE,
+        handleSubmitCookingQuote,
+        handleSubmitReadyToShippingQuote,
     };
 };
