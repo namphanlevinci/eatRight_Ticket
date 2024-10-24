@@ -9,12 +9,19 @@ import { REMOVE_ITEM_ON_CART } from 'graphql/cart/removeItemOnCart';
 import { UPDATE_STATUS_ITEM } from 'graphql/cart/updateStatusItem';
 import { emitter } from 'graphql/client';
 import { isCartIdFromLocal } from 'utils/isNumericId';
+import { UPDATE_PRICE_ITEM_ON_CART } from 'graphql/cart/updatePriceItemOnCart';
 export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
     const [listCart, setListCart] = useState<string[]>([]);
     const [searchParams] = useSearchParams();
     const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
     const [selectedCart, setSelectedCart] = useState(cartIndex || 0);
-    const { cartItems, addCart, indexTable, removeCartIndex } = useCart();
+    const {
+        cartItems,
+        addCart,
+        indexTable,
+        removeCartIndex,
+        customOpenPriceForItem,
+    } = useCart();
     const location = useLocation();
     const isGetAllCart =
         location.pathname.includes('table') &&
@@ -29,6 +36,7 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
         useLazyQuery(GET_CARTS_BY_TABLE);
     const [updateStatusItem, { loading: updateLoading }] =
         useMutation(UPDATE_STATUS_ITEM);
+    const [onUpdatePriceItem] = useMutation(UPDATE_PRICE_ITEM_ON_CART);
     useEffect(() => {
         if (indexTable !== -1) {
             if (cartItems[indexTable].carts.length > 0) {
@@ -49,7 +57,29 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
             );
         }
     }, [selectedCart]);
-
+    const handleUpdatePriceItem = (item: {
+        id: string;
+        cartId: string;
+        price: number;
+    }) => {
+        setLoading(true);
+        onUpdatePriceItem({
+            variables: {
+                itemId: item.id,
+                cartId: item.cartId,
+                customPrice: item.price,
+            },
+        })
+            .then(() => {
+                getCartByIdTable();
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
     const getCartsTable = async () => {
         if (tableId) {
             setLoading(true);
@@ -113,6 +143,9 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
                 })
                 .catch((error) => {
                     console.error(error);
+                })
+                .finally(() => {
+                    setLoading(false);
                 });
         }
     };
@@ -216,5 +249,7 @@ export const useCartTable = (isRefreshParams = true, defaultLoading = true) => {
         removeItemOnCartServer,
         updateStatusItemServer,
         removeCartIndex,
+        customOpenPriceForItem,
+        handleUpdatePriceItem,
     };
 };

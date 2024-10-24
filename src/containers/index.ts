@@ -2,14 +2,13 @@ import { lazy } from 'react';
 
 export const containers = {
     Home: lazy(() => import('containers/Home')),
-    MerchantHome: lazy(() => import('containers/MerchantHome')),
     Table: lazy(() => import('containers/Table')),
     About: lazy(() => import('containers/About')),
     Login: lazy(() => import('containers/Login')),
     TableBill: lazy(() => import('containers/TableBill')),
     TableSplitBill: lazy(() => import('containers/TableBill-Checkout')),
     SettingsProfile: lazy(() => import('containers/Settings/profile')),
-    Settings: lazy(() => import('containers/Settings/index')),
+    Settings: lazy(() => import('containers/Settings')),
     BillList: lazy(() => import('containers/BillList')),
     BillDetail: lazy(() => import('containers/BillDetail')),
     RequestAccount: lazy(() => import('containers/RequestAccount')),
@@ -24,25 +23,29 @@ export const containers = {
     NewCustomer: lazy(() => import('containers/Customer/AddNewCustomer')),
     ListCustomer: lazy(() => import('containers/Customer/ListCustomer')),
     CustomerDetail: lazy(() => import('containers/Customer/CustomerDetail')),
-    MerchantPage: lazy(() => import('pages/Merchant/index')),
-    BatchHistory: lazy(
-        () => import('pages/BatchSettlements/BatchHistory/index'),
-    ),
-    Settle: lazy(() => import('pages/BatchSettlements/Settle/index')),
-    Transactions: lazy(
-        () => import('pages/BatchSettlements/Transactions/index'),
-    ),
-
-    Report: lazy(() => import('pages/Report')),
-    ReportByPayment: lazy(() => import('pages/ReportByPayment')),
-    MenuPage: lazy(() => import('pages/MenuManager/Menu/index')),
-    Menu_Detail_Page: lazy(() => import('pages/MenuManager/MenuNew/index')),
-    CategoryPage: lazy(() => import('pages/MenuManager/Category/index')),
-    CategoryPage_DETAIL: lazy(
-        () => import('pages/MenuManager/CategoryNew/index'),
-    ),
-    ItemPage_DETAIL: lazy(() => import('pages/MenuManager/ItemNew/index')),
-    ItemPage: lazy(() => import('pages/MenuManager/Item/index')),
+    Merchant: {
+        OrderList: lazy(() => import('containers/Merchant_v2/OrderList')),
+        TableView: lazy(() => import('containers/Merchant_v2/TableView')),
+        BatchHistory: lazy(
+            () =>
+                import('containers/Merchant_v2/BatchSettlements/BatchHistory'),
+        ),
+        Settle: lazy(
+            () => import('containers/Merchant_v2/BatchSettlements/Settle'),
+        ),
+        Transactions: lazy(
+            () =>
+                import('containers/Merchant_v2/BatchSettlements/Transactions'),
+        ),
+    },
+    Report: lazy(() => import('containers/Merchant_v2/Report')),
+    ReportByPayment: lazy(() => import('containers/Merchant_v2/ReportByPayment')),
+    MenuPage: lazy(() => import('containers/Merchant_v2/MenuManager/Menu')),
+    Menu_Detail_Page: lazy(() => import('containers/Merchant_v2/MenuManager/MenuNew')),
+    CategoryPage: lazy(() => import('containers/Merchant_v2/MenuManager/Category')),
+    CategoryPage_DETAIL: lazy(() => import('containers/Merchant_v2/MenuManager/CategoryNew')),
+    ItemPage_DETAIL: lazy(() => import('containers/Merchant_v2/MenuManager/ItemNew')),
+    ItemPage: lazy(() => import('containers/Merchant_v2/MenuManager/Item')),
     RestaurentReservation: lazy(
         () => import('containers/RestaurentManagement/Reservation'),
     ),

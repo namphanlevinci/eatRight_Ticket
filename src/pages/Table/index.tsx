@@ -227,7 +227,7 @@ export const TablePage: React.FC = () => {
                                         </Text>
                                     ) : table?.status == '1' ? (
                                         <Text style={{ color: 'white' }}>
-                                            Clean Table {table?.name}
+                                            Clean Table test {table?.name}
                                         </Text>
                                     ) : (
                                         <Text style={{ color: 'white' }}>

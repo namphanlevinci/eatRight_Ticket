@@ -6,8 +6,8 @@ import { useTheme } from 'context/themeContext';
 import { Text } from 'components/atom/Text';
 import { isCartIdFromLocal } from 'utils/isNumericId';
 import styled from 'styled-components';
-import { useQuery } from '@apollo/client';
-import { GET_MERCHANT_RESTAURANT_CONFIG } from 'graphql/setups';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 export default function RenderAction({
     isNewItem,
     SendCart,
@@ -43,8 +43,8 @@ export default function RenderAction({
         query: '(max-width: 768px)',
     });
     const { theme } = useTheme();
-    const { data: config } = useQuery(GET_MERCHANT_RESTAURANT_CONFIG);
     const [loading, setLoading] = useState(false);
+    const { isAutoConfirmItem } = useSelector((state: RootState) => state.auth);
     return (
         <Col
             style={
@@ -148,18 +148,14 @@ export default function RenderAction({
                                 border: 0,
                             }}
                             onClick={() => {
-                                if (
-                                    config?.merchantGetRestaurantConfig
-                                        ?.auto_confirm_item
-                                ) {
+                                if (isAutoConfirmItem) {
                                     isNewItem ? SendCart(true) : goBill();
                                 } else {
                                     goBill();
                                 }
                             }}
                             isDisable={
-                                config?.merchantGetRestaurantConfig
-                                    ?.auto_confirm_item
+                                isAutoConfirmItem
                                     ? false
                                     : isNewItem || data?.items?.length === 0
                             }
@@ -226,10 +222,7 @@ export default function RenderAction({
                             border: 0,
                         }}
                         onClick={() => {
-                            if (
-                                config?.merchantGetRestaurantConfig
-                                    ?.auto_confirm_item
-                            ) {
+                            if (isAutoConfirmItem) {
                                 isNewItem
                                     ? SendCart(true)
                                     : !cartItems[indexTable]?.carts[
@@ -244,8 +237,7 @@ export default function RenderAction({
                             }
                         }}
                         isDisable={
-                            config?.merchantGetRestaurantConfig
-                                ?.auto_confirm_item
+                            isAutoConfirmItem
                                 ? cartItems[indexTable]?.carts[selectedCart]
                                       ?.items?.length === 0
                                     ? true

@@ -5,14 +5,14 @@ export const PLACE_ORDER = gql`
         $cartId: String!
         $paymentMethod: String!
         $po_number: String
-        // $received_amount: String
+        $received_amount: Float
     ) {
         createMerchantOrder(
             input: {
                 cart_id: $cartId
                 payment_method: $paymentMethod
                 po_number: $po_number
-                // received_amount: $received_amount
+                received_amount: $received_amount
             }
         ) {
             order {

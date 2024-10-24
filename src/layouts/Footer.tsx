@@ -8,6 +8,10 @@ import { Colors } from 'themes/colors';
 import { TABLE_STATUS } from 'constants/table';
 import { useTheme } from 'context/themeContext';
 import { useLocation } from 'react-router';
+import { BASE_ROUTER } from 'constants/router';
+import { useDispatch } from 'react-redux';
+import { updateFilterTable } from 'features/global/globalSlice';
+import { EStatusTable } from 'graphql/table/table';
 
 const Footer = () => {
     const {
@@ -22,7 +26,10 @@ const Footer = () => {
     const { theme } = useTheme();
     const location = useLocation();
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
-    const isHomePage = useMemo(() => location.pathname === '/', []);
+    const isHomePage = useMemo(
+        () => location.pathname === BASE_ROUTER.MERCHANT_TABLEVIEW,
+        [location],
+    );
 
     const [isOnline, setIsOnline] = useState(window.navigator.onLine);
 
@@ -139,6 +146,8 @@ const Footer = () => {
 export default Footer;
 
 const AdditionalTableView = () => {
+    const dispatch = useDispatch();
+    const { filterTable } = useSelector((state: RootState) => state.global);
     return (
         <Row
             style={{
@@ -155,17 +164,52 @@ const AdditionalTableView = () => {
                     margin: '0 auto',
                 }}
             >
-                {Object.values(TABLE_STATUS).map((value, idx) => {
+                {Object.values(TABLE_STATUS).map((table, idx) => {
                     return (
-                        <Row key={idx} justify="space-between" align="middle">
+                        <Row
+                            key={idx}
+                            justify="space-between"
+                            align="middle"
+                            onClick={() => {
+                                if (table.value === filterTable) {
+                                    dispatch(
+                                        updateFilterTable({
+                                            filterTable: EStatusTable.ALL,
+                                        }),
+                                    );
+                                } else {
+                                    dispatch(
+                                        updateFilterTable({
+                                            filterTable: table.value,
+                                        }),
+                                    );
+                                }
+                            }}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <div
                                 style={{
                                     width: 20,
                                     height: 20,
-                                    backgroundColor: value.primaryColor,
-                                    border: `4px solid ${value.secondaryColor}`,
+                                    backgroundColor: table.primaryColor,
+                                    border: `4px solid ${table.secondaryColor}`,
                                     borderRadius: 6,
                                     marginRight: 8,
+                                }}
+                                onClick={() => {
+                                    if (table.value === filterTable) {
+                                        dispatch(
+                                            updateFilterTable({
+                                                filterTable: EStatusTable.ALL,
+                                            }),
+                                        );
+                                    } else {
+                                        dispatch(
+                                            updateFilterTable({
+                                                filterTable: table.value,
+                                            }),
+                                        );
+                                    }
                                 }}
                             />
                             <Text
@@ -175,7 +219,7 @@ const AdditionalTableView = () => {
                                     color: Colors.grey3,
                                 }}
                             >
-                                {value.label}
+                                {table.label}
                             </Text>
                         </Row>
                     );

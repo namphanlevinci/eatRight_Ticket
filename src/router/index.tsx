@@ -16,21 +16,28 @@ import { emitter } from 'graphql/client';
 import { App, Modal } from 'antd';
 import { useDispatch } from 'react-redux';
 import {
+    updateRestaurantConfig,
     updateStatusLogin,
     updateStatusLoginForMerchant,
     updateStatusLogout,
 } from 'features/auth/authSlice';
 import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
-import { GET_CONFIG_PRINTER } from 'graphql/printer';
-import { useLazyQuery } from '@apollo/client';
+import { GET_MERCHANT_RESTAURANT_CONFIG } from 'graphql/setups';
+import {
+    // GET_CONFIG_PRINTER,
+    LIST_PRINTER_DEVICES,
+    SELECT_PRINTER_DEVICE,
+} from 'graphql/printer';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import MerchantRoute from './MerchantRoute';
 export const BaseRouter = () => {
     const { notification } = App.useApp();
     const dispatch = useDispatch();
     const { error } = Modal;
     const [needLogout, setNeedLogout] = useState(false);
     const [noStore, setNoStore] = useState(false);
-    const { isLogged, isMerchant, isTableView } = useSelector(
+    const { isLogged, isMerchant } = useSelector(
         (state: RootState) => state.auth,
     );
     const [urlParams] = useSearchParams();
@@ -43,7 +50,7 @@ export const BaseRouter = () => {
             );
         }
     };
-    const [onGetConfig] = useLazyQuery(GET_CONFIG_PRINTER);
+    // const [onGetConfig] = useLazyQuery(GET_CONFIG_PRINTER);
     useEffect(() => {
         if (isMerchant) {
             document.title = 'EatRight Merchant';
@@ -128,6 +135,65 @@ export const BaseRouter = () => {
             });
         }
     }, [noStore]);
+    const [onSetPrinterDevice] = useMutation(SELECT_PRINTER_DEVICE);
+    const [onGetListPrinterDevice] = useLazyQuery(LIST_PRINTER_DEVICES);
+    const handleSelectPrinter = (id: string) => {
+        onSetPrinterDevice({
+            variables: {
+                printer_id: id,
+            },
+        })
+            .then(() => {
+                notification.success({
+                    message: 'Success',
+                    description: 'Set up printer successfully',
+                });
+                localStorage.setItem('printer_id', id);
+            })
+            .catch(() => {
+                console.log('error');
+            });
+    };
+    useEffect(() => {
+        if (!isLogged) {
+            return;
+        }
+        const handleMessage = (event: any) => {
+            if (!window?.ReactNativeWebView) {
+                return;
+            }
+            try {
+                const data = JSON.parse(event.data);
+                notification.success({
+                    message: 'Connected Printer successfully',
+                    description: data.data.deviceName,
+                });
+                localStorage.setItem('merchantGetPrinterConfig', 'false');
+                localStorage.setItem('printer_name', data.data.deviceName);
+                emitter.emit('printer_name', data.data.deviceName);
+
+                onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then(
+                    (res: any) => {
+                        const list = res?.data?.merchantGetListDevice?.prints;
+                        const printer = list.find(
+                            (item: any) =>
+                                item?.printer_name == data.data.deviceName,
+                        );
+                        handleSelectPrinter(printer?.id);
+                    },
+                );
+            } catch (error) {
+                console.log('error');
+            }
+        };
+
+        window.addEventListener('message', handleMessage);
+        document.addEventListener('message', handleMessage);
+        return () => {
+            window.removeEventListener('message', handleMessage);
+            document.removeEventListener('message', handleMessage);
+        };
+    }, [isLogged]);
     useEffect(() => {
         if (needLogout) {
             console.log('needLogout', needLogout);
@@ -147,19 +213,28 @@ export const BaseRouter = () => {
             });
         }
     }, [needLogout]);
+    const [onGetRestaurantConfig] = useLazyQuery(
+        GET_MERCHANT_RESTAURANT_CONFIG,
+    );
     useEffect(() => {
         if (isLogged) {
             setNeedLogout(false);
-            onGetConfig().then((res: any) => {
-                const { data } = res;
-                if (data) {
-                    localStorage.setItem(
-                        'merchantGetPrinterConfig',
-
-                        `${data.merchantGetPrinterConfig.is_used_terminal}`,
-                    );
-                }
-            });
+            onGetRestaurantConfig({ fetchPolicy: 'no-cache' }).then(
+                (res: any) => {
+                    if (res.data) {
+                        dispatch(
+                            updateRestaurantConfig({
+                                isOpenPrice:
+                                    res?.data?.merchantGetRestaurantConfig
+                                        ?.open_pricing,
+                                isAutoConfirmItem:
+                                    res?.data?.merchantGetRestaurantConfig
+                                        ?.auto_confirm_item,
+                            }),
+                        );
+                    }
+                },
+            );
         }
     }, [isLogged]);
     return (
@@ -178,11 +253,7 @@ export const BaseRouter = () => {
                     path={BASE_ROUTER.HOME}
                     element={
                         <PrivateRoute isAuthenticated={isLogged}>
-                            {isMerchant && isTableView ? (
-                                <Container.MerchantHome />
-                            ) : (
-                                <Container.Home />
-                            )}
+                            <Container.Home />
                         </PrivateRoute>
                     }
                 />
@@ -363,51 +434,80 @@ export const BaseRouter = () => {
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.MERCHANT_PAGE}
+                    path={BASE_ROUTER.MERCHANT_TABLEVIEW}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.MerchantPage />
-                        </PrivateRoute>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
+                            <Container.Merchant.TableView />
+                        </MerchantRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.BATCH_HISTORY}
+                    path={BASE_ROUTER.MERCHANT_ORDERLIST}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.BatchHistory />
-                        </PrivateRoute>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
+                            <Container.Merchant.OrderList />
+                        </MerchantRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.SETTLE}
+                    path={BASE_ROUTER.MERCHANT_BATCH_HISTORY}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.Settle />
-                        </PrivateRoute>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
+                            <Container.Merchant.BatchHistory />
+                        </MerchantRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.TRANSACTIONS}
+                    path={BASE_ROUTER.MERCHANT_SETTLE}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
-                            <Container.Transactions />
-                        </PrivateRoute>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
+                            <Container.Merchant.Settle />
+                        </MerchantRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.SALES_REPORT}
+                    path={BASE_ROUTER.MERCHANT_TRANSACTIONS}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
+                            <Container.Merchant.Transactions />
+                        </MerchantRoute>
+                    }
+                />
+                <Route
+                    path={BASE_ROUTER.MERCHANT_SALES_REPORT}
+                    element={
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
                             <Container.Report />
-                        </PrivateRoute>
+                        </MerchantRoute>
                     }
                 />
                 <Route
-                    path={BASE_ROUTER.REPORT_BY_PAYMENT}
+                    path={BASE_ROUTER.MERCHANT_REPORT_BY_PAYMENT}
                     element={
-                        <PrivateRoute isAuthenticated={isLogged}>
+                        <MerchantRoute
+                            isAuthenticated={isLogged}
+                            isMerchant={isMerchant}
+                        >
                             <Container.ReportByPayment />
-                        </PrivateRoute>
+                        </MerchantRoute>
                     }
                 />
                 <Route

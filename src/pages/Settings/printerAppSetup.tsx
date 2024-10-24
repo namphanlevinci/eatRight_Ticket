@@ -3,6 +3,7 @@ import { Button, Layout, notification, Row, Switch } from 'antd';
 import RadioBtnSelected from 'assets/icons/radioBtnSelected';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
+import { emitter } from 'graphql/client';
 
 import { POS_DEVICE_LIST_DJV } from 'graphql/orders/paymentMethod';
 import {
@@ -75,12 +76,17 @@ export default function PrinterAppSetUpPage() {
                                 description: 'Set up printer successfully',
                             });
                             localStorage.setItem(
+                                'merchantGetPrinterConfig',
+                                `true`,
+                            );
+                            localStorage.setItem(
                                 'printer_id',
-                                selectedOption?.id.toString(),
+                                selectedOption?.id?.toString(),
                             );
                             pushMsgOffPrinter();
                         })
-                        .catch(() => {
+                        .catch((err) => {
+                            console.log(err);
                             console.log('error');
                         });
                 } else {
@@ -96,7 +102,7 @@ export default function PrinterAppSetUpPage() {
                             });
                             localStorage.setItem(
                                 'printer_id',
-                                selectedOption?.id.toString(),
+                                selectedOption?.id?.toString(),
                             );
                             localStorage.setItem(
                                 'merchantGetPrinterConfig',
@@ -133,26 +139,7 @@ export default function PrinterAppSetUpPage() {
         }
         // setVisibleMoalPrinter(false);
     };
-    const handleSelectPrinter = (id: string) => {
-        onSetPrinterDevice({
-            variables: {
-                printer_id: id,
-            },
-        })
-            .then(() => {
-                notification.success({
-                    message: 'Success',
-                    description: 'Set up printer successfully',
-                });
-                localStorage.setItem(
-                    'printer_id',
-                    selectedOption?.id.toString(),
-                );
-            })
-            .catch(() => {
-                console.log('error');
-            });
-    };
+
     useEffect(() => {
         onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then((res: any) => {
             setList(res?.data?.merchantGetListDevice?.prints ?? []);
@@ -181,45 +168,16 @@ export default function PrinterAppSetUpPage() {
     const [switchPrinterMode, setSwitchPrinterMode] = useState(false);
 
     useEffect(() => {
-        const handleMessage = (event: any) => {
-            try {
-                const data = JSON.parse(event.data);
-                notification.success({
-                    message: 'Connected Printer successfully',
-                    description: data.data.deviceName,
-                });
-                localStorage.setItem('merchantGetPrinterConfig', `false`);
-                localStorage.setItem('printer_name', data.data.deviceName);
-                onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then(
-                    (res: any) => {
-                        const list = res?.data?.merchantGetListDevice?.prints;
-                        const printer = list.find(
-                            (item: any) =>
-                                item?.printer_name == data.data.deviceName,
-                        );
-                        handleSelectPrinter(printer?.id);
-                    },
-                );
-            } catch (error) {
-                notification.error({
-                    message: 'Error',
-                    description: 'Connect Printer fail',
-                });
-            }
-        };
-
-        window.addEventListener('message', handleMessage);
-        document.addEventListener('message', handleMessage);
-        return () => {
-            window.removeEventListener('message', handleMessage);
-            document.removeEventListener('message', handleMessage);
-        };
-    }, []);
-    useEffect(() => {
         const printerName = localStorage.getItem('printer_name');
         if (printerName) {
             setPrinter(printerName);
         }
+        emitter.on('printer_name', (data: any) => {
+            setPrinter(data);
+        });
+        return () => {
+            emitter.off('printer_name');
+        };
     }, []);
     const RenderEPSONPrinter = () => {
         return (
