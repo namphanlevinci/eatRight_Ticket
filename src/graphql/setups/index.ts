@@ -28,6 +28,13 @@ export const SET_MERCHANT_RESTAURANT_CONFIG_AUTO_CLOSE_ORDER = gql`
         setupConfigRestaurant(input: { close_order: $close_order })
     }
 `;
+export const SET_MERCHANT_RESTAURANT_CONFIG_PRIMARY_TERMINAL = gql`
+    mutation ($primary_terminal_setting: Int!) {
+        setupConfigRestaurant(
+            input: { primary_terminal_setting: $primary_terminal_setting }
+        )
+    }
+`;
 export const GET_PRIMARY_TERMINAL_WAITER = gql`
     {
         waiterPrimaryPosDevice {
