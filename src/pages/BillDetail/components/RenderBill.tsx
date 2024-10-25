@@ -257,26 +257,13 @@ const RenderBillItem = ({
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>
-                        {`Tip (${Math.floor((tip / subTotal) * 100)}%) :`}
-                    </TextDark>
-                    {tip > 0 ? (
-                        <TextDark>
-                            {CURRENTCY} {tip.toFixed(2)}
-                        </TextDark>
-                    ) : (
-                        <TextDark>_______________________________</TextDark>
-                    )}
+                    <TextDark style={text16}>{`Tip :$`}</TextDark>
+                    <TextDark>_______________________________</TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Grand Total:</TextDark>
-                    {tip > 0 ? (
-                        <TextDark>
-                            {CURRENTCY} {grand_total}
-                        </TextDark>
-                    ) : (
-                        <TextDark>______________________</TextDark>
-                    )}
+                    <TextDark style={text16}>Grand Total:$</TextDark>
+
+                    <TextDark>______________________</TextDark>
                 </RowStyled>
                 <DividedDashed />
                 <RowStyled align={'middle'}>
