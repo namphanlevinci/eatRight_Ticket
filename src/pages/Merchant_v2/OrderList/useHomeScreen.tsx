@@ -153,6 +153,13 @@ export const useHomeScreen = () => {
             clearInterval(reloadOrderRef.current);
         };
     }, []);
+    const sendImageReactNative = ({ url }: { url: string }) => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: 'kitchen', imageUrl: url }),
+            );
+        }
+    };
     useEffect(() => {
         // Kết nối tới máy chủ
         const socketInstance = io(SocketURL);
@@ -180,6 +187,17 @@ export const useHomeScreen = () => {
         });
 
         socketInstance.on('chat message', (msg) => {
+            console.log('msg socket', msg);
+            try {
+                if (msg['kitchen-receipt-image']) {
+                    sendImageReactNative({
+                        url: msg['kitchen-receipt-image'],
+                    });
+                    return;
+                }
+            } catch (error) {
+                console.log(error);
+            }
             try {
                 console.log(msg);
                 setReload();
