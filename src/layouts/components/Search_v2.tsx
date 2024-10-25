@@ -1,7 +1,7 @@
 import SearchIcon from 'assets/icons_v2/SearchIcon';
 import { BASE_ROUTER } from 'constants/router';
 import { useTheme } from 'context/themeContext';
-import { updateSearchOrder } from 'features/global/globalSlice';
+import { updateSearch } from 'features/global/globalSlice';
 import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
@@ -36,7 +36,7 @@ const SearchV2 = () => {
                 onChange={(e) => {
                     const key = isTableView ? 'table' : 'order';
                     dispatch(
-                        updateSearchOrder({
+                        updateSearch({
                             searchText: {
                                 [key]: e.target.value,
                             },

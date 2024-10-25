@@ -23,6 +23,8 @@ import LoadingModalPayment from 'components/modal/loadingModalPayment';
 import ModalPosDevicesDJV from 'pages/TableBill/components/ModalPosDevicesDJV';
 import { isEmpty } from 'lodash';
 import ModalPaySuccess from 'components/modal/ModalPaySuccess';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 export default function TableSplitBillCheckOut() {
     const dataStorage = localStorage.getItem('split_bill_data');
@@ -93,19 +95,26 @@ export default function TableSplitBillCheckOut() {
     const handlePayment = (
         paymentMethod: string,
         po_number?: string | undefined | null,
+        received_amount?: number,
     ) => {
         if (paymentMethod === 'cash' || paymentMethod == 'other') {
+            const variables = {
+                invoice_number: selectGuest?.number,
+                payment_method:
+                    paymentMethod == 'other' ? 'purchaseorder' : paymentMethod,
+                po_number: po_number ?? '',
+                ...(!isEmpty(po_number) && { po_number }),
+                ...(received_amount &&
+                    paymentMethod === 'cash' && {
+                        received_amount: parseFloat(
+                            received_amount?.toString?.(),
+                        ).toFixed(2),
+                    }),
+            };
+
             setLoading(true);
             onPaymentWithCash({
-                variables: {
-                    invoice_number: selectGuest?.number,
-                    payment_method:
-                        paymentMethod == 'other'
-                            ? 'purchaseorder'
-                            : paymentMethod,
-                    po_number: po_number ?? '',
-                    ...(!isEmpty(po_number) && { po_number }),
-                },
+                variables,
             })
                 .then((res) => {
                     if (
@@ -125,7 +134,7 @@ export default function TableSplitBillCheckOut() {
                                 return value;
                             }),
                         };
-                        if (result?.invoice_image) {
+                        if (result?.invoice_image && !isTerminalPrinter) {
                             PrintMerchantCopy(
                                 result.invoice_image,
                                 paymentMethod === 'cash' ? true : false,
@@ -241,6 +250,7 @@ export default function TableSplitBillCheckOut() {
             emitter.off('arise_result');
         };
     }, [selectGuest]);
+    const { isTerminalPrinter } = useSelector((state: RootState) => state.auth);
     const ReloadInvoice = ({
         printInVoice,
         isPayTerminal = false,
@@ -267,7 +277,7 @@ export default function TableSplitBillCheckOut() {
                             value.number === printInVoice,
                     );
                     if (FindInvoice) {
-                        if (!isPayTerminal) {
+                        if (!isPayTerminal && !isTerminalPrinter) {
                             PrintMerchantCopy(FindInvoice.invoice_image);
                         }
                     }

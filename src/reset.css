@@ -51,6 +51,9 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+.container-box{
+	padding: 16px;
+}
 :root {
 	/* Light Mode */
 	--semantic-positive: #198754;

@@ -1,26 +1,29 @@
-import { Collapse } from 'antd';
 import styled from 'styled-components';
 import TableOrdering from './TableOrdering';
+import { Text } from 'components/atom/Text';
+import AutoCloseOrder from './AutoCloseOrder';
 
 export default function OrderingPage() {
     return (
         <Container>
-            <Collapse
-                items={[
-                    {
-                        key: '1',
-                        label: 'Table Ordering',
-                        children: <TableOrdering />,
-                    },
-                ]}
-                ghost
-                defaultActiveKey={['1']}
-            />
-            <div style={{ height: 24 }} />
+            <Text style={{ fontSize: 24, fontWeight: '600' }}>
+                Ordering Setting
+            </Text>
+            <Divider />
+            <TableOrdering />
+            <Divider />
+            <AutoCloseOrder />
         </Container>
     );
 }
 
+const Divider = styled.div`
+    width: 100%;
+    height: 1px;
+    background-color: #a0cff2;
+    margin-top: 20px;
+    margin-bottom: 20px;
+`;
 const Container = styled.div`
     padding-inline: 16px;
     .ant-collapse {

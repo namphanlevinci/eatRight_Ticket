@@ -32,6 +32,7 @@ export const GET_CART_BY_ID = gql`
                 product {
                     name
                     sku
+                    open_price
                 }
                 discount_percent
                 id

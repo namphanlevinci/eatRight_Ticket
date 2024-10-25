@@ -16,14 +16,22 @@ import { emitter } from 'graphql/client';
 import { App, Modal } from 'antd';
 import { useDispatch } from 'react-redux';
 import {
+    updateIsTerminalPrinter,
+    updateRestaurantConfig,
     updateStatusLogin,
     updateStatusLoginForMerchant,
     updateStatusLogout,
 } from 'features/auth/authSlice';
 import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
-import { GET_CONFIG_PRINTER } from 'graphql/printer';
-import { useLazyQuery } from '@apollo/client';
+import { GET_MERCHANT_RESTAURANT_CONFIG } from 'graphql/setups';
+import {
+    GET_CONFIG_PRINTER,
+    LIST_PRINTER_DEVICES,
+    SELECT_PRINTER_DEVICE,
+    SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT,
+} from 'graphql/printer';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import MerchantRoute from './MerchantRoute';
 export const BaseRouter = () => {
     const { notification } = App.useApp();
@@ -129,38 +137,131 @@ export const BaseRouter = () => {
             });
         }
     }, [noStore]);
+    const [onSetPrinterDevice] = useMutation(SELECT_PRINTER_DEVICE);
+    const [onGetListPrinterDevice] = useLazyQuery(LIST_PRINTER_DEVICES);
+    const [onSetPrinter] = useMutation(SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT);
+    const handleSelectPrinter = (id: string, printerName: string) => {
+        onSetPrinterDevice({
+            variables: {
+                printer_id: id,
+            },
+        })
+            .then(() => {
+                notification.success({
+                    message: 'Success',
+                    description: 'Set up printer successfully',
+                });
+                localStorage.setItem('printer_id', id);
+            })
+            .catch(() => {
+                console.log('error');
+            });
+        onSetPrinter({
+            variables: {
+                pos_id: id,
+                is_used_terminal: false,
+            },
+        }).finally(() => {
+            emitter.emit('printer_name', printerName);
+            dispatch(updateIsTerminalPrinter(false));
+        });
+    };
+    useEffect(() => {
+        if (!isLogged) {
+            return;
+        }
+        onGetConfig().then((res: any) => {
+            dispatch(
+                updateIsTerminalPrinter(
+                    res?.data?.merchantGetPrinterConfig?.is_used_terminal ||
+                        false,
+                ),
+            );
+        });
+        const handleMessage = (event: any) => {
+            if (!window?.ReactNativeWebView) {
+                return;
+            }
+            try {
+                const data = JSON.parse(event.data);
+                notification.success({
+                    message: 'Connected Printer successfully',
+                    description: data.data.deviceName,
+                });
+                localStorage.setItem('printer_name', data.data.deviceName);
+
+                onGetListPrinterDevice({ fetchPolicy: 'no-cache' }).then(
+                    (res: any) => {
+                        const list = res?.data?.merchantGetListDevice?.prints;
+                        const printer = list.find(
+                            (item: any) =>
+                                item?.printer_name == data.data.deviceName,
+                        );
+                        handleSelectPrinter(printer?.id, data.data.deviceName);
+                    },
+                );
+            } catch (error) {
+                console.log('error');
+            }
+        };
+
+        window.addEventListener('message', handleMessage);
+        document.addEventListener('message', handleMessage);
+        return () => {
+            window.removeEventListener('message', handleMessage);
+            document.removeEventListener('message', handleMessage);
+        };
+    }, [isLogged]);
     useEffect(() => {
         if (needLogout) {
             console.log('needLogout', needLogout);
         }
         if (needLogout && isLogged) {
+            const onLogout = () => {
+                setNeedLogout(false);
+                dispatch(updateStatusLogout());
+                sendReactNativeLogout();
+                Modal.destroyAll();
+            };
             console.log('need show modal logout please');
             error({
                 title: 'Session Expired',
                 content: 'Please log in again!',
                 onOk: () => {
-                    setNeedLogout(false);
-                    dispatch(updateStatusLogout());
-                    sendReactNativeLogout();
-                    Modal.destroyAll();
+                    onLogout();
+                },
+                onCancel: () => {
+                    onLogout();
+                },
+                onClose: () => {
+                    onLogout();
                 },
                 centered: true,
             });
         }
     }, [needLogout]);
+    const [onGetRestaurantConfig] = useLazyQuery(
+        GET_MERCHANT_RESTAURANT_CONFIG,
+    );
     useEffect(() => {
         if (isLogged) {
             setNeedLogout(false);
-            onGetConfig().then((res: any) => {
-                const { data } = res;
-                if (data) {
-                    localStorage.setItem(
-                        'merchantGetPrinterConfig',
-
-                        `${data.merchantGetPrinterConfig.is_used_terminal}`,
-                    );
-                }
-            });
+            onGetRestaurantConfig({ fetchPolicy: 'no-cache' }).then(
+                (res: any) => {
+                    if (res.data) {
+                        dispatch(
+                            updateRestaurantConfig({
+                                isOpenPrice:
+                                    res?.data?.merchantGetRestaurantConfig
+                                        ?.open_pricing,
+                                isAutoConfirmItem:
+                                    res?.data?.merchantGetRestaurantConfig
+                                        ?.auto_confirm_item,
+                            }),
+                        );
+                    }
+                },
+            );
         }
     }, [isLogged]);
     return (

@@ -9,28 +9,14 @@ import {
     STitle,
     STopSideBar,
 } from './styled';
-import { TABLE_STATUS } from 'constants/table';
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { BASE_ROUTER } from 'constants/router';
 import moment from 'moment';
-
-interface ITable {
-    cartIds: { cartId: string }[];
-    hasReadyItem: boolean;
-    id: number;
-    is_counter: number;
-    name: string;
-    note: string | null;
-    numberOfCustomer: number;
-    size: number;
-    status: string;
-    customer_name: string;
-    created_at: string;
-}
-
+import { EStatusTable, TTable } from 'graphql/table/table';
+import { SIZES, STATUS } from 'constants/table';
 interface IProps {
-    tables: ITable[];
+    tables: TTable[];
 }
 
 const Tables = ({ tables }: IProps) => {
@@ -50,7 +36,6 @@ const Tables = ({ tables }: IProps) => {
                 ?.filter((table) => table?.name)
                 .sort((a, b) => a.size - b.size)
                 ?.map((table, idx) => {
-                    const _status = table.status as TStatus;
                     return (
                         <Fragment key={idx}>
                             <Table
@@ -58,7 +43,7 @@ const Tables = ({ tables }: IProps) => {
                                 size={
                                     table.size > SMALL_SIZE ? 'large' : 'small'
                                 }
-                                status={_status}
+                                status={table.status}
                             />
                         </Fragment>
                     );
@@ -70,17 +55,16 @@ const Tables = ({ tables }: IProps) => {
 export default Tables;
 
 interface IPropsTable {
-    tableData: ITable;
-    status: TStatus;
+    tableData: TTable;
+    status: EStatusTable;
 }
 
 interface ISize {
     size: 'small' | 'large';
 }
 
-type TStatus = 'small' | 'lagre';
 interface IChairsTable {
-    status: TStatus;
+    status: EStatusTable;
 }
 
 // SMALL TABLE IF SIZE < 4, ELSE
@@ -101,10 +85,11 @@ const Table = ({ tableData, size, status }: IPropsTable & ISize) => {
             <STitle>{tableData?.name || 'Table name'}</STitle>
             <SSubtitle>{tableData.customer_name}</SSubtitle>
             <SDuration>
-                {moment
-                    .utc(tableData.created_at, 'YYYY-MM-DD HH:mm')
-                    .local()
-                    .format('hh:mm A')}
+                {tableData?.created_at &&
+                    moment
+                        .utc(tableData.created_at, 'YYYY-MM-DD HH:mm')
+                        .local()
+                        .format('hh:mm A')}
             </SDuration>
         </STableContainer>
     );
@@ -193,49 +178,4 @@ const Chairs = ({ status, size }: IChairsTable & ISize) => {
             )}
         </>
     );
-};
-
-const SIZES: Record<
-    string,
-    {
-        width: string;
-        maxWidth: string;
-        minWidth: string;
-        height: string;
-        aspectRatio: string;
-    }
-> = {
-    small: {
-        width: 'auto',
-        maxWidth: 'min(25%,204px)',
-        minWidth: 'max(12%,204px)',
-        height: '204px',
-        aspectRatio: '1 / 1',
-    },
-    large: {
-        width: 'auto',
-        maxWidth: 'min(30%,288px)',
-        minWidth: 'max(20%,288px)',
-        height: '204px',
-        aspectRatio: '3 / 4',
-    },
-};
-
-const STATUS: Record<
-    string,
-    { backgroundColor: string; borderColor: string; empty?: boolean }
-> = {
-    '0': {
-        backgroundColor: Object.values(TABLE_STATUS)[0].primaryColor,
-        borderColor: Object.values(TABLE_STATUS)[0].secondaryColor,
-        empty: true,
-    },
-    '1': {
-        backgroundColor: Object.values(TABLE_STATUS)[1].primaryColor,
-        borderColor: Object.values(TABLE_STATUS)[1].secondaryColor,
-    },
-    '2': {
-        backgroundColor: Object.values(TABLE_STATUS)[2].primaryColor,
-        borderColor: Object.values(TABLE_STATUS)[2].secondaryColor,
-    },
 };

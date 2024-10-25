@@ -13,11 +13,14 @@ import { RootState } from 'store';
 import Floors from './components/Floors';
 // import WaitingListButton from './components/WaitingListButton';
 import Tables from './components/Tables';
+import { EStatusTable } from 'graphql/table/table';
 const { Content } = Layout;
 
 const MerchantTableView: React.FC = () => {
     const navigation = useNavigate();
-    const { searchText } = useSelector((state: RootState) => state.global);
+    const { searchText, filterTable } = useSelector(
+        (state: RootState) => state.global,
+    );
     const { loadingTable, data, floorActive, handleActiveFloor } =
         useGetAllTable({
             cache: false,
@@ -26,21 +29,11 @@ const MerchantTableView: React.FC = () => {
         (state: RootState) => state.auth,
     );
     useEffect(() => {
-        console.log({ isTableView });
         if (!isTableView) {
             navigation(BASE_ROUTER.MERCHANT_ORDERLIST);
         }
     }, [isTableView]);
-    console.log(
-        data?.filter(
-            (d) =>
-                d?.name &&
-                searchText?.table &&
-                d.name
-                    ?.toLowerCase()
-                    .includes(searchText?.table?.toLowerCase()),
-        ) || [],
-    );
+
     const renderContent = () => {
         return (
             <Spin spinning={loadingTable}>
@@ -61,20 +54,29 @@ const MerchantTableView: React.FC = () => {
                     <ContainerTableBody>
                         {data?.length ? (
                             <Tables
-                                tables={
-                                    searchText?.table
-                                        ? data?.filter(
-                                              (d) =>
-                                                  d?.name &&
-                                                  searchText?.table &&
-                                                  d.name
-                                                      ?.toLowerCase()
-                                                      .includes(
-                                                          searchText?.table?.toLowerCase(),
-                                                      ),
-                                          )
-                                        : data
-                                }
+                                tables={data?.filter((d) => {
+                                    const matchesNotNull = d?.id;
+                                    const matchesName = d?.name
+                                        ?.toLowerCase()
+                                        .includes(
+                                            searchText?.table?.toLowerCase(),
+                                        );
+                                    if (filterTable === undefined) {
+                                        return matchesNotNull && matchesName;
+                                    }
+
+                                    console.log(filterTable);
+                                    const matchesStatus =
+                                        filterTable === EStatusTable.ALL
+                                            ? true
+                                            : +d?.status === filterTable;
+
+                                    return (
+                                        matchesNotNull &&
+                                        matchesName &&
+                                        matchesStatus
+                                    );
+                                })}
                             />
                         ) : (
                             <div>Not found any table</div>

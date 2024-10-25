@@ -220,13 +220,11 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
             }, 3000);
         }
     }, [loadingPrint]);
-    const PrintBillApi = () => {
+    const { isTerminalPrinter } = useSelector((state: RootState) => state.auth);
+    const PrintBillApi = async () => {
         setLoadingPrint(true);
-        const is_used_terminal =
-            localStorage.getItem('merchantGetPrinterConfig') === 'true'
-                ? true
-                : false;
-        if (!is_used_terminal) {
+
+        if (!isTerminalPrinter) {
             if (window?.ReactNativeWebView) {
                 const imageUrl = selectDataShowbill
                     ? selectDataShowbill.invoice_image
@@ -262,7 +260,7 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
                 });
         } else {
             if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length === 0) {
-                onGetInvoices({
+                await onGetInvoices({
                     variables: {
                         OrderNumber: data?.orderDetail?.order_number,
                     },

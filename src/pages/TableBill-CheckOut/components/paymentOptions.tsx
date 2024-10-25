@@ -10,7 +10,11 @@ export default function PaymentOptions({
     isPaid = false,
     selectedGuest,
 }: {
-    onPayment: (type: string, po_number: string) => void;
+    onPayment: (
+        type: string,
+        po_number: string,
+        received_amount?: number,
+    ) => void;
     isPaid?: boolean;
     selectedGuest?: InvoiceWithSplit;
 }) {
@@ -102,8 +106,12 @@ export default function PaymentOptions({
                     isModalOpen={modalChange}
                     grandTotal={selectedGuest?.total.grand_total.value || 0}
                     onClose={() => setModalChange(false)}
-                    onSubmit={() => {
-                        onPayment(selectedPaymentMethod, value);
+                    onSubmit={(received_amount: number) => {
+                        onPayment(
+                            selectedPaymentMethod,
+                            value,
+                            received_amount,
+                        );
                         setModalChange(false);
                     }}
                 />

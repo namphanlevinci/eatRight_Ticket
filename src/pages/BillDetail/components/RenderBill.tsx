@@ -14,6 +14,7 @@ import {
 import React from 'react';
 import { convertMethod } from 'utils/format';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
 
 const RenderBillItem = ({
     data,
@@ -24,6 +25,8 @@ const RenderBillItem = ({
     selectDataShowbill: any;
     dataInvoice?: any;
 }) => {
+    console.log({ dataInvoice });
+
     const totalDiscount = selectDataShowbill
         ? selectDataShowbill?.total?.discounts.reduce(
               (total: number, discount: any) => {
@@ -38,6 +41,43 @@ const RenderBillItem = ({
                 return total;
             }, 0)
           : 0;
+
+    const baseTotal = selectDataShowbill
+        ? Math.abs(
+              selectDataShowbill?.total?.subtotal?.value -
+                  totalDiscount +
+                  selectDataShowbill?.total?.total_tax?.value,
+          )
+        : Math.abs(
+              data?.total?.subtotal?.value -
+                  totalDiscount +
+                  data?.total?.total_tax?.value,
+          );
+
+    const tip = selectDataShowbill
+        ? Math.abs(
+              selectDataShowbill?.total?.grand_total?.value -
+                  (selectDataShowbill?.total?.subtotal?.value -
+                      totalDiscount +
+                      selectDataShowbill?.total?.total_tax?.value),
+          )
+        : Math.abs(data?.tip_amount?.value);
+
+    const nonCashAdjustment = selectDataShowbill
+        ? selectDataShowbill.non_cash_amount
+        : dataInvoice?.length > 0
+          ? dataInvoice.reduce(
+                (a: any, b: any) => a + parseFloat(b?.non_cash_amount),
+                0,
+            ) || 0
+          : 0;
+
+    const address = data?.restaurant_address?.split(', ')?.[0];
+    const grand_total = selectDataShowbill
+        ? selectDataShowbill?.grand_total?.value
+        : data?.total?.grand_total?.value;
+
+    console.log({ selectDataShowbill, data });
 
     return (
         <div
@@ -55,7 +95,13 @@ const RenderBillItem = ({
                     {data?.restaurant_name}
                 </TextDark>
                 <TextDark style={{ ...text16W, marginTop: 16 }}>
-                    {data?.restaurant_address}
+                    {`${address?.substring?.(0, 42)} ${address?.length > 42 && ' ...'}`}
+                </TextDark>
+                <TextDark style={{ ...text16W, marginTop: 8 }}>
+                    {data?.restaurant_address
+                        ?.split?.(',')
+                        .slice?.(1)
+                        ?.toString?.()}
                 </TextDark>
                 <TextDark style={{ ...text16W, marginTop: 8 }}>
                     Hotline: {data?.restaurant_phone}
@@ -74,11 +120,7 @@ const RenderBillItem = ({
                 <RowStyled>
                     <TextDark>
                         <BoldText>Date: </BoldText>
-                        {data?.created_at && data?.created_at.split(' ')[0]}
-                    </TextDark>
-                    <TextDark>
-                        <BoldText>Time: </BoldText>
-                        {data?.created_at && data?.created_at.split(' ')[1]}
+                        {`${moment(data?.created_at).format('MM/DD/YYYY hh:mm A')}`}
                     </TextDark>
                 </RowStyled>
                 <RowStyled>
@@ -106,8 +148,8 @@ const RenderBillItem = ({
                                 textOverflow: 'ellipsis',
                             }}
                         >
-                            <BoldText>Server: </BoldText>
-                            {data?.serve_name}
+                            <BoldText>Waiter: </BoldText>
+                            {data?.serve_name?.split?.(',')?.[0]}
                         </TextDark>
                     </RowStyled>
                 ) : (
@@ -142,13 +184,18 @@ const RenderBillItem = ({
                             : data?.total?.subtotal?.value?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
-                <RowStyled>
-                    <TextDark style={text16}>Discount:</TextDark>
-                    <TextDark>
-                        - {CURRENTCY} {totalDiscount.toFixed(2)}
-                    </TextDark>
-                </RowStyled>
-                {data?.total?.total_tax?.value ? (
+                {totalDiscount && totalDiscount > 0 ? (
+                    <RowStyled>
+                        <TextDark style={text16}>Discount:</TextDark>
+                        <TextDark>
+                            - {CURRENTCY} {totalDiscount?.toFixed(2)}
+                        </TextDark>
+                    </RowStyled>
+                ) : (
+                    <div />
+                )}
+                {data?.total?.total_tax?.value &&
+                data?.total?.total_tax?.value > 0 ? (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>Tax</TextDark>
                         <TextDark>
@@ -186,18 +233,7 @@ const RenderBillItem = ({
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Base total:</TextDark>
                     <TextDark>
-                        {CURRENTCY}{' '}
-                        {selectDataShowbill
-                            ? (
-                                  selectDataShowbill?.total?.subtotal?.value -
-                                  totalDiscount +
-                                  selectDataShowbill?.total?.total_tax?.value
-                              )?.toFixed(2)
-                            : (
-                                  data?.total?.subtotal?.value -
-                                  totalDiscount +
-                                  data?.total?.total_tax?.value
-                              )?.toFixed(2)}
+                        {CURRENTCY} {baseTotal?.toFixed?.(2)}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
@@ -208,70 +244,40 @@ const RenderBillItem = ({
                             Non-Cash Adjustment :
                         </TextDark>
                         <TextDark>
-                            {CURRENTCY}{' '}
-                            {selectDataShowbill
-                                ? selectDataShowbill.non_cash_amount
-                                : dataInvoice?.length > 0
-                                  ? dataInvoice.reduce(
-                                        (a: any, b: any) =>
-                                            a + parseFloat(b?.non_cash_amount),
-                                        0,
-                                    ) || 0
-                                  : 0}
+                            {CURRENTCY} {nonCashAdjustment}
                         </TextDark>
                     </RowStyled>
                 )}
 
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Tip:</TextDark>
-                    <TextDark>
-                        {CURRENTCY}{' '}
-                        {selectDataShowbill
-                            ? (
-                                  selectDataShowbill?.total?.grand_total
-                                      ?.value -
-                                  (selectDataShowbill?.total?.subtotal?.value -
-                                      totalDiscount +
-                                      selectDataShowbill?.total?.total_tax
-                                          ?.value)
-                              ).toFixed(2)
-                            : data?.tip_amount?.value?.toFixed(2)}
-                    </TextDark>
-                </RowStyled>
-                <RowStyled align={'middle'}>
                     <TextDark style={text16}>Total:</TextDark>
                     <TextDark>
-                        {CURRENTCY}{' '}
-                        {selectDataShowbill
-                            ? (
-                                  parseFloat(
-                                      selectDataShowbill?.total?.grand_total
-                                          ?.value,
-                                  ) +
-                                  parseFloat(
-                                      selectDataShowbill?.non_cash_amount || 0,
-                                  )
-                              )?.toFixed(2)
-                            : (
-                                  parseFloat(data?.grand_total) +
-                                  (dataInvoice?.length > 0
-                                      ? dataInvoice.reduce(
-                                            (a: any, b: any) =>
-                                                a +
-                                                parseFloat(b?.non_cash_amount),
-                                            0,
-                                        ) || 0
-                                      : 0)
-                              )?.toFixed(2)}
+                        {CURRENTCY} {CURRENTCY}{' '}
+                        {(
+                            parseFloat(`${baseTotal || 0} `) +
+                            parseFloat(`${nonCashAdjustment || 0}`)
+                        )?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Tip:$</TextDark>
-                    <TextDark>_______________________________</TextDark>
+                    <TextDark style={text16}>Tip:</TextDark>
+                    {tip > 0 ? (
+                        <TextDark>
+                            {CURRENTCY} {tip.toFixed(2)}
+                        </TextDark>
+                    ) : (
+                        <TextDark>_______________________________</TextDark>
+                    )}
                 </RowStyled>
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Grand Total:$</TextDark>
-                    <TextDark>______________________</TextDark>
+                    {tip > 0 ? (
+                        <TextDark>
+                            {CURRENTCY} {grand_total + tip}
+                        </TextDark>
+                    ) : (
+                        <TextDark>______________________</TextDark>
+                    )}
                 </RowStyled>
                 <DividedDashed />
                 <RowStyled align={'middle'}>
@@ -284,6 +290,28 @@ const RenderBillItem = ({
                         )}
                     </TextDark>
                 </RowStyled>
+                {dataInvoice?.[0]?.payment_methods?.[0]?.name == 'Cash' &&
+                    dataInvoice?.[0]?.total_received?.received_amount &&
+                    dataInvoice?.[0]?.total_received?.change_amount && (
+                        <>
+                            <RowStyled align={'middle'}>
+                                <TextDark style={text16}>
+                                    Received amount:
+                                </TextDark>
+                                <TextDark>
+                                    {`${CURRENTCY} ${dataInvoice?.[0]?.total_received?.received_amount?.value}`}
+                                </TextDark>
+                            </RowStyled>
+                            <RowStyled align={'middle'}>
+                                <TextDark style={text16}>
+                                    Change amount:
+                                </TextDark>
+                                <TextDark>
+                                    {`${CURRENTCY} ${dataInvoice?.[0]?.total_received?.change_amount?.value}`}
+                                </TextDark>
+                            </RowStyled>
+                        </>
+                    )}
                 {!isEmpty(dataInvoice?.[0]?.payment_methods?.[0]?.po_number) &&
                     dataInvoice?.[0]?.payment_methods?.[0]?.po_number !==
                         'none' && (

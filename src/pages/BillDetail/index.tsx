@@ -68,7 +68,9 @@ export default function index() {
     const orderId = searchParams.get('orderId');
     const order_ID = searchParams.get('order_id');
     const [loadingPosResult, setLoadingPosResult] = useState(false);
-    const { isMerchant } = useSelector((state: RootState) => state.auth);
+    const { isMerchant, isTerminalPrinter } = useSelector(
+        (state: RootState) => state.auth,
+    );
     const [onPrintBill, { loading: loadingPrint }] = useMutation(PRINT_BILL);
     let intervalId: any = null;
     useEffect(() => {
@@ -261,7 +263,8 @@ export default function index() {
                 });
         }
     };
-    const PrintBillApi = () => {
+
+    const PrintBillApi = async () => {
         // else {
 
         if (childBill.length) {
@@ -282,7 +285,7 @@ export default function index() {
             CallPrintBillById({ invoice_number: selectDataShowbill.number });
         } else {
             if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length === 0) {
-                onGetInvoices({
+                await onGetInvoices({
                     variables: {
                         OrderNumber: data?.orderDetail?.order_number,
                     },
@@ -310,10 +313,14 @@ export default function index() {
                 });
                 return;
             }
-            CallPrintBillById({
-                invoice_number:
-                    dataSplitBill?.merchantGetOrderInvoices?.invoice[0]?.number,
-            });
+            if (!isTerminalPrinter) {
+                CallPrintBillById({
+                    invoice_number:
+                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                            ?.number,
+                });
+                return;
+            }
 
             onPrintBill({
                 variables: {

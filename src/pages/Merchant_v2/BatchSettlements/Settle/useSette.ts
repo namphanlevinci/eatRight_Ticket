@@ -113,6 +113,7 @@ const useSette = () => {
                     total_tax: item?.total?.total_tax?.value,
                     tip_amount: item?.total?.tip_amount?.value,
                     grand_total: item?.total?.grand_total?.value,
+                    non_cash_amount: item?.total?.non_cash_amount?.value,
                 };
             });
             batchInvoices?.push();

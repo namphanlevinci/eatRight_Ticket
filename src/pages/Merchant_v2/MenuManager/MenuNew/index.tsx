@@ -171,7 +171,7 @@ const Index = () => {
     };
 
     return (
-        <div style={{ padding: 16 }}>
+        <div>
             {isLoading && (
                 <div className="loading_container">
                     <Spin />

@@ -41,6 +41,13 @@ interface CartContextType {
         bundleIndex: number,
     ) => void;
     onRemoveItem: (index: number) => void;
+    customOpenPriceForItem: ({
+        index,
+        custom_price,
+    }: {
+        index: number;
+        custom_price: number;
+    }) => void;
 }
 
 // Tạo Context cho giỏ hàng
@@ -376,17 +383,43 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
             setCartItems(newCartTable);
         }
     };
-    /*************  ✨ Codeium Command ⭐  *************/
-    /**
-     * @description Update quantity item from cart
-     * @param {Object} param - Param update quantity item from cart
-     * @param {number} param.index - Index item in cart
-     * @param {'increa' | 'decrea'} param.type - Type update quantity (increa or decrea)
-     * @example
-     * updateQuantityItemFromCart({index: 0, type: 'increa'})
-     * updateQuantityItemFromCart({index: 0, type: 'decrea'})
-     */
-    /******  87df525e-d550-4813-9aae-5bb297b9dea8  *******/
+    const customOpenPriceForItem = ({
+        index,
+        custom_price,
+    }: {
+        index: number;
+        custom_price: number;
+    }) => {
+        const cartIndex = parseInt(searchParams.get('cartIndex') || '0');
+        const newCartItems = [...cartItems[indexTable].carts];
+        const old_price =
+            newCartItems[cartIndex].items[index].prices.price.value;
+        const quantity = newCartItems[cartIndex].items[index].quantity;
+        newCartItems[cartIndex].items[index].custom_price = parseFloat(
+            `${custom_price}`,
+        );
+        newCartItems[cartIndex].items[index].prices.price.value = parseFloat(
+            `${custom_price}`,
+        );
+
+        // help me update total price
+        let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
+        if (total > 0 && total > old_price * quantity) {
+            total -= old_price * quantity;
+        }
+        total += custom_price * quantity;
+        newCartItems[cartIndex].prices = {
+            ...newCartItems[cartIndex].prices,
+            new_items_total: {
+                value: total,
+            },
+        };
+
+        const newCartTable = [...cartItems];
+        newCartTable[indexTable].carts = newCartItems;
+        setCartItems(newCartTable);
+    };
+
     const updateQuantityItemFromCart = ({
         index,
         type,
@@ -515,6 +548,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         InputNoteItemFromCart,
         InputNoteItemBundleFromCart,
         onRemoveItem,
+        customOpenPriceForItem,
     };
     const [isModalConfirm, setIsModalConfirm] = React.useState<boolean>(false);
     const [idx, setIdx] = React.useState<any>('');

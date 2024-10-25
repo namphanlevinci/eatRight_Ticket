@@ -58,7 +58,7 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
         }
     }, [categoryIndex]);
     const { theme } = useTheme();
-    const onClickAddToCart = (item: any) => {
+    const onClickAddToCart = (item: ProductType) => {
         if (
             item.__typename === 'SimpleProduct' ||
             item.__typename === 'VirtualProduct'
@@ -73,6 +73,7 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                 product: item,
                 quantity: 1,
                 isUnsend: true,
+                open_price: item.open_price || false,
             };
             addToCart(Item);
             notification.success({
@@ -162,12 +163,15 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                                                           {item.__typename ===
                                                               'SimpleProduct' && (
                                                               <p>
-                                                                  {formatNumberWithCommas(
-                                                                      item.price
-                                                                          .regularPrice
-                                                                          .amount
-                                                                          .value,
-                                                                  )}
+                                                                  {item.open_price
+                                                                      ? 'Open Price'
+                                                                      : formatNumberWithCommas(
+                                                                            item
+                                                                                .price
+                                                                                .regularPrice
+                                                                                .amount
+                                                                                .value,
+                                                                        )}
                                                               </p>
                                                           )}
                                                       </MenuItem>
@@ -256,10 +260,12 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                                                                       color: theme.pRIMARY6Primary,
                                                                   }}
                                                               >
-                                                                  ${' '}
-                                                                  {item.price.regularPrice.amount.value.toFixed(
+                                                                  {item.open_price
+                                                                      ? 'Open Price'
+                                                                      : ` $ 
+                                                                  ${item.price.regularPrice.amount.value.toFixed(
                                                                       2,
-                                                                  )}
+                                                                  )}`}
                                                               </p>
                                                           )}
                                                       </MenuItem>

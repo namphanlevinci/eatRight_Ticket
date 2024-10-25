@@ -22,12 +22,14 @@ export const PAY_SPLITBILL = gql`
         $invoice_number: String!
         $payment_method: String!
         $po_number: String
+        $received_amount: Float
     ) {
         merchantPayInvoice(
             input: {
                 invoice_number: $invoice_number
                 payment_method: $payment_method
                 po_number: $po_number
+                received_amount: $received_amount
             }
         ) {
             invoice {
