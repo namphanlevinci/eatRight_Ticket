@@ -31,23 +31,13 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
     }
 
     const address = data?.restaurant_address?.split(', ')?.[0];
-
     const baseTotal = Math.abs(
-        data?.total?.grand_total?.value -
-            (data?.total?.subtotal?.value -
-                (totalDiscount || 0) +
-                data?.total?.total_tax?.value),
+        data?.total?.subtotal?.value +
+            (totalDiscount || 0) +
+            data?.total?.total_tax?.value,
     );
 
-    const tip = Math.abs(
-        data?.total?.grand_total?.value -
-            (data?.total?.subtotal?.value -
-                (totalDiscount || 0) +
-                data?.total?.total_tax?.value),
-    );
-
-    console.log({ data });
-
+    const tip = Math.abs(data?.total?.tip_amount?.value || 0);
     return (
         <div
             style={{
@@ -139,11 +129,11 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                         {CURRENTCY} {data.total?.subtotal?.value?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
-                {totalDiscount && totalDiscount > 0 ? (
+                {totalDiscount && totalDiscount !== 0 ? (
                     <RowStyled>
                         <TextDark style={text16}>Discount:</TextDark>
                         <TextDark>
-                            - {CURRENTCY} {totalDiscount?.toFixed(2)}
+                            - {CURRENTCY} {(-totalDiscount)?.toFixed(2)}
                         </TextDark>
                     </RowStyled>
                 ) : (
@@ -164,7 +154,12 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Base total:</TextDark>
                     <TextDark>
-                        {CURRENTCY} {Math.abs(baseTotal).toFixed(2)}
+                        {CURRENTCY}{' '}
+                        {Math.abs(
+                            data?.total?.subtotal?.value +
+                                (totalDiscount || 0) +
+                                data?.total?.total_tax?.value,
+                        ).toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 <DividedDashed />
@@ -202,7 +197,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     <TextDark style={text16}>Grand Total:$</TextDark>
                     {tip > 0 ? (
                         <TextDark>
-                            {CURRENTCY} {data?.total?.grand_total?.value + tip}
+                            {CURRENTCY} {data?.total?.grand_total?.value}
                         </TextDark>
                     ) : (
                         <TextDark>______________________</TextDark>
@@ -293,7 +288,7 @@ const RenderItem = ({ data }: { data: any }) => {
                     <Col style={{ flex: 1 }}> {item?.name}</Col>
                     <Col style={{ textAlign: 'end', width: 'auto' }}>
                         {CURRENTCY}
-                        {(item?.qty * item?.price).toFixed(2)}
+                        {(item?.price).toFixed(2)}
                     </Col>
                 </RowStyled>
                 {item?.options?.map((option: any, idx: number) => {
