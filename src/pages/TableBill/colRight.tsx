@@ -268,7 +268,10 @@ export default function ColRight({
                         totalWithoutTax={
                             total -
                             (cart?.prices?.total_canceled_without_tax?.value ||
-                                0)
+                                0) +
+                            parseFloat(
+                                `${cart?.prices?.discount?.amount?.value || 0}`,
+                            )
                         }
                     />
                 )}
@@ -295,6 +298,8 @@ export default function ColRight({
                         onPressOK={(pos_id: number) => {
                             handlePOSPaymentWithDJV(pos_id, {
                                 cart_id: cart?.id,
+                                order_id: orderInfo?.order_id,
+                                order_number: orderInfo?.order_number,
                             });
                         }}
                         onCancel={() => {

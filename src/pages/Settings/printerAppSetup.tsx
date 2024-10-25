@@ -184,7 +184,22 @@ export default function PrinterAppSetUpPage() {
         }
     }, [data, list, posDeviceList]);
     const [switchPrinterMode, setSwitchPrinterMode] = useState(false);
+    useEffect(() => {
+        if (!switchPrinterMode) {
+            const printerName = localStorage.getItem('printer_name');
 
+            if (printerName) {
+                setPrinter(printerName);
+                setSelectedOption(
+                    list?.find(
+                        (item: any) => item?.printer_name == printerName,
+                    ),
+                );
+            } else {
+                OpenMenuPrinter();
+            }
+        }
+    }, [switchPrinterMode]);
     useEffect(() => {
         const printerName = localStorage.getItem('printer_name');
         if (printerName) {

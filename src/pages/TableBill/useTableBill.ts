@@ -399,11 +399,6 @@ export const useTableBill = (isGoBack = true) => {
                 setVisibleMoalPosDJV(true);
                 // return;
                 // }
-                onCancelCheckout({
-                    variables: {
-                        cart_id: orderDetail?.cart_id,
-                    },
-                });
             })
             .finally(() => {
                 setPos_Loading(false);

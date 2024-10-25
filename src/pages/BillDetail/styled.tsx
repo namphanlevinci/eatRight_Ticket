@@ -40,14 +40,15 @@ export const text16Bold: React.CSSProperties = {
     textWrap: 'pretty',
     fontWeight: '600',
 };
-export const DividedDashed = () => {
+export const DividedDashed = ({ color }: { color?: string }) => {
+    const { theme } = useTheme();
     return (
         <div
             style={{
                 height: 1,
                 border: 1,
                 borderStyle: 'dashed',
-                borderColor: Colors.grey8,
+                borderColor: color ? color : theme.nEUTRALLine,
                 marginBlock: 20,
             }}
         >
