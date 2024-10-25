@@ -50,5 +50,6 @@ export type RenderListType = {
     uniqueId: number;
     status: string;
     id: string;
+    quote_id: string | number;
 } & QuoteType &
     OrderType;

@@ -24,6 +24,7 @@ export const useOrderCompleted = () => {
                         [...listCompletedOrder, ...list],
                         'order_number',
                     );
+                    console.log({ concatList });
                     setListCompletedOrder(concatList);
                     setTotalComplete(
                         res.data.merchantOrderCompleteDashboard.total_count,

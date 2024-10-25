@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import ButtonTime from '../components/Button/ButtonTime';
 import './index.scss';
 import moment from 'moment';
+import { Draggable } from '@hello-pangea/dnd';
 const statusConvertData = {
     pending: '1',
     received: '2',
@@ -32,6 +33,7 @@ function Order(props) {
         playOrderNOtResponseAgain = () => {},
         turnOffAppSound,
         isCompletedOrder = false,
+        isDragDisabled = false,
     } = props;
 
     const findOrderOffSound = orderListNotResponse.find(
@@ -129,119 +131,152 @@ function Order(props) {
             </span>
         );
     };
-    return (
-        <div
-            // draggableId={order?.order_number?.toString()}
-            key={id}
-            // index={order?.id}
-        >
-            <span key={id} onClick={handleClickOrder}>
-                <div
-                    className={`order-item ${
-                        isNotResponse && !isOffSound ? 'notResponse' : ''
-                    }`}
-                >
-                    <div className="row" style={{ justifyContent: 'flex-end' }}>
-                        <div
-                            style={{
-                                height: 36,
-                                width: 90,
-                                borderRadius: 99,
-                                border: '1.2px solid var(--text-primary)',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            {order?.order_source === 'DELIVERY' ? (
-                                <Text> Delivery </Text>
-                            ) : order?.order_source === 'DINING' ? (
-                                <Text> Dine in </Text>
-                            ) : order?.order_source === 'PICKUP' ? (
-                                <Text> Pick up </Text>
-                            ) : (
-                                <Text> Dine in </Text>
-                            )}
-                        </div>
-                    </div>
+
+    function generateRandomInteger(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    const randomInteger = generateRandomInteger(100, 1000);
+
+    if (order) {
+        return (
+            <Draggable
+                draggableId={order?.id}
+                key={id}
+                index={order?.sortId ?? randomInteger}
+                isDragDisabled={isDragDisabled}
+            >
+                {(provided, snapshot) => (
                     <div
-                        style={{
-                            background: 'var(--neutral-sec-bg)',
-                            height: 1,
-                            width: '100%',
-                        }}
-                    />
-                    <div className="row">
-                        <span className="text-16" style={{ fontWeight: '600' }}>
-                            {order?.total_quantity} items
-                        </span>
-                        {order?.order_source &&
-                            order?.order_source !== 'DINING' && (
+                        // draggableId={order?.order_number?.toString()}
+                        key={id}
+                        // index={order?.id}
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                    >
+                        <span key={id} onClick={handleClickOrder}>
+                            <div
+                                className={`order-item ${
+                                    isNotResponse && !isOffSound
+                                        ? 'notResponse'
+                                        : ''
+                                }`}
+                            >
+                                <div
+                                    className="row"
+                                    style={{ justifyContent: 'flex-end' }}
+                                >
+                                    <div
+                                        style={{
+                                            height: 36,
+                                            width: 90,
+                                            borderRadius: 99,
+                                            border: '1.2px solid var(--text-primary)',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        {order?.order_source === 'DELIVERY' ? (
+                                            <Text> Delivery </Text>
+                                        ) : order?.order_source === 'DINING' ? (
+                                            <Text> Dine in </Text>
+                                        ) : order?.order_source === 'PICKUP' ? (
+                                            <Text> Pick up </Text>
+                                        ) : (
+                                            <Text> Dine in </Text>
+                                        )}
+                                    </div>
+                                </div>
                                 <div
                                     style={{
-                                        display: 'flex',
-                                        gap: 4,
-                                        alignItems: 'center',
+                                        background: 'var(--neutral-sec-bg)',
+                                        height: 1,
+                                        width: '100%',
                                     }}
-                                >
-                                    <ButtonTime dataOrder={order} />
+                                />
+                                <div className="row">
+                                    <span
+                                        className="text-16"
+                                        style={{ fontWeight: '600' }}
+                                    >
+                                        {order?.total_quantity} items
+                                    </span>
+                                    {order?.order_source &&
+                                        order?.order_source !== 'DINING' && (
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    gap: 4,
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <ButtonTime dataOrder={order} />
+                                            </div>
+                                        )}
                                 </div>
-                            )}
-                    </div>
-                    <div className="row">
-                        <span className="text-primary">
-                            $
-                            {order?.type === 'dining-orders' ||
-                            isCompletedOrder === true
-                                ? (
-                                      order?.total?.grand_total?.value -
-                                      (order?.total?.cancel_item_total?.value ||
-                                          0)
-                                  )?.toFixed(2)
-                                : (
-                                      order?.prices?.grand_total?.value -
-                                      (order?.total?.cancel_item_total?.value ||
-                                          0)
-                                  )?.toFixed(2)}
+                                <div className="row">
+                                    <span className="text-primary">
+                                        $
+                                        {order?.type === 'dining-orders' ||
+                                        isCompletedOrder === true
+                                            ? (
+                                                  order?.total?.grand_total
+                                                      ?.value -
+                                                  (order?.total
+                                                      ?.cancel_item_total
+                                                      ?.value || 0)
+                                              )?.toFixed(2)
+                                            : (
+                                                  order?.prices?.grand_total
+                                                      ?.value -
+                                                  (order?.total
+                                                      ?.cancel_item_total
+                                                      ?.value || 0)
+                                              )?.toFixed(2)}
+                                    </span>
+                                </div>
+                                <div
+                                    style={{
+                                        background: 'var(--neutral-sec-bg)',
+                                        height: 1,
+                                        width: '100%',
+                                    }}
+                                />
+                                <div className="row">
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            gap: 4,
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <span className="text-bold-16">
+                                            {order?.table
+                                                ? order.table
+                                                      .toLowerCase()
+                                                      .includes('counter')
+                                                    ? `QO - `
+                                                    : `${order.table} - `
+                                                : `${getLastFourChars(order?.order_number?.toString())} - `}
+                                            {order?.first_name}
+                                        </span>
+                                    </div>
+                                    <span className="text-light-14">
+                                        {moment(
+                                            order?.created_at,
+                                            'MM-DD-YYYY hh:mm:ss',
+                                        ).format('hh:mm A')}
+                                    </span>
+                                </div>
+                            </div>
                         </span>
                     </div>
-                    <div
-                        style={{
-                            background: 'var(--neutral-sec-bg)',
-                            height: 1,
-                            width: '100%',
-                        }}
-                    />
-                    <div className="row">
-                        <div
-                            style={{
-                                display: 'flex',
-                                gap: 4,
-                                alignItems: 'center',
-                            }}
-                        >
-                            <span className="text-bold-16">
-                                {order?.table
-                                    ? order.table
-                                          .toLowerCase()
-                                          .includes('counter')
-                                        ? `QO - `
-                                        : `${order.table} - `
-                                    : `${getLastFourChars(order?.order_number?.toString())} - `}
-                                {order?.first_name}
-                            </span>
-                        </div>
-                        <span className="text-light-14">
-                            {moment(
-                                order?.created_at,
-                                'MM-DD-YYYY hh:mm:ss',
-                            ).format('hh:mm A')}
-                        </span>
-                    </div>
-                </div>
-            </span>
-        </div>
-    );
+                )}
+            </Draggable>
+        );
+    }
+    return <div />;
 }
 
 export default Order;

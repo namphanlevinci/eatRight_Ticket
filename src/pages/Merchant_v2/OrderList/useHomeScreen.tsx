@@ -7,6 +7,11 @@ import { message, Modal, notification } from 'antd';
 import {
     MERCHANT_COMPLETE_ORDER,
     MERCHANT_RECEIVE_ORDER,
+    MERCHANT_READY_TO_SHIP_ORDER,
+    SET_ALL_ITEM_COOKING,
+    MERCHANT_COOKING_ORDER,
+    MERCHANT_COOKING_QUOTE,
+    MERCHANT_READY_TO_SHIP_QUOTE,
 } from 'graphql/merchant/status';
 import io from 'socket.io-client';
 import { SOCKET } from 'graphql/socket/connect';
@@ -14,6 +19,11 @@ import Notification from './components/Notification';
 import { playNotiSound } from 'utils';
 const SocketURL =
     process.env.REACT_APP_SOCKETURL || 'https://fnb-socket.test88.info';
+
+function generateUniqueInteger() {
+    return Date.now() + Math.floor(Math.random() * 1000);
+}
+
 export const useHomeScreen = () => {
     const [isLoadingApp, setIsLoadingApp] = useState(false);
     const [refundOrderList, setRefundOrderList] = useState([]);
@@ -24,6 +34,8 @@ export const useHomeScreen = () => {
     const [renderList, setRenderList] = useState<RenderListType[]>([]);
     const [isShowModalPending, setShowModalPending] = useState(false);
     const [isShowModalCancel, setShowModalCancel] = useState(false);
+    const [apiSetAllItemCooking] = useMutation(SET_ALL_ITEM_COOKING);
+
     const getOrderList = async () => {
         setIsLoadingApp(true);
         apiGetListDining({
@@ -42,6 +54,7 @@ export const useHomeScreen = () => {
     useEffect(() => {
         getOrderList();
     }, []);
+
     useEffect(() => {
         if (diningQuoteList || diningOrderList) {
             const listQuote = diningQuoteList.map(
@@ -96,19 +109,31 @@ export const useHomeScreen = () => {
                           ],
             }));
 
-            const newList = [...listQuote, ...listOrders].sort(
-                (a, b) =>
-                    new Date(a.created_at).getTime() -
-                    new Date(b.created_at).getTime(),
-            );
+            const newList = [...listQuote, ...listOrders]
+                .map((obj) => ({
+                    ...obj,
+                    sortId: generateUniqueInteger(),
+                }))
+                .sort(
+                    (a, b) =>
+                        new Date(a.created_at).getTime() -
+                        new Date(b.created_at).getTime(),
+                );
             setRenderList(newList as never[]);
         }
     }, [diningQuoteList, diningOrderList]);
     const { info } = Modal;
     const [apiReciveOrder] = useMutation(MERCHANT_RECEIVE_ORDER);
+    const [apiCookingOrder] = useMutation(MERCHANT_COOKING_ORDER);
+    const [apiReadyToShipOrder] = useMutation(MERCHANT_READY_TO_SHIP_ORDER);
+
+    const [apiCookingQuote] = useMutation(MERCHANT_COOKING_QUOTE);
+    const [apiReadyToShipQuote] = useMutation(MERCHANT_READY_TO_SHIP_QUOTE);
 
     const handleSubmitRecievedOrder = async (id: string) => {
+        setIsLoadingApp(true);
         const res = await apiReciveOrder({ variables: { id: id } });
+        setIsLoadingApp(false);
         if (!res.errors && res.data) {
             setShowModalPending(false);
             setReload();
@@ -121,6 +146,97 @@ export const useHomeScreen = () => {
         });
         return false;
     };
+
+    const handleSubmitCookingOrder = async (id: string) => {
+        setIsLoadingApp(true);
+        const res: any = await apiCookingOrder({ variables: { order_id: id } });
+        setIsLoadingApp(false);
+        if (!res.errors && res.data) {
+            setShowModalPending(false);
+            setReload();
+            return true;
+        }
+        info({
+            icon: <></>,
+            title: <span style={{ fontWeight: 'bold' }}>Thất bại</span>,
+            content: res?.errors && res?.errors[0]?.message,
+        });
+        return false;
+    };
+
+    const handleSubmitReadyToShipgOrder = async (id: string) => {
+        setIsLoadingApp(true);
+        const res = await apiReadyToShipOrder({ variables: { order_id: id } });
+        setIsLoadingApp(false);
+        if (!res.errors && res.data) {
+            setShowModalPending(false);
+            setReload();
+            return true;
+        }
+        info({
+            icon: <></>,
+            title: <span style={{ fontWeight: 'bold' }}>Thất bại</span>,
+            content: res?.errors && res?.errors[0]?.message,
+        });
+        return false;
+    };
+
+    const handleSubmitCookingQuote = async (id: string | number) => {
+        setIsLoadingApp(true);
+        const res = await apiCookingQuote({ variables: { quote_id: id } });
+        setIsLoadingApp(false);
+        if (!res.errors && res.data) {
+            setShowModalPending(false);
+            setReload();
+            return true;
+        }
+        info({
+            icon: <></>,
+            title: <span style={{ fontWeight: 'bold' }}>Thất bại</span>,
+            content: res?.errors && res?.errors[0]?.message,
+        });
+        return false;
+    };
+
+    const handleSubmitReadyToShippingQuote = async (id: string | number) => {
+        setIsLoadingApp(true);
+        const res = await apiReadyToShipQuote({ variables: { quote_id: id } });
+        setIsLoadingApp(false);
+        if (!res.errors && res.data) {
+            setShowModalPending(false);
+            setReload();
+            return true;
+        }
+        info({
+            icon: <></>,
+            title: <span style={{ fontWeight: 'bold' }}>Thất bại</span>,
+            content: res?.errors && res?.errors[0]?.message,
+        });
+        return false;
+    };
+
+    const handleSetAllItemCooking = async (item: any) => {
+        // ($entity_id: Int!, $items_id: Int!, $entity_type: String!
+        const res = await apiSetAllItemCooking({
+            variables: {
+                entity_id: item?.entity_id,
+                items_id: item?.items_id,
+                entity_type: item?.entity_type,
+            },
+        });
+        if (!res.errors && res.data) {
+            setShowModalPending(false);
+            setReload();
+            return true;
+        }
+        info({
+            icon: <></>,
+            title: <span style={{ fontWeight: 'bold' }}>Thất bại</span>,
+            content: res?.errors && res?.errors[0]?.message,
+        });
+        return false;
+    };
+
     const [apiCompleteOrder] = useMutation(MERCHANT_COMPLETE_ORDER);
     const handleSubmitCompletePickUp = (data: any) => {
         apiCompleteOrder({
@@ -141,6 +257,16 @@ export const useHomeScreen = () => {
                 console.log(err);
             });
     };
+
+    const updateOrderStatusFE = (order: any, status: string) => {
+        let findIndex = renderList.findIndex((o: any) => o?.id == order?.id);
+        let tempList = [...renderList];
+        if (findIndex != -1) {
+            tempList[findIndex].status = status;
+        }
+        setRenderList(tempList);
+    };
+
     const [dataOrderModal, setDataOrderModal] = useState();
     const [onSocket] = useMutation(SOCKET);
     const reloadOrderRef = React.useRef<any>();
@@ -228,6 +354,7 @@ export const useHomeScreen = () => {
         });
         playNotiSound();
     };
+
     return {
         isLoadingApp,
         refundOrderList,
@@ -247,5 +374,11 @@ export const useHomeScreen = () => {
         dataOrderModal,
         handleSubmitCompletePickUp,
         pushNotificationLocal,
+        handleSetAllItemCooking,
+        handleSubmitCookingOrder,
+        handleSubmitReadyToShipgOrder,
+        updateOrderStatusFE,
+        handleSubmitCookingQuote,
+        handleSubmitReadyToShippingQuote,
     };
 };
