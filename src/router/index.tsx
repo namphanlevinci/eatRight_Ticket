@@ -210,6 +210,7 @@ export const BaseRouter = () => {
         return () => {
             window.removeEventListener('message', handleMessage);
             document.removeEventListener('message', handleMessage);
+            localStorage.removeItem('printer_name');
         };
     }, [isLogged]);
     useEffect(() => {
