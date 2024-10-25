@@ -78,6 +78,14 @@ const RenderBillItem = ({
         ? selectDataShowbill?.total?.subtotal?.value
         : data?.total?.subtotal?.value;
 
+    const taxValue =
+        (selectDataShowbill
+            ? selectDataShowbill?.total?.total_tax?.value
+            : data?.total?.total_tax?.value) || 0;
+    const ct1 = totalDiscount ? subTotal - totalDiscount : subTotal;
+
+    const taxPercent = taxValue ? Math.floor((taxValue / ct1) * 100) : null;
+
     return (
         <div
             style={{
@@ -191,15 +199,11 @@ const RenderBillItem = ({
                 {data?.total?.total_tax?.value &&
                 data?.total?.total_tax?.value > 0 ? (
                     <RowStyled align={'middle'}>
-                        <TextDark style={text16}>Tax</TextDark>
+                        <TextDark
+                            style={text16}
+                        >{`Tax: (${taxPercent})%`}</TextDark>{' '}
                         <TextDark>
-                            {CURRENTCY}{' '}
-                            {(selectDataShowbill
-                                ? selectDataShowbill?.total?.total_tax?.value?.toFixed(
-                                      2,
-                                  )
-                                : data?.total?.total_tax?.value?.toFixed(2)) ||
-                                0}
+                            {CURRENTCY} {taxValue?.toFixed?.(2)}
                         </TextDark>
                     </RowStyled>
                 ) : (
