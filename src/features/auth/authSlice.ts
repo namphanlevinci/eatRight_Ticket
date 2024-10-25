@@ -22,6 +22,7 @@ export interface authStateType {
     isAutoConfirmItem: boolean;
     counterTable?: TTable;
     isAutoCloseOrder?: boolean;
+    isPrintKitchenCopy?: boolean;
 }
 
 const initialState: authStateType = {
@@ -41,6 +42,7 @@ const initialState: authStateType = {
     isAutoConfirmItem: false,
     counterTable: undefined,
     isAutoCloseOrder: false,
+    isPrintKitchenCopy: false,
 };
 
 export const authSlice = createSlice({
@@ -104,6 +106,9 @@ export const authSlice = createSlice({
         updateAutoCloseOrder: (state, action) => {
             state.isAutoCloseOrder = action.payload;
         },
+        updatePrintKitchenCopy: (state, action) => {
+            state.isPrintKitchenCopy = action.payload;
+        },
         updateRestaurantConfig: (state, action) => {
             if (action.payload) {
                 state = {
@@ -133,6 +138,7 @@ export const {
     updateAutoConfirmItem,
     updateRestaurantConfig,
     updateAutoCloseOrder,
+    updatePrintKitchenCopy,
 } = authSlice.actions;
 
 export default authSlice.reducer;
