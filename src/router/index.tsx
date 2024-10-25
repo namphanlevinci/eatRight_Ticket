@@ -24,7 +24,10 @@ import {
 } from 'features/auth/authSlice';
 import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
-import { GET_MERCHANT_RESTAURANT_CONFIG } from 'graphql/setups';
+import {
+    GET_MERCHANT_CONFIG,
+    GET_MERCHANT_RESTAURANT_CONFIG,
+} from 'graphql/setups';
 import {
     GET_CONFIG_PRINTER,
     LIST_PRINTER_DEVICES,
@@ -52,7 +55,7 @@ export const BaseRouter = () => {
             );
         }
     };
-    const [onGetConfig] = useLazyQuery(GET_CONFIG_PRINTER);
+    const [onGetPrinterConfig] = useLazyQuery(GET_CONFIG_PRINTER);
     useEffect(() => {
         if (isMerchant) {
             document.title = 'EatRight Merchant';
@@ -170,7 +173,7 @@ export const BaseRouter = () => {
         if (!isLogged) {
             return;
         }
-        onGetConfig().then((res: any) => {
+        onGetPrinterConfig().then((res: any) => {
             dispatch(
                 updateIsTerminalPrinter(
                     res?.data?.merchantGetPrinterConfig?.is_used_terminal ||
@@ -243,6 +246,7 @@ export const BaseRouter = () => {
     const [onGetRestaurantConfig] = useLazyQuery(
         GET_MERCHANT_RESTAURANT_CONFIG,
     );
+    const [onGetConfig] = useLazyQuery(GET_MERCHANT_CONFIG);
     useEffect(() => {
         if (isLogged) {
             setNeedLogout(false);
@@ -262,6 +266,17 @@ export const BaseRouter = () => {
                     }
                 },
             );
+            onGetConfig({ fetchPolicy: 'no-cache' }).then((res: any) => {
+                if (res.data) {
+                    dispatch(
+                        updateRestaurantConfig({
+                            isPrintKitchenCopy:
+                                res?.data?.merchantGetConfig
+                                    ?.print_kitchen_copy,
+                        }),
+                    );
+                }
+            });
         }
     }, [isLogged]);
     return (
