@@ -54,35 +54,44 @@ const MerchantTableView: React.FC = () => {
                         {data?.length ? (
                             <Tables
                                 tables={data?.filter((d) => {
-                                    const {
-                                        isAvailable,
-                                        isDinning,
-                                        isReserve,
-                                    } = merchantFilterTable;
                                     let check = false;
-                                    // Nếu cả 3 đều được mở (tất cả đều là true)
-                                    if (isAvailable && isDinning && isReserve) {
-                                        check = true;
-                                    }
+                                    if (merchantFilterTable) {
+                                        const {
+                                            isAvailable = true,
+                                            isDinning = true,
+                                            isReserve = true,
+                                        } = merchantFilterTable;
 
-                                    // Nếu chỉ có một hoặc một vài cờ được mở, lọc dữ liệu dựa vào điều kiện cụ thể
-                                    if (
-                                        isAvailable &&
-                                        d?.status === EStatusTable.AVAILABLE
-                                    ) {
-                                        check = true;
-                                    }
+                                        // Nếu cả 3 đều được mở (tất cả đều là true)
+                                        if (
+                                            isAvailable &&
+                                            isDinning &&
+                                            isReserve
+                                        ) {
+                                            check = true;
+                                        }
 
-                                    if (
-                                        isDinning &&
-                                        d?.status === EStatusTable.DINING
-                                    ) {
-                                        check = true;
-                                    }
-                                    if (
-                                        isReserve &&
-                                        d?.status === EStatusTable.RESERVED
-                                    ) {
+                                        // Nếu chỉ có một hoặc một vài cờ được mở, lọc dữ liệu dựa vào điều kiện cụ thể
+                                        if (
+                                            isAvailable &&
+                                            d?.status === EStatusTable.AVAILABLE
+                                        ) {
+                                            check = true;
+                                        }
+
+                                        if (
+                                            isDinning &&
+                                            d?.status === EStatusTable.DINING
+                                        ) {
+                                            check = true;
+                                        }
+                                        if (
+                                            isReserve &&
+                                            d?.status === EStatusTable.RESERVED
+                                        ) {
+                                            check = true;
+                                        }
+                                    } else {
                                         check = true;
                                     }
 

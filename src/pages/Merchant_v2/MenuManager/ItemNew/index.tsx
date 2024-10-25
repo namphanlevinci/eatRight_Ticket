@@ -113,7 +113,7 @@ const Index = () => {
             is_in_stock,
             price: formatPrice(values?.price || '0'),
             status: values?.status ? 1 : 2,
-            open_price: openPriceRef?.current?.getValue(),
+            open_price: openPriceRef?.current?.getValue() || false,
             media_gallery_entries,
             quantity: quantity,
             kitchen_station: values?.kitchen_station || null,

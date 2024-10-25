@@ -266,7 +266,7 @@ export const useTableBill = (isGoBack = true) => {
 
                             setCheckOutLoading(false);
 
-                            if (isTerminalPrinter) {
+                            if (!isTerminalPrinter) {
                                 setVisibleMoalPosDJV(true);
                                 return;
                             }
