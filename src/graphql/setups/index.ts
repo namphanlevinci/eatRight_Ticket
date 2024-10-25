@@ -23,6 +23,7 @@ export const SET_MERCHANT_RESTAURANT_CONFIG_OPEN_PRICING = gql`
         setupConfigRestaurant(input: { open_pricing: $open_pricing })
     }
 `;
+
 export const SET_MERCHANT_RESTAURANT_CONFIG_AUTO_CLOSE_ORDER = gql`
     mutation ($close_order: AutoCloseOrderOptionEnum!) {
         setupConfigRestaurant(input: { close_order: $close_order })
@@ -45,6 +46,25 @@ export const GET_PRIMARY_TERMINAL_WAITER = gql`
             machine_type
             status
             serial_number
+        }
+    }
+`;
+
+export const SET_MERCHANT_CONFIG_PRINTER_KITCHEN_COPY = gql`
+    mutation ($print_kitchen_copy: Boolean!) {
+        merchantSetConfig(config: { print_kitchen_copy: $print_kitchen_copy }) {
+            print_kitchen_copy
+        }
+    }
+`;
+
+export const GET_MERCHANT_CONFIG = gql`
+    {
+        merchantConfig {
+            print_kitchen_copy
+            default_table_view
+            primary_terminal_id
+            is_used_terminal
         }
     }
 `;

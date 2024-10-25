@@ -18,16 +18,14 @@ import { isEmpty } from 'lodash';
 import moment from 'moment';
 
 const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
-    const totalDiscount = data?.total?.discounts?.reduce(
+    let totalDiscount = data?.total?.discounts?.reduce(
         (total: number, discount: any) => {
             total += discount.amount.value;
             return total;
         },
         0,
     );
-
-    console.log({ data });
-
+    totalDiscount = totalDiscount ?? undefined;
     if (!data) {
         return <div />;
     }
@@ -50,6 +48,13 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
     const total = isEmpty(data?.non_cash_amount)
         ? Math.abs(baseTotal).toFixed(2)
         : (baseTotal + parseFloat(data?.non_cash_amount)).toFixed(2);
+
+    const taxValue = data?.total?.total_tax?.value;
+    const ct1 = totalDiscount
+        ? data?.total?.subtotal?.value - totalDiscount
+        : data?.total?.subtotal?.value;
+
+    const taxPercent = taxValue ? Math.floor((taxValue / ct1) * 100) : null;
 
     return (
         <div
@@ -155,7 +160,9 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 {data?.total?.total_tax?.value &&
                 data?.total?.total_tax?.value > 0 ? (
                     <RowStyled align={'middle'}>
-                        <TextDark style={text16}>Tax</TextDark>
+                        <TextDark
+                            style={text16}
+                        >{`Tax: (${taxPercent})%`}</TextDark>
                         <TextDark>
                             {CURRENTCY}{' '}
                             {data?.total?.total_tax?.value?.toFixed(2)}
