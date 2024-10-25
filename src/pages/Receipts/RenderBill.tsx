@@ -137,11 +137,11 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                         {CURRENTCY} {data.total?.subtotal?.value?.toFixed(2)}
                     </TextDark>
                 </RowStyled>
-                {totalDiscount && totalDiscount > 0 ? (
+                {totalDiscount && totalDiscount !== 0 ? (
                     <RowStyled>
                         <TextDark style={text16}>Discount:</TextDark>
                         <TextDark>
-                            - {CURRENTCY} {totalDiscount?.toFixed(2)}
+                            - {CURRENTCY} {Math.abs(totalDiscount)?.toFixed(2)}
                         </TextDark>
                     </RowStyled>
                 ) : (
