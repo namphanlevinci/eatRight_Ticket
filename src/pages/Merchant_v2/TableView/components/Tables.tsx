@@ -85,10 +85,11 @@ const Table = ({ tableData, size, status }: IPropsTable & ISize) => {
             <STitle>{tableData?.name || 'Table name'}</STitle>
             <SSubtitle>{tableData.customer_name}</SSubtitle>
             <SDuration>
-                {moment
-                    .utc(tableData.created_at, 'YYYY-MM-DD HH:mm')
-                    .local()
-                    .format('hh:mm A')}
+                {tableData?.created_at &&
+                    moment
+                        .utc(tableData.created_at, 'YYYY-MM-DD HH:mm')
+                        .local()
+                        .format('hh:mm A')}
             </SDuration>
         </STableContainer>
     );

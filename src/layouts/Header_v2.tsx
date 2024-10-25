@@ -34,6 +34,7 @@ import ButtonV2 from './components/Button';
 import DrawerMenuV2 from './components/DrawerMenu_v2';
 import FilterV2 from './components/Filter_v2';
 import SearchV2 from './components/Search_v2';
+import { updateSearch } from 'features/global/globalSlice';
 
 const HeaderV2 = () => {
     const location = useLocation();
@@ -247,6 +248,15 @@ const HeaderV2 = () => {
         } else {
             navigation(BASE_ROUTER.MERCHANT_ORDERLIST);
         }
+        // Reset search value
+        dispatch(
+            updateSearch({
+                searchText: {
+                    table: '',
+                    order: '',
+                },
+            }),
+        );
     };
     const isWidthSmallThanMobile = useMediaQuery({
         query: '(min-width: 1023px)',
@@ -326,9 +336,7 @@ const HeaderV2 = () => {
                                     <Switch
                                         id="switchBtnTeal"
                                         defaultChecked={isTableView}
-                                        onChange={() => {
-                                            onToggleView();
-                                        }}
+                                        onChange={onToggleView}
                                         style={{
                                             marginLeft: 5,
                                             height: 32,

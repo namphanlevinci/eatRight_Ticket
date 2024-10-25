@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable curly */
 import React, { useState, useRef, useEffect } from 'react';
-import { Row, Col, Switch, Form, Input, Select, Button } from 'antd';
+import { Row, Col, Switch, Form, Input, Select, Button, Tooltip } from 'antd';
 import { NumericFormat } from 'react-number-format';
 import { useLocation } from 'react-router-dom';
 import PopupAction from '../Components/PopupAction';
@@ -29,6 +29,10 @@ import {
     UPDATE_PRODUCT,
 } from 'graphql/product/CRUD';
 import { BASE_ROUTER } from 'constants/router';
+import QuestionIcon from 'assets/icons/questionIcon';
+import './index.scss';
+import { RootState } from 'store';
+import { useSelector } from 'react-redux';
 
 const Index = () => {
     const [apiGetCategory] = useLazyQuery(GET_CATEGORY_LIST);
@@ -47,7 +51,7 @@ const Index = () => {
     const dineInRef = useRef<any>();
     const takeAwayRef = useRef<any>();
     const openPriceRef = useRef<any>();
-
+    const [openPrice, setOpenPrice] = useState(false);
     const history = useNavigate();
     const { id: productId } = useParams();
     const { openModal } = useContext(AlertContext);
@@ -59,7 +63,13 @@ const Index = () => {
     const refPopupEdit = useRef<any>();
 
     const [form] = Form.useForm();
-
+    const { isOpenPrice } = useSelector((state: RootState) => state.auth);
+    useEffect(() => {
+        if (isOpenPrice) {
+            setOpenPrice(true);
+            openPriceRef?.current?.setValue(true);
+        }
+    }, [isOpenPrice]);
     const onFinish = (values: any) => {
         const dineIn = dineInRef?.current?.getValue?.() ? 'dine_in' : null;
         const takeAway = takeAwayRef?.current?.getValue?.() ? 'online' : null;
@@ -101,9 +111,9 @@ const Index = () => {
             ...values,
             display_platforms,
             is_in_stock,
-            price: formatPrice(values?.price),
+            price: formatPrice(values?.price || '0'),
             status: values?.status ? 1 : 2,
-            open_price: false,
+            open_price: openPriceRef?.current?.getValue(),
             media_gallery_entries,
             quantity: quantity,
             kitchen_station: values?.kitchen_station || null,
@@ -175,7 +185,7 @@ const Index = () => {
         apiGetCategory({
             variables: {
                 currentPage: 1,
-                pageSize: 10,
+                pageSize: 100,
                 field: 'id',
                 position: 'DESC',
             },
@@ -222,6 +232,7 @@ const Index = () => {
                     openPriceRef?.current?.setValue(
                         detail?.open_price ? true : false,
                     );
+                    setOpenPrice(detail?.open_price ? true : false);
                     if (detail?.display_platforms?.includes?.('dine_in')) {
                         dineInRef?.current?.setValue(true);
                     }
@@ -253,7 +264,7 @@ const Index = () => {
         setLoading(false);
     }, [productId, menuList]);
     return (
-        <div style={{ padding: 16 }}>
+        <div>
             <Loading loading={isLoading} />
             <div className="container-box body_history">
                 <MenuBar />
@@ -369,7 +380,6 @@ const Index = () => {
                                         }}
                                         placeholder="Select a group"
                                         defaultActiveFirstOption
-                                        onSelect={(value) => console.log(value)}
                                     >
                                         {menuList?.map?.((m: any) => {
                                             return (
@@ -382,6 +392,17 @@ const Index = () => {
                                                             form.setFieldValue(
                                                                 'kitchen_station',
                                                                 `${m?.kitchen_station}`,
+                                                            );
+                                                            let isOpen =
+                                                                m?.open_price;
+                                                            if (isOpenPrice) {
+                                                                isOpen = true;
+                                                            }
+                                                            openPriceRef?.current?.setValue(
+                                                                isOpen,
+                                                            );
+                                                            setOpenPrice(
+                                                                isOpen,
                                                             );
                                                         }}
                                                     >
@@ -461,25 +482,29 @@ const Index = () => {
                             <Form.Item
                                 style={{ width: '35%' }}
                                 name="price"
-                                rules={[
-                                    {
-                                        validator: (_, value) => {
-                                            if (!value) {
-                                                return Promise.reject(
-                                                    'Please enter price',
-                                                );
-                                            }
-                                            const formatedValue =
-                                                formatPrice(value);
-                                            if (formatedValue >= 0) {
-                                                return Promise.resolve();
-                                            }
-                                            return Promise.reject(
-                                                'Please enter a number 0 or greater in this field',
-                                            );
-                                        },
-                                    },
-                                ]}
+                                rules={
+                                    openPrice
+                                        ? []
+                                        : [
+                                              {
+                                                  validator: (_, value) => {
+                                                      if (!value) {
+                                                          return Promise.reject(
+                                                              'Please enter price',
+                                                          );
+                                                      }
+                                                      const formatedValue =
+                                                          formatPrice(value);
+                                                      if (formatedValue >= 0) {
+                                                          return Promise.resolve();
+                                                      }
+                                                      return Promise.reject(
+                                                          'Please enter a number 0 or greater in this field',
+                                                      );
+                                                  },
+                                              },
+                                          ]
+                                }
                             >
                                 <NumericFormat
                                     prefix="$"
@@ -498,9 +523,50 @@ const Index = () => {
                                     }}
                                 />
                             </Form.Item>
-                            {/* <div style={{ marginTop: -24, marginLeft: 50 }}>
-                <CheckBoxOption ref={openPriceRef} name="Open price" />
-              </div> */}
+                            <div
+                                style={{
+                                    marginTop: -24,
+                                    marginLeft: 50,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <CheckBoxOption
+                                    ref={openPriceRef}
+                                    name="Open price"
+                                    customStyle={{
+                                        fontWeight: '600',
+                                        marginTop: 0,
+                                    }}
+                                    onChange={(value: boolean) =>
+                                        setOpenPrice(value)
+                                    }
+                                />
+                                <Tooltip
+                                    placement="bottomLeft"
+                                    title={
+                                        ' Allow custom pricing at checkout. Set price used as editable default.'
+                                    }
+                                    arrow={true}
+                                    color="#fff"
+                                    style={{
+                                        color: '#000',
+                                    }}
+                                    overlayInnerStyle={{ color: '#000' }}
+                                >
+                                    <Button
+                                        ghost
+                                        style={{
+                                            height: 40,
+                                            width: 40,
+                                            borderRadius: 100,
+                                            padding: 0,
+                                        }}
+                                    >
+                                        <QuestionIcon />
+                                    </Button>
+                                </Tooltip>
+                            </div>
                         </div>
                         <p className="menu_new_name">Quantity</p>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -537,9 +603,6 @@ const Index = () => {
                                     style={{ height: 30, paddingInline: 12 }}
                                 />
                             </Form.Item>
-                            {/* <div style={{ marginTop: -24, marginLeft: 50 }}>
-                <CheckBoxOption ref={openPriceRef} name="Open price" />
-              </div> */}
                         </div>
                         <p className="menu_new_name">Channel</p>
                         <CheckBoxOption ref={dineInRef} name="Dine-in" />

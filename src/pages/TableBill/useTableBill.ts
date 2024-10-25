@@ -184,12 +184,9 @@ export const useTableBill = (isGoBack = true) => {
                 });
             });
     };
+    const { isTerminalPrinter } = useSelector((state: RootState) => state.auth);
     const PrintMerchantCopy = (url: string, isOpenCashier = false) => {
-        const is_used_terminal =
-            localStorage.getItem('merchantGetPrinterConfig') === 'true'
-                ? true
-                : false;
-        if (!is_used_terminal) {
+        if (!isTerminalPrinter) {
             if (window.ReactNativeWebView) {
                 window.ReactNativeWebView.postMessage(
                     JSON.stringify({
@@ -225,15 +222,23 @@ export const useTableBill = (isGoBack = true) => {
     };
     const [checkOutLoading, setCheckOutLoading] =
         React.useState<boolean>(false);
-    const handleCheckOut = async () => {
+    const handleCheckOut = async (received_amount?: number) => {
+        const variables = {
+            cartId: cartItems[indexTable].carts[cartIndex].id,
+            paymentMethod: paymentMethod.includes('pos')
+                ? 'pos'
+                : paymentMethod,
+            ...(received_amount &&
+                paymentMethod === 'cashondelivery' && {
+                    received_amount: parseFloat(
+                        received_amount?.toString?.(),
+                    ).toFixed(2),
+                }),
+        };
+
         setCheckOutLoading(true);
         placeOrder({
-            variables: {
-                cartId: cartItems[indexTable].carts[cartIndex].id,
-                paymentMethod: paymentMethod.includes('pos')
-                    ? 'pos'
-                    : paymentMethod,
-            },
+            variables,
         })
             .then((res) => {
                 setOrderInfo(res.data.createMerchantOrder.order);
@@ -260,13 +265,8 @@ export const useTableBill = (isGoBack = true) => {
                             const order = res.data.createMerchantOrder.order;
 
                             setCheckOutLoading(false);
-                            const is_used_terminal =
-                                localStorage.getItem(
-                                    'merchantGetPrinterConfig',
-                                ) === 'true'
-                                    ? true
-                                    : false;
-                            if (!is_used_terminal) {
+
+                            if (isTerminalPrinter) {
                                 setVisibleMoalPosDJV(true);
                                 return;
                             }
@@ -335,6 +335,9 @@ export const useTableBill = (isGoBack = true) => {
             })
             .catch((err) => {
                 console.log(err);
+            })
+            .finally(() => {
+                setCheckOutLoading(false);
             });
     };
     const [onCancelCheckout] = useMutation(CANCEL_CHECKOUT);
@@ -372,28 +375,6 @@ export const useTableBill = (isGoBack = true) => {
                     setModalPaySuccess(true);
                     setModalChange(false);
                     emitter.emit('REPAYMENT_SUCCESS');
-                    const is_used_terminal =
-                        localStorage.getItem('merchantGetPrinterConfig') ===
-                        'true'
-                            ? true
-                            : false;
-                    if (!is_used_terminal) {
-                        if (
-                            dataInvoices?.merchantGetOrderInvoices?.invoice[0]
-                                ?.invoice_image
-                        ) {
-                            PrintMerchantCopy(
-                                dataInvoices?.merchantGetOrderInvoices
-                                    ?.invoice[0]?.invoice_image,
-                            );
-                        } else {
-                            ReGetInvoices({
-                                orderNumber:
-                                    dataInvoices?.merchantGetOrderInvoices
-                                        ?.order?.order_number,
-                            });
-                        }
-                    }
 
                     // showModalSuccess(
                     //     `${

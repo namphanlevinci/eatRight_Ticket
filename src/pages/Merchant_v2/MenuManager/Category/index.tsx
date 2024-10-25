@@ -45,6 +45,7 @@ const Index = () => {
             variables: {
                 search,
                 currentPage: page,
+                pageSize: 10,
                 field: field ?? 'id',
                 position: position ?? 'ASC',
             },

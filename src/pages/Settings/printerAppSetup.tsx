@@ -3,6 +3,7 @@ import { Button, Layout, notification, Row, Switch } from 'antd';
 import RadioBtnSelected from 'assets/icons/radioBtnSelected';
 import { Text } from 'components/atom/Text';
 import { useTheme } from 'context/themeContext';
+import { updateIsTerminalPrinter } from 'features/auth/authSlice';
 import { emitter } from 'graphql/client';
 
 import { POS_DEVICE_LIST_DJV } from 'graphql/orders/paymentMethod';
@@ -12,9 +13,12 @@ import {
     SELECT_PRINTER_DEVICE,
     SELECT_TERMINAL_PRINTER_DEVICE,
     SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT,
+    USE_TERMINAL_PRINTER,
 } from 'graphql/printer';
+import { SET_MERCHANT_RESTAURANT_CONFIG_PRIMARY_TERMINAL } from 'graphql/setups';
 import ButtonSubmit from 'pages/TableBill/components/buttonSubmit';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 export default function PrinterAppSetUpPage() {
@@ -34,9 +38,12 @@ export default function PrinterAppSetUpPage() {
         SELECT_PRINTER_DEVICE,
     );
     const [onSetTerminalPrinter] = useMutation(SELECT_TERMINAL_PRINTER_DEVICE);
-    const [onSetTerminalPrinterMerchant] = useMutation(
-        SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT,
+    const [onUseTerminalPrinter] = useMutation(USE_TERMINAL_PRINTER);
+    const [onSetPrinter] = useMutation(SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT);
+    const [onSetTerminalPrimary] = useMutation(
+        SET_MERCHANT_RESTAURANT_CONFIG_PRIMARY_TERMINAL,
     );
+
     const [list, setList] = useState<any>([]);
     const [selectedOption, setSelectedOption] = useState<any>(null);
     const { theme } = useTheme();
@@ -61,13 +68,15 @@ export default function PrinterAppSetUpPage() {
             );
         }
     };
+    const dispatch = useDispatch();
     const handleOk = (): void => {
         if (selectedOption) {
             if (switchPrinterMode) {
                 if (isMerchant) {
-                    onSetTerminalPrinterMerchant({
+                    onSetPrinter({
                         variables: {
                             pos_id: selectedOption.entity_id,
+                            is_used_terminal: true,
                         },
                     })
                         .then(() => {
@@ -75,10 +84,8 @@ export default function PrinterAppSetUpPage() {
                                 message: 'Success',
                                 description: 'Set up printer successfully',
                             });
-                            localStorage.setItem(
-                                'merchantGetPrinterConfig',
-                                `true`,
-                            );
+
+                            dispatch(updateIsTerminalPrinter(true));
                             localStorage.setItem(
                                 'printer_id',
                                 selectedOption?.id?.toString(),
@@ -89,6 +96,11 @@ export default function PrinterAppSetUpPage() {
                             console.log(err);
                             console.log('error');
                         });
+                    onSetTerminalPrimary({
+                        variables: {
+                            primary_terminal_setting: selectedOption.entity_id,
+                        },
+                    });
                 } else {
                     onSetTerminalPrinter({
                         variables: {
@@ -104,10 +116,9 @@ export default function PrinterAppSetUpPage() {
                                 'printer_id',
                                 selectedOption?.id?.toString(),
                             );
-                            localStorage.setItem(
-                                'merchantGetPrinterConfig',
-                                `true`,
-                            );
+
+                            dispatch(updateIsTerminalPrinter(true));
+                            onUseTerminalPrinter();
                             pushMsgOffPrinter();
                         })
                         .catch(() => {
@@ -129,10 +140,17 @@ export default function PrinterAppSetUpPage() {
                             'printer_id',
                             selectedOption?.id.toString(),
                         );
+                        dispatch(updateIsTerminalPrinter(false));
                     })
                     .catch(() => {
                         console.log('error');
                     });
+                onSetPrinter({
+                    variables: {
+                        pos_id: selectedOption.entity_id,
+                        is_used_terminal: false,
+                    },
+                });
             }
 
             // onPressOK(selectedOption?.id);
@@ -164,7 +182,7 @@ export default function PrinterAppSetUpPage() {
                 setSwitchPrinterMode(false);
             }
         }
-    }, [data, list]);
+    }, [data, list, posDeviceList]);
     const [switchPrinterMode, setSwitchPrinterMode] = useState(false);
 
     useEffect(() => {
@@ -174,6 +192,7 @@ export default function PrinterAppSetUpPage() {
         }
         emitter.on('printer_name', (data: any) => {
             setPrinter(data);
+            onGetConfig({ fetchPolicy: 'no-cache' });
         });
         return () => {
             emitter.off('printer_name');

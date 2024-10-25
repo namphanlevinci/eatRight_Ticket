@@ -6,11 +6,12 @@ export const GET_CATEGORY_LIST = gql`
         $currentPage: Int
         $field: String!
         $position: SortEnum!
+        $pageSize: Int
     ) {
         merchantCategories(
             search: { name: $search }
             currentPage: $currentPage
-            pageSize: 10
+            pageSize: $pageSize
             sort: { field: $field, position: $position }
         ) {
             total_count
@@ -26,6 +27,7 @@ export const GET_CATEGORY_LIST = gql`
                 description
                 product_count
                 kitchen_station
+                open_price
                 menus {
                     entity_id
                     name

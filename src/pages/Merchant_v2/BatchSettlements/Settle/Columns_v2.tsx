@@ -14,12 +14,13 @@ export type TInvoice = {
     total_tax: number;
     tip_amount: number;
     grand_total: number;
+    non_cash_amount: number;
 };
 
 export enum EPaymentMethod {
     CREDIT_CARD = 'credit_card',
     CASH = 'cash',
-    DISCOUNT = 'discount'
+    DISCOUNT = 'discount',
 }
 
 export type TPaymentMethods = {
@@ -80,11 +81,17 @@ export const ColumnsBatchInvoices = (): TableColumnsType<TInvoice> => [
         dataIndex: 'grand_total',
         key: 'grand_total',
         align: 'center',
-        render: (value) => {
+        render: (value, record) => {
             if (!value) {
                 return '';
             }
-            return <span>{formatCurrency(formatNumberWithCommas(value))}</span>;
+            return (
+                <span>
+                    {formatCurrency(
+                        formatNumberWithCommas(value + record.non_cash_amount),
+                    )}
+                </span>
+            );
         },
     },
 ];

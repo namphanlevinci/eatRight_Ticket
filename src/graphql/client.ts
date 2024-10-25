@@ -51,7 +51,7 @@ const errorLink = onError((error) => {
     // Xử lý lỗi từ GraphQL
     // ...
     error.graphQLErrors?.map((e) => {
-        if (e.message.includes("The current Merchant isn't authorized")) {
+        if (e.message.includes("isn't authorized")) {
             emitter.emit('logout');
             return;
         }

@@ -56,14 +56,6 @@ export default function ModalPaySuccess({
         fetchPolicy: 'no-cache',
     });
     const Print = () => {
-        const is_used_terminal =
-            localStorage.getItem('merchantGetPrinterConfig') === 'true'
-                ? true
-                : false;
-        if (!is_used_terminal) {
-            PrintBillApi();
-            return;
-        }
         if (invoice_number) {
             getReceiptDetail({
                 variables: {

@@ -96,6 +96,16 @@ export const GET_INVOICES = gql`
                     }
                     po_number
                 }
+                total_received {
+                    received_amount {
+                        currency
+                        value
+                    }
+                    change_amount {
+                        currency
+                        value
+                    }
+                }
             }
         }
     }

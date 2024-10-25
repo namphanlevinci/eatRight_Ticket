@@ -1,18 +1,22 @@
 import { Col, Row } from 'antd';
 import { Text } from 'components/atom/Text';
 import { CartItemType, ItemType } from 'context/cartType';
-import React from 'react';
+import React, { useState } from 'react';
 import { formatNumberWithCommas } from 'utils/format';
 import { ColStyled } from './styleds';
 import { useTheme } from 'context/themeContext';
 import { DividedSolid } from 'pages/BillDetail/styled';
 import { useMediaQuery } from 'react-responsive';
+import RenderOpenPrice from 'pages/Table/Cart/components/RenderOpenPrice';
+import ModalEditPrice from 'components/modal/ModalEditPrice';
 
 export default function ColLeft({
     cart,
     listItems,
     isSplitBill,
     openModalSplitBill,
+    handleUpdatePriceItem,
+    isNeedInput,
 }: {
     cart?: CartItemType;
     count: number;
@@ -22,9 +26,44 @@ export default function ColLeft({
     }[];
     isSplitBill?: boolean;
     openModalSplitBill?: () => void;
+    handleUpdatePriceItem: (data: any) => void;
+    isNeedInput?: boolean;
 }) {
     const isMobile = useMediaQuery({ query: '(max-width: 767px)' });
     const { theme } = useTheme();
+    const [showEditPrice, setShowEditPrice] = useState({
+        show: false,
+        price: 0,
+        index: -1,
+    });
+    const onEditOpenPrice = (index: number, item: ItemType) => {
+        setShowEditPrice({
+            show: true,
+            price: item?.prices.price.value ?? 0,
+            index: index ?? 0,
+        });
+    };
+    const onSubmitEditPrice = (custom_price: number) => {
+        const items = cart?.items[showEditPrice.index];
+        // if (items?.uid) {
+        handleUpdatePriceItem({
+            cartId: cart?.id || '',
+            id: items?.id || '',
+            price: custom_price,
+        });
+        // } else {
+        //     customOpenPriceForItem({
+        //         index: showEditPrice.index,
+        //         custom_price,
+        //     });
+        // }
+
+        setShowEditPrice({
+            ...showEditPrice,
+            show: false,
+            price: custom_price,
+        });
+    };
     return (
         <ColStyled
             style={{
@@ -39,6 +78,14 @@ export default function ColLeft({
                 borderRadius: 8,
             }}
         >
+            <ModalEditPrice
+                isModalOpen={showEditPrice.show}
+                onCancel={() => {
+                    setShowEditPrice({ show: false, price: 0, index: -1 });
+                }}
+                onSubmit={onSubmitEditPrice}
+                custom_price={showEditPrice.price}
+            />
             {isSplitBill && listItems.length > 0
                 ? listItems?.map((data, idx) => {
                       const { items } = data;
@@ -101,10 +148,19 @@ export default function ColLeft({
                       );
                   })
                 : cart?.items?.map((item, index) => {
-                      if (item.status === 'status') {
+                      if (item.status === 'cancel') {
                           return null;
                       }
-                      return <RenderItem key={index} item={item} />;
+                      return (
+                          <RenderItem
+                              key={index}
+                              item={item}
+                              onEditOpenPrice={() =>
+                                  onEditOpenPrice(index, item)
+                              }
+                              isNeedInput={isNeedInput}
+                          />
+                      );
                   })}
             {isMobile && !isSplitBill && (
                 <div style={{ marginTop: 24 }}>
@@ -115,7 +171,15 @@ export default function ColLeft({
     );
 }
 
-export const RenderItem = ({ item }: { item: ItemType }) => {
+export const RenderItem = ({
+    item,
+    onEditOpenPrice,
+    isNeedInput,
+}: {
+    item: ItemType;
+    onEditOpenPrice?: any;
+    isNeedInput?: boolean;
+}) => {
     const { theme } = useTheme();
     return (
         <div
@@ -141,9 +205,18 @@ export const RenderItem = ({ item }: { item: ItemType }) => {
                         </Col>
                     </Row>
                 </Col>
-                <Text style={{ fontWeight: 600 }}>
-                    ${formatNumberWithCommas(item.prices.price.value)}
-                </Text>
+
+                {item.product.open_price ? (
+                    <RenderOpenPrice
+                        value={item.custom_price || item.prices.price.value}
+                        onEditOpenPrice={onEditOpenPrice}
+                        isNeedInput={isNeedInput}
+                    />
+                ) : (
+                    <Text style={{ fontWeight: 600 }}>
+                        ${formatNumberWithCommas(item.prices.price.value)}
+                    </Text>
+                )}
             </Row>
             {item.bundle_options?.map((bundle) => {
                 return (
