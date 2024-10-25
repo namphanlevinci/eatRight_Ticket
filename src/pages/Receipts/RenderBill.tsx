@@ -31,31 +31,13 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
     }
 
     const address = data?.restaurant_address?.split(', ')?.[0];
-
-    const baseTotal =
-        data?.total?.grand_total?.value -
-        (data?.total?.subtotal?.value -
+    const baseTotal = Math.abs(
+        data?.total?.subtotal?.value +
             (totalDiscount || 0) +
-            data?.total?.total_tax?.value);
-
-    const tip = Math.abs(
-        data?.total?.grand_total?.value -
-            (data?.total?.subtotal?.value -
-                (totalDiscount || 0) +
-                data?.total?.total_tax?.value),
+            data?.total?.total_tax?.value,
     );
 
-    const total = isEmpty(data?.non_cash_amount)
-        ? Math.abs(baseTotal).toFixed(2)
-        : (baseTotal + parseFloat(data?.non_cash_amount)).toFixed(2);
-
-    const taxValue = data?.total?.total_tax?.value;
-    const ct1 = totalDiscount
-        ? data?.total?.subtotal?.value - totalDiscount
-        : data?.total?.subtotal?.value;
-
-    const taxPercent = taxValue ? Math.floor((taxValue / ct1) * 100) : null;
-
+    const tip = Math.abs(data?.total?.tip_amount?.value || 0);
     return (
         <div
             style={{
@@ -160,9 +142,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 {data?.total?.total_tax?.value &&
                 data?.total?.total_tax?.value > 0 ? (
                     <RowStyled align={'middle'}>
-                        <TextDark
-                            style={text16}
-                        >{`Tax: (${taxPercent})%`}</TextDark>
+                        <TextDark style={text16}>{`Tax: `}</TextDark>
                         <TextDark>
                             {CURRENTCY}{' '}
                             {data?.total?.total_tax?.value?.toFixed(2)}
@@ -171,14 +151,17 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 ) : (
                     <></>
                 )}
-                {!isEmpty(data?.non_cash_amount) && (
-                    <RowStyled align={'middle'}>
-                        <TextDark style={text16}>Base total:</TextDark>
-                        <TextDark>
-                            {CURRENTCY} {Math.abs(baseTotal).toFixed?.(2)}
-                        </TextDark>
-                    </RowStyled>
-                )}
+                <RowStyled align={'middle'}>
+                    <TextDark style={text16}>Base total:</TextDark>
+                    <TextDark>
+                        {CURRENTCY}{' '}
+                        {Math.abs(
+                            data?.total?.subtotal?.value +
+                                (totalDiscount || 0) +
+                                data?.total?.total_tax?.value,
+                        ).toFixed(2)}
+                    </TextDark>
+                </RowStyled>
                 <DividedDashed />
                 {!isEmpty(data?.non_cash_amount) && (
                     <RowStyled align={'middle'}>
@@ -190,12 +173,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                         </TextDark>
                     </RowStyled>
                 )}
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Total:</TextDark>
-                    <TextDark>
-                        {CURRENTCY} {total}
-                    </TextDark>
-                </RowStyled>
+
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Tip:</TextDark>
                     {tip > 0 ? (
@@ -210,10 +188,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     <TextDark style={text16}>Grand Total:</TextDark>
                     {tip > 0 ? (
                         <TextDark>
-                            {CURRENTCY}{' '}
-                            {(data?.total?.grand_total?.value + tip)?.toFixed?.(
-                                2,
-                            )}
+                            {CURRENTCY} {data?.total?.grand_total?.value}
                         </TextDark>
                     ) : (
                         <TextDark>______________________</TextDark>
