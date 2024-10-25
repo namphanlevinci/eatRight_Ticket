@@ -25,8 +25,6 @@ const RenderBillItem = ({
     selectDataShowbill: any;
     dataInvoice?: any;
 }) => {
-    console.log({ dataInvoice });
-
     const totalDiscount = selectDataShowbill
         ? selectDataShowbill?.total?.discounts.reduce(
               (total: number, discount: any) => {
@@ -43,16 +41,12 @@ const RenderBillItem = ({
           : 0;
 
     const baseTotal = selectDataShowbill
-        ? Math.abs(
-              selectDataShowbill?.total?.subtotal?.value -
-                  totalDiscount +
-                  selectDataShowbill?.total?.total_tax?.value,
-          )
-        : Math.abs(
-              data?.total?.subtotal?.value -
-                  totalDiscount +
-                  data?.total?.total_tax?.value,
-          );
+        ? selectDataShowbill?.total?.subtotal?.value -
+          totalDiscount +
+          selectDataShowbill?.total?.total_tax?.value
+        : data?.total?.subtotal?.value -
+          totalDiscount +
+          data?.total?.total_tax?.value;
 
     const tip = selectDataShowbill
         ? Math.abs(
@@ -71,6 +65,9 @@ const RenderBillItem = ({
                 0,
             ) || 0
           : 0;
+    const total = isEmpty(nonCashAdjustment)
+        ? Math.abs(baseTotal).toFixed(2)
+        : (baseTotal + parseFloat(nonCashAdjustment)).toFixed(2);
 
     const address = data?.restaurant_address?.split(', ')?.[0];
     const grand_total = selectDataShowbill
@@ -227,14 +224,15 @@ const RenderBillItem = ({
                         </TextDark>
                     </RowStyled>
                 )}
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Base total:</TextDark>
-                    <TextDark>
-                        {CURRENTCY} {baseTotal?.toFixed?.(2)}
-                    </TextDark>
-                </RowStyled>
+                {dataInvoice?.length > 0 && dataInvoice[0]?.non_cash_amount && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>Base total:</TextDark>
+                        <TextDark>
+                            {CURRENTCY} {Math.abs(baseTotal)?.toFixed?.(2)}
+                        </TextDark>
+                    </RowStyled>
+                )}
                 <DividedDashed />
-
                 {dataInvoice?.length > 0 && dataInvoice[0]?.non_cash_amount && (
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>
@@ -249,11 +247,7 @@ const RenderBillItem = ({
                 <RowStyled align={'middle'}>
                     <TextDark style={text16}>Total:</TextDark>
                     <TextDark>
-                        {CURRENTCY} {CURRENTCY}{' '}
-                        {(
-                            parseFloat(`${baseTotal || 0} `) +
-                            parseFloat(`${nonCashAdjustment || 0}`)
-                        )?.toFixed(2)}
+                        {CURRENTCY} {CURRENTCY} {total}
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
@@ -294,16 +288,33 @@ const RenderBillItem = ({
                     dataInvoice?.[0]?.total_received?.change_amount && (
                         <>
                             <RowStyled align={'middle'}>
-                                <TextDark style={text16}>Received:</TextDark>
-                                <TextDark>
-                                    {`${CURRENTCY} ${dataInvoice?.[0]?.total_received?.received_amount?.value}`}
-                                </TextDark>
-                            </RowStyled>
-                            <RowStyled align={'middle'}>
-                                <TextDark style={text16}>Change:</TextDark>
-                                <TextDark>
-                                    {`${CURRENTCY} ${dataInvoice?.[0]?.total_received?.change_amount?.value}`}
-                                </TextDark>
+                                <div
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        display: 'flex',
+                                    }}
+                                >
+                                    <TextDark style={text16}>
+                                        Received:
+                                    </TextDark>
+                                    <TextDark>
+                                        {`${CURRENTCY} ${data?.total_received?.received_amount?.value}`}
+                                    </TextDark>
+                                </div>
+
+                                <div
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        display: 'flex',
+                                    }}
+                                >
+                                    <TextDark style={text16}>Change:</TextDark>
+                                    <TextDark>
+                                        {`${CURRENTCY} ${data?.total_received?.change_amount?.value}`}
+                                    </TextDark>
+                                </div>
                             </RowStyled>
                         </>
                     )}
