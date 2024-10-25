@@ -217,15 +217,24 @@ export const BaseRouter = () => {
             console.log('needLogout', needLogout);
         }
         if (needLogout && isLogged) {
+            const onLogout = () => {
+                setNeedLogout(false);
+                dispatch(updateStatusLogout());
+                sendReactNativeLogout();
+                Modal.destroyAll();
+            };
             console.log('need show modal logout please');
             error({
                 title: 'Session Expired',
                 content: 'Please log in again!',
                 onOk: () => {
-                    setNeedLogout(false);
-                    dispatch(updateStatusLogout());
-                    sendReactNativeLogout();
-                    Modal.destroyAll();
+                    onLogout();
+                },
+                onCancel: () => {
+                    onLogout();
+                },
+                onClose: () => {
+                    onLogout();
                 },
                 centered: true,
             });
