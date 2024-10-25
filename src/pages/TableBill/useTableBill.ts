@@ -341,8 +341,8 @@ export const useTableBill = (isGoBack = true) => {
             });
     };
     const [onCancelCheckout] = useMutation(CANCEL_CHECKOUT);
-    const [PosIdTmp, setPosIdTmp] = useState<any>('');
 
+    const [autoSelectPos, setAutoSelectPos] = useState<any>(true);
     const handlePOSPaymentWithDJV = (
         posId: number,
         orderDetail?: {
@@ -356,11 +356,9 @@ export const useTableBill = (isGoBack = true) => {
         if (orderDetail) {
             setOrderInfo(orderDetail);
         }
-        if (PosIdTmp === posId) {
-            return;
-        }
+
         setPos_Loading(true);
-        setPosIdTmp(posId);
+
         onPosDJV({
             variables: {
                 orderId: orderDetail?.order_number
@@ -388,15 +386,16 @@ export const useTableBill = (isGoBack = true) => {
             })
             .catch(() => {
                 console.log('Erorr over thể modal');
-                showModalErrorPayment(
-                    `${
-                        orderDetail?.order_id
-                            ? orderDetail?.order_id
-                            : orderInfo?.order_id
-                    }`,
-                );
+                // showModalErrorPayment(
+                //     `${
+                //         orderDetail?.order_id
+                //             ? orderDetail?.order_id
+                //             : orderInfo?.order_id
+                //     }`,
+                // );
                 // if (isSelectAnotherPos) {
                 setVisibleMoalPosDJV(true);
+                setAutoSelectPos(false);
                 // return;
                 // }
             })
@@ -686,5 +685,6 @@ export const useTableBill = (isGoBack = true) => {
         orderInfo,
         onCancelCheckout,
         dataInvoices,
+        autoSelectPos,
     };
 };

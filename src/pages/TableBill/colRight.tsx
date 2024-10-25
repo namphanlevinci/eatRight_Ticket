@@ -80,6 +80,7 @@ export default function ColRight({
         orderInfo,
         onCancelCheckout,
         dataInvoices,
+        autoSelectPos,
     } = useTableBill();
 
     // useEffect(() => {
@@ -310,6 +311,7 @@ export default function ColRight({
                                 },
                             });
                         }}
+                        autoSelectPos={autoSelectPos}
                     />
                 )}
                 {contextHolder}
