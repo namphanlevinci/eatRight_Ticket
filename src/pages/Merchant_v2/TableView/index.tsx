@@ -33,7 +33,6 @@ const MerchantTableView: React.FC = () => {
             navigation(BASE_ROUTER.MERCHANT_ORDERLIST);
         }
     }, [isTableView]);
-
     const renderContent = () => {
         return (
             <Spin spinning={loadingTable}>
@@ -55,6 +54,41 @@ const MerchantTableView: React.FC = () => {
                         {data?.length ? (
                             <Tables
                                 tables={data?.filter((d) => {
+                                    const {
+                                        isAvailable,
+                                        isDinning,
+                                        isReserve,
+                                    } = merchantFilterTable;
+                                    let check = false;
+                                    // Nếu cả 3 đều được mở (tất cả đều là true)
+                                    if (isAvailable && isDinning && isReserve) {
+                                        check = true;
+                                    }
+
+                                    // Nếu chỉ có một hoặc một vài cờ được mở, lọc dữ liệu dựa vào điều kiện cụ thể
+                                    if (
+                                        isAvailable &&
+                                        d?.status === EStatusTable.AVAILABLE
+                                    ) {
+                                        check = true;
+                                    }
+
+                                    if (
+                                        isDinning &&
+                                        d?.status === EStatusTable.DINING
+                                    ) {
+                                        check = true;
+                                    }
+                                    if (
+                                        isReserve &&
+                                        d?.status === EStatusTable.RESERVED
+                                    ) {
+                                        check = true;
+                                    }
+
+                                    if (!check) {
+                                        return false;
+                                    }
                                     const matchesNotNull = d?.id;
                                     const matchesName = d?.name
                                         ?.toLowerCase()
@@ -69,37 +103,11 @@ const MerchantTableView: React.FC = () => {
                                         filterTable === EStatusTable.ALL
                                             ? true
                                             : +d?.status === filterTable;
-                                    if (
-                                        !matchesNotNull &&
-                                        !matchesName &&
-                                        !matchesStatus
-                                    ) {
-                                        return false;
-                                    }
-                                    let show = false;
-
-                                    if (
-                                        merchantFilterTable.isAvailable &&
-                                        d?.status == EStatusTable.AVAILABLE
-                                    ) {
-                                        show = true;
-                                    }
-
-                                    if (
-                                        merchantFilterTable.isReserve &&
-                                        d?.status == EStatusTable.RESERVED
-                                    ) {
-                                        show = true;
-                                    }
-
-                                    if (
-                                        merchantFilterTable.isDinning &&
-                                        d?.status == EStatusTable.DINING
-                                    ) {
-                                        show = true;
-                                    }
-
-                                    return show;
+                                    return (
+                                        matchesNotNull &&
+                                        matchesName &&
+                                        matchesStatus
+                                    );
                                 })}
                             />
                         ) : (
