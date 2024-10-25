@@ -13,11 +13,13 @@ const ModalPosDevicesDJV = ({
     isVisibleModalPos,
     setVisibleMoalPos,
     onCancel,
+    autoSelectPos = true,
 }: {
     onPressOK: (item: any) => void;
     isVisibleModalPos: boolean;
     setVisibleMoalPos: (visible: boolean) => void;
     onCancel: () => void;
+    autoSelectPos?: boolean;
 }) => {
     const [selectedOption, setSelectedOption] = useState<any>(null);
     const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST_DJV);
@@ -30,8 +32,10 @@ const ModalPosDevicesDJV = ({
     useEffect(() => {
         if (isVisibleModalPos && posDeviceList) {
             if (posDeviceList && posDeviceList?.length === 1) {
-                onPressOK(posDeviceList[0].entity_id);
-                setVisibleMoalPos(false);
+                if (autoSelectPos) {
+                    onPressOK(posDeviceList[0].entity_id);
+                    setVisibleMoalPos(false);
+                }
             }
         }
     }, [isVisibleModalPos, posDeviceList]);

@@ -376,6 +376,7 @@ export default function index() {
         showModalSuccess,
         showError,
         showModalErrorPayment,
+        autoSelectPos,
     } = useTableBill(false);
     const modalConfirm = (paymentMethod = 'cashondelivery') => {
         modal.confirm({
@@ -643,6 +644,7 @@ export default function index() {
                         onCancel={() => {
                             showModalErrorPayment(orderId || '');
                         }}
+                        autoSelectPos={autoSelectPos}
                     />
                 )}
                 <LoadingModalPayment
