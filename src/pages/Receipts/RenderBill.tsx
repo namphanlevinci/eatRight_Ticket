@@ -26,6 +26,8 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
         0,
     );
 
+    console.log({ data });
+
     if (!data) {
         return <div />;
     }
@@ -97,7 +99,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     <TextDark>{data?.order_type}</TextDark>
                     <TextDark>
                         <BoldText>Bill: </BoldText>
-                        {data.increment_id}
+                        {data.increment_id?.slice?.(-4)}
                     </TextDark>
                 </RowStyled>
                 {data?.table_name ? (
@@ -166,7 +168,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     <RowStyled align={'middle'}>
                         <TextDark style={text16}>Base total:</TextDark>
                         <TextDark>
-                            {CURRENTCY} {Math.abs(baseTotal).toFixed(2)}
+                            {CURRENTCY} {Math.abs(baseTotal).toFixed?.(2)}
                         </TextDark>
                     </RowStyled>
                 )}
@@ -202,7 +204,9 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     {tip > 0 ? (
                         <TextDark>
                             {CURRENTCY}{' '}
-                            {data?.total?.grand_total?.value.toFixed(2)}
+                            {(data?.total?.grand_total?.value + tip)?.toFixed?.(
+                                2,
+                            )}
                         </TextDark>
                     ) : (
                         <TextDark>______________________</TextDark>
@@ -232,7 +236,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                                         Received:
                                     </TextDark>
                                     <TextDark>
-                                        {`${CURRENTCY} ${data?.total_received?.received_amount?.value}`}
+                                        {`${CURRENTCY} ${data?.total_received?.received_amount?.value?.toFixed?.(2)}`}
                                     </TextDark>
                                 </div>
 
@@ -245,7 +249,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                                 >
                                     <TextDark style={text16}>Change:</TextDark>
                                     <TextDark>
-                                        {`${CURRENTCY} ${data?.total_received?.change_amount?.value}`}
+                                        {`${CURRENTCY} ${data?.total_received?.change_amount?.value?.toFixed?.(2)}`}
                                     </TextDark>
                                 </div>
                             </RowStyled>
@@ -270,10 +274,10 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     </RowStyled>
                 )}
                 <DividedDashed />
-                <RowStyled align={'middle'}>
+                {/* <RowStyled align={'middle'}>
                     <TextDark style={text16}>Signature:</TextDark>
                     <TextDark>______________________</TextDark>
-                </RowStyled>
+                </RowStyled> */}
                 <DividedDashed />
                 <TextDark
                     style={{
