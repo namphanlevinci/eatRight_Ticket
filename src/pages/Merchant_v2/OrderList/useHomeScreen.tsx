@@ -187,7 +187,6 @@ export const useHomeScreen = () => {
         });
 
         socketInstance.on('chat message', (msg) => {
-            console.log('msg socket', msg);
             try {
                 if (msg['kitchen-receipt-image']) {
                     sendImageReactNative({
