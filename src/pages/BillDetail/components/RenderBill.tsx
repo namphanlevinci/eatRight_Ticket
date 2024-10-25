@@ -129,8 +129,8 @@ const RenderBillItem = ({
                         {selectDataShowbill
                             ? selectDataShowbill?.number
                             : dataInvoice?.length === 1
-                              ? dataInvoice[0]?.number
-                              : data?.order_number}
+                              ? dataInvoice[0]?.number?.slice?.(-4)
+                              : data?.order_number?.slice?.(-4)}
                     </TextDark>
                 </RowStyled>
                 {data?.table ? (
@@ -239,7 +239,7 @@ const RenderBillItem = ({
                             Non-Cash Adjustment :
                         </TextDark>
                         <TextDark>
-                            {CURRENTCY} {nonCashAdjustment}
+                            {CURRENTCY} {nonCashAdjustment?.toFixed?.(2)}
                         </TextDark>
                     </RowStyled>
                 )}
@@ -266,7 +266,7 @@ const RenderBillItem = ({
                     <TextDark style={text16}>Grand Total:$</TextDark>
                     {tip > 0 ? (
                         <TextDark>
-                            {CURRENTCY} {grand_total + tip}
+                            {CURRENTCY} {(grand_total + tip)?.toFixed?.(2)}
                         </TextDark>
                     ) : (
                         <TextDark>______________________</TextDark>
@@ -299,7 +299,7 @@ const RenderBillItem = ({
                                         Received:
                                     </TextDark>
                                     <TextDark>
-                                        {`${CURRENTCY} ${data?.total_received?.received_amount?.value}`}
+                                        {`${CURRENTCY} ${data?.total_received?.received_amount?.value?.toFixed?.(2)}`}
                                     </TextDark>
                                 </div>
 
@@ -312,7 +312,7 @@ const RenderBillItem = ({
                                 >
                                     <TextDark style={text16}>Change:</TextDark>
                                     <TextDark>
-                                        {`${CURRENTCY} ${data?.total_received?.change_amount?.value}`}
+                                        {`${CURRENTCY} ${data?.total_received?.change_amount?.value?.toFixed?.(2)}`}
                                     </TextDark>
                                 </div>
                             </RowStyled>
