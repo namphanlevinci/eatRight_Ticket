@@ -298,6 +298,8 @@ export default function ColRight({
                         onPressOK={(pos_id: number) => {
                             handlePOSPaymentWithDJV(pos_id, {
                                 cart_id: cart?.id,
+                                order_id: orderInfo?.order_id,
+                                order_number: orderInfo?.order_number,
                             });
                         }}
                         onCancel={() => {
