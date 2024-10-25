@@ -46,8 +46,6 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                 data?.total?.total_tax?.value),
     );
 
-    console.log({ data });
-
     return (
         <div
             style={{
@@ -189,17 +187,19 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Tip:</TextDark>
+                    <TextDark style={text16}>
+                        {`Tip (${Math.floor((tip / data.total?.subtotal?.value) * 100)}%) :`}
+                    </TextDark>
                     {tip > 0 ? (
                         <TextDark>
-                            {CURRENTCY} {tip.toFixed(2)}
+                            {CURRENTCY} {tip}
                         </TextDark>
                     ) : (
                         <TextDark>_______________________________</TextDark>
                     )}
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Grand Total:$</TextDark>
+                    <TextDark style={text16}>Grand Total:</TextDark>
                     {tip > 0 ? (
                         <TextDark>
                             {CURRENTCY} {data?.total?.grand_total?.value + tip}
