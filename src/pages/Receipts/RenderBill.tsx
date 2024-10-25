@@ -194,10 +194,11 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     )}
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Grand Total:$</TextDark>
+                    <TextDark style={text16}>Grand Total:</TextDark>
                     {tip > 0 ? (
                         <TextDark>
-                            {CURRENTCY} {data?.total?.grand_total?.value}
+                            {CURRENTCY}{' '}
+                            {data?.total?.grand_total?.value.toFixed(2)}
                         </TextDark>
                     ) : (
                         <TextDark>______________________</TextDark>

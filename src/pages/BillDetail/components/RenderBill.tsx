@@ -269,10 +269,10 @@ const RenderBillItem = ({
                     )}
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Grand Total:$</TextDark>
+                    <TextDark style={text16}>Grand Total:</TextDark>
                     {tip > 0 ? (
                         <TextDark>
-                            {CURRENTCY} {grand_total + tip}
+                            {CURRENTCY} {grand_total}
                         </TextDark>
                     ) : (
                         <TextDark>______________________</TextDark>
