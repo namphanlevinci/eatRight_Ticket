@@ -268,7 +268,10 @@ export default function ColRight({
                         totalWithoutTax={
                             total -
                             (cart?.prices?.total_canceled_without_tax?.value ||
-                                0)
+                                0) +
+                            parseFloat(
+                                `${cart?.prices?.discount?.amount?.value || 0}`,
+                            )
                         }
                     />
                 )}
