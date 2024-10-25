@@ -77,7 +77,9 @@ const RenderBillItem = ({
         ? selectDataShowbill?.grand_total?.value
         : data?.total?.grand_total?.value;
 
-    console.log({ selectDataShowbill, data });
+    const subTotal = selectDataShowbill
+        ? selectDataShowbill?.total?.subtotal?.value
+        : data?.total?.subtotal?.value;
 
     return (
         <div
@@ -176,12 +178,7 @@ const RenderBillItem = ({
                 <RowStyled>
                     <TextDark style={text16}>Subtotal:</TextDark>
                     <TextDark>
-                        {CURRENTCY}{' '}
-                        {selectDataShowbill
-                            ? selectDataShowbill?.total?.subtotal?.value?.toFixed(
-                                  2,
-                              )
-                            : data?.total?.subtotal?.value?.toFixed(2)}
+                        {CURRENTCY} {subTotal.toFixed(2)}
                     </TextDark>
                 </RowStyled>
                 {totalDiscount && totalDiscount > 0 ? (
@@ -260,7 +257,9 @@ const RenderBillItem = ({
                     </TextDark>
                 </RowStyled>
                 <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Tip:</TextDark>
+                    <TextDark style={text16}>
+                        {`Tip (${Math.floor((tip / subTotal) * 100)}%) :`}
+                    </TextDark>
                     {tip > 0 ? (
                         <TextDark>
                             {CURRENTCY} {tip.toFixed(2)}
