@@ -221,17 +221,13 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     data?.total_received?.change_amount && (
                         <>
                             <RowStyled align={'middle'}>
-                                <TextDark style={text16}>
-                                    Received amount:
-                                </TextDark>
+                                <TextDark style={text16}>Received:</TextDark>
                                 <TextDark>
                                     {`${CURRENTCY} ${data?.total_received?.received_amount?.value}`}
                                 </TextDark>
                             </RowStyled>
                             <RowStyled align={'middle'}>
-                                <TextDark style={text16}>
-                                    Change amount:
-                                </TextDark>
+                                <TextDark style={text16}>Change:</TextDark>
                                 <TextDark>
                                     {`${CURRENTCY} ${data?.total_received?.change_amount?.value}`}
                                 </TextDark>
