@@ -18,7 +18,7 @@ const { Content } = Layout;
 
 const MerchantTableView: React.FC = () => {
     const navigation = useNavigate();
-    const { searchText, filterTable } = useSelector(
+    const { searchText, filterTable, merchantFilterTable } = useSelector(
         (state: RootState) => state.global,
     );
     const { loadingTable, data, floorActive, handleActiveFloor } =
@@ -65,17 +65,41 @@ const MerchantTableView: React.FC = () => {
                                         return matchesNotNull && matchesName;
                                     }
 
-                                    console.log(filterTable);
                                     const matchesStatus =
                                         filterTable === EStatusTable.ALL
                                             ? true
                                             : +d?.status === filterTable;
+                                    if (
+                                        !matchesNotNull &&
+                                        !matchesName &&
+                                        !matchesStatus
+                                    ) {
+                                        return false;
+                                    }
+                                    let show = false;
 
-                                    return (
-                                        matchesNotNull &&
-                                        matchesName &&
-                                        matchesStatus
-                                    );
+                                    if (
+                                        merchantFilterTable.isAvailable &&
+                                        d?.status == EStatusTable.AVAILABLE
+                                    ) {
+                                        show = true;
+                                    }
+
+                                    if (
+                                        merchantFilterTable.isReserve &&
+                                        d?.status == EStatusTable.RESERVED
+                                    ) {
+                                        show = true;
+                                    }
+
+                                    if (
+                                        merchantFilterTable.isDinning &&
+                                        d?.status == EStatusTable.DINING
+                                    ) {
+                                        show = true;
+                                    }
+
+                                    return show;
                                 })}
                             />
                         ) : (
