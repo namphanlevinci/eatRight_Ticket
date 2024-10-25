@@ -18,7 +18,7 @@ const { Content } = Layout;
 
 const MerchantTableView: React.FC = () => {
     const navigation = useNavigate();
-    const { searchText, filterTable } = useSelector(
+    const { searchText, filterTable, merchantFilterTable } = useSelector(
         (state: RootState) => state.global,
     );
     const { loadingTable, data, floorActive, handleActiveFloor } =
@@ -33,7 +33,6 @@ const MerchantTableView: React.FC = () => {
             navigation(BASE_ROUTER.MERCHANT_ORDERLIST);
         }
     }, [isTableView]);
-
     const renderContent = () => {
         return (
             <Spin spinning={loadingTable}>
@@ -55,6 +54,41 @@ const MerchantTableView: React.FC = () => {
                         {data?.length ? (
                             <Tables
                                 tables={data?.filter((d) => {
+                                    const {
+                                        isAvailable,
+                                        isDinning,
+                                        isReserve,
+                                    } = merchantFilterTable;
+                                    let check = false;
+                                    // Nếu cả 3 đều được mở (tất cả đều là true)
+                                    if (isAvailable && isDinning && isReserve) {
+                                        check = true;
+                                    }
+
+                                    // Nếu chỉ có một hoặc một vài cờ được mở, lọc dữ liệu dựa vào điều kiện cụ thể
+                                    if (
+                                        isAvailable &&
+                                        d?.status === EStatusTable.AVAILABLE
+                                    ) {
+                                        check = true;
+                                    }
+
+                                    if (
+                                        isDinning &&
+                                        d?.status === EStatusTable.DINING
+                                    ) {
+                                        check = true;
+                                    }
+                                    if (
+                                        isReserve &&
+                                        d?.status === EStatusTable.RESERVED
+                                    ) {
+                                        check = true;
+                                    }
+
+                                    if (!check) {
+                                        return false;
+                                    }
                                     const matchesNotNull = d?.id;
                                     const matchesName = d?.name
                                         ?.toLowerCase()
@@ -65,12 +99,10 @@ const MerchantTableView: React.FC = () => {
                                         return matchesNotNull && matchesName;
                                     }
 
-                                    console.log(filterTable);
                                     const matchesStatus =
                                         filterTable === EStatusTable.ALL
                                             ? true
                                             : +d?.status === filterTable;
-
                                     return (
                                         matchesNotNull &&
                                         matchesName &&

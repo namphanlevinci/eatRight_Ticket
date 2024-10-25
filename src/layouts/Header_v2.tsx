@@ -35,6 +35,7 @@ import DrawerMenuV2 from './components/DrawerMenu_v2';
 import FilterV2 from './components/Filter_v2';
 import SearchV2 from './components/Search_v2';
 import { updateSearch } from 'features/global/globalSlice';
+import TableFilter from './components/Table_Filter';
 
 const HeaderV2 = () => {
     const location = useLocation();
@@ -75,6 +76,12 @@ const HeaderV2 = () => {
             search: showSearch,
         };
     }, [location, isMerchant, isMobile]);
+
+    const showTableFilter = useMemo(() => {
+        const isTablePage =
+            location.pathname === BASE_ROUTER.MERCHANT_TABLEVIEW;
+        return isTablePage;
+    }, [location, isMerchant]);
 
     useEffect(() => {
         const isTokenValidated =
@@ -381,6 +388,19 @@ const HeaderV2 = () => {
                                         }}
                                     >
                                         <FilterV2 />
+                                    </div>
+                                )}
+                                {showTableFilter && (
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            padding: 13,
+                                            backgroundColor: theme.nEUTRALLine,
+                                            borderRadius: 6,
+                                        }}
+                                    >
+                                        <TableFilter />
                                     </div>
                                 )}
                                 {showOnHeader.search && <SearchV2 />}
