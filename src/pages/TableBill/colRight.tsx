@@ -82,6 +82,7 @@ export default function ColRight({
         onCancelCheckout,
         dataInvoices,
         autoSelectPos,
+        setAutoSelectPos,
         setTermianlSelect,
         termianlSelect,
         listPosDevice,
@@ -320,6 +321,7 @@ export default function ColRight({
                         termianlSelect={termianlSelect}
                         setTermianlSelect={setTermianlSelect}
                         setListPosDevice={setListPosDevice}
+                        setAutoSelectPos={setAutoSelectPos}
                     />
                 )}
                 {contextHolder}

@@ -348,31 +348,12 @@ export const useTableBill = (isGoBack = true) => {
                     setModalPaySuccess(true);
                     setModalChange(false);
                     emitter.emit('REPAYMENT_SUCCESS');
-
-                    // showModalSuccess(
-                    //     `${
-                    //         orderDetail?.order_id
-                    //             ? orderDetail?.order_id
-                    //             : orderInfo?.order_id
-                    //     }`,
-                    //     isGoToTable,
-                    // );
                 }
             })
             .catch(() => {
                 console.log('Erorr over thể modal');
-                // showModalErrorPayment(
-                //     `${
-                //         orderDetail?.order_id
-                //             ? orderDetail?.order_id
-                //             : orderInfo?.order_id
-                //     }`,
-                // );
-                // if (isSelectAnotherPos) {
+
                 setVisibleMoalPosDJV(true);
-                setAutoSelectPos(false);
-                // return;
-                // }
             })
             .finally(() => {
                 setPos_Loading(false);
@@ -665,5 +646,6 @@ export const useTableBill = (isGoBack = true) => {
         setTermianlSelect,
         setListPosDevice,
         listPosDevice,
+        setAutoSelectPos,
     };
 };

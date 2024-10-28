@@ -20,6 +20,7 @@ const ModalPosDevicesDJV = ({
     termianlSelect,
     setTermianlSelect,
     setListPosDevice,
+    setAutoSelectPos,
 }: {
     onPressOK: (item: any) => void;
     isVisibleModalPos: boolean;
@@ -29,6 +30,7 @@ const ModalPosDevicesDJV = ({
     termianlSelect?: any;
     setTermianlSelect?: any;
     setListPosDevice?: any;
+    setAutoSelectPos?: any;
 }) => {
     const [selectedOption, setSelectedOption] = useState<any>(null);
     const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST_DJV);
@@ -43,6 +45,7 @@ const ModalPosDevicesDJV = ({
     }, []);
     useEffect(() => {
         if (isVisibleModalPos && posDeviceList) {
+            setListPosDevice(posDeviceList);
             if (posDeviceList && posDeviceList?.length === 1) {
                 if (autoSelectPos) {
                     onPressOK(posDeviceList[0].entity_id);
@@ -53,7 +56,8 @@ const ModalPosDevicesDJV = ({
             if (
                 posDeviceList &&
                 posDeviceList?.length === 2 &&
-                primary_terminal_setting
+                primary_terminal_setting &&
+                autoSelectPos
             ) {
                 const terminalLeft = posDeviceList.find(
                     (item: any) =>
@@ -62,8 +66,9 @@ const ModalPosDevicesDJV = ({
                 if (terminalLeft) {
                     onPressOK(terminalLeft.entity_id);
                     setVisibleMoalPos(false);
-                    setListPosDevice(posDeviceList);
+
                     setTermianlSelect(terminalLeft.entity_id);
+                    setAutoSelectPos(false);
                 }
             }
         }

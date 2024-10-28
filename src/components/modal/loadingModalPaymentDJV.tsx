@@ -1,8 +1,10 @@
-import { Button, Modal, Spin } from 'antd';
+import { Modal, Spin } from 'antd';
 import { Text } from 'components/atom/Text';
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { LoadingOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 export default function LoadingModalPaymentDJV({
     showLoading,
     title = 'Waiting for the payment...',
@@ -16,6 +18,9 @@ export default function LoadingModalPaymentDJV({
     listPos?: any[];
     posSelected?: string;
 }) {
+    const { primary_terminal_setting } = useSelector(
+        (state: RootState) => state.auth,
+    );
     return showLoading ? (
         <CustomModal
             open={showLoading}
@@ -53,11 +58,30 @@ export default function LoadingModalPaymentDJV({
                 >
                     {title}
                 </Text>
-                {/* {device1 && device2 && (
-                    <Text>
-                        Payment via {device1} failed. Auto routing to {device2}.
+                {listPos && listPos?.length > 0 && posSelected && (
+                    <Text style={{ fontSize: 18, fontWeight: '500' }}>
+                        Payment via{' '}
+                        <span style={{ fontWeight: '600' }}>
+                            {
+                                listPos.find(
+                                    (pos) =>
+                                        `${pos.entity_id}` ===
+                                        `${primary_terminal_setting}`,
+                                )?.name
+                            }{' '}
+                        </span>
+                        failed. Auto routing to{' '}
+                        <span style={{ fontWeight: '600' }}>
+                            {
+                                listPos.find(
+                                    (pos) =>
+                                        `${pos.entity_id}` === `${posSelected}`,
+                                )?.name
+                            }
+                        </span>
+                        .
                     </Text>
-                )} */}
+                )}
             </div>
         </CustomModal>
     ) : (
