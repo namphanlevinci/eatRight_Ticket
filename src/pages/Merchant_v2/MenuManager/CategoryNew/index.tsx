@@ -386,7 +386,7 @@ const Index = () => {
                             <Tooltip
                                 placement="bottomLeft"
                                 title={
-                                    ' Allow custom pricing at checkout. Set price used as editable default.'
+                                    'When enabled, allows manual price entry for all items in this menu group'
                                 }
                                 arrow={true}
                                 color="#fff"

@@ -148,7 +148,7 @@ export default function ColLeft({
                       );
                   })
                 : cart?.items?.map((item, index) => {
-                      if (item.status === 'status') {
+                      if (item.status === 'cancel') {
                           return null;
                       }
                       return (

@@ -84,31 +84,6 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
             setProduct(item);
         }
     };
-    const TestData = {
-        __typename: 'SimpleProduct',
-        id: 294,
-        name: 'Handez Test Open Price',
-        sku: 'Handez Test Open Price',
-        url_key: 'handez-test-open-price-1',
-        display_platforms: ['dine_in'],
-        open_price: 1,
-        small_image: {
-            __typename: 'ProductImage',
-            url: 'https://staging-consumer.eatrightpos.com/static/version1729071142/frontend/fnb/default/en_US/Magento_Catalog/images/product/placeholder/small_image.jpg',
-            label: 'Handez Test Open Price',
-        },
-        price: {
-            __typename: 'ProductPrices',
-            regularPrice: {
-                __typename: 'Price',
-                amount: {
-                    __typename: 'Money',
-                    value: 20,
-                    currency: 'USD',
-                },
-            },
-        },
-    };
     return data.length < 1 ? (
         <Spin />
     ) : (

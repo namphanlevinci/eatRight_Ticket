@@ -222,15 +222,23 @@ export const useTableBill = (isGoBack = true) => {
     };
     const [checkOutLoading, setCheckOutLoading] =
         React.useState<boolean>(false);
-    const handleCheckOut = async () => {
+    const handleCheckOut = async (received_amount?: number) => {
+        const variables = {
+            cartId: cartItems[indexTable].carts[cartIndex].id,
+            paymentMethod: paymentMethod.includes('pos')
+                ? 'pos'
+                : paymentMethod,
+            ...(received_amount &&
+                paymentMethod === 'cashondelivery' && {
+                    received_amount: parseFloat(
+                        received_amount?.toString?.(),
+                    ).toFixed(2),
+                }),
+        };
+
         setCheckOutLoading(true);
         placeOrder({
-            variables: {
-                cartId: cartItems[indexTable].carts[cartIndex].id,
-                paymentMethod: paymentMethod.includes('pos')
-                    ? 'pos'
-                    : paymentMethod,
-            },
+            variables,
         })
             .then((res) => {
                 setOrderInfo(res.data.createMerchantOrder.order);
@@ -258,7 +266,7 @@ export const useTableBill = (isGoBack = true) => {
 
                             setCheckOutLoading(false);
 
-                            if (isTerminalPrinter) {
+                            if (!isTerminalPrinter) {
                                 setVisibleMoalPosDJV(true);
                                 return;
                             }
@@ -333,8 +341,8 @@ export const useTableBill = (isGoBack = true) => {
             });
     };
     const [onCancelCheckout] = useMutation(CANCEL_CHECKOUT);
-    const [PosIdTmp, setPosIdTmp] = useState<any>('');
 
+    const [autoSelectPos, setAutoSelectPos] = useState<any>(true);
     const handlePOSPaymentWithDJV = (
         posId: number,
         orderDetail?: {
@@ -348,11 +356,9 @@ export const useTableBill = (isGoBack = true) => {
         if (orderDetail) {
             setOrderInfo(orderDetail);
         }
-        if (PosIdTmp === posId) {
-            return;
-        }
+
         setPos_Loading(true);
-        setPosIdTmp(posId);
+
         onPosDJV({
             variables: {
                 orderId: orderDetail?.order_number
@@ -380,22 +386,18 @@ export const useTableBill = (isGoBack = true) => {
             })
             .catch(() => {
                 console.log('Erorr over thể modal');
-                showModalErrorPayment(
-                    `${
-                        orderDetail?.order_id
-                            ? orderDetail?.order_id
-                            : orderInfo?.order_id
-                    }`,
-                );
+                // showModalErrorPayment(
+                //     `${
+                //         orderDetail?.order_id
+                //             ? orderDetail?.order_id
+                //             : orderInfo?.order_id
+                //     }`,
+                // );
                 // if (isSelectAnotherPos) {
                 setVisibleMoalPosDJV(true);
+                setAutoSelectPos(false);
                 // return;
                 // }
-                onCancelCheckout({
-                    variables: {
-                        cart_id: orderDetail?.cart_id,
-                    },
-                });
             })
             .finally(() => {
                 setPos_Loading(false);
@@ -683,5 +685,6 @@ export const useTableBill = (isGoBack = true) => {
         orderInfo,
         onCancelCheckout,
         dataInvoices,
+        autoSelectPos,
     };
 };

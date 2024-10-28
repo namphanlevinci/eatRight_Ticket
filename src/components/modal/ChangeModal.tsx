@@ -27,7 +27,7 @@ interface IProps {
     isModalOpen: boolean;
     grandTotal: number;
     onClose: () => void;
-    onSubmit: () => void;
+    onSubmit: (received_amount: number) => void;
 }
 
 const ChangeModal = ({
@@ -61,7 +61,7 @@ const ChangeModal = ({
         if (+received < grandTotal) {
             return message.error(`greater than or equal to $${grandTotal}`);
         }
-        onSubmit();
+        onSubmit(+received);
     };
     return (
         <>
@@ -78,7 +78,7 @@ const ChangeModal = ({
                     content: {
                         backgroundColor: theme.nEUTRALPrimary,
                         width: 412,
-                        maxWidth: "100%"
+                        maxWidth: '100%',
                     },
                 }}
                 closeIcon={<></>}

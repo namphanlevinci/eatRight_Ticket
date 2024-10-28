@@ -28,7 +28,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const navigation = useNavigate();
     const { notification } = App.useApp();
     const tableDataString = localStorage.getItem('tableData');
-
+    const sendImageReactNative = ({ url }: { url: string }) => {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: 'kitchen', imageUrl: url }),
+            );
+        }
+    };
     useEffect(() => {
         if (isLogged && !socketInitialized && restaurant_id && isTableView) {
             let tableData = JSON.parse(tableDataString || '{}');
@@ -57,6 +63,17 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                     });
             });
             socketInstance.on('chat message', (msg) => {
+                console.log('msg socket', msg);
+                try {
+                    if (msg['kitchen-receipt-image']) {
+                        sendImageReactNative({
+                            url: msg['kitchen-receipt-image'],
+                        });
+                        return;
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
                 // Xử lý tin nhắn từ socket
                 if (msg?.additional_data?.payment_method === 'arise_pos') {
                     emitter.emit('arise_result', msg);

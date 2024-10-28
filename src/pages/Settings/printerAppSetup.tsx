@@ -15,6 +15,7 @@ import {
     SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT,
     USE_TERMINAL_PRINTER,
 } from 'graphql/printer';
+import { SET_MERCHANT_RESTAURANT_CONFIG_PRIMARY_TERMINAL } from 'graphql/setups';
 import ButtonSubmit from 'pages/TableBill/components/buttonSubmit';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -39,6 +40,10 @@ export default function PrinterAppSetUpPage() {
     const [onSetTerminalPrinter] = useMutation(SELECT_TERMINAL_PRINTER_DEVICE);
     const [onUseTerminalPrinter] = useMutation(USE_TERMINAL_PRINTER);
     const [onSetPrinter] = useMutation(SELECT_TERMINAL_PRINTER_DEVICE_MERCHANT);
+    const [onSetTerminalPrimary] = useMutation(
+        SET_MERCHANT_RESTAURANT_CONFIG_PRIMARY_TERMINAL,
+    );
+
     const [list, setList] = useState<any>([]);
     const [selectedOption, setSelectedOption] = useState<any>(null);
     const { theme } = useTheme();
@@ -91,6 +96,11 @@ export default function PrinterAppSetUpPage() {
                             console.log(err);
                             console.log('error');
                         });
+                    onSetTerminalPrimary({
+                        variables: {
+                            primary_terminal_setting: selectedOption.entity_id,
+                        },
+                    });
                 } else {
                     onSetTerminalPrinter({
                         variables: {
@@ -174,7 +184,22 @@ export default function PrinterAppSetUpPage() {
         }
     }, [data, list, posDeviceList]);
     const [switchPrinterMode, setSwitchPrinterMode] = useState(false);
+    useEffect(() => {
+        if (!switchPrinterMode) {
+            const printerName = localStorage.getItem('printer_name');
 
+            if (printerName) {
+                setPrinter(printerName);
+                setSelectedOption(
+                    list?.find(
+                        (item: any) => item?.printer_name == printerName,
+                    ),
+                );
+            } else {
+                OpenMenuPrinter();
+            }
+        }
+    }, [switchPrinterMode]);
     useEffect(() => {
         const printerName = localStorage.getItem('printer_name');
         if (printerName) {

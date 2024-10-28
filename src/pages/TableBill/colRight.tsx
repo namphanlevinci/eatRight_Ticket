@@ -80,6 +80,7 @@ export default function ColRight({
         orderInfo,
         onCancelCheckout,
         dataInvoices,
+        autoSelectPos,
     } = useTableBill();
 
     // useEffect(() => {
@@ -105,7 +106,7 @@ export default function ColRight({
         }
     };
 
-    const handleProceed = () => {
+    const handleProceed = (received_amount?: number) => {
         if (isSplitBill) {
             if (numbersSplit && numbersSplit > 1) {
                 handleSplitEven(numbersSplit);
@@ -129,8 +130,7 @@ export default function ColRight({
                 handleOtherPayment(value);
                 return;
             }
-
-            handleCheckOut();
+            handleCheckOut(received_amount);
         }
     };
 
@@ -269,7 +269,10 @@ export default function ColRight({
                         totalWithoutTax={
                             total -
                             (cart?.prices?.total_canceled_without_tax?.value ||
-                                0)
+                                0) +
+                            parseFloat(
+                                `${cart?.prices?.discount?.amount?.value || 0}`,
+                            )
                         }
                     />
                 )}
@@ -296,6 +299,8 @@ export default function ColRight({
                         onPressOK={(pos_id: number) => {
                             handlePOSPaymentWithDJV(pos_id, {
                                 cart_id: cart?.id,
+                                order_id: orderInfo?.order_id,
+                                order_number: orderInfo?.order_number,
                             });
                         }}
                         onCancel={() => {
@@ -306,6 +311,7 @@ export default function ColRight({
                                 },
                             });
                         }}
+                        autoSelectPos={autoSelectPos}
                     />
                 )}
                 {contextHolder}

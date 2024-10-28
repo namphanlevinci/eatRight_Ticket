@@ -11,6 +11,11 @@ export interface globalStateType {
         is_eat_out: boolean;
     };
     filterTable: EStatusTable;
+    merchantFilterTable: {
+        isAvailable: boolean;
+        isDinning: boolean;
+        isReserve: boolean;
+    };
 }
 
 const initialState: globalStateType = {
@@ -23,6 +28,11 @@ const initialState: globalStateType = {
         is_eat_out: true,
     },
     filterTable: EStatusTable.ALL,
+    merchantFilterTable: {
+        isAvailable: true,
+        isDinning: true,
+        isReserve: true,
+    },
 };
 
 export const globalSlice = createSlice({
@@ -38,10 +48,17 @@ export const globalSlice = createSlice({
         updateFilterTable: (state, action) => {
             state.filterTable = action.payload.filterTable;
         },
+        updateMerchantFilterTable: (state, action) => {
+            state.merchantFilterTable = action.payload.merchantFilterTable;
+        },
     },
 });
 
-export const { updateSearch, updateFilterOrder, updateFilterTable } =
-    globalSlice.actions;
+export const {
+    updateSearch,
+    updateFilterOrder,
+    updateFilterTable,
+    updateMerchantFilterTable,
+} = globalSlice.actions;
 
 export default globalSlice.reducer;
