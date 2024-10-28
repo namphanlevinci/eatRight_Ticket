@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Modal } from 'antd';
+import { Col, Modal, Row } from 'antd';
 import RadioBtnSelected from 'assets/icons/radioBtnSelected';
 import { Button } from 'antd';
 import { Text } from 'components/atom/Text';
@@ -7,6 +7,9 @@ import ButtonSubmit from '../components/buttonSubmit';
 import { useLazyQuery } from '@apollo/client';
 import { POS_DEVICE_LIST_DJV } from 'graphql/orders/paymentMethod';
 import { useTheme } from 'context/themeContext';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
+import RadioBtnNoneSelected from 'assets/icons/radioBtnNoneSelected';
 
 const ModalPosDevicesDJV = ({
     onPressOK,
@@ -14,16 +17,25 @@ const ModalPosDevicesDJV = ({
     setVisibleMoalPos,
     onCancel,
     autoSelectPos = true,
+    termianlSelect,
+    setTermianlSelect,
+    setListPosDevice,
 }: {
     onPressOK: (item: any) => void;
     isVisibleModalPos: boolean;
     setVisibleMoalPos: (visible: boolean) => void;
     onCancel: () => void;
     autoSelectPos?: boolean;
+    termianlSelect?: any;
+    setTermianlSelect?: any;
+    setListPosDevice?: any;
 }) => {
     const [selectedOption, setSelectedOption] = useState<any>(null);
     const [onGetPosDeviceList] = useLazyQuery(POS_DEVICE_LIST_DJV);
     const [posDeviceList, setPosDeviceList] = useState<any>([]);
+    const { primary_terminal_setting } = useSelector(
+        (state: RootState) => state.auth,
+    );
     useEffect(() => {
         onGetPosDeviceList({ fetchPolicy: 'no-cache' }).then((res: any) => {
             setPosDeviceList(res?.data?.getPosDevices?.items ?? []);
@@ -37,10 +49,28 @@ const ModalPosDevicesDJV = ({
                     setVisibleMoalPos(false);
                 }
             }
+
+            if (
+                posDeviceList &&
+                posDeviceList?.length === 2 &&
+                primary_terminal_setting
+            ) {
+                const terminalLeft = posDeviceList.find(
+                    (item: any) =>
+                        `${item.entity_id}` !== `${primary_terminal_setting}`,
+                );
+                if (terminalLeft) {
+                    onPressOK(terminalLeft.entity_id);
+                    setVisibleMoalPos(false);
+                    setListPosDevice(posDeviceList);
+                    setTermianlSelect(terminalLeft.entity_id);
+                }
+            }
         }
     }, [isVisibleModalPos, posDeviceList]);
     const handleOk = (): void => {
         if (selectedOption) {
+            setTermianlSelect(selectedOption?.entity_id);
             onPressOK(selectedOption?.entity_id);
         }
         setVisibleMoalPos(false);
@@ -75,6 +105,7 @@ const ModalPosDevicesDJV = ({
                 }}
                 closeIcon={null}
                 footer={null}
+                width={620}
             >
                 <div style={{ paddingTop: 8 }}>
                     <p
@@ -85,18 +116,56 @@ const ModalPosDevicesDJV = ({
                             marginBottom: 24,
                         }}
                     >
-                        Select another terminal
+                        {termianlSelect
+                            ? 'Payment Failed'
+                            : 'Select another terminal'}
                     </p>
+                    {termianlSelect && (
+                        <Row
+                            style={{
+                                background: '#FFF3F1',
+                                borderRadius: 6,
+                                padding: 14,
+                                paddingInline: 24,
+                                marginBottom: 12,
+                            }}
+                            align={'middle'}
+                        >
+                            <Col span={2}>
+                                <ErrorIcon />
+                            </Col>
+                            <Col span={20}>
+                                <Text
+                                    style={{
+                                        color: '#FF4B33',
+                                        fontWeight: '500',
+                                        fontSize: 18,
+                                    }}
+                                >
+                                    Payment via{' '}
+                                    {
+                                        posDeviceList?.find?.(
+                                            (item: any) =>
+                                                item?.entity_id ===
+                                                termianlSelect,
+                                        )?.name
+                                    }{' '}
+                                    failed. Please select an alternative
+                                    terminal.
+                                </Text>
+                            </Col>
+                        </Row>
+                    )}
                     {posDeviceList?.map?.((pos: any) => (
                         <Button
                             key={`pos ${pos?.entity_id}`}
                             style={{
-                                height: 56,
+                                height: 68,
                                 width: '100%',
                                 background: theme.nEUTRALBase,
 
-                                borderRadius: 8,
-                                border: `1px solid ${theme.nEUTRALLine}`,
+                                borderRadius: 6,
+                                border: `0px solid ${theme.nEUTRALLine}`,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'flex-start',
@@ -111,20 +180,23 @@ const ModalPosDevicesDJV = ({
                                     alignItems: 'center',
                                 }}
                             >
-                                {pos?.entity_id ==
-                                    selectedOption?.entity_id && (
+                                {pos?.entity_id == selectedOption?.entity_id ? (
                                     <RadioBtnSelected />
+                                ) : (
+                                    <RadioBtnNoneSelected />
                                 )}
                             </div>
                             <Text>{pos?.name}</Text>
                         </Button>
                     ))}
-
-                    <ButtonSubmit
-                        title="Pay"
-                        onClick={handleOk}
-                        disabled={!selectedOption}
-                    />
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <ButtonSubmit
+                            title="Proceed Payment"
+                            onClick={handleOk}
+                            disabled={!selectedOption}
+                            width={300}
+                        />
+                    </div>
                 </div>
             </Modal>
         </>
@@ -132,3 +204,24 @@ const ModalPosDevicesDJV = ({
 };
 
 export default ModalPosDevicesDJV;
+
+const ErrorIcon = () => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="21"
+            viewBox="0 0 20 21"
+            fill="none"
+        >
+            <rect y="0.75" width="20" height="20" rx="10" fill="#FF4B33" />
+            <path
+                d="M6 7L14 15M6 15L14 7"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+};

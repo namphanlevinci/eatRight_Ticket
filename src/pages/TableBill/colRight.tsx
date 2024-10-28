@@ -23,6 +23,7 @@ import ModalOtherMethod from './components/ModalOtherMethod';
 import ChangeModal from 'components/modal/ChangeModal';
 import ModalPaySuccess from 'components/modal/ModalPaySuccess';
 import RenderDiscountRow from './components/renderDiscountRow';
+import LoadingModalPaymentDJV from 'components/modal/loadingModalPaymentDJV';
 
 export default function ColRight({
     cart,
@@ -81,6 +82,10 @@ export default function ColRight({
         onCancelCheckout,
         dataInvoices,
         autoSelectPos,
+        setTermianlSelect,
+        termianlSelect,
+        listPosDevice,
+        setListPosDevice,
     } = useTableBill();
 
     // useEffect(() => {
@@ -312,14 +317,18 @@ export default function ColRight({
                             });
                         }}
                         autoSelectPos={autoSelectPos}
+                        termianlSelect={termianlSelect}
+                        setTermianlSelect={setTermianlSelect}
+                        setListPosDevice={setListPosDevice}
                     />
                 )}
                 {contextHolder}
                 <LoadingModal showLoading={loading || loadingCoupon} />
-                <LoadingModalPayment
+                <LoadingModalPaymentDJV
                     showLoading={pos_Loading}
-                    title="Processing ..."
-                    onClose={onCloseProcessingPayment}
+                    title="Waiting for the payment..."
+                    listPos={listPosDevice}
+                    posSelected={termianlSelect}
                 />
                 <div style={{ marginTop: isMobile ? '-12px' : 0 }}>
                     <RenderBillInfomationRow

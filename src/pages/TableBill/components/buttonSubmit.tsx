@@ -8,11 +8,13 @@ export default function ButtonSubmit({
     title,
     disabled,
     loading = false,
+    width = '100%',
 }: {
     onClick: any;
     title: string;
     loading?: boolean;
     disabled?: boolean;
+    width?: string | number;
 }) {
     const { theme } = useTheme();
     return (
@@ -28,7 +30,7 @@ export default function ButtonSubmit({
                 marginTop: 20,
                 borderRadius: 8,
                 cursor: 'pointer',
-                width: '100%',
+                width: width,
                 outline: 'none',
                 border: 'none',
             }}

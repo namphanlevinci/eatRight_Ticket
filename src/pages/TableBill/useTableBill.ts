@@ -34,7 +34,7 @@ export const useTableBill = (isGoBack = true) => {
     const { cartItems, indexTable, updateCartIndex } = useCart();
     const [onGetCart, { loading: loadingGetCart }] =
         useLazyQuery(GET_CART_BY_ID);
-    const { isMerchant } = useSelector((state: RootState) => state.auth);
+
     const [cart, setCart] = React.useState<CartItemType>();
     const [total, setTotal] = React.useState<number>(0);
     const [count, setCount] = React.useState<number>(0);
@@ -54,8 +54,10 @@ export const useTableBill = (isGoBack = true) => {
         React.useState<boolean>(false);
     const [isVisibleModalPosDJV, setVisibleMoalPosDJV] =
         React.useState<boolean>(false);
+    const [termianlSelect, setTermianlSelect] = React.useState<any>(null);
     const [isVisibleModalOtherMethod, setVisibleModalOtherMethod] =
         React.useState<boolean>(false);
+    const [listPosDevice, setListPosDevice] = React.useState<any>([]);
     const [modalChange, setModalChange] = React.useState(false);
 
     const [orderInfo, setOrderInfo] = React.useState<{
@@ -261,61 +263,41 @@ export const useTableBill = (isGoBack = true) => {
 
                             setCheckOutLoading(false);
 
-                            if (!isTerminalPrinter) {
-                                setVisibleMoalPosDJV(true);
-                                return;
-                            }
-                            if (isMerchant) {
-                                onGetTerminalMerchant({
-                                    fetchPolicy: 'no-cache',
-                                })
-                                    .then((res) => {
-                                        if (
+                            // if (!isTerminalPrinter) {
+                            //     setVisibleMoalPosDJV(true);
+                            //     return;
+                            // }
+
+                            onGetTerminalMerchant({
+                                fetchPolicy: 'no-cache',
+                            })
+                                .then((res) => {
+                                    if (
+                                        res?.data?.merchantGetRestaurantConfig
+                                            ?.primary_terminal_setting
+                                    ) {
+                                        onSelectTerminalPrimary(
                                             res?.data
                                                 ?.merchantGetRestaurantConfig
-                                                ?.primary_terminal_setting
-                                        ) {
-                                            onSelectTerminalPrimary(
-                                                res?.data
-                                                    ?.merchantGetRestaurantConfig
-                                                    ?.primary_terminal_setting,
-                                                order,
-                                            );
-                                        } else {
-                                            notiPleaseSelectAnotherTerminal();
-                                        }
-                                    })
-                                    .catch((err) => {
-                                        console.log(err);
+                                                ?.primary_terminal_setting,
+                                            order,
+                                        );
+                                        setTermianlSelect(
+                                            res?.data
+                                                ?.merchantGetRestaurantConfig
+                                                ?.primary_terminal_setting,
+                                        );
+                                    } else {
                                         notiPleaseSelectAnotherTerminal();
-                                    })
-                                    .finally(() => {
-                                        setCheckOutLoading(false);
-                                    });
-                            } else {
-                                onGetTerminalWaiter({ fetchPolicy: 'no-cache' })
-                                    .then((res) => {
-                                        if (
-                                            res?.data?.waiterPrimaryPosDevice
-                                                ?.entity_id
-                                        ) {
-                                            onSelectTerminalPrimary(
-                                                res?.data
-                                                    ?.waiterPrimaryPosDevice
-                                                    ?.entity_id,
-                                                order,
-                                            );
-                                        } else {
-                                            notiPleaseSelectAnotherTerminal();
-                                        }
-                                    })
-                                    .catch(() => {
-                                        notiPleaseSelectAnotherTerminal();
-                                    })
-                                    .finally(() => {
-                                        setCheckOutLoading(false);
-                                    });
-                            }
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    setVisibleMoalPosDJV(true);
+                                })
+                                .finally(() => {
+                                    setCheckOutLoading(false);
+                                });
                         } else {
                             showModalAlertPayment(
                                 res.data.createMerchantOrder.order.order_id,
@@ -679,5 +661,9 @@ export const useTableBill = (isGoBack = true) => {
         onCancelCheckout,
         dataInvoices,
         autoSelectPos,
+        termianlSelect,
+        setTermianlSelect,
+        setListPosDevice,
+        listPosDevice,
     };
 };
