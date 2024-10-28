@@ -163,7 +163,11 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                                                           {item.__typename ===
                                                               'SimpleProduct' && (
                                                               <p>
-                                                                  {item.open_price
+                                                                  {item.open_price &&
+                                                                  item.price
+                                                                      .regularPrice
+                                                                      .amount
+                                                                      .value > 0
                                                                       ? 'Open Price'
                                                                       : formatNumberWithCommas(
                                                                             item
@@ -260,7 +264,12 @@ export default function Menu({ isEatOut }: { isEatOut?: boolean }) {
                                                                       color: theme.pRIMARY6Primary,
                                                                   }}
                                                               >
-                                                                  {item.open_price
+                                                                  {item.open_price &&
+                                                                  item.price
+                                                                      .regularPrice
+                                                                      .amount
+                                                                      .value ===
+                                                                      0
                                                                       ? 'Open Price'
                                                                       : ` $ 
                                                                   ${item.price.regularPrice.amount.value.toFixed(
