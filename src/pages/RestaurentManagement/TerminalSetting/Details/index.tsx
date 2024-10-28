@@ -16,6 +16,13 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
+import CheckBoxOption from '../components/CheckBoxOption';
+import SelectForm from 'components/atom/Form/select';
+import { SET_MERCHANT_RESTAURANT_CONFIG_PRIMARY_TERMINAL } from 'graphql/setups';
+import { useDispatch } from 'react-redux';
+import { updateTerminalPrimarySetting } from 'features/auth/authSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 type PosTerminal = {
     name: string;
@@ -30,6 +37,17 @@ export default function KitchenStationDetailPage() {
     const { theme } = useTheme();
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id');
+    const dispatch = useDispatch();
+    const { primary_terminal_setting } = useSelector(
+        (state: RootState) => state.auth,
+    );
+    useEffect(() => {
+        console.log(id, primary_terminal_setting);
+        if (primary_terminal_setting && id) {
+            console.log(`${primary_terminal_setting}` === `${id}`);
+            setIsPrimary(`${primary_terminal_setting}` === `${id}`);
+        }
+    }, [primary_terminal_setting, id]);
     const handleCreateSubmit = (values: PosTerminal) => {
         setLoading(true);
         onSubmitAddPayment({
@@ -42,12 +60,31 @@ export default function KitchenStationDetailPage() {
                 status: 1,
             },
         })
-            .then(() => {
+            .then((res) => {
                 notification.success({
                     message: 'Success',
                     description: 'Created successfully',
                 });
-                navigation(BASE_ROUTER.RESTAURENT_TERMINAL);
+                if (res.data.merchantAddPostDevice?.entity_id && isPrimary) {
+                    onSetPrimary({
+                        variables: {
+                            primary_terminal_setting:
+                                res.data.merchantAddPostDevice?.entity_id,
+                        },
+                    })
+                        .then(() => {
+                            dispatch(
+                                updateTerminalPrimarySetting(
+                                    res.data.merchantAddPostDevice?.entity_id,
+                                ),
+                            );
+                        })
+                        .finally(() => {
+                            navigation(BASE_ROUTER.RESTAURENT_TERMINAL);
+                        });
+                } else {
+                    navigation(BASE_ROUTER.RESTAURENT_TERMINAL);
+                }
             })
             .catch((err) => {
                 console.log(err);
@@ -74,6 +111,21 @@ export default function KitchenStationDetailPage() {
                     message: 'Success',
                     description: 'Update successfully',
                 });
+                if (id && isPrimary) {
+                    onSetPrimary({
+                        variables: {
+                            primary_terminal_setting: id,
+                        },
+                    })
+                        .then(() => {
+                            dispatch(updateTerminalPrimarySetting(id));
+                        })
+                        .finally(() => {
+                            navigation(BASE_ROUTER.RESTAURENT_TERMINAL);
+                        });
+                } else {
+                    navigation(BASE_ROUTER.RESTAURENT_TERMINAL);
+                }
                 navigation(BASE_ROUTER.RESTAURENT_TERMINAL);
             })
             .catch((err) => {
@@ -88,7 +140,11 @@ export default function KitchenStationDetailPage() {
     const [onSubmitAddPayment] = useMutation(ADD_TERMINAL_PAYMENT);
     const [onSubmitUpdateStation] = useMutation(UPDATE_TERMINAL_PAYMENT);
     const [onDeleteKitchenStation] = useMutation(DELETE_TERMINAL);
+    const [onSetPrimary, { loading: loadingSetPrimary }] = useMutation(
+        SET_MERCHANT_RESTAURANT_CONFIG_PRIMARY_TERMINAL,
+    );
     const [loading, setLoading] = useState(false);
+    const [isPrimary, setIsPrimary] = useState(false);
     useEffect(() => {
         if (id) {
             onGetDetailPos({
@@ -162,7 +218,7 @@ export default function KitchenStationDetailPage() {
                     setShowModalDelete(false);
                 }}
             />
-            <LoadingModal showLoading={loading} />
+            <LoadingModal showLoading={loading || loadingSetPrimary} />
             <div
                 style={{
                     paddingInline: 16,
@@ -197,6 +253,8 @@ export default function KitchenStationDetailPage() {
                                     onClick={() => navigation(-1)}
                                     width="100px"
                                     height="48px"
+                                    backgroundColor="#EFEFEF"
+                                    color="#1D2433"
                                 />
                             </>
                         ) : (
@@ -215,6 +273,8 @@ export default function KitchenStationDetailPage() {
                             onClick={() => form.submit()}
                             width="100px"
                             height="48px"
+                            backgroundColor="var(--primary-6)"
+                            color="#fff"
                         />
                     </Row>
                 </Row>
@@ -223,14 +283,26 @@ export default function KitchenStationDetailPage() {
                     name="name"
                     placeholder="Terminal name"
                     rule={[{ required: true }]}
-                    style={{ width: '60%', minWidth: 600 }}
                 />
-                <InputForm
+                <CheckBoxOption
+                    isChecked={isPrimary}
+                    name="Primary Payment Terminal"
+                    onChange={(value: boolean) => {
+                        setIsPrimary(value);
+                    }}
+                />
+                <SelectForm
                     label="Machine type"
                     name="machine_type"
                     placeholder="Machine type"
                     rule={[{ required: true }]}
-                    style={{ width: '60%', minWidth: 600 }}
+                    options={[
+                        {
+                            value: 'DEJAVOO',
+                            label: 'DEJAVOO',
+                        },
+                    ]}
+                    defaultValue={'DEJAVOO'}
                 />
 
                 <InputForm
@@ -238,21 +310,18 @@ export default function KitchenStationDetailPage() {
                     name="tpn"
                     placeholder="TPN"
                     rule={[{ required: true }]}
-                    style={{ width: '60%', minWidth: 600 }}
                 />
                 <InputForm
                     label="Auth Key"
                     name="auth_key"
                     placeholder="Auth Key"
                     rule={[{ required: true }]}
-                    style={{ width: '60%', minWidth: 600 }}
                 />
                 <InputForm
                     label="Serial Number"
                     name="serial_number"
                     placeholder="Serial Number"
                     rule={[{ required: true }]}
-                    style={{ width: '60%', minWidth: 600 }}
                 />
             </div>
         </Form>

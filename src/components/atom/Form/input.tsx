@@ -25,7 +25,8 @@ export default function InputForm({
                         ? rule
                         : [
                               {
-                                  required: true, message: `Field is required`
+                                  required: true,
+                                  message: `Field is required`,
                               },
                           ]
                 }
