@@ -41,7 +41,7 @@ export const POS_DEVICE_LIST = gql`
 `;
 export const POS_DEVICE_LIST_DJV = gql`
     query {
-        getPosDevices(currentPage: 1, pageSize: 20) {
+        getPosDevices(currentPage: 1, pageSize: 100) {
             items {
                 entity_id
                 name

@@ -34,9 +34,6 @@ export default function index() {
 
 const Container = styled.div`
     padding-inline: 16px;
-    .ant-collapse {
-        max-width: 600px;
-    }
     .ant-collapse-header-text {
         font-size: 18px;
         font-weight: 600;

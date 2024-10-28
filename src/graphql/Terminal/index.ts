@@ -21,6 +21,7 @@ export const GET_TERMINALS_LIST = gql`
                 entity_id
                 name
                 status
+                serial_number
             }
             page_info {
                 current_page

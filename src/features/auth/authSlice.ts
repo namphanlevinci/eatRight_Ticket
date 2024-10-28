@@ -23,6 +23,7 @@ export interface authStateType {
     counterTable?: TTable;
     isAutoCloseOrder?: boolean;
     isPrintKitchenCopy?: boolean;
+    primary_terminal_setting: string | number;
 }
 
 const initialState: authStateType = {
@@ -43,6 +44,7 @@ const initialState: authStateType = {
     counterTable: undefined,
     isAutoCloseOrder: false,
     isPrintKitchenCopy: false,
+    primary_terminal_setting: '',
 };
 
 export const authSlice = createSlice({
@@ -117,6 +119,9 @@ export const authSlice = createSlice({
                 };
             }
         },
+        updateTerminalPrimarySetting: (state, action) => {
+            state.primary_terminal_setting = action.payload;
+        },
         updateCounterTable: (state, action) => {
             state.counterTable = action.payload.counterTable;
         },
@@ -139,6 +144,7 @@ export const {
     updateRestaurantConfig,
     updateAutoCloseOrder,
     updatePrintKitchenCopy,
+    updateTerminalPrimarySetting,
 } = authSlice.actions;
 
 export default authSlice.reducer;

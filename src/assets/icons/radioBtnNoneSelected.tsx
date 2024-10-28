@@ -1,7 +1,7 @@
 import { useTheme } from 'context/themeContext';
 import React from 'react';
 
-export default function RadioBtnSelected() {
+export default function RadioBtnNoneSelected() {
     const { theme } = useTheme();
     return (
         <svg
@@ -19,15 +19,6 @@ export default function RadioBtnSelected() {
                 rx="12"
                 stroke={theme.pRIMARY6Primary}
                 strokeWidth="2"
-            />
-            <rect
-                x="6.5"
-                y="6.5"
-                width="13"
-                height="13"
-                rx="6.5"
-                fill={theme.pRIMARY6Primary}
-                stroke={theme.pRIMARY6Primary}
             />
         </svg>
     );

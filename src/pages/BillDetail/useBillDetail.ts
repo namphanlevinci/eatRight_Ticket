@@ -51,17 +51,17 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
     const order_ID = searchParams.get('order_id');
     const [loadingPosResult, setLoadingPosResult] = useState(false);
     const { isMerchant } = useSelector((state: RootState) => state.auth);
-    let intervalId: any = null;
-    useEffect(() => {
-        if (loadingPosResult) {
-            intervalId = setInterval(refetch, 30000);
-        }
-        return () => {
-            if (intervalId) {
-                clearInterval(intervalId);
-            }
-        };
-    }, [loadingPosResult, intervalId]);
+    // let intervalId: any = null;
+    // useEffect(() => {
+    //     if (loadingPosResult) {
+    //         intervalId = setInterval(refetch, 30000);
+    //     }
+    //     return () => {
+    //         if (intervalId) {
+    //             clearInterval(intervalId);
+    //         }
+    //     };
+    // }, [loadingPosResult, intervalId]);
     const [onSendBillToEmail, { loading: sendLoading1 }] = useMutation(
         SEND_RECEIPT_TO_EMAIL,
     );
