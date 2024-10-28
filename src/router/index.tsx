@@ -21,6 +21,7 @@ import {
     updateStatusLogin,
     updateStatusLoginForMerchant,
     updateStatusLogout,
+    updateTerminalPrimarySetting,
 } from 'features/auth/authSlice';
 import _ from 'lodash';
 import { LoadingScreen } from './LoadingSpin';
@@ -263,6 +264,12 @@ export const BaseRouter = () => {
                                     res?.data?.merchantGetRestaurantConfig
                                         ?.auto_confirm_item,
                             }),
+                        );
+                        dispatch(
+                            updateTerminalPrimarySetting(
+                                res?.data?.merchantGetRestaurantConfig
+                                    ?.primary_terminal_setting,
+                            ),
                         );
                     }
                 },

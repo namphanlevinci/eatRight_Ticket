@@ -201,16 +201,11 @@ export const useTableBill = (isGoBack = true) => {
 
     const [onGetInvoices, { data: dataInvoices }] = useLazyQuery(GET_INVOICES);
     const onSelectTerminalPrimary = (terminalId: number, order: any) => {
-        handlePOSPaymentWithDJV(
-            terminalId,
-            {
-                cart_id: cart?.id,
-                order_id: order?.order_id,
-                order_number: order?.order_number,
-            },
-            true,
-            true,
-        );
+        handlePOSPaymentWithDJV(terminalId, {
+            cart_id: cart?.id,
+            order_id: order?.order_id,
+            order_number: order?.order_number,
+        });
     };
     const notiPleaseSelectAnotherTerminal = () => {
         notification.info({
@@ -350,8 +345,6 @@ export const useTableBill = (isGoBack = true) => {
             order_id?: any;
             cart_id?: any;
         },
-        isGoToTable = true,
-        isSelectAnotherPos = false,
     ) => {
         if (orderDetail) {
             setOrderInfo(orderDetail);

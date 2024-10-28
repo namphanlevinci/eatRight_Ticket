@@ -628,18 +628,13 @@ export default function index() {
                         isVisibleModalPos={isVisibleModalPosDJV}
                         setVisibleMoalPos={setVisibleMoalPosDJV}
                         onPressOK={(pos_id: number) => {
-                            handlePOSPaymentWithDJV(
-                                pos_id,
-                                {
-                                    order_number:
-                                        data?.orderDetail?.order_number,
-                                    order_id: orderId
-                                        ? orderId
-                                        : btoa(order_ID || ''),
-                                    cart_id: data?.orderDetail?.cart_id,
-                                },
-                                false,
-                            );
+                            handlePOSPaymentWithDJV(pos_id, {
+                                order_number: data?.orderDetail?.order_number,
+                                order_id: orderId
+                                    ? orderId
+                                    : btoa(order_ID || ''),
+                                cart_id: data?.orderDetail?.cart_id,
+                            });
                         }}
                         onCancel={() => {
                             showModalErrorPayment(orderId || '');
