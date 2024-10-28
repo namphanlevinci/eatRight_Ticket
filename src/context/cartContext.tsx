@@ -401,10 +401,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         newCartItems[cartIndex].items[index].prices.price.value = parseFloat(
             `${custom_price}`,
         );
-
         // help me update total price
         let total = newCartItems[cartIndex].prices?.new_items_total?.value || 0;
-        if (total > 0 && total > old_price * quantity) {
+        if (total > 0 && total >= old_price * quantity) {
             total -= old_price * quantity;
         }
         total += custom_price * quantity;
