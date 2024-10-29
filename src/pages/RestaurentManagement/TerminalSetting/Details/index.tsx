@@ -176,7 +176,7 @@ export default function KitchenStationDetailPage() {
     return (
         <Form
             name="basic"
-            initialValues={{ remember: true }}
+            initialValues={{ remember: true, machine_type: 'DEJAVOO' }}
             onFinish={(values) => {
                 if (id) {
                     handleUpdateSubmit(values);
@@ -295,7 +295,6 @@ export default function KitchenStationDetailPage() {
                     label="Machine type"
                     name="machine_type"
                     placeholder="Machine type"
-                    rule={[{ required: true }]}
                     options={[
                         {
                             value: 'DEJAVOO',
