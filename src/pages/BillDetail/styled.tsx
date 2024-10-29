@@ -1,7 +1,6 @@
 import { Row } from 'antd';
 import { useTheme } from 'context/themeContext';
 import styled from 'styled-components';
-import { Colors } from 'themes/colors';
 
 export const BarCodeContainer = styled.div`
     display: flex;

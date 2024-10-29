@@ -145,7 +145,7 @@ function Order(props) {
                 index={order?.sortId ?? randomInteger}
                 isDragDisabled={isDragDisabled}
             >
-                {(provided, snapshot) => (
+                {(provided) => (
                     <div
                         // draggableId={order?.order_number?.toString()}
                         key={id}

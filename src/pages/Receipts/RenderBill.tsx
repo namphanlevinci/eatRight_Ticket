@@ -31,11 +31,6 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
     }
 
     const address = data?.restaurant_address?.split(', ')?.[0];
-    const baseTotal = Math.abs(
-        data?.total?.subtotal?.value +
-            (totalDiscount || 0) +
-            data?.total?.total_tax?.value,
-    );
 
     const tip = Math.abs(data?.total?.tip_amount?.value || 0);
     return (

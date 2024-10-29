@@ -12,7 +12,6 @@ import { ColStyled } from './styleds';
 import { ArrowRightIcon } from 'assets/icons/arrowRight';
 import { roundTo } from 'utils/number';
 import ModalPosDevices from './components/ModalPosDevices';
-import LoadingModalPayment from 'components/modal/loadingModalPayment';
 import ModalInput from 'components/modal/ModalInput';
 import { useCouponCart } from 'pages/Table/Cart/useCouponCart';
 import ModalTip from 'components/modal/ModalTip';
@@ -69,7 +68,6 @@ export default function ColRight({
         isVisibleModalPosDJV,
         setVisibleMoalPosDJV,
         handlePOSPaymentWithDJV,
-        onCloseProcessingPayment,
         showModalErrorPayment,
         isVisibleModalOtherMethod,
         setVisibleModalOtherMethod,

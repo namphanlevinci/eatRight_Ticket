@@ -17,10 +17,7 @@ import {
     POS_PAYMENT,
     POS_PAYMENT_WITH_DJV,
 } from 'graphql/orders/paymentMethod';
-import {
-    GET_MERCHANT_RESTAURANT_CONFIG,
-    GET_PRIMARY_TERMINAL_WAITER,
-} from 'graphql/setups';
+import { GET_MERCHANT_RESTAURANT_CONFIG } from 'graphql/setups';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -77,9 +74,6 @@ export const useTableBill = (isGoBack = true) => {
         GET_MERCHANT_RESTAURANT_CONFIG,
     );
 
-    const [onGetTerminalWaiter, { loading: waiter_Loading }] = useLazyQuery(
-        GET_PRIMARY_TERMINAL_WAITER,
-    );
     // useEffect(() => {
     //     if (pos_Loading) {
     //         setTimeout(() => {
@@ -604,7 +598,6 @@ export const useTableBill = (isGoBack = true) => {
             loadingGetCart ||
             djv_Loading ||
             merchant_Loading ||
-            waiter_Loading ||
             checkOutLoading,
         pos_Loading,
         contextHolder,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unsafe-optional-chaining */
 import { App, Modal, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -33,12 +34,9 @@ declare global {
     }
 }
 export const useBillDetail = ({ order_id }: { order_id?: any }) => {
-    const [getOrderDetail, { data, loading, refetch }] = useLazyQuery(
-        GET_ORDER_DETAIL,
-        {
-            fetchPolicy: 'cache-and-network',
-        },
-    );
+    const [getOrderDetail, { data, loading }] = useLazyQuery(GET_ORDER_DETAIL, {
+        fetchPolicy: 'cache-and-network',
+    });
     const [onGetInvoices, { data: dataSplitBill }] = useLazyQuery(
         GET_INVOICES,
         {

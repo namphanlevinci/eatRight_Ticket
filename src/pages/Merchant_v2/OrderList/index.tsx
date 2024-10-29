@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable curly */
 import { Spin } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
