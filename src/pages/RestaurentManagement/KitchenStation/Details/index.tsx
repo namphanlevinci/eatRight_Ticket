@@ -6,12 +6,12 @@ import { Text } from 'components/atom/Text';
 import LoadingModal from 'components/modal/loadingModal';
 import ModalConfirm from 'components/modal/ModalConfirm';
 import { BASE_ROUTER } from 'constants/router';
+import { GET_LIST_KITCHEN_STATION } from 'containers/Kitchen/printer';
 import { useTheme } from 'context/themeContext';
 import { emitter } from 'graphql/client';
 import {
     CREATE_KITCHEN_STATION,
     DELETE_KITCHEN_STATION,
-    GET_LIST_PRINTER,
     UPDATE_KITCHEN_STATION,
 } from 'graphql/printer';
 import React, { useEffect, useState } from 'react';
@@ -24,11 +24,27 @@ export default function KitchenStationDetailPage() {
     const id = searchParams.get('id');
     const name = searchParams.get('name');
     const printer_id = searchParams.get('printer_id');
+    const [onGetList, { loading: loadingGetList }] = useLazyQuery(
+        GET_LIST_KITCHEN_STATION,
+    );
+    const [printerData, setPrinterData] = useState<any>('');
     useEffect(() => {
         if (printer_id) {
             form.setFieldsValue({
                 name: name,
                 printer: `${printer_id}`,
+            });
+            onGetList().then((res) => {
+                const printer = res.data?.getKitchenStations?.find(
+                    (item: any) => item.id == id,
+                );
+                setPrinterData(printer?.printer);
+                const printerData = JSON.parse(printer?.printer);
+                form.setFieldsValue({
+                    printer_method: printerData?.type,
+                    printer_name: printerData?.deviceName,
+                    printer_id: printer?.printer_id,
+                });
             });
         }
     }, [id, name, printer_id]);
@@ -80,46 +96,46 @@ export default function KitchenStationDetailPage() {
             });
     };
     const [form] = Form.useForm();
-    const [onGetPrinterList] = useLazyQuery(GET_LIST_PRINTER);
+    // const [onGetPrinterList] = useLazyQuery(GET_LIST_PRINTER);
     const [onSubmitNewStation] = useMutation(CREATE_KITCHEN_STATION);
     const [onSubmitUpdateStation] = useMutation(UPDATE_KITCHEN_STATION);
     const [onDeleteKitchenStation] = useMutation(DELETE_KITCHEN_STATION);
     const [loading, setLoading] = useState(false);
-    const [listPrinter, setListPrinter] = React.useState<
-        {
-            label: string;
-            value: string;
-        }[]
-    >([]);
-    useEffect(() => {
-        onGetPrinterList({
-            fetchPolicy: 'cache-and-network',
-        }).then((res) => {
-            const list = res.data?.merchantGetListDevice?.prints.map(
-                (item: any) => {
-                    return {
-                        label: item.printer_name,
-                        value: `${item.id}`,
-                    };
-                },
-            );
+    // const [listPrinter, setListPrinter] = React.useState<
+    //     {
+    //         label: string;
+    //         value: string;
+    //     }[]
+    // >([]);
+    // useEffect(() => {
+    //     onGetPrinterList({
+    //         fetchPolicy: 'cache-and-network',
+    //     }).then((res) => {
+    //         const list = res.data?.merchantGetListDevice?.prints.map(
+    //             (item: any) => {
+    //                 return {
+    //                     label: item.printer_name,
+    //                     value: `${item.id}`,
+    //                 };
+    //             },
+    //         );
 
-            setListPrinter([
-                {
-                    label: 'No Device',
-                    value: '0',
-                },
-                ...list,
-            ]);
-        });
-    }, []);
-    useEffect(() => {
-        if (printer_id && listPrinter.length > 0) {
-            form.setFieldsValue({
-                printer: `${printer_id}`,
-            });
-        }
-    }, [listPrinter, printer_id]);
+    //         setListPrinter([
+    //             {
+    //                 label: 'No Device',
+    //                 value: '0',
+    //             },
+    //             ...list,
+    //         ]);
+    //     });
+    // }, []);
+    // useEffect(() => {
+    //     if (printer_id && listPrinter.length > 0) {
+    //         form.setFieldsValue({
+    //             printer: `${printer_id}`,
+    //         });
+    //     }
+    // }, [listPrinter, printer_id]);
     const [showModalDelete, setShowModalDelete] = useState(false);
     const [showModalCancel, setShowModalCancel] = useState(false);
     const OpenMenuPrinter = () => {
@@ -128,6 +144,7 @@ export default function KitchenStationDetailPage() {
                 JSON.stringify({
                     type: 'openMenuPrinter',
                     action: 'getPrinter',
+                    printer: printerData,
                 }),
             );
         }
@@ -135,7 +152,6 @@ export default function KitchenStationDetailPage() {
     const [printer, setPrinter] = useState<any>('');
     useEffect(() => {
         emitter.on('printerSelect', (event: any) => {
-            console.log('printerSelect', event);
             const data = JSON.parse(event);
             form.setFieldsValue({
                 printer_id: `${data?.deviceName}`,
@@ -201,7 +217,7 @@ export default function KitchenStationDetailPage() {
                     setShowModalCancel(false);
                 }}
             />
-            <LoadingModal showLoading={loading} />
+            <LoadingModal showLoading={loading || loadingGetList} />
             <div
                 style={{
                     paddingInline: 16,
