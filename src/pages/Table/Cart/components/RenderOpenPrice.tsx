@@ -30,7 +30,7 @@ export default function RenderOpenPrice({
                         marginLeft: 16,
                     }}
                 >
-                    {value ? `$ ${value}` : 'Enter price'}
+                    {value ? `$ ${value.toFixed(2)}` : 'Enter price'}
                 </p>
             </div>
             {isNeedInput && !value && (
