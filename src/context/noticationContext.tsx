@@ -28,11 +28,31 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const navigation = useNavigate();
     const { notification } = App.useApp();
     const tableDataString = localStorage.getItem('tableData');
-    const sendImageReactNative = ({ url }: { url: string }) => {
+    const sendImageReactNative = ({
+        url,
+        printer_id,
+        printer_name,
+        printer_method,
+    }: {
+        url: string;
+        printer_id?: string;
+        printer_name?: string;
+        printer_method?: string;
+    }) => {
+        console.log(url, printer_id, printer_name, printer_method);
         if (window.ReactNativeWebView) {
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({ type: 'kitchen', imageUrl: url }),
-            );
+            let value: any = { type: 'kitchen', imageUrl: url };
+            if (printer_name) {
+                value = {
+                    type: 'kitchen',
+                    imageUrl: url,
+                    deviceName: printer_id,
+                    post: printer_name,
+                    printer_method: printer_method,
+                };
+            }
+            alert(JSON.stringify(value));
+            window.ReactNativeWebView.postMessage(JSON.stringify(value));
         }
     };
     useEffect(() => {
@@ -68,6 +88,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
                     if (msg['kitchen-receipt-image']) {
                         sendImageReactNative({
                             url: msg['kitchen-receipt-image'],
+                            printer_id: msg?.print_id,
+                            printer_method: msg?.print_method,
+                            printer_name: msg?.print_name,
                         });
                         return;
                     }

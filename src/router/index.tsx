@@ -147,7 +147,7 @@ export const BaseRouter = () => {
     const handleSelectPrinter = (id: string, printerName: string) => {
         onSetPrinterDevice({
             variables: {
-                printer_id: id,
+                printer_id: parseInt(id),
             },
         })
             .then(() => {
@@ -188,6 +188,14 @@ export const BaseRouter = () => {
             }
             try {
                 const data = JSON.parse(event.data);
+                if (data?.action === 'getPrinter') {
+                    notification.success({
+                        message: 'Get printer information successfully',
+                        description: data.data.deviceName,
+                    });
+                    emitter.emit('printerSelect', JSON.stringify(data?.data));
+                    return;
+                }
                 notification.success({
                     message: 'Connected Printer successfully',
                     description: data.data.deviceName,

@@ -30,6 +30,7 @@ export default function RenderList() {
             `${BASE_ROUTER.RESTAURENT_KITCHEN_STATION_DETAIL}?id=${printer.id}&name=${printer.name}&printer_id=${printer.printer_id}`,
         );
     };
+
     return (
         <>
             <Row>

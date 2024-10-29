@@ -2,12 +2,12 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { Form, notification, Row } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import InputForm from 'components/atom/Form/input';
-import SelectForm from 'components/atom/Form/select';
 import { Text } from 'components/atom/Text';
 import LoadingModal from 'components/modal/loadingModal';
 import ModalConfirm from 'components/modal/ModalConfirm';
 import { BASE_ROUTER } from 'constants/router';
 import { useTheme } from 'context/themeContext';
+import { emitter } from 'graphql/client';
 import {
     CREATE_KITCHEN_STATION,
     DELETE_KITCHEN_STATION,
@@ -37,7 +37,9 @@ export default function KitchenStationDetailPage() {
         onSubmitNewStation({
             variables: {
                 name: values.name,
-                id: values.printer,
+                id: values.printer_id,
+                printer_method: values.printer_method,
+                printer_name: values.printer_name,
             },
         })
             .then(() => {
@@ -60,7 +62,9 @@ export default function KitchenStationDetailPage() {
             variables: {
                 id: id,
                 name: values.name,
-                printer_id: values.printer,
+                printer_id: values.printer_id,
+                printer_method: values.printer_method,
+                printer_name: values.printer_name,
             },
         })
             .then(() => {
@@ -120,6 +124,27 @@ export default function KitchenStationDetailPage() {
     }, [listPrinter, printer_id]);
     const [showModalDelete, setShowModalDelete] = useState(false);
     const [showModalCancel, setShowModalCancel] = useState(false);
+    const OpenMenuPrinter = () => {
+        if (window?.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'openMenuPrinter',
+                    action: 'getPrinter',
+                }),
+            );
+        }
+    };
+    useEffect(() => {
+        emitter.on('printerSelect', (event: any) => {
+            console.log('printerSelect', event);
+            const data = JSON.parse(event);
+            form.setFieldsValue({
+                printer_id: `${data?.deviceName}`,
+                printer_name: `${data?.post}`,
+                printer_method: `${data?.type}`,
+            });
+        });
+    }, []);
     return (
         <Form
             name="basic"
@@ -241,14 +266,32 @@ export default function KitchenStationDetailPage() {
                     rule={[{ required: true }]}
                     style={{ width: '60%', minWidth: 600 }}
                 />
-                <SelectForm
-                    label="Linked printer"
-                    name="printer"
-                    placeholder="Linked printer"
-                    options={listPrinter}
+                <ButtonPrimary
+                    title="Select Printer"
+                    onClick={OpenMenuPrinter}
+                    width="200px"
+                />
+                <div style={{ marginTop: 16 }} />
+                <InputForm
+                    label="Printer Id"
+                    name="printer_id"
+                    placeholder="Printer Id"
+                    rule={[{ required: true }]}
                     style={{ width: '60%', minWidth: 600 }}
-                    required={false}
-                    rule={[{ required: false }]}
+                />
+                <InputForm
+                    label="Printer name"
+                    name="printer_name"
+                    placeholder="Printer name"
+                    rule={[{ required: true }]}
+                    style={{ width: '60%', minWidth: 600 }}
+                />
+                <InputForm
+                    label="Priner method"
+                    name="printer_method"
+                    placeholder="Priner method"
+                    rule={[{ required: true }]}
+                    style={{ width: '60%', minWidth: 600 }}
                 />
             </div>
         </Form>
