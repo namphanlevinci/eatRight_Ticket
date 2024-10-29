@@ -281,27 +281,21 @@ export const useHomeScreen = () => {
     }, []);
     const sendImageReactNative = ({
         url,
-        printer_id,
-        printer_name,
-        printer_method,
+        printer,
     }: {
         url: string;
-        printer_id?: string;
-        printer_name?: string;
-        printer_method?: string;
+        printer: string;
     }) => {
-        console.log(url, printer_id, printer_name, printer_method);
         if (window.ReactNativeWebView) {
             let value: any = { type: 'kitchen', imageUrl: url };
-            if (printer_name) {
+            if (printer) {
                 value = {
                     type: 'kitchen',
                     imageUrl: url,
-                    deviceName: printer_id,
-                    post: printer_name,
-                    printer_method: printer_method,
+                    printer: printer,
                 };
             }
+
             window.ReactNativeWebView.postMessage(JSON.stringify(value));
         }
     };
@@ -336,9 +330,7 @@ export const useHomeScreen = () => {
                 if (msg['kitchen-receipt-image']) {
                     sendImageReactNative({
                         url: msg['kitchen-receipt-image'],
-                        printer_id: msg?.print_id,
-                        printer_method: msg?.print_method,
-                        printer_name: msg?.print_name,
+                        printer: msg?.printer,
                     });
                     return;
                 }

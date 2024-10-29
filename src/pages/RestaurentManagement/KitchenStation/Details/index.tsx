@@ -38,8 +38,7 @@ export default function KitchenStationDetailPage() {
             variables: {
                 name: values.name,
                 id: values.printer_id,
-                printer_method: values.printer_method,
-                printer_name: values.printer_name,
+                printer: printer,
             },
         })
             .then(() => {
@@ -63,8 +62,7 @@ export default function KitchenStationDetailPage() {
                 id: id,
                 name: values.name,
                 printer_id: values.printer_id,
-                printer_method: values.printer_method,
-                printer_name: values.printer_name,
+                printer: printer,
             },
         })
             .then(() => {
@@ -134,6 +132,7 @@ export default function KitchenStationDetailPage() {
             );
         }
     };
+    const [printer, setPrinter] = useState<any>('');
     useEffect(() => {
         emitter.on('printerSelect', (event: any) => {
             console.log('printerSelect', event);
@@ -143,6 +142,7 @@ export default function KitchenStationDetailPage() {
                 printer_name: `${data?.post}`,
                 printer_method: `${data?.type}`,
             });
+            setPrinter(event);
         });
     }, []);
     return (
