@@ -190,16 +190,19 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     )}
                 </RowStyled>
                 <DividedDashed />
-                <RowStyled align={'middle'}>
-                    <TextDark style={text16}>Payment Method:</TextDark>
-                    <TextDark>
-                        {convertMethod(data.payment_method.title)}
-                    </TextDark>
-                </RowStyled>
+                {data?.status?.toLocaleLowerCase?.() !== 'unpaid' && (
+                    <RowStyled align={'middle'}>
+                        <TextDark style={text16}>Payment Method:</TextDark>
+                        <TextDark>
+                            {convertMethod(data.payment_method.title)}
+                        </TextDark>
+                    </RowStyled>
+                )}
 
                 {data?.payment_method?.title == 'Cash' &&
                     data?.total_received?.received_amount &&
-                    data?.total_received?.change_amount && (
+                    data?.total_received?.change_amount &&
+                    data?.status?.toLocaleLowerCase?.() !== 'unpaid' && (
                         <>
                             <RowStyled align={'middle'}>
                                 <div
@@ -234,22 +237,25 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
                     )}
 
                 {!isEmpty(data.payment_method.po_number) &&
-                    data.payment_method.po_number !== 'none' && (
+                    data.payment_method.po_number !== 'none' &&
+                    data?.status?.toLocaleLowerCase?.() !== 'unpaid' && (
                         <RowStyled>
                             <TextDark style={text16}>
                                 {data.payment_method.po_number}
                             </TextDark>
                         </RowStyled>
                     )}
-                {data?.payment_method && data?.payment_method.card_type && (
-                    <RowStyled align={'middle'}>
-                        <TextDark style={text16}>
-                            {data?.payment_method.card_type}
-                            {'  '}
-                            {data?.payment_method.last_digits}
-                        </TextDark>
-                    </RowStyled>
-                )}
+                {data?.payment_method &&
+                    data?.payment_method.card_type &&
+                    data?.status?.toLocaleLowerCase?.() !== 'unpaid' && (
+                        <RowStyled align={'middle'}>
+                            <TextDark style={text16}>
+                                {data?.payment_method.card_type}
+                                {'  '}
+                                {data?.payment_method.last_digits}
+                            </TextDark>
+                        </RowStyled>
+                    )}
                 <DividedDashed />
                 {/* <RowStyled align={'middle'}>
                     <TextDark style={text16}>Signature:</TextDark>
