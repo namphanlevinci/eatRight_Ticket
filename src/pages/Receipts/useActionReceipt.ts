@@ -37,7 +37,7 @@ export default function useActionReceipt() {
         if (!data) {
             return;
         }
-        if (!isTerminalPrinter) {
+        if (!isTerminalPrinter && data.payment_method.title !== 'Credit Card') {
             if (window?.ReactNativeWebView) {
                 setLoading(true);
                 const imageUrl = data.invoice_image;

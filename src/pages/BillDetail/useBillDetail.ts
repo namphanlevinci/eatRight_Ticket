@@ -219,6 +219,42 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
         }
     }, [loadingPrint]);
     const { isTerminalPrinter } = useSelector((state: RootState) => state.auth);
+    const sendPrintToNative = (img: string) => {
+        if (window?.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: 'Customer', imageUrl: img }),
+            );
+            notification.success({
+                message: 'Receipt sent to printer',
+                description: 'Please go to printer to take the bill!',
+            });
+            return;
+        }
+    };
+    const PrintReceipt = (
+        paymentMethod: any,
+        invoice_number: string,
+        imageUrl: string,
+    ) => {
+        if (paymentMethod === 'pos') {
+            onPrintBill({
+                variables: {
+                    invoice_number: invoice_number,
+                },
+            })
+                .then(() => {
+                    notification.success({
+                        message: 'Receipt sent to printer',
+                        description: 'Please go to printer to take the bill!',
+                    });
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        } else {
+            sendPrintToNative(imageUrl);
+        }
+    };
     const PrintBillApi = async () => {
         setLoadingPrint(true);
 
@@ -242,20 +278,11 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
         // else {
 
         if (childBill.length) {
-            onPrintBill({
-                variables: {
-                    invoice_number: selectDataShowbill?.number,
-                },
-            })
-                .then(() => {
-                    notification.success({
-                        message: 'Receipt sent to printer',
-                        description: 'Please go to printer to take the bill!',
-                    });
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
+            PrintReceipt(
+                selectDataShowbill?.payment_methods[0]?.type,
+                selectDataShowbill?.number,
+                selectDataShowbill?.invoice_image,
+            );
         } else {
             if (dataSplitBill?.merchantGetOrderInvoices?.invoice.length === 0) {
                 await onGetInvoices({
@@ -265,40 +292,27 @@ export const useBillDetail = ({ order_id }: { order_id?: any }) => {
                     fetchPolicy: 'no-cache',
                 }).then((res) => {
                     const newData = res?.data?.merchantGetOrderInvoices;
-                    onPrintBill({
-                        variables: {
-                            invoice_number: newData.invoice[0]?.number,
-                        },
-                    })
-                        .then(() => {
-                            notification.success({
-                                message: 'Receipt sent to printer',
-                                description:
-                                    'Please go to printer to take the bill!',
-                            });
-                        })
-                        .catch((e) => {
-                            console.log(e);
-                        });
+                    console.log('new Data', newData);
+                    const paymentMethod =
+                        newData.invoice[0].payment_methods[0]?.type;
+                    PrintReceipt(
+                        paymentMethod,
+                        newData.invoice[0].number,
+                        newData.invoice[0].invoice_image,
+                    );
                 });
                 return;
             }
-            onPrintBill({
-                variables: {
-                    invoice_number:
-                        dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
-                            ?.number,
-                },
-            })
-                .then(() => {
-                    notification.success({
-                        message: 'Receipt sent to printer',
-                        description: 'Please go to printer to take the bill!',
-                    });
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
+
+            const paymentMethod =
+                dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                    .payment_methods[0]?.type;
+            PrintReceipt(
+                paymentMethod,
+                dataSplitBill?.merchantGetOrderInvoices?.invoice[0]?.number,
+                dataSplitBill?.merchantGetOrderInvoices?.invoice[0]
+                    ?.invoice_image,
+            );
         }
     };
 
