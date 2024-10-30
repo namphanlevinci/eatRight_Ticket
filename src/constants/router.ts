@@ -3,6 +3,7 @@ export const BASE_ROUTER = {
     TABLE: '/table',
     ABOUT: '/about',
     LOGIN: '/login',
+    TICKET: '/ticket',
     FORGOT_PASSWORD: '/forgot-password',
     REQUEST_ACCOUNT: '/request-account',
     TABLE_BILL: '/table/bill',
