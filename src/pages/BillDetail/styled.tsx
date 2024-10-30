@@ -44,8 +44,6 @@ export const DividedDashed = ({ color }: { color?: string }) => {
     return (
         <div
             style={{
-                height: 1,
-                border: 1,
                 borderStyle: 'dashed',
                 borderColor: color ? color : theme.nEUTRALLine,
                 marginBlock: 20,
