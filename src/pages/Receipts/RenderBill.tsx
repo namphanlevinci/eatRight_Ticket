@@ -282,6 +282,7 @@ const RenderBillItem = ({ data }: { data?: ReceiptDetail }) => {
     );
 };
 export const RenderBill = React.memo(RenderBillItem);
+
 const RenderItem = ({ data }: { data: any }) => {
     return data?.items?.map((item: any, index: number) => {
         return (
