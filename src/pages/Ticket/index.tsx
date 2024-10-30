@@ -1,7 +1,11 @@
-import React from 'react';
+import { Scanner } from '@yudiel/react-qr-scanner';
 
 const Ticket = () => {
-    return <div>index</div>;
+    const onReadQRCode = (result: any) => {
+        const qrCodeValue = result?.[0]?.rawValue;
+    };
+
+    return <Scanner onScan={onReadQRCode} />;
 };
 
 export default Ticket;

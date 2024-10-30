@@ -17,6 +17,7 @@
         "@types/node": "^16.7.13",
         "@types/react": "^18.0.0",
         "@types/react-dom": "^18.0.0",
+        "@yudiel/react-qr-scanner": "^2.0.8",
         "antd": "^5.12.7",
         "antd-img-crop": "^4.23.0",
         "babel-loader": "^9.1.3",
