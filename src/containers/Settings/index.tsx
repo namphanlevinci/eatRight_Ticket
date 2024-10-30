@@ -1,5 +1,2 @@
-import SettingLayout from 'layouts/SettingLayout';
-
-export const HomeContainer = () => <SettingLayout> </SettingLayout>;
-
+export const HomeContainer = () => <div />;
 export default HomeContainer;
