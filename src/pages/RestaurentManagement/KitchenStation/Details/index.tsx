@@ -2,16 +2,16 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { Form, notification, Row } from 'antd';
 import ButtonPrimary from 'components/atom/Button/ButtonPrimary';
 import InputForm from 'components/atom/Form/input';
-import SelectForm from 'components/atom/Form/select';
 import { Text } from 'components/atom/Text';
 import LoadingModal from 'components/modal/loadingModal';
 import ModalConfirm from 'components/modal/ModalConfirm';
 import { BASE_ROUTER } from 'constants/router';
+import { GET_LIST_KITCHEN_STATION } from 'containers/Kitchen/printer';
 import { useTheme } from 'context/themeContext';
+import { emitter } from 'graphql/client';
 import {
     CREATE_KITCHEN_STATION,
     DELETE_KITCHEN_STATION,
-    GET_LIST_PRINTER,
     UPDATE_KITCHEN_STATION,
 } from 'graphql/printer';
 import React, { useEffect, useState } from 'react';
@@ -24,11 +24,27 @@ export default function KitchenStationDetailPage() {
     const id = searchParams.get('id');
     const name = searchParams.get('name');
     const printer_id = searchParams.get('printer_id');
+    const [onGetList, { loading: loadingGetList }] = useLazyQuery(
+        GET_LIST_KITCHEN_STATION,
+    );
+    const [printerData, setPrinterData] = useState<any>('');
     useEffect(() => {
         if (printer_id) {
             form.setFieldsValue({
                 name: name,
                 printer: `${printer_id}`,
+            });
+            onGetList().then((res) => {
+                const printer = res.data?.getKitchenStations?.find(
+                    (item: any) => item.id == id,
+                );
+                setPrinterData(printer?.printer);
+                const printerData = JSON.parse(printer?.printer);
+                form.setFieldsValue({
+                    printer_method: printerData?.type,
+                    printer_name: printerData?.deviceName,
+                    printer_id: printer?.printer_id,
+                });
             });
         }
     }, [id, name, printer_id]);
@@ -37,7 +53,8 @@ export default function KitchenStationDetailPage() {
         onSubmitNewStation({
             variables: {
                 name: values.name,
-                id: values.printer,
+                id: values.printer_id,
+                printer: printer,
             },
         })
             .then(() => {
@@ -60,7 +77,8 @@ export default function KitchenStationDetailPage() {
             variables: {
                 id: id,
                 name: values.name,
-                printer_id: values.printer,
+                printer_id: values.printer_id,
+                printer: printer,
             },
         })
             .then(() => {
@@ -78,48 +96,71 @@ export default function KitchenStationDetailPage() {
             });
     };
     const [form] = Form.useForm();
-    const [onGetPrinterList] = useLazyQuery(GET_LIST_PRINTER);
+    // const [onGetPrinterList] = useLazyQuery(GET_LIST_PRINTER);
     const [onSubmitNewStation] = useMutation(CREATE_KITCHEN_STATION);
     const [onSubmitUpdateStation] = useMutation(UPDATE_KITCHEN_STATION);
     const [onDeleteKitchenStation] = useMutation(DELETE_KITCHEN_STATION);
     const [loading, setLoading] = useState(false);
-    const [listPrinter, setListPrinter] = React.useState<
-        {
-            label: string;
-            value: string;
-        }[]
-    >([]);
-    useEffect(() => {
-        onGetPrinterList({
-            fetchPolicy: 'cache-and-network',
-        }).then((res) => {
-            const list = res.data?.merchantGetListDevice?.prints.map(
-                (item: any) => {
-                    return {
-                        label: item.printer_name,
-                        value: `${item.id}`,
-                    };
-                },
-            );
+    // const [listPrinter, setListPrinter] = React.useState<
+    //     {
+    //         label: string;
+    //         value: string;
+    //     }[]
+    // >([]);
+    // useEffect(() => {
+    //     onGetPrinterList({
+    //         fetchPolicy: 'cache-and-network',
+    //     }).then((res) => {
+    //         const list = res.data?.merchantGetListDevice?.prints.map(
+    //             (item: any) => {
+    //                 return {
+    //                     label: item.printer_name,
+    //                     value: `${item.id}`,
+    //                 };
+    //             },
+    //         );
 
-            setListPrinter([
-                {
-                    label: 'No Device',
-                    value: '0',
-                },
-                ...list,
-            ]);
-        });
-    }, []);
-    useEffect(() => {
-        if (printer_id && listPrinter.length > 0) {
-            form.setFieldsValue({
-                printer: `${printer_id}`,
-            });
-        }
-    }, [listPrinter, printer_id]);
+    //         setListPrinter([
+    //             {
+    //                 label: 'No Device',
+    //                 value: '0',
+    //             },
+    //             ...list,
+    //         ]);
+    //     });
+    // }, []);
+    // useEffect(() => {
+    //     if (printer_id && listPrinter.length > 0) {
+    //         form.setFieldsValue({
+    //             printer: `${printer_id}`,
+    //         });
+    //     }
+    // }, [listPrinter, printer_id]);
     const [showModalDelete, setShowModalDelete] = useState(false);
     const [showModalCancel, setShowModalCancel] = useState(false);
+    const OpenMenuPrinter = () => {
+        if (window?.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'openMenuPrinter',
+                    action: 'getPrinter',
+                    printer: printerData,
+                }),
+            );
+        }
+    };
+    const [printer, setPrinter] = useState<any>('');
+    useEffect(() => {
+        emitter.on('printerSelect', (event: any) => {
+            const data = JSON.parse(event);
+            form.setFieldsValue({
+                printer_id: `${data?.deviceName}`,
+                printer_name: `${data?.post}`,
+                printer_method: `${data?.type}`,
+            });
+            setPrinter(event);
+        });
+    }, []);
     return (
         <Form
             name="basic"
@@ -176,7 +217,7 @@ export default function KitchenStationDetailPage() {
                     setShowModalCancel(false);
                 }}
             />
-            <LoadingModal showLoading={loading} />
+            <LoadingModal showLoading={loading || loadingGetList} />
             <div
                 style={{
                     paddingInline: 16,
@@ -241,14 +282,32 @@ export default function KitchenStationDetailPage() {
                     rule={[{ required: true }]}
                     style={{ width: '60%', minWidth: 600 }}
                 />
-                <SelectForm
-                    label="Linked printer"
-                    name="printer"
-                    placeholder="Linked printer"
-                    options={listPrinter}
+                <ButtonPrimary
+                    title="Select Printer"
+                    onClick={OpenMenuPrinter}
+                    width="200px"
+                />
+                <div style={{ marginTop: 16 }} />
+                <InputForm
+                    label="Printer Id"
+                    name="printer_id"
+                    placeholder="Printer Id"
+                    rule={[{ required: true }]}
                     style={{ width: '60%', minWidth: 600 }}
-                    required={false}
-                    rule={[{ required: false }]}
+                />
+                <InputForm
+                    label="Printer name"
+                    name="printer_name"
+                    placeholder="Printer name"
+                    rule={[{ required: true }]}
+                    style={{ width: '60%', minWidth: 600 }}
+                />
+                <InputForm
+                    label="Priner method"
+                    name="printer_method"
+                    placeholder="Priner method"
+                    rule={[{ required: true }]}
+                    style={{ width: '60%', minWidth: 600 }}
                 />
             </div>
         </Form>

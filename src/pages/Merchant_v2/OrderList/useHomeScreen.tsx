@@ -279,11 +279,24 @@ export const useHomeScreen = () => {
             clearInterval(reloadOrderRef.current);
         };
     }, []);
-    const sendImageReactNative = ({ url }: { url: string }) => {
+    const sendImageReactNative = ({
+        url,
+        printer,
+    }: {
+        url: string;
+        printer: string;
+    }) => {
         if (window.ReactNativeWebView) {
-            window.ReactNativeWebView.postMessage(
-                JSON.stringify({ type: 'kitchen', imageUrl: url }),
-            );
+            let value: any = { type: 'kitchen', imageUrl: url };
+            if (printer) {
+                value = {
+                    type: 'kitchen',
+                    imageUrl: url,
+                    printer: printer,
+                };
+            }
+
+            window.ReactNativeWebView.postMessage(JSON.stringify(value));
         }
     };
     useEffect(() => {
@@ -317,6 +330,7 @@ export const useHomeScreen = () => {
                 if (msg['kitchen-receipt-image']) {
                     sendImageReactNative({
                         url: msg['kitchen-receipt-image'],
+                        printer: msg?.printer,
                     });
                     return;
                 }
